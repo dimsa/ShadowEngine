@@ -42,7 +42,7 @@ type
 implementation
 
 uses
-  uEngine2D;
+  uEngine2D, mainUnit;
 
 { tSprite }
 
@@ -82,6 +82,8 @@ procedure tSprite.Repaint;
 begin
   inherited;
 
+
+  if DrawSelect then
   image.Bitmap.Canvas.FillEllipse(
   RectF(x - wHalf,
               y - hHalf,

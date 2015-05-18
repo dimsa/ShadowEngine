@@ -349,7 +349,7 @@ begin
         bitmap.Canvas.DrawBitmap(
         fBackGround,
         RectF(0, 0, fBackGround.width, fBackGround.height),
-        RectF(0, 0, bitmap.width, bitmap.height),
+        RectF(0-random(50), 0-random(50), bitmap.width+random(50), bitmap.height+random(50)),
         1,
         true);
 
