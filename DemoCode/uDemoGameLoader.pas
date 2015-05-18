@@ -4,7 +4,8 @@ interface
 
 uses
   SysUtils,
-  uEngine2D, uEngine2DSprite, uDemoObjects;
+  uEngine2D, uEngine2DSprite, uDemoObjects,
+  uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses;
 
 type
   TLoader = class
@@ -13,7 +14,9 @@ type
   public
     function RandomAstroid: TLittleAsteroid;
     function CreateShip: TShip;
+    class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
     constructor Create(AEngine: TEngine2D);
+
   end;
 
 
@@ -58,6 +61,20 @@ begin
   FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
 
   Result := vSpr;
+end;
+
+class function TLoader.ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
+var
+  vRes: TMigrationAnimation;
+begin
+  vRes := TMigrationAnimation.Create;
+//  vRes.Parent := fEngine;
+  vRes.EndPos := APosition;
+  vRes.TimeTotal := 500;
+  vRes.Subject := ASubject;
+  vRes.OnSetup := ASubject.SendToFront;
+
+  Result := vRes;
 end;
 
 end.

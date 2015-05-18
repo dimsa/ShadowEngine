@@ -3,7 +3,8 @@ unit uDemoObjects;
 interface
 
 uses
-  uEngine2DSprite;
+  FMX.Types, System.UITypes, System.Classes, System.Types,
+  uEngine2DSprite, uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses;
 
 type
 
@@ -22,6 +23,7 @@ type
   private
     FLeftFire: TShipFire;
     FRightFire: TShipFire;
+    procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single); virtual;
   public
     property LeftFire: TShipFire read FLeftFire write FLeftFire;
     property RightFire: TShipFire read FRightFire write FRightFire;
@@ -37,6 +39,7 @@ type
   TLittleAsteroid = class(TSprite)
   private
     FTip: Byte;
+    FDx, FDY: Double; // Сдвиги
   public
     property Tip: Byte read FTip write FTip; // Тип астеройда
     procedure Repaint; override;
@@ -51,7 +54,7 @@ type
 implementation
 
 uses
-  uEngine2D;
+  uEngine2D, uDemoGameLoader;
 
 { TShip }
 
@@ -79,6 +82,44 @@ begin
   FRightFire.Opacity := 0.5;
 
   vEngine.AddObject(FRightFire);
+
+  Self.OnMouseDown := Self.MouseDown;
+end;
+
+procedure TShip.MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+var
+  vEngine: TEngine2D;
+  vPos: TPosition;
+  vFi, vEX, vEY, vDist: Double; // Координаты
+  vAni: TAnimation;
+begin
+  vEngine := Parent;
+
+
+  vEX := Self.x - X;
+  vEY := Self.y - y;
+
+  vDist := Sqrt(Sqr(vEX) + Sqr(vEY));
+  if  (vEX <> 0) then
+    vFi := ArcTan(vEY / vEX) else
+       if vEY > 0
+       then
+         vFi := pi / 2
+       else
+         vFi := - pi / 2;
+  vPos.Rotate := Self.Rotate + (vFi / Pi) * 180;
+  vPos.x := Self.x + Abs(vEX) * vDist * 0.1 * Self.ScaleX * Sin(vPos.rotate / 180 * pi);
+  vPos.y := Self.y + Abs(vEY) * vDist * 0.1 * Self.ScaleY * Cos(vPos.rotate / 180 * pi);
+
+  vPos.ScaleX := Self.ScaleX;
+  vPos.ScaleY := Self.ScaleY;
+  vPos.opacity := 1;
+
+  vAni := TLoader.ShipFlyAnimation(Self, vPos);
+  vAni.Parent := vEngine;
+  vEngine.AnimationList.Add(vAni);
+
 end;
 
 procedure TShip.Repaint;
@@ -106,6 +147,7 @@ end;
 procedure TAsteroid.Repaint;
 begin
   curRes := 3;
+
   inherited;
 
 end;
@@ -118,11 +160,22 @@ begin
   FTip := Random(6);
   if FTip > 3 then
     FTip := 3; // Чтобы звезд побольше было
+
+  FDx := Random;
+  FDY := Random;
 end;
 
 procedure TLittleAsteroid.Repaint;
 begin
   curRes := FTip + 5;
+  Self.x := Self.x + FDx;
+  Self.y := Self.y + FDy;
+
+  if Self.x > tEngine2d(Parent).Width then
+    Self.x := -1;
+
+  if Self.y > tEngine2d(Parent).Height then
+    Self.y := -1;
   inherited;
 
 end;

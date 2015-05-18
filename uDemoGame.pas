@@ -5,6 +5,7 @@ unit uDemoGame;
 interface
 
 uses
+  FMX.Types, System.UITypes, System.Classes, System.Types,
   FMX.Objects, System.Generics.Collections,
   uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects;
 
@@ -17,6 +18,8 @@ type
     FAsteroid: TList<TAsteroid>;
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
+    procedure mouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; x, y: single);
   public
     property Image: TImage read GetImage write SetImage;
     procedure Prepare;
@@ -35,6 +38,20 @@ end;
 function TDemoGame.GetImage: TImage;
 begin
   Result := FEngine.Image;
+end;
+
+procedure TDemoGame.mouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; x, y: single);
+var
+  i, vL: Integer;
+begin
+  { Логика выбора карт }
+  fEngine.mouseDown(Sender, Button, Shift, x, y);
+
+  vL := Length(fEngine.Downed) - 1;
+
+  for i := 0 to vL do
+    fEngine.sprites[fEngine.Downed[i]].OnMouseDown(Sender, Button, Shift, x, y);
 end;
 
 procedure TDemoGame.Prepare;
@@ -60,7 +77,7 @@ end;
 procedure TDemoGame.SetImage(const Value: TImage);
 begin
   fEngine.init(Value);
-  Value.OnMouseDown := fEngine.MouseDown;
+  Value.OnMouseDown := Self.MouseDown;
   Value.OnMouseUp := fEngine.MouseUp;
 end;
 

@@ -53,6 +53,9 @@ type
     procedure setHeight(newHeight: integer); // Установка размера поля отрисовки движка
     procedure setBackGround(ABmp: tBitmap);
     function GetIfHor: Boolean;
+  private
+    function GetHeight: integer;
+    function GetWidth: integer;
   public
     // Ключевые свойства движка
     property EngineThread: TEngineThread read fEngineThread write fEngineThread;
@@ -66,8 +69,8 @@ type
 
     property IsMouseDowned: Boolean read FIsMouseDowned;
     property Status: byte read fStatus write setStatus;
-    property Width: integer read fWidth write setWidth;
-    property Height: integer read fHeight write setHeight;
+    property Width: integer read GetWidth{ fWidth} write setWidth;
+    property Height: integer read GetHeight{fHeight} write setHeight;
 
     property Clicked: tIntArray read fClicked;
     property Downed: TIntArray read fMouseDowned;
@@ -302,6 +305,11 @@ begin
 
 end;
 
+function tEngine2d.GetHeight: integer;
+begin
+  Result := Round(Self.fImage.Height);
+end;
+
 function tEngine2d.GetIfHor: Boolean;
 begin
   Result := fWidth > fHeight;
@@ -422,6 +430,11 @@ end;
 function tEngine2d.getSpriteCount: integer;
 begin
   result := fSprites.Count;//length(fSprites)
+end;
+
+function tEngine2d.GetWidth: integer;
+begin
+  Result := Round(Self.fImage.Width);
 end;
 
 procedure tEngine2d.init(newImage: tImage);
