@@ -11,6 +11,7 @@ type
   TmainForm = class(TForm)
     mainImage: TImage;
     procedure FormCreate(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     { Private declarations }
   public
@@ -26,6 +27,13 @@ implementation
 {$R *.fmx}
 
 procedure TmainForm.FormCreate(Sender: TObject);
+begin
+  Game := TDemoGame.Create;
+  Game.Image := mainImage;
+  Game.Prepare;
+end;
+
+procedure TmainForm.FormResize(Sender: TObject);
 var
   size: tPointF;
 begin
@@ -36,9 +44,8 @@ begin
   mainImage.Height:=round(size.Y+0.4);
   mainImage.Bitmap.Width:=round(size.X+0.4);
   mainImage.Bitmap.Height:=round(size.Y+0.4);
-  Game := TDemoGame.Create;
-  Game.Image := mainImage;
-  Game.Prepare;
+
 end;
 
 end.
+

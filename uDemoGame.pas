@@ -60,7 +60,8 @@ end;
 procedure TDemoGame.SetImage(const Value: TImage);
 begin
   fEngine.init(Value);
-
+  Value.OnMouseDown := fEngine.MouseDown;
+  Value.OnMouseUp := fEngine.MouseUp;
 end;
 
 end.

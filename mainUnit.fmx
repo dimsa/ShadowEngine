@@ -1,22 +1,22 @@
 object mainForm: TmainForm
   Left = 0
   Top = 0
-  Caption = 'Form1'
-  ClientHeight = 480
-  ClientWidth = 640
+  Caption = 'ShadowEngine Demo'
+  ClientHeight = 490
+  ClientWidth = 691
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
+  OnResize = FormResize
   DesignerMasterStyle = 0
   object mainImage: TImage
     MultiResBitmap = <
       item
       end>
-    Position.X = 96.000000000000000000
-    Position.Y = 64.000000000000000000
-    Size.Width = 321.000000000000000000
-    Size.Height = 321.000000000000000000
+    Align = Client
+    Size.Width = 691.000000000000000000
+    Size.Height = 490.000000000000000000
     Size.PlatformDefault = False
   end
 end

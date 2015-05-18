@@ -82,6 +82,13 @@ procedure tSprite.Repaint;
 begin
   inherited;
 
+  image.Bitmap.Canvas.FillEllipse(
+  RectF(x - wHalf,
+              y - hHalf,
+              x + wHalf,
+              y + hHalf),
+              opacity);
+
   Image.Bitmap.Canvas.DrawBitmap(
     fResources[fCurRes{Animation.Frames[fFrame].num}].bmp,
     fResources[fCurRes{Animation.Frames[fFrame].num}].rect,
@@ -119,10 +126,35 @@ begin
 end;
 
 function tSprite.UnderTheMouse(const MouseX, MouseY: Double): boolean;
+var
+  vDist: Double;
+  vEX, vEY: Double; // абсцисса и ордианта точки на эллипсе
+  vFi: Double; // Угол точки эллипса
+  vR: Double; // Радиус эллипса в конкретной точке
 begin
-  Result := Inherited;
+
+  vEX := Self.x - MouseX;
+  vEY := Self.y - MouseY;
+  vDist := Sqrt(Sqr(vEX) + Sqr(vEY));
+
+  if  (vEX <> 0) then
+    vFi := ArcTan(vEY / vEX) else
+       if vEY > 0
+       then
+         vFi := pi / 2
+       else
+         vFi := - pi / 2;
+
+  vEx := Abs(Self.w * Self.ScaleX * 0.5);
+  vEy := Abs(Self.h * Self.ScaleY * 0.5);
+  vR := (vEX * vEY) /
+        sqrt( sqr(vEX * cos(vFi)) + sqr(vEY * sin(vFi)) );
+
+  Result := (vR >= vDist);
+  //Inherited;
 end;
 
 end.
+
 
 

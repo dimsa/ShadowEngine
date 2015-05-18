@@ -452,7 +452,7 @@ begin
 
   // mainForm.Caption:=floattostr(x)+' '+floattostr(y);
 
-  for i := l downto 0 do
+  for i := l downto 1 do
   begin
     if fSprites[fSpriteOrder[i]].visible then
       if fSprites[fSpriteOrder[i]].underTheMouse(flX, flY) then
@@ -482,7 +482,7 @@ begin
   setLength(fClicked, 0);
   setLength(fMouseUpped, 0);
 
-  for i := l downto 0 do
+  for i := l downto 1 do
   begin
     if fSprites[fSpriteOrder[i]].visible then
       if fSprites[fSpriteOrder[i]].underTheMouse(flX, flY) then
