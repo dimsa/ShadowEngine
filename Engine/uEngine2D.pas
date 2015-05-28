@@ -5,7 +5,8 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Platform,
-  FMX.Objects, Math, System.Math.Vectors, system.SyncObjs,
+  FMX.Objects, Math, System.Math.Vectors, System.SyncObjs,
+  uClasses,
   uEngine2DThread, uEngine2DObject, uEngine2DUnclickableObject,
   uEngine2DSprite, uEngine2DText,
   uEngine2DClasses, uFormatterList, uSpriteList,
@@ -37,6 +38,7 @@ type
     fCritical: TCriticalSection;
     fWidth, fHeight: integer; // Размер поля имеджа и движка
     fDebug: Boolean; // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
+    FBackgroundBehavior: TProcedure;
 
     // Механизм теневого объекты необычен. Но кроме всего прочего TEngine2DObject не имеет способов определения
     {FShadowSprite: tSprite; //
@@ -52,14 +54,17 @@ type
     procedure setWidth(newWidth: integer); // Установка размера поля отрисовки движка
     procedure setHeight(newHeight: integer); // Установка размера поля отрисовки движка
     procedure setBackGround(ABmp: tBitmap);
+
+    procedure BackgroundDefaultBehavior;
     function GetIfHor: Boolean;
-  private
     function GetHeight: integer;
     function GetWidth: integer;
+    procedure SetBackgroundBehavior(const Value: TProcedure);
   public
     // Ключевые свойства движка
     property EngineThread: TEngineThread read fEngineThread write fEngineThread;
     property Image: TImage read FImage write FImage;
+    property BackgroundBehavior: TProcedure read FBackgroundBehavior write SetBackgroundBehavior;
     // Ключевые списки движка
     property Resources: TEngine2DResources read FResources;
     property AnimationList: TEngine2DAnimationList read fAnimationList;
@@ -179,6 +184,17 @@ begin
 
 end;
 
+procedure tEngine2d.BackGroundDefaultBehavior;
+begin
+  with Self.Image do
+    Bitmap.Canvas.DrawBitmap(
+      fBackGround,
+      RectF(0, 0, fBackGround.width, fBackGround.height),
+      RectF(0, 0, bitmap.width, bitmap.height),
+      1,
+      true);
+end;
+
 procedure tEngine2d.clear;
 begin
   clearSprites;
@@ -221,7 +237,7 @@ begin
   fOptions.ToAnimateForever := True;
   fOptions.ToClickOnlyTop := False;
   fCritical := TCriticalSection.Create;
-
+  FBackgroundBehavior := BackgroundDefaultBehavior;
   fDebug := False;
   prepareFastFields;
   clearSprites;
@@ -346,12 +362,8 @@ begin
     begin
       if bitmap.Canvas.BeginScene() then
       try
-        bitmap.Canvas.DrawBitmap(
-        fBackGround,
-        RectF(0, 0, fBackGround.width, fBackGround.height),
-        RectF(0-random(50), 0-random(50), bitmap.width+random(50), bitmap.height+random(50)),
-        1,
-        true);
+
+        FBackgroundBehavior;
 
         l := (fSprites.Count - 1);
         for i := 1 to l do
@@ -397,6 +409,7 @@ begin
         bitmap.Canvas.endScene();
       end;
   end;
+
   fCritical.Leave;
 end;
 
@@ -547,6 +560,11 @@ begin
   end
   else
     fBackGround.Assign(ABmp);
+end;
+
+procedure tEngine2d.SetBackgroundBehavior(const Value: TProcedure);
+begin
+  FBackgroundBehavior := Value;
 end;
 
 {procedure tEngine2d.setBitmap(index: integer; newBitmap: tBitmap);

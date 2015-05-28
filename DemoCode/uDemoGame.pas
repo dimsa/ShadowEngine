@@ -60,7 +60,7 @@ var
   i, vN: Integer;
 begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
-  FEngine.Background.LoadFromFile(UniPath('back.png'));
+  FEngine.Background.LoadFromFile(UniPath('back.jpg'));
 
   FBackObjects := TList<TLittleAsteroid>.Create;
   vLoader := TLoader.Create(FEngine);

@@ -30,8 +30,8 @@ uses
   uEngineFormatter in 'Engine\uEngineFormatter.pas',
   uFormatterList in 'Engine\uFormatterList.pas',
   uSpriteList in 'Engine\uSpriteList.pas',
-  uDemoGame in 'uDemoGame.pas',
-  uDemoEngine in 'uDemoEngine.pas',
+  uDemoGame in 'DemoCode\uDemoGame.pas',
+  uDemoEngine in 'DemoCode\uDemoEngine.pas',
   uDemoGameLoader in 'DemoCode\uDemoGameLoader.pas',
   uDemoObjects in 'DemoCode\uDemoObjects.pas';
 
