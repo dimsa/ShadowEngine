@@ -3,7 +3,7 @@ unit uDemoObjects;
 interface
 
 uses
-  FMX.Types, System.UITypes, System.Classes, System.Types,
+  FMX.Types, System.UITypes, System.Classes, System.Types, System.SysUtils, System.Math,
   uEngine2DSprite, uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses;
 
 type
@@ -32,8 +32,11 @@ type
   end;
 
   TAsteroid = class(TSprite)
+  private
+    FDx, FDY, FDA: Double; // Сдвиги
   public
     procedure Repaint; override;
+    constructor Create(newParent: pointer); override;
   end;
 
   TLittleAsteroid = class(TSprite)
@@ -54,6 +57,7 @@ type
 implementation
 
 uses
+  mainUnit,
   uEngine2D, uDemoGameLoader;
 
 { TShip }
@@ -101,20 +105,22 @@ begin
   vEY := Self.y - y;
 
   vDist := Sqrt(Sqr(vEX) + Sqr(vEY));
-  if  (vEX <> 0) then
-    vFi := ArcTan(vEY / vEX) else
-       if vEY > 0
-       then
-         vFi := pi / 2
-       else
-         vFi := - pi / 2;
-  vPos.Rotate := Self.Rotate + (vFi / Pi) * 180;
-  vPos.x := Self.x + Abs(vEX) * vDist * 0.1 * Self.ScaleX * Sin(vPos.rotate / 180 * pi);
-  vPos.y := Self.y + Abs(vEY) * vDist * 0.1 * Self.ScaleY * Cos(vPos.rotate / 180 * pi);
+  vFi := ArcTan2(-vEY, -vEX);
+  if vDist > 25 then
+    vPos.Rotate := (Self.Rotate + ((vFi / Pi) * 180+270)) / 2
+  else
+    vPos.rotate := Self.Rotate;
+  vPos.x := self.x + vEX * vDist * 0.05;// Self.x + Abs(vEX) * vDist * 0.1 * Self.ScaleX * Sin(vPos.rotate / 180 * pi);
+  vPos.y := self.y + vEY * vDist * 0.05;//Self.y + Abs(vEY) * vDist * 0.1 * Self.ScaleY * Cos(vPos.rotate / 180 * pi);
 
   vPos.ScaleX := Self.ScaleX;
   vPos.ScaleY := Self.ScaleY;
   vPos.opacity := 1;
+
+ // self.Rotate := 270;
+
+
+  mainForm.caption := FloatToStr(vEX) + '~~' + FloatToStr(vEY) + '~~' + FloatToStr(vPos.Rotate);
 
   vAni := TLoader.ShipFlyAnimation(Self, vPos);
   vAni.Parent := vEngine;
@@ -144,12 +150,31 @@ end;
 
 { TAsteroid }
 
+constructor TAsteroid.Create(newParent: pointer);
+begin
+  inherited;
+  FDx := Random;
+  FDy := Random;
+  FDA := Random - 0.5;
+end;
+
 procedure TAsteroid.Repaint;
 begin
-  curRes := 3;
+  curRes := 1;
 
+  Self.x := Self.x + FDx;
+  Self.y := Self.y + FDy;
+  Self.Rotate := Self.Rotate + FDa;
+
+  if Self.Rotate >= 360 then
+    Self.Rotate := 0;
+
+  if Self.x > tEngine2d(Parent).Width + Self.scW then
+    Self.x := -Self.scW;
+
+  if Self.y > tEngine2d(Parent).Height + Self.scH then
+    Self.y := -Self.scH;
   inherited;
-
 end;
 
 { TLittleAsteroid }

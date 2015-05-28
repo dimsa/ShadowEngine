@@ -15,7 +15,7 @@ type
     FEngine: TDemoEngine;
     FBackObjects: TList<TLittleAsteroid>; // Летящие бэки
     FShip: TShip;
-    FAsteroid: TList<TAsteroid>;
+    FAsteroids: TList<TAsteroid>;
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
     procedure mouseDown(Sender: TObject; Button: TMouseButton;
@@ -70,6 +70,10 @@ begin
 
   // Создаем корабль
   FShip := vLoader.CreateShip;
+
+  FAsteroids := TList<TAsteroid>.Create;
+  for i := 0 to 3 do
+    FAsteroids.Add(vLoader.BigAstroid);
 
   fEngine.Start;
 end;

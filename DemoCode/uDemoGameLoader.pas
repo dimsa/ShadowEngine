@@ -13,16 +13,33 @@ type
     FEngine: TEngine2D;
   public
     function RandomAstroid: TLittleAsteroid;
+    function BigAstroid: TAsteroid;
     function CreateShip: TShip;
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
     constructor Create(AEngine: TEngine2D);
-
   end;
 
 
 implementation
 
 { TLoader }
+
+function TLoader.BigAstroid: TAsteroid;
+var
+  vSpr: TAsteroid;
+begin
+  vSpr := TAsteroid.Create(FEngine);
+  vSpr.Parent := FEngine;
+  vSpr.Resources := FEngine.Resources;
+  vSpr.Group := 'activeobject';
+  vSpr.x := Random(FEngine.Width);
+  vSpr.y := Random(FEngine.Height);
+  vSpr.Rotate := Random(360);
+  vSpr.Scale := 0.5;
+  FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
+
+  Result := vSpr;
+end;
 
 constructor TLoader.Create(AEngine: TEngine2D);
 begin
