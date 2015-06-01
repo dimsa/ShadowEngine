@@ -57,7 +57,7 @@ end;
 procedure TDemoGame.Prepare;
 var
   vLoader: TLoader;
-  i, vN: Integer;
+  i: Integer;
 begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));

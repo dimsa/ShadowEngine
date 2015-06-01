@@ -25,11 +25,11 @@ type
   end;
 
   TPosition = record // Нужен для аниманиции спрайтов
-    x,y: single;
-    rotate: single;
+    X, Y: single;
+    Rotate: single;
     ScaleX, ScaleY: single;
-    opacity: single;
-    numOfFrame: integer;
+    Opacity: single;
+//    NumOfFrame: integer;
   end;
 
   // Потокобезопасный класс именованных листов для енджайна. Обязательно должен быть указан Парент!
@@ -77,15 +77,14 @@ uses
 
 function ClearPosition: TPosition;
 var
-  vRes: tPosition;
+  vRes: TPosition;
 begin
-  vRes.x := 0;
-  vRes.y := 0;
-  vRes.rotate := 0;
+  vRes.X := 0;
+  vRes.Y := 0;
+  vRes.Rotate := 0;
   vRes.ScaleX := 1;
   vRes.ScaleY := 1;
-  vRes.opacity := 1;
-  vRes.numOfFrame := 0;
+  vRes.Opacity := 1;
   Result := vRes;
 end;
 

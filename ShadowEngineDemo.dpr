@@ -33,7 +33,11 @@ uses
   uDemoGame in 'DemoCode\uDemoGame.pas',
   uDemoEngine in 'DemoCode\uDemoEngine.pas',
   uDemoGameLoader in 'DemoCode\uDemoGameLoader.pas',
-  uDemoObjects in 'DemoCode\uDemoObjects.pas';
+  uDemoObjects in 'DemoCode\uDemoObjects.pas',
+  uIntersectorFigure in 'Intersector\uIntersectorFigure.pas',
+  uIntersectorComparer in 'Intersector\uIntersectorComparer.pas',
+  uIntersectorClasses in 'Intersector\uIntersectorClasses.pas',
+  uIntersectorCircle in 'Intersector\uIntersectorCircle.pas';
 
 {$R *.res}
 
