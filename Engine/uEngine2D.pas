@@ -5,11 +5,10 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Platform,
-  FMX.Objects, Math, System.Math.Vectors, System.SyncObjs,
-  uClasses,
-  uEngine2DThread, uEngine2DObject, uEngine2DUnclickableObject,
-  uEngine2DSprite, uEngine2DText,
-  uEngine2DClasses, uFormatterList, uSpriteList,
+  FMX.Objects, Math, System.SyncObjs,
+  {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
+  uClasses, uEngine2DThread, uEngine2DObject, uEngine2DUnclickableObject,
+  uEngine2DSprite, uEngine2DText, uEngine2DClasses, uFormatterList, uSpriteList,
   uEngine2DResources, uEngine2DAnimation, uNamedList, uEngine2DAnimationList,
   uFastFields, uEasyDevice;
 
@@ -140,11 +139,6 @@ var
   l: integer;
 begin
   l := spriteCount;
-//  fSprites.Add(NewSprite);
-  {fSprites.add(NewSprite);
-  setLength(fSpriteOrder, l + 1);
-  fSprites[l].Image := fImage;
-  fSpriteOrder[l] := l;                }
   addObject('genname'+IntToStr(l)+'x'+IntToStr(Random(65536)), AObject);
 end;
 
@@ -385,6 +379,7 @@ begin
         // bitmap.Canvas.Blending:=true;
         bitmap.Canvas.SetMatrix(tMatrix.Identity);
         bitmap.Canvas.Fill.Color := TAlphaColorRec.Brown;
+        {$IFDEF VER290}
         bitmap.Canvas.FillText(
           RectF(15, 15, 165, 125),
           'FPS=' + floattostr(fEngineThread.fps),
@@ -398,13 +393,34 @@ begin
             'sel=' + inttostr(self.fClicked[0]), false, 1, [],
             TTextAlign.Leading);
         end;
-
         bitmap.Canvas.FillText(
           RectF(25, 65, 200, 200),
           floattostr(flX) + ' ' + floattostr(flY),
           false, 1, [],
           TTextAlign.Leading
         );
+        {$ENDIF}
+        {$IFDEF VER260}
+        bitmap.Canvas.FillText(
+          RectF(15, 15, 165, 125),
+          'FPS=' + floattostr(fEngineThread.fps),
+          false, 1, [],
+          TTextAlign.taLeading
+        );
+
+        if length(self.fClicked) >= 1 then
+        begin
+          bitmap.Canvas.FillText(RectF(15, 45, 165, 145),
+            'sel=' + inttostr(self.fClicked[0]), false, 1, [],
+            TTextAlign.taLeading);
+        end;
+        bitmap.Canvas.FillText(
+          RectF(25, 65, 200, 200),
+          floattostr(flX) + ' ' + floattostr(flY),
+          false, 1, [],
+          TTextAlign.taLeading
+        );
+        {$ENDIF}
 
         bitmap.Canvas.endScene();
       end;

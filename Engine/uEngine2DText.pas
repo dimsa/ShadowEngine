@@ -50,9 +50,16 @@ begin
   fFont.Family := 'Arial';
   fFont.Size := 12;
   fColor := TAlphaColorRec.Black; // Цвет текста
-  FFillTextFlags := [TFillTextFlag.RightToLeft]; // Свойство текста
-  FVerAlign := TTextAlign.Center;
-  FHorAlign := TTextAlign.Center;
+  {$IFDEF VER290}
+    FFillTextFlags := [TFillTextFlag.RightToLeft]; // Свойство текста
+    FVerAlign := TTextAlign.Center;
+    FHorAlign := TTextAlign.Center;
+  {$ENDIF}
+  {$IFDEF VER260}
+    FFillTextFlags := [TFillTextFlag.ftRightToLeft]; // Свойство текста
+    FVerAlign := TTextAlign.taCenter;
+    FHorAlign := TTextAlign.taCenter;
+  {$ENDIF}
 end;
 
 destructor TEngine2DText.Destroy;
@@ -86,10 +93,14 @@ begin
 
   with Image do
   begin
+  {$IFDEF VER290}
     Bitmap.Canvas.Stroke.Kind := TBrushKind.Solid;
+  {$ENDIF}
+  {$IFDEF VER260}
+    Bitmap.Canvas.Stroke.Kind := TBrushKind.bkSolid;
+  {$ENDIF}
     Bitmap.Canvas.StrokeThickness := 1;
     Bitmap.Canvas.Fill.Color := FColor;
-//    if self. then
 
     vTmp := TFont.Create;
     vTmp.Assign( Bitmap.Canvas.Font);
@@ -99,7 +110,6 @@ begin
     FHorAlign, FVerAlign);
     Bitmap.Canvas.Font.Assign(vTmp);
     vTmp.Free;
-//    bitmap.Canvas.FillRect(rectf(x-1, y-1, x+1, y+1), 0, 0, AllCorners, $FF);
   end;
 end;
 
