@@ -4,6 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, System.RegularExpressions,
+  uIntersectorClasses,
   uExpressionParser, uNamedList, uEngine2DClasses, uTextProc, uEngine2DObject,
   uEngine2DUnclickableObject, uFastFields, uConstantGroup, uParserValue;
 
@@ -29,7 +30,7 @@ type
     function CreateIfNil(var vExp: TExpression): TExpression;
     procedure SetText(const Value: String);
     function WhatExpression(const AText: String): TExpression;
-    function GetPosition: tPosition; // Выдает ссылку на нужный параметр
+    function GetPosition: TPosition; // Выдает ссылку на нужный параметр
     function DefineSelf(const AText: String): String;
     function IsFunction(const AText: String): Boolean;
     function IsDotProperty(const AText: String): Boolean;

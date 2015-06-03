@@ -4,23 +4,26 @@ interface
 
 uses
   FMX.Objects, System.Types, System.Generics.Collections,
-  uEngine2DClasses;
+  uEngine2DClasses, uIntersectorClasses;
 
 type
 
-  tEngine2DUnclickableObject = class // Базовый класс для объекта отрисовки движка
+  tEngine2DUnclickableObject = class abstract// Базовый класс для объекта отрисовки движка
   protected
     fPosition: TPosition;
     fVisible: boolean; // Отрисовывать объект или нет
+    fOpacity: Single; // Прозрачность
     fParent: pointer; // Должен быть tEngine2d
     fImage: TImage;
     fCreationNumber: integer; // Номер спрайта в массиве спрайтов
     fGroup: string;
+    fNeedRecalc: Boolean;
     fClonedFrom: tEngine2DUnclickableObject;
-    procedure SetX(AValue: single); virtual;
-    procedure SetY(AValue: single); virtual;
     function GetW: single; virtual; abstract;
     function GetH: single; virtual; abstract;
+
+    procedure SetX(AValue: single); virtual;
+    procedure SetY(AValue: single); virtual;
     procedure SetScaleX(const Value: single); virtual;
     procedure SetScaleY(const Value: single); virtual;
     procedure SetScale(AValue: single); virtual;
@@ -33,7 +36,7 @@ type
     property y: single read fPosition.y write setY; // Координата Y на главном битмапе
     property w: single read getW; // Оригинальная ширина
     property h: single read getH; // Оригинальная высота
-    property Opacity: single read fPosition.opacity write fPosition.opacity; // Прозрачность
+    property Opacity: single read {fPosition.opacity}fOpacity write {fPosition.opacity}fOpacity; // Прозрачность
     property Rotate: single read fPosition.rotate write setRotate; // Угол поворота относительно центра
     property ScaleX: single read fPosition.ScaleX write setScaleX;  // Масштаб спрайта во время отрисовки
     property ScaleY: single read fPosition.scaleY write setScaleY;  // Масштаб спрайта во время отрисовки
@@ -45,6 +48,7 @@ type
     property Image: TImage read fImage write fImage; // В этом имедже происходит отрисовка.
 
    // procedure Format; virtual; // Процедура, производящая форматирование по fFormatter
+    property NeedRecalc: Boolean read FNeedRecalc write fNeedRecalc; // Показывает, нужно ли пересчитывать фигуры
     function Clone: tEngine2DUnclickableObject; virtual; deprecated;
     procedure Repaint; virtual; abstract; // Процедура отрисовки объекта, переписывается спрайтом или текстом и т.д.
 
@@ -91,7 +95,7 @@ begin
   fPosition.x := 0;
   fPosition.y := 0;
   fVisible := true;
-  fPosition.opacity := 1;
+  Self.Opacity := 1;
   vEngine := TEngine2D(fParent);
   fImage := vEngine.Image;
 //  fAnimation := TList<Integer>.Create;

@@ -4,7 +4,8 @@ interface
 
 uses
   FMX.Types, System.UITypes, System.Classes, System.Types, System.SysUtils, System.Math,
-  uEngine2DSprite, uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses;
+  uEngine2DSprite, uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
+  uIntersectorClasses;
 
 type
 
@@ -115,7 +116,7 @@ begin
 
   vPos.ScaleX := Self.ScaleX;
   vPos.ScaleY := Self.ScaleY;
-  vPos.opacity := 1;
+  Self.Opacity := 1;
 
  // self.Rotate := 270;
 

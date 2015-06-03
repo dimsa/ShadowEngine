@@ -4,6 +4,7 @@ interface
 
 uses
   System.Types, System.Math,
+  {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uIntersectorFigure, uIntersectorCircle, uIntersectorRectangle,
   uIntersectorTriangle;
 

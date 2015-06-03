@@ -40,7 +40,8 @@ uses
   uIntersectorCircle in 'Intersector\uIntersectorCircle.pas',
   uIntersectorRectangle in 'Intersector\uIntersectorRectangle.pas',
   uIntersectorTriangle in 'Intersector\uIntersectorTriangle.pas',
-  uIntersectorPoly in 'Intersector\uIntersectorPoly.pas';
+  uIntersectorPoly in 'Intersector\uIntersectorPoly.pas',
+  uEngine2DObjectShape in 'Engine\uEngine2DObjectShape.pas';
 
 {$R *.res}
 

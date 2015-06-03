@@ -8,7 +8,7 @@ interface
 
 uses
   System.SyncObjs,
-  uEngineFormatter, uEngine2DObject, uEngine2DSprite, uEngine2DClasses;
+  uEngineFormatter, uEngine2DObject, uEngine2DSprite, uEngine2DClasses, uIntersectorClasses;
 
 type
   TFormatterList = class(TEngine2DNamedList<TEngineFormatter>)

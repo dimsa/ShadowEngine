@@ -4,8 +4,8 @@ interface
 
 type
   TPosition = record // Нужен для аниманиции спрайтов
-    X, Y: single;
-    Rotate: single;
+    X, Y: Single;
+    Rotate: Single;
     ScaleX, ScaleY: single;
   end;
 

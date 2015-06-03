@@ -4,6 +4,7 @@ interface
 
 uses
   FMX.Graphics, System.SyncObjs, System.SysUtils, System.Types,
+  uIntersectorClasses,
   System.Generics.Collections, uNamedList, System.Generics.Defaults;
 
 type
@@ -24,13 +25,13 @@ type
     ToAnimateForever: Boolean; // Сообщает, что надо перерисовывать сцену, даже если нет анимаций
   end;
 
-  TPosition = record // Нужен для аниманиции спрайтов
+ { TPosition = record // Нужен для аниманиции спрайтов
     X, Y: single;
     Rotate: single;
     ScaleX, ScaleY: single;
     Opacity: single;
 //    NumOfFrame: integer;
-  end;
+  end;  }
 
   // Потокобезопасный класс именованных листов для енджайна. Обязательно должен быть указан Парент!
   TEngine2DNamedList<T> = class(TNamedList<T>)
@@ -84,7 +85,7 @@ begin
   vRes.Rotate := 0;
   vRes.ScaleX := 1;
   vRes.ScaleY := 1;
-  vRes.Opacity := 1;
+ // Opacity := 1;
   Result := vRes;
 end;
 

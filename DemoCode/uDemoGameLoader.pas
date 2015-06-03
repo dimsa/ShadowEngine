@@ -4,7 +4,7 @@ interface
 
 uses
   SysUtils,
-  uEngine2D, uEngine2DSprite, uDemoObjects,
+  uEngine2D, uEngine2DSprite, uDemoObjects, uIntersectorClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses;
 
 type

@@ -15,7 +15,7 @@ type
   public
     property Radius: Double read GetRadius write SetRadius;
     function IntersectWith(const AFigure: TFigure): Boolean; override;
-    function BelongPoint(const AX, AY: Integer): Boolean; override;
+    function BelongPoint(const AX, AY: Double): Boolean; override;
     function FigureRect: TRectF; override;
     constructor Create;
   end;
@@ -27,7 +27,7 @@ uses
 
 { TCircleFigure }
 
-function TCircleFigure.BelongPoint(const AX, AY: Integer): Boolean;
+function TCircleFigure.BelongPoint(const AX, AY: Double): Boolean;
 begin
   Result := (sqr(Self.Position.X - AX) + Sqr(Self.Position.Y - AY)) <= Sqr(Self.Radius);
 end;

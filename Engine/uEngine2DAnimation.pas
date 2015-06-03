@@ -4,7 +4,7 @@ interface
 
 uses
   FMX.Graphics,
-  uNamedList, uEngine2DClasses, uClasses;
+  uNamedList, uEngine2DClasses, uClasses, uIntersectorClasses;
 
 type
   // «десь используетс€ термин DelayedCreate, но он отличаетс€ от пон€ти€
