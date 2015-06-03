@@ -159,7 +159,6 @@ begin
     fSpriteOrder[l] := l;
     fCritical.Leave;
   end;
-
 end;
 
 procedure tEngine2d.applyFormatters;

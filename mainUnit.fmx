@@ -6,18 +6,21 @@ object mainForm: TmainForm
   ClientWidth = 691
   FormFactor.Width = 320
   FormFactor.Height = 480
-  FormFactor.Devices = [Desktop]
+  FormFactor.Devices = [dkDesktop, dkiPhone, dkiPad]
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnResize = FormResize
-  DesignerMasterStyle = 0
+  DesignerMobile = False
+  DesignerWidth = 0
+  DesignerHeight = 0
+  DesignerDeviceName = ''
+  DesignerOrientation = 0
+  DesignerOSVersion = ''
   object mainImage: TImage
     MultiResBitmap = <
       item
       end>
-    Align = Client
-    Size.Width = 691.000000000000000000
-    Size.Height = 490.000000000000000000
-    Size.PlatformDefault = False
+    Height = 50.000000000000000000
+    Width = 50.000000000000000000
   end
 end

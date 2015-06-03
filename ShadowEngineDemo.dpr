@@ -37,7 +37,10 @@ uses
   uIntersectorFigure in 'Intersector\uIntersectorFigure.pas',
   uIntersectorComparer in 'Intersector\uIntersectorComparer.pas',
   uIntersectorClasses in 'Intersector\uIntersectorClasses.pas',
-  uIntersectorCircle in 'Intersector\uIntersectorCircle.pas';
+  uIntersectorCircle in 'Intersector\uIntersectorCircle.pas',
+  uIntersectorRectangle in 'Intersector\uIntersectorRectangle.pas',
+  uIntersectorTriangle in 'Intersector\uIntersectorTriangle.pas',
+  uIntersectorPoly in 'Intersector\uIntersectorPoly.pas';
 
 {$R *.res}
 
