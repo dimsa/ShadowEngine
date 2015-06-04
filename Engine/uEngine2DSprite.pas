@@ -82,14 +82,8 @@ procedure tSprite.Repaint;
 begin
   inherited;
 
-
   if DrawSelect then
-  image.Bitmap.Canvas.FillEllipse(
-  RectF(x - wHalf,
-              y - hHalf,
-              x + wHalf,
-              y + hHalf),
-              opacity);
+    Shape.Draw;
 
   Image.Bitmap.Canvas.DrawBitmap(
     fResources[fCurRes{Animation.Frames[fFrame].num}].bmp,

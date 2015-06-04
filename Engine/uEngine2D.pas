@@ -34,7 +34,7 @@ type
     FIsMouseDowned: Boolean; // Хранит состояние нажатости мыши
     fImage: tImage; // Имедж, в котором происходит отрисовка
     fBackGround: tBitmap; // Бэкграунд. Всегда рисуется в Repaint на весь fImage
-    fCritical: TCriticalSection;
+    fCritical: TCriticalSection; // Критическая секция движка
     fWidth, fHeight: integer; // Размер поля имеджа и движка
     fDebug: Boolean; // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
     FBackgroundBehavior: TProcedure;

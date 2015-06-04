@@ -24,3 +24,4 @@ object mainForm: TmainForm
     Width = 50.000000000000000000
   end
 end
+
