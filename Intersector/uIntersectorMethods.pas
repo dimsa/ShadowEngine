@@ -1,4 +1,4 @@
-unit uIntersectorComparer;
+unit uIntersectorMethods;
 
 interface
 
@@ -8,72 +8,60 @@ uses
   uIntersectorFigure, uIntersectorCircle, uIntersectorRectangle,
   uIntersectorTriangle;
 
-type
-  TIntersectionComparer = class
-  strict private
-    class var FInstance: TIntersectionComparer;
-    constructor Create;
-  public
-    class function Instance: TIntersectionComparer;
-
-    class function SqrDistance(const APoint1, APoint2: TPointF): Double; overload; // Находит сумму квадратов
-    class function SqrDistance(const AX1, AY1, AX2, AY2: Double): Double; overload; // Находит сумму квадратов
-    class function Distance(const APoint1, APoint2: TPointF): Double; overload; // Находит растояние между точками
-    class function Distance(const AX1, AY1, AX2, AY2: Double): Double; overload; // Находит растояние между точками
+  function SqrDistance(const APoint1, APoint2: TPointF): Double; overload; // Находит сумму квадратов
+  function SqrDistance(const AX1, AY1, AX2, AY2: Double): Double; overload; // Находит сумму квадратов
+  function Distance(const APoint1, APoint2: TPointF): Double; overload; // Находит растояние между точками
+  function Distance(const AX1, AY1, AX2, AY2: Double): Double; overload; // Находит растояние между точками
 
     // Некоторые функции взяты или подсмотрены в FastGEO http://www.partow.net/projects/fastgeo/
-    class function IsPointInCircle(const APoint: TPointF; const AFigure: TCircleFigure): Boolean;
-    class function IsPointInPolygon(const Point: TPointF; const Polygon: TPolygon): Boolean;
+  function IsPointInCircle(const APoint: TPointF; const AFigure: TCircleFigure): Boolean;
+  function IsPointInPolygon(const Point: TPointF; const Polygon: TPolygon): Boolean;
 
-    class function IsLineIntersectLine(const x1, y1, x2, y2, x3, y3, x4, y4: Double): Boolean; overload;
-    class function IsLineIntersectLine(const ALine1P1, ALine1P2, ALine2P1, ALine2P2: TPointF): Boolean; overload;
-    class function IsLineIntersectCircle(const APoint1, APoint2: TPointF; const AFigure: TCircleFigure): Boolean;
-    class function IsLineIntersectPoly(const APoint1, APoint2: TPointF; const AFigure: TPolygon): Boolean;
-    class function IsPolyIntersectPoly(const Poly1, Poly2: TPolygon): Boolean; static;
+  function IsLineIntersectLine(const x1, y1, x2, y2, x3, y3, x4, y4: Double): Boolean; overload;
+  function IsLineIntersectLine(const ALine1P1, ALine1P2, ALine2P1, ALine2P2: TPointF): Boolean; overload;
+  function IsLineIntersectCircle(const APoint1, APoint2: TPointF; const AFigure: TCircleFigure): Boolean;
+  function IsLineIntersectPoly(const APoint1, APoint2: TPointF; const AFigure: TPolygon): Boolean;
+  function IsPolyIntersectPoly(const Poly1, Poly2: TPolygon): Boolean;
 
     // This includes both situatution! If one figure in another and if they are intersect
-    class function CircleCircleCollide(const AFigure1, AFigure2: TCircleFigure): Boolean;
-    function IsFiguresCollide(const AFigure1, AFigure2: TFigure): Boolean; virtual;
+  function CircleCircleCollide(const AFigure1, AFigure2: TCircleFigure): Boolean;
+
+  function IsFiguresCollide(const AFigure1, AFigure2: TFigure): Boolean;
+
   const
     Zero = 0.0;
-  end;
 
 implementation
 
 { TIntersectionComparer }
 
-class function TIntersectionComparer.CircleCircleCollide(const AFigure1,
+function CircleCircleCollide(const AFigure1,
   AFigure2: TCircleFigure): Boolean;
 begin
   Result :=
-    (sqr(AFigure1.Position.X-AFigure2.Position.X)+sqr(AFigure1.Position.Y-AFigure2.Position.Y))
+    (sqr(AFigure1.Calced.X-AFigure2.Calced.X)+sqr(AFigure1.Calced.Y-AFigure2.Calced.Y))
     <=
     (AFigure1.Radius + AFigure2.Radius);
 end;
 
-constructor TIntersectionComparer.Create;
-begin
-
-end;
-
-class function TIntersectionComparer.Distance(const AX1, AY1, AX2, AY2: Double): Double;
+function Distance(const AX1, AY1, AX2, AY2: Double): Double;
 begin
   Result := Sqrt((AX2 - AX1) + (AY2 - AY1));
 end;
 
-class function TIntersectionComparer.Distance(const APoint1, APoint2: TPointF): Double;
+function Distance(const APoint1, APoint2: TPointF): Double;
 begin
   Result := Sqrt((APoint2.X - APoint1.X) + (APoint2.Y - APoint1.Y));
 end;
 
-class function TIntersectionComparer.Instance: TIntersectionComparer;
+{function Instance: TIntersectionComparer;
 begin
   if not Assigned(FInstance) then
-    FInstance := TIntersectionComparer.Create;
+    FInstance := Create;
   Result := FInstance;
-end;
+end;}
 
-class function TIntersectionComparer.IsPolyIntersectPoly(const Poly1, Poly2: TPolygon): Boolean;
+function IsPolyIntersectPoly(const Poly1, Poly2: TPolygon): Boolean;
 var
   i, j: Integer;
   Poly1Trailer, Poly2Trailer: Integer;
@@ -97,43 +85,28 @@ begin
   end;
 end;
 
-function TIntersectionComparer.IsFiguresCollide(const AFigure1,
-  AFigure2: TFigure): Boolean;
+function IsFiguresCollide(const AFigure1,AFigure2: TFigure): Boolean;
 begin
   Result := False;
   if (AFigure1 is TCircleFigure) and (AFigure2 is TCircleFigure) then
     Result := CircleCircleCollide(TCircleFigure(AFigure1), TCircleFigure(AFigure2));
 end;
 
-class function TIntersectionComparer.IsLineIntersectCircle(
-  const APoint1, APoint2: TPointF; const AFigure: TCircleFigure): Boolean;
-//var
-//  x1, y1, x2, y2: Double;
+function IsLineIntersectCircle(const APoint1, APoint2: TPointF; const AFigure: TCircleFigure): Boolean;
 begin
-  (*
-    It is assumed that an intersection of a circle by a line
-    is either a full intersection (2 points), partial intersection
-    (1 point), or tangential.
-    Anything else will Result in a false output.
-  *)
- { Line[1].x - Circle.x;
-  Line[1].y - Circle.y;
-  Line[2].x - Circle.x;
-  Line[2].y - Circle.y;     }
-//  Result := GreaterThanOrEqual(((Circle.Radius * Circle.Radius) * LayDistance(x1,y1,x2,y2) - Sqr(x1 * y2 - x2 * y1)), Zero);
   Result :=
     (
     ((AFigure.Radius * AFigure.Radius) * SqrDistance(
-      APoint1.x - AFigure.Position.x,
-      APoint1.y - AFigure.Position.y,
-      APoint2.x - AFigure.Position.x,
-      APoint2.y - AFigure.Position.y
+      APoint1.x - AFigure.x,
+      APoint1.y - AFigure.y,
+      APoint2.x - AFigure.x,
+      APoint2.y - AFigure.Calced.y
     ) -
     Sqr(APoint1.x * APoint2.y - APoint2.x * APoint1.y))
     >= Zero);
 end;
 
-class function TIntersectionComparer.IsLineIntersectLine(const x1, y1, x2, y2,
+function IsLineIntersectLine(const x1, y1, x2, y2,
   x3, y3, x4, y4: Double): Boolean;
 var
   UpperX, UpperY, LowerX, LowerY: Double;
@@ -224,7 +197,7 @@ begin
 
 end;
 
-class function TIntersectionComparer.IsLineIntersectLine(const ALine1P1,
+function IsLineIntersectLine(const ALine1P1,
   ALine1P2, ALine2P1, ALine2P2: TPointF): Boolean;
 begin
   Result := IsLineIntersectLine(
@@ -233,7 +206,7 @@ begin
   );
 end;
 
-class function TIntersectionComparer.IsLineIntersectPoly(const APoint1,
+function IsLineIntersectPoly(const APoint1,
   APoint2: TPointF; const AFigure: TPolygon): Boolean;
 var
   i, n: Integer;
@@ -247,18 +220,17 @@ begin
   Result := IsPointInPolygon(APoint1, AFigure) or IsPointInPolygon(APoint2, AFigure);
 end;
 
-class function TIntersectionComparer.IsPointInCircle(const APoint: TPointF;
-  const AFigure: TCircleFigure): Boolean;
+function IsPointInCircle(const APoint: TPointF; const AFigure: TCircleFigure): Boolean;
 begin
   Result :=
     (
-      (APoint.X - AFigure.Position.X) * (APoint.X - AFigure.Position.X)
+      (APoint.X - AFigure.Points[0].X) * (APoint.X - AFigure.Points[0].X)
       +
-      (APoint.Y - AFigure.Position.Y) * (APoint.Y - AFigure.Position.Y)
-    ) <= AFigure.Radius * AFigure.Radius;
+      (APoint.Y - AFigure.Points[0].Y) * (APoint.Y - AFigure.Points[0].Y)
+    ) <= AFigure.Points[1].X * AFigure.Points[1].X;
 end;
 
-class function TIntersectionComparer.IsPointInPolygon(const Point: TPointF;
+function IsPointInPolygon(const Point: TPointF;
   const Polygon: TPolygon): Boolean;
 var
   i, j: Integer;
@@ -279,13 +251,13 @@ begin
   end;
 end;
 
-class function TIntersectionComparer.SqrDistance(const AX1, AY1, AX2,
+function SqrDistance(const AX1, AY1, AX2,
   AY2: Double): Double;
 begin
   Result := (AX2 - AX1) + (AY2 - AY1);
 end;
 
-class function TIntersectionComparer.SqrDistance(const APoint1,
+function SqrDistance(const APoint1,
   APoint2: TPointF): Double;
 begin
   Result := (APoint2.X - APoint1.X) + (APoint2.Y - APoint1.Y);

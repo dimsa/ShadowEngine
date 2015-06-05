@@ -4,7 +4,7 @@ interface
 
 uses
   System.Types, System.Generics.Collections,
-  uEngine2DClasses, uIntersectorFigure, uIntersectorComparer;
+  uEngine2DClasses, uIntersectorFigure, uIntersectorMethods;
 
 type
   TObjectShape = class
@@ -26,7 +26,8 @@ type
     property Count: Integer read GetCount;
     property OuterRect: TRectF read GetOuterRect;
     procedure Draw; // Рисует форму фигуры
-    procedure Recalc; // Пересчитывает фигуры, согласно масштабу, повороту и положению хозяина
+    procedure Compute; virtual;
+//    procedure Recalc; // Пересчитывает фигуры, согласно масштабу, повороту и положению хозяина
     function UnderTheMouse(const MouseX, MouseY: double): boolean; virtual; // Говорит, попала ли мышь в круг спрайта. Круг с диаметром - диагональю прямоугольника спрайта
     function IsIntersectWith(AShape: TObjectShape): Boolean; // Пересекаеися ли с конкретной фигурой
     function Intersections: TList<TObjectShape>; // Список всех пересечений с другими фигурами
@@ -38,6 +39,16 @@ uses
   uEngine2DObject;
 
 { TObjectShape }
+
+procedure TObjectShape.Compute;
+var
+  i, vN: Integer;
+begin
+  vN := FFigures.Count - 1;
+  for i := 0 to vN do
+    FFigures[i].Compute;
+//    .Position := TEngine2DObject(FOwner).Position;
+end;
 
 procedure TObjectShape.Draw;
 begin
@@ -90,7 +101,6 @@ end;
 
 function TObjectShape.Intersections: TList<TObjectShape>;
 begin
-
 end;
 
 function TObjectShape.IsIntersectWith(AShape: TObjectShape): Boolean;
@@ -106,14 +116,14 @@ begin
   Result := False;  }
 end;
 
-procedure TObjectShape.Recalc;
+{procedure TObjectShape.Recalc;
 var
   i, vN: Integer;
 begin
   vN := FFigures.Count - 1;
   for i := 0 to vN do
     FFigures[i].Position := TEngine2DObject(FOwner).Position;
-end;
+end;  }
 
 procedure TObjectShape.SetFigure(Index: Integer; const Value: TFigure);
 begin
@@ -124,8 +134,6 @@ function TObjectShape.UnderTheMouse(const MouseX, MouseY: double): boolean;
 var
   i: Integer;
 begin
-  if True then
-
   for i := 0 to FFigures.Count - 1 do
     if FFigures[i].BelongPoint(MouseX, MouseY) then
       Exit(True);

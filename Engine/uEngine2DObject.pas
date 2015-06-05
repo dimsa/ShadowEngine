@@ -107,7 +107,8 @@ begin
      (mousey - fPosition.y) <= (H * Scale * H * Scale + W * Scale * W * Scale) * 0.25 then
     result := true
   else }
-    result := True;
+
+  Result := FShape.UnderTheMouse(MouseX, MouseY);
 end;
 
 end.
