@@ -13,10 +13,12 @@ type
     FParent: Pointer;
     FOwner: Pointer;
     FNeedRecalc: Boolean;
+    FSize: Single;
     function GetOuterRect: TRectF;
     function GetFigure(Index: Integer): TFigure;
     procedure SetFigure(Index: Integer; const Value: TFigure);
     function GetCount: Integer;
+    procedure SetSize(const Value: Single);
   public
     property NeedRecalc: Boolean read FNeedRecalc write fNeedRecalc; // Показывает, нужно ли пересчитывать фигуры
     property Parent: Pointer read FParent write FParent; // ССылка на TEngine2D
@@ -25,12 +27,15 @@ type
     property FiguresList: TList<TFigure> read FFigures;
     property Count: Integer read GetCount;
     property OuterRect: TRectF read GetOuterRect;
+    property Size: Single read FSize write SetSize; // Испльзуется для быстрых расчетов
     procedure Draw; // Рисует форму фигуры
     procedure Compute; virtual;
 //    procedure Recalc; // Пересчитывает фигуры, согласно масштабу, повороту и положению хозяина
     function UnderTheMouse(const MouseX, MouseY: double): boolean; virtual; // Говорит, попала ли мышь в круг спрайта. Круг с диаметром - диагональю прямоугольника спрайта
     function IsIntersectWith(AShape: TObjectShape): Boolean; // Пересекаеися ли с конкретной фигурой
     function Intersections: TList<TObjectShape>; // Список всех пересечений с другими фигурами
+    constructor Create;
+    destructor Destroy;
   end;
 
 implementation
@@ -48,6 +53,26 @@ begin
   for i := 0 to vN do
     FFigures[i].Compute;
 //    .Position := TEngine2DObject(FOwner).Position;
+end;
+
+constructor TObjectShape.Create;
+begin
+  FFigures := TList<TFigure>.Create;
+end;
+
+destructor TObjectShape.Destroy;
+var
+  i, vN: Integer;
+begin
+  vN := FFigures.Count - 1;
+
+  for i := vN downto 0 do
+  begin
+    FFigures[i].Free;
+    FFigures.Delete(i);
+  end;
+
+  FFigures.Free;
 end;
 
 procedure TObjectShape.Draw;
@@ -128,6 +153,11 @@ end;  }
 procedure TObjectShape.SetFigure(Index: Integer; const Value: TFigure);
 begin
   FFigures[Index] := Value;
+end;
+
+procedure TObjectShape.SetSize(const Value: Single);
+begin
+  FSize := Value;
 end;
 
 function TObjectShape.UnderTheMouse(const MouseX, MouseY: double): boolean;

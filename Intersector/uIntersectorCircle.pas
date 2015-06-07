@@ -65,7 +65,7 @@ end;
 
 function TCircleFigure.GetRadius: Double;
 begin
-
+  Result := Self.FOriginalPoints[1].X;
 end;
 
 {function TCircleFigure.GetScaledRadius: Double;

@@ -42,7 +42,8 @@ uses
   uIntersectorTriangle in 'Intersector\uIntersectorTriangle.pas',
   uIntersectorPoly in 'Intersector\uIntersectorPoly.pas',
   uEngine2DObjectShape in 'Engine\uEngine2DObjectShape.pas',
-  uIntersectorShapeModificator in 'Intersector\uIntersectorShapeModificator.pas';
+  uIntersectorShapeModificator in 'Intersector\uIntersectorShapeModificator.pas',
+  uEngine2DShapedSprite in 'Engine\uEngine2DShapedSprite.pas';
 
 {$R *.res}
 

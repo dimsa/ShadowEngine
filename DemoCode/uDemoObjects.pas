@@ -9,6 +9,8 @@ uses
 
 type
 
+
+
   TShipFire = class(TSprite)
   private
     FTip: Byte;

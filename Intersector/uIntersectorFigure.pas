@@ -16,6 +16,8 @@ type
     procedure SetPositionChange(const Value: TPosition);
     function GetCalced: TPointF;
     function GetPoints: TArray<TPointF>;
+    function GetSize: Single; virtual; abstract;
+    procedure SetSize(const Value: Single); virtual; abstract;
   protected
     FPoints: TArray<TPointF>;
     FOriginalPoints: TArray<TPointF>;
@@ -23,6 +25,7 @@ type
     // На случай, если кто-то решит расширять набор фигур
     property X: Single read FCenter.X write FCenter.X; // Центр фигуры, от которого считаются сдвиги
     property Y: Single read FCenter.Y write FCenter.Y; // Центр фигуры, от которого считаются сдвиги
+    property Size: Single read GetSize write SetSize;
     property Center: TPointF read FCenter write FCenter; // Заданный центр. Модифкаторы работают от него
     property Modificators: TList<TShapeModificator> read FModificators write FModificators;
     property Points: TArray<TPointF> read GetPoints; // Пересчитанные точки

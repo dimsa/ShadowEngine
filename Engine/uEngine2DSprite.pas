@@ -9,20 +9,20 @@ uses
 
 type
 
-  tSprite = class(tEngine2DObject)
+  TSprite = class(tEngine2DObject)
   private
     fResources: TEngine2DResources;
     fWhalf, fHHalf: single; // половина ширины и высоты
     fCurRes: Integer;
     function getScW: single;
     function getScH: single;
-    procedure SetCurRes(const Value: Integer);
   protected
     function GetW: single; override;
     function GetH: single; override;
     procedure SetScaleX(const AValue: single); override;
     procedure SetScaleY(const AValue: single); override;
     procedure SetScale(AValue: single); override;
+    procedure SetCurRes(const Value: Integer); virtual;
   public
     property Resources: TEngine2DResources read FResources write FResources;
     property CurRes: Integer read fCurRes write SetCurRes;
@@ -122,14 +122,14 @@ begin
 end;
 
 function tSprite.UnderTheMouse(const MouseX, MouseY: Double): boolean;
-var
+{var
   vDist: Double;
   vEX, vEY: Double; // абсцисса и ордианта точки на эллипсе
   vFi: Double; // Угол точки эллипса
-  vR: Double; // Радиус эллипса в конкретной точке
+  vR: Double; // Радиус эллипса в конкретной точке     }
 begin
-
-  vEX := Self.x - MouseX;
+  Self.Shape.UnderTheMouse(MouseX, MouseY);
+{  vEX := Self.x - MouseX;
   vEY := Self.y - MouseY;
   vDist := Sqrt(Sqr(vEX) + Sqr(vEY));
 
@@ -147,7 +147,7 @@ begin
         sqrt( sqr(vEX * cos(vFi)) + sqr(vEY * sin(vFi)) );
 
   Result := (vR >= vDist);
-  //Inherited;
+  //Inherited;   }
 end;
 
 end.
