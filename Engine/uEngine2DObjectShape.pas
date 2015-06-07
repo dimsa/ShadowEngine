@@ -4,16 +4,19 @@ interface
 
 uses
   System.Types, System.Generics.Collections,
-  uEngine2DClasses, uIntersectorFigure, uIntersectorMethods;
+  uEngine2DClasses, uIntersectorFigure, uIntersectorMethods,
+  uIntersectorShapeModificator;
 
 type
   TObjectShape = class
   private
     FFigures: TList<TFigure>;
+    FOriginFigures: TList<TFigure>;
     FParent: Pointer;
     FOwner: Pointer;
     FNeedRecalc: Boolean;
     FSize: Single;
+    FModificators: TList<TShapeModificator>;
     function GetOuterRect: TRectF;
     function GetFigure(Index: Integer): TFigure;
     procedure SetFigure(Index: Integer; const Value: TFigure);
@@ -23,8 +26,10 @@ type
     property NeedRecalc: Boolean read FNeedRecalc write fNeedRecalc; // Показывает, нужно ли пересчитывать фигуры
     property Parent: Pointer read FParent write FParent; // ССылка на TEngine2D
     property Owner: Pointer read FOwner write FOwner; // Хозяин фигуры TEngine2DObject
-    property Figures[Index: Integer]: TFigure read GetFigure write SetFigure; default;
-    property FiguresList: TList<TFigure> read FFigures;
+    property Figures[Index: Integer]: TFigure read GetFigure write SetFigure; default; // Это уже посчитанные фигуры
+//    property OriginFigures
+    property OriginFigures: TList<TFigure> read FOriginFigures;
+    property Modificators: TList<TShapeModificator> read FModificators write FModificators;
     property Count: Integer read GetCount;
     property OuterRect: TRectF read GetOuterRect;
     property Size: Single read FSize write SetSize; // Испльзуется для быстрых расчетов
@@ -49,10 +54,21 @@ procedure TObjectShape.Compute;
 var
   i, vN: Integer;
 begin
+  {vN := FModificators.Count - 1;
+  for i := 0 to vN do
+    FModificators[i].Apply();
+    FFigures[i].Compute;   }
+
   vN := FFigures.Count - 1;
   for i := 0 to vN do
-    FFigures[i].Compute;
-//    .Position := TEngine2DObject(FOwner).Position;
+  begin
+    FFigures[i].Scale(TPointF(tEngine2DObject(FOwner).ScaleX,tEngine2DObject(FOwner).ScaleY));
+    FFigures[i].Rotate();
+  end;
+
+
+  //  FFigures[i].Compute;
+//    .Position := TEngine2DObject(FOwner).Position;   }
 end;
 
 constructor TObjectShape.Create;
@@ -164,9 +180,9 @@ function TObjectShape.UnderTheMouse(const MouseX, MouseY: double): boolean;
 var
   i: Integer;
 begin
-  for i := 0 to FFigures.Count - 1 do
+{  for i := 0 to FFigures.Count - 1 do
     if FFigures[i].BelongPoint(MouseX, MouseY) then
-      Exit(True);
+      Exit(True); }
 
   Result := False;
 end;

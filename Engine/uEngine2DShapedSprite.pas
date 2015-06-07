@@ -11,13 +11,13 @@ implementation
 type
   TCircleSprite = class(TSprite)
   protected
-    procedure SetCurRes(const Value: Integer); override;
+///    procedure SetCurRes(const Value: Integer); override;
     procedure ShapeCreating; override; // ѕо умолчанию создает форму без фигур
   end;
 
   TRectangleSprite = class(TSprite)
   protected
-    procedure SetCurRes(const Value: Integer); override;
+//    procedure SetCurRes(const Value: Integer); override;
     procedure ShapeCreating; override; // ѕо умолчанию создает форму без фигур
   end;
 
@@ -26,7 +26,7 @@ type
 procedure TCircleSprite.ShapeCreating;
 begin
   inherited;
-  Shape.FiguresList.Add(TCircleFigure.Create);
+  Shape.OriginFigures.Add(TCircleFigure.Create);
 end;
 
 { TRectangleSprite }
