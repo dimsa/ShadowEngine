@@ -10,8 +10,8 @@ uses
 type
   TObjectShape = class
   private
-    FFigures: TList<TFigure>;
-    FOriginFigures: TList<TFigure>;
+    FCalcedFigures: TArray<TFigure>;
+    FOriginFigures: TArray<TFigure>;
     FParent: Pointer;
     FOwner: Pointer;
     FNeedRecalc: Boolean;
@@ -19,23 +19,26 @@ type
     FModificators: TList<TShapeModificator>;
     function GetOuterRect: TRectF;
     function GetFigure(Index: Integer): TFigure;
-    procedure SetFigure(Index: Integer; const Value: TFigure);
+    //procedure SetFigure(Index: Integer; const Value: TFigure);
     function GetCount: Integer;
     procedure SetSize(const Value: Single);
   public
     property NeedRecalc: Boolean read FNeedRecalc write fNeedRecalc; // Показывает, нужно ли пересчитывать фигуры
     property Parent: Pointer read FParent write FParent; // ССылка на TEngine2D
     property Owner: Pointer read FOwner write FOwner; // Хозяин фигуры TEngine2DObject
-    property Figures[Index: Integer]: TFigure read GetFigure write SetFigure; default; // Это уже посчитанные фигуры
+    property Figures[Index: Integer]: TFigure read GetFigure;// write SetFigure; default; // Это уже посчитанные фигуры
+    function ToWorldCoord(const AFigure: TFigure): TFigure;
 //    property OriginFigures
-    property OriginFigures: TList<TFigure> read FOriginFigures;
-    property Modificators: TList<TShapeModificator> read FModificators write FModificators;
+//    property OriginFigures: TList<TFigure> read FOriginFigures;
+//    property Modificators: TList<TShapeModificator> read FModificators write FModificators;
     property Count: Integer read GetCount;
     property OuterRect: TRectF read GetOuterRect;
     property Size: Single read FSize write SetSize; // Испльзуется для быстрых расчетов
     procedure Draw; // Рисует форму фигуры
     procedure Compute; virtual;
 //    procedure Recalc; // Пересчитывает фигуры, согласно масштабу, повороту и положению хозяина
+    function AddFigure(const AFigure: TFigure): Integer;
+    function RemoveFigure(const AIndex: Integer): TFigure;
     function UnderTheMouse(const MouseX, MouseY: double): boolean; virtual; // Говорит, попала ли мышь в круг спрайта. Круг с диаметром - диагональю прямоугольника спрайта
     function IsIntersectWith(AShape: TObjectShape): Boolean; // Пересекаеися ли с конкретной фигурой
     function Intersections: TList<TObjectShape>; // Список всех пересечений с другими фигурами
@@ -50,6 +53,13 @@ uses
 
 { TObjectShape }
 
+function TObjectShape.AddFigure(const AFigure: TFigure): Integer;
+begin
+  SetLength(FCalcedFigures, Length(FCalcedFigures) + 1);
+  SetLength(FOriginFigures, Length(FOriginFigures) + 1);
+  FOriginFigures[High(FOriginFigures)] := AFigure;
+end;
+
 procedure TObjectShape.Compute;
 var
   i, vN: Integer;
@@ -59,36 +69,35 @@ begin
     FModificators[i].Apply();
     FFigures[i].Compute;   }
 
-  vN := FFigures.Count - 1;
+{  vN := FFigures.Count - 1;
   for i := 0 to vN do
   begin
-    FFigures[i].Scale(TPointF(tEngine2DObject(FOwner).ScaleX,tEngine2DObject(FOwner).ScaleY));
-    FFigures[i].Rotate();
-  end;
+    FFigures[i].Scale(PointF(tEngine2DObject(FOwner).ScaleX, tEngine2DObject(FOwner).ScaleY));
+    FFigures[i].Rotate(tEngine2DObject(FOwner).Rotate);
+    FFigures[i].Translate(PointF(tEngine2DObject(FOwner).X, tEngine2DObject(FOwner).Y));
+  end; }
 
-
-  //  FFigures[i].Compute;
-//    .Position := TEngine2DObject(FOwner).Position;   }
 end;
 
 constructor TObjectShape.Create;
 begin
-  FFigures := TList<TFigure>.Create;
+
 end;
 
 destructor TObjectShape.Destroy;
 var
   i, vN: Integer;
 begin
-  vN := FFigures.Count - 1;
+  vN := Length(FCalcedFigures)- 1;
 
   for i := vN downto 0 do
   begin
-    FFigures[i].Free;
-    FFigures.Delete(i);
+    FCalcedFigures[i].Free;
+    FOriginFigures[i].Free;
   end;
 
-  FFigures.Free;
+  SetLength(FCalcedFigures, 0);
+  SetLength(FOriginFigures, 0);
 end;
 
 procedure TObjectShape.Draw;
@@ -106,12 +115,12 @@ end;
 
 function TObjectShape.GetCount: Integer;
 begin
-  Result := Self.FFigures.Count;
+  Result := Length(FOriginFigures);
 end;
 
 function TObjectShape.GetFigure(Index: Integer): TFigure;
 begin
-  Result := FFigures[Index];
+  Result := FCalcedFigures[Index];
 end;
 
 function TObjectShape.GetOuterRect: TRectF;
@@ -119,7 +128,7 @@ var
   vLeft, vRight: TPointF;
   i, vN: Integer;
 begin
-  if FFigures.Count > 0 then
+{  if FFigures.Count > 0 then
   begin
     vLeft := FFigures[0].FigureRect.TopLeft;
     vRight := FFigures[0].FigureRect.BottomRight;
@@ -137,7 +146,7 @@ begin
     end;
     Exit(RectF(vLeft.X,vLeft.Y, vRight.X, vRight.Y));
   end;
-  Result := TRectF.Empty;
+  Result := TRectF.Empty;  }
 end;
 
 function TObjectShape.Intersections: TList<TObjectShape>;
@@ -157,6 +166,11 @@ begin
   Result := False;  }
 end;
 
+function TObjectShape.RemoveFigure(const AIndex: Integer): TFigure;
+begin
+
+end;
+
 {procedure TObjectShape.Recalc;
 var
   i, vN: Integer;
@@ -166,14 +180,28 @@ begin
     FFigures[i].Position := TEngine2DObject(FOwner).Position;
 end;  }
 
-procedure TObjectShape.SetFigure(Index: Integer; const Value: TFigure);
+{procedure TObjectShape.SetFigure(Index: Integer; const Value: TFigure);
 begin
   FFigures[Index] := Value;
-end;
+end;}
 
 procedure TObjectShape.SetSize(const Value: Single);
 begin
   FSize := Value;
+end;
+
+function TObjectShape.ToWorldCoord(const AFigure: TFigure): TFigure;
+begin
+{var
+  i, vN: Integer;
+begin
+  vN := FFigures.Count - 1;
+  for i := 0 to vN do
+  begin
+    FFigures[i].Scale(PointF(tEngine2DObject(FOwner).ScaleX, tEngine2DObject(FOwner).ScaleY));
+    FFigures[i].Rotate(tEngine2DObject(FOwner).Rotate);
+    FFigures[i].Translate(PointF(tEngine2DObject(FOwner).X, tEngine2DObject(FOwner).Y));
+  end;}
 end;
 
 function TObjectShape.UnderTheMouse(const MouseX, MouseY: double): boolean;

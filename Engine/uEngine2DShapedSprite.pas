@@ -26,7 +26,7 @@ type
 procedure TCircleSprite.ShapeCreating;
 begin
   inherited;
-  Shape.OriginFigures.Add(TCircleFigure.Create);
+  Shape.AddFigure(TCircleFigure.Create);
 end;
 
 { TRectangleSprite }
