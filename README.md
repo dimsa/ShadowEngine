@@ -1,5 +1,5 @@
-# ShadowEngine
-Delphi Firemonkey (FMX) Sprite Engine with Formatters, animations and etc
+# SO Engine (ShadowEngine)
+<b>Delphi Firemonkey (FMX) Sprite Engine with Formatters, Animations, Collisions and etc.</b>
 
 Some engine features you could watch on YouTube. 
 
