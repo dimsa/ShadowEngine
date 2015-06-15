@@ -291,26 +291,8 @@
                 </VersionInfoKeys>
             </Delphi.Personality>
             <Deployment Version="1">
-                <DeployFile LocalName="Android\Debug\libShadowEngineDemo.so" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Android">
-                        <RemoteName>libShadowEngineDemo.so</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Configuration="Debug" Class="Android_SplashImage960">
-                    <Platform Name="Android">
-                        <RemoteName>splash_image.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\iossim32\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="iOSSimulator">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\lib\android\debug\mips\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeMipsFile">
-                    <Platform Name="Android">
-                        <RemoteName>libShadowEngineDemo.so</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -320,110 +302,47 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\ShadowEngineDemo.exe" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Win32">
-                        <RemoteName>ShadowEngineDemo.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Configuration="Debug" Class="Android_LauncherIcon144">
                     <Platform Name="Android">
                         <RemoteName>ic_launcher.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\lib\android\debug\x86\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeX86File">
-                    <Platform Name="Android">
-                        <RemoteName>libShadowEngineDemo.so</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Configuration="Debug" Class="Android_LauncherIcon48">
-                    <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Art\back.png" Configuration="Base" Class="File">
+                <DeployFile LocalName="Art\res.png" Configuration="Base" Class="File">
                     <Platform Name="All Platforms">
                         <RemoteDir>assets\internal\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                     <Platform Name="Android">
-                        <RemoteName>back.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                    <Platform Name="Win64">
-                        <RemoteName>back.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                    <Platform Name="Win32">
-                        <RemoteName>back.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                    <Platform Name="iOSDevice64">
-                        <RemoteName>back.png</RemoteName>
+                        <RemoteName>res.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                     <Platform Name="OSX32">
-                        <RemoteName>back.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                    <Platform Name="iOSSimulator">
-                        <RemoteName>back.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                    <Platform Name="iOSDevice32">
-                        <RemoteName>back.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Art\images.load" Configuration="Base" Class="File">
-                    <Platform Name="All Platforms">
-                        <RemoteDir>assets\internal\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                    <Platform Name="Android">
-                        <RemoteName>images.load</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                    <Platform Name="Win64">
-                        <RemoteName>images.load</RemoteName>
+                        <RemoteName>res.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                     <Platform Name="Win32">
-                        <RemoteName>images.load</RemoteName>
+                        <RemoteName>res.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                     <Platform Name="iOSDevice64">
-                        <RemoteName>images.load</RemoteName>
+                        <RemoteName>res.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
-                    <Platform Name="OSX32">
-                        <RemoteName>images.load</RemoteName>
+                    <Platform Name="Win64">
+                        <RemoteName>res.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <RemoteName>images.load</RemoteName>
+                        <RemoteName>res.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                     <Platform Name="iOSDevice32">
-                        <RemoteName>images.load</RemoteName>
+                        <RemoteName>res.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="Android\Debug\splash_image_def.xml" Configuration="Debug" Class="AndroidSplashImageDef">
-                    <Platform Name="Android">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="D:\Dropbox\enigineDemo\Android\Debug\classes.dex" Configuration="Debug" Class="AndroidClassesDexFile">
-                    <Platform Name="Android">
-                        <RemoteName>classes.dex</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Android\Debug\AndroidManifest.xml" Configuration="Debug" Class="ProjectAndroidManifest">
                     <Platform Name="Android">
                         <Overwrite>true</Overwrite>
                     </Platform>
@@ -440,13 +359,14 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Android\Debug\styles.xml" Configuration="Debug" Class="AndroidSplashStyles">
+                <DeployFile LocalName="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Configuration="Debug" Class="AndroidGDBServer">
                     <Platform Name="Android">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Configuration="Debug" Class="AndroidGDBServer">
-                    <Platform Name="Android">
+                <DeployFile LocalName="Win32\Release\ShadowEngineDemo.exe" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>ShadowEngineDemo.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -473,43 +393,129 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Art\res.png" Configuration="Base" Class="File">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Configuration="Debug" Class="Android_SplashImage470">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\libShadowEngineDemo.so" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Android">
+                        <RemoteName>libShadowEngineDemo.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Configuration="Debug" Class="Android_SplashImage960">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\lib\android\debug\mips\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeMipsFile">
+                    <Platform Name="Android">
+                        <RemoteName>libShadowEngineDemo.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\ShadowEngineDemo.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>ShadowEngineDemo.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\lib\android\debug\x86\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeX86File">
+                    <Platform Name="Android">
+                        <RemoteName>libShadowEngineDemo.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Configuration="Debug" Class="Android_LauncherIcon48">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="D:\Dropbox\enigineDemo\Android\Debug\classes.dex" Configuration="Debug" Class="AndroidClassesDexFile">
+                    <Platform Name="Android">
+                        <RemoteName>classes.dex</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\AndroidManifest.xml" Configuration="Debug" Class="ProjectAndroidManifest">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Art\back.png" Configuration="Base" Class="File">
                     <Platform Name="All Platforms">
                         <RemoteDir>assets\internal\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                     <Platform Name="Android">
-                        <RemoteName>res.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                    <Platform Name="Win64">
-                        <RemoteName>res.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                    <Platform Name="Win32">
-                        <RemoteName>res.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                    <Platform Name="iOSDevice64">
-                        <RemoteName>res.png</RemoteName>
+                        <RemoteName>back.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                     <Platform Name="OSX32">
-                        <RemoteName>res.png</RemoteName>
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="Win32">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="Win64">
+                        <RemoteName>back.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <RemoteName>res.png</RemoteName>
+                        <RemoteName>back.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                     <Platform Name="iOSDevice32">
-                        <RemoteName>res.png</RemoteName>
+                        <RemoteName>back.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Configuration="Debug" Class="Android_SplashImage470">
+                <DeployFile LocalName="Art\images.load" Configuration="Base" Class="File">
+                    <Platform Name="All Platforms">
+                        <RemoteDir>assets\internal\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
                     <Platform Name="Android">
-                        <RemoteName>splash_image.png</RemoteName>
+                        <RemoteName>images.load</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <RemoteName>images.load</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="Win32">
+                        <RemoteName>images.load</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <RemoteName>images.load</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="Win64">
+                        <RemoteName>images.load</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <RemoteName>images.load</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="iOSDevice32">
+                        <RemoteName>images.load</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\styles.xml" Configuration="Debug" Class="AndroidSplashStyles">
+                    <Platform Name="Android">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -889,12 +895,12 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
             </Deployment>
             <Platforms>

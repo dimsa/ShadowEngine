@@ -37,7 +37,7 @@ type
     procedure Draw; // Рисует форму фигуры
     procedure Compute; virtual;
 //    procedure Recalc; // Пересчитывает фигуры, согласно масштабу, повороту и положению хозяина
-    function AddFigure(const AFigure: TFigure): Integer;
+    function AddFigure(AFigure: TFigure): Integer;
     function RemoveFigure(const AIndex: Integer): TFigure;
     function UnderTheMouse(const MouseX, MouseY: double): boolean; virtual; // Говорит, попала ли мышь в круг спрайта. Круг с диаметром - диагональю прямоугольника спрайта
     function IsIntersectWith(AShape: TObjectShape): Boolean; // Пересекаеися ли с конкретной фигурой
@@ -53,11 +53,14 @@ uses
 
 { TObjectShape }
 
-function TObjectShape.AddFigure(const AFigure: TFigure): Integer;
+function TObjectShape.AddFigure(AFigure: TFigure): Integer;
 begin
   SetLength(FCalcedFigures, Length(FCalcedFigures) + 1);
   SetLength(FOriginFigures, Length(FOriginFigures) + 1);
   FOriginFigures[High(FOriginFigures)] := AFigure;
+  FCalcedFigures[High(FOriginFigures)] := AFigure.Clone;
+
+  Result := High(FCalcedFigures);
 end;
 
 procedure TObjectShape.Compute;
@@ -101,16 +104,29 @@ begin
 end;
 
 procedure TObjectShape.Draw;
+var
+  vFigure, vTemp: TFigure;
 begin
-  TEngine2DObject(Owner).
-  image.Bitmap.Canvas.FillEllipse(
-  RectF(
-    TEngine2DObject(Owner).x -  TEngine2DObject(Owner).w*0.5,
-    TEngine2DObject(Owner).y -  TEngine2DObject(Owner).h*0.5,
-    TEngine2DObject(Owner).x +  TEngine2DObject(Owner).w*0.5,
-    TEngine2DObject(Owner).y +  TEngine2DObject(Owner).h*0.5),
-    TEngine2DObject(Owner).opacity
-  );
+  // it's only for debug, so it not very fast
+  if Length(Self.FOriginFigures) > 0 then
+  begin
+    for vFigure in FOriginFigures do
+    begin
+      vTemp := vFigure.Clone;
+      vTemp.Translate(PointF(TEngine2DObject(Owner).x, TEngine2DObject(Owner).y));
+      vTemp.Draw(TEngine2DObject(Owner).Image);
+    end;
+  end else
+
+    TEngine2DObject(Owner).
+    image.Bitmap.Canvas.FillEllipse(
+    RectF(
+      TEngine2DObject(Owner).x -  TEngine2DObject(Owner).w*0.5,
+      TEngine2DObject(Owner).y -  TEngine2DObject(Owner).h*0.5,
+      TEngine2DObject(Owner).x +  TEngine2DObject(Owner).w*0.5,
+      TEngine2DObject(Owner).y +  TEngine2DObject(Owner).h*0.5),
+      TEngine2DObject(Owner).opacity
+    );
 end;
 
 function TObjectShape.GetCount: Integer;
@@ -191,26 +207,47 @@ begin
 end;
 
 function TObjectShape.ToWorldCoord(const AFigure: TFigure): TFigure;
-begin
-{var
+var
   i, vN: Integer;
 begin
-  vN := FFigures.Count - 1;
+
+ { Result := AFigure.Clone.FastMigration(
+    PointF(TEngine2DObject(Owner).x,  TEngine2DObject(Owner).y),
+    PointF(TEngine2DObject(Owner).ScaleX,  TEngine2DObject(Owner).ScaleY),
+    TEngine2DObject(Owner).Rotate
+  );  }
+  vN := Length(FOriginFigures) - 1;
   for i := 0 to vN do
   begin
-    FFigures[i].Scale(PointF(tEngine2DObject(FOwner).ScaleX, tEngine2DObject(FOwner).ScaleY));
+    FCalcedFigures[i].Assign(FOriginFigures[i]);
+    FCalcedFigures[i].FastMigration(
+      PointF(TEngine2DObject(Owner).x,  TEngine2DObject(Owner).y),
+      PointF(TEngine2DObject(Owner).ScaleX,  TEngine2DObject(Owner).ScaleY),
+      TEngine2DObject(Owner).Rotate
+    );
+{    FFigures[i].Scale(PointF(tEngine2DObject(FOwner).ScaleX, tEngine2DObject(FOwner).ScaleY));
     FFigures[i].Rotate(tEngine2DObject(FOwner).Rotate);
-    FFigures[i].Translate(PointF(tEngine2DObject(FOwner).X, tEngine2DObject(FOwner).Y));
-  end;}
+    FFigures[i].Translate(PointF(tEngine2DObject(FOwner).X, tEngine2DObject(FOwner).Y));}
+  end;
+
+
+  {TEngine2DObject(Owner).x -  TEngine2DObject(Owner).w*0.5,
+    TEngine2DObject(Owner).y -  TEngine2DObject(Owner).h*0.5,
+    TEngine2DObject(Owner).x +  TEngine2DObject(Owner).w*0.5,
+    TEngine2DObject(Owner).y +  TEngine2DObject(Owner).h*0.5),   }
+
 end;
 
 function TObjectShape.UnderTheMouse(const MouseX, MouseY: double): boolean;
 var
   i: Integer;
 begin
-{  for i := 0 to FFigures.Count - 1 do
-    if FFigures[i].BelongPoint(MouseX, MouseY) then
-      Exit(True); }
+  ToWorldCoord(Nil);
+  for i := 0 to High(FCalcedFigures) do
+  begin
+    if FCalcedFigures[i].BelongPoint(MouseX, MouseY) then
+      Exit(True);
+  end;
 
   Result := False;
 end;

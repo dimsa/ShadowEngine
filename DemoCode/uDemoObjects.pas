@@ -73,6 +73,8 @@ begin
 
   vEngine := newParent;
 
+//  Self.Shape.AddFigure(TFigure)
+
   FLeftFire := TShipFire.Create(newParent);
   FLeftFire.Parent := newParent;
   FLeftFire.Resources := vEngine.Resources;

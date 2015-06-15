@@ -128,7 +128,7 @@ function tSprite.UnderTheMouse(const MouseX, MouseY: Double): boolean;
   vFi: Double; // Угол точки эллипса
   vR: Double; // Радиус эллипса в конкретной точке     }
 begin
-  Self.Shape.UnderTheMouse(MouseX, MouseY);
+  Result := Self.Shape.UnderTheMouse(MouseX, MouseY);
 {  vEX := Self.x - MouseX;
   vEY := Self.y - MouseY;
   vDist := Sqrt(Sqr(vEX) + Sqr(vEY));

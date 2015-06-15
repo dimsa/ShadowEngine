@@ -3,27 +3,27 @@ unit uIntersectorCircle;
 interface
 
 uses
-  System.Types,
+  System.Types, FMX.Objects, UITypes,
   uIntersectorFigure, uIntersectorClasses;
 
 type
   TCircleFigure = class(TFigure)
   private
-//    FRadius: Double;
     FCircle: TCircle;
     procedure SetRadius(const Value: Single);
- //   function GetRadius: Double;
-{  protected
-    procedure Compute; override; }
   public
     property Radius: Single read FCircle.Radius write SetRadius;
-    //property ScaledRadius: Double read GetScaledRadius;
-//    function IntersectWith(const AFigure: TFigure): Boolean; override;
-//    function BelongPoint(const AX, AY: Double): Boolean; override;
     property AsType: TCircle read FCircle;
+
     procedure Rotate(const AValue: Single); override;
     procedure Scale(const AValue: TPointF); override;
     procedure Translate(const AValue: TPointF); override;
+    procedure FastMigration(const ATranslate, AScale: TPointF; const ARotate: Single); override;
+    function BelongPoint(const AX, AY: Single): Boolean; override;
+    procedure Draw(AImage: TImage); override;
+
+    procedure Assign(const AFigure: TFigure); override;
+    function Clone: TFigure; override;
     function FigureRect: TRectF; override;
     constructor Create; override;
   end;
@@ -34,6 +34,26 @@ uses
   uIntersectorMethods;
 
 { TCircleFigure }
+
+procedure TCircleFigure.Assign(const AFigure: TFigure);
+begin
+  inherited;
+  Self.Radius := TCircleFigure(AFigure).Radius;
+end;
+
+function TCircleFigure.BelongPoint(const AX, AY: Single): Boolean;
+begin
+   Result := IsPointInCircle(PointF(AX, AY), FCircle);
+end;
+
+function TCircleFigure.Clone: TFigure;
+var
+  vRes: TCircleFigure;
+begin
+  vRes := TCircleFigure.Create;
+  vRes.Assign(Self);
+  Result := vRes;
+end;
 
 constructor TCircleFigure.Create;
 begin
@@ -46,6 +66,32 @@ begin
   FPoints[0].Y := 0;
   FPoints[1].X := 0;
   FPoints[1].Y := 0;   }
+end;
+
+procedure TCircleFigure.Draw(AImage: TImage);
+begin
+  inherited;
+  AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Aqua;
+  AImage.Bitmap.Canvas.FillEllipse(
+    RectF(
+      FCircle.X - FCircle.Radius,
+      FCircle.Y - FCircle.Radius,
+      FCircle.X + FCircle.Radius,
+      FCircle.Y + FCircle.Radius),
+      0.75
+    );
+end;
+
+procedure TCircleFigure.FastMigration(const ATranslate, AScale: TPointF;
+  const ARotate: Single);
+begin
+  FCircle.Radius := FCircle.Radius * AScale.X;
+
+  FCenter.X := FCenter.X * Cos(ARotate * pi180) - FCenter.Y * Cos(ARotate * pi180);
+  FCenter.Y := FCenter.X * Sin(ARotate * pi180) + FCenter.Y * Cos(ARotate * pi180);
+
+  FCircle.X := FCenter.X + ATranslate.X;
+  FCircle.Y := FCenter.Y + ATranslate.Y;
 end;
 
 function TCircleFigure.FigureRect: TRectF;
@@ -74,7 +120,6 @@ procedure TCircleFigure.Scale(const AValue: TPointF);
 begin
   inherited;
   FCircle.Radius := FCircle.Radius * AValue.X;
-
 end;
 
 procedure TCircleFigure.SetRadius(const Value: Single);

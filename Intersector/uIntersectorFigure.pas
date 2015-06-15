@@ -3,21 +3,14 @@ unit uIntersectorFigure;
 interface
 
 uses
-  System.Types, System.Generics.Collections,
+  System.Types, System.Generics.Collections, FMX.Objects,
   uIntersectorClasses, uIntersectorShapeModificator;
 
 type
   TFigure = class abstract
   private
-  //  FPositionChange: TPosition;
-    //FIntersectionComparer: Pointer;
-  //  FModificators: TList<TShapeModificator>;
-  //  procedure SetPositionChange(const Value: TPosition);
- //   function GetCalced: TPointF;
     function GetSize: Single; virtual; abstract;
     procedure SetSize(const Value: Single); virtual; abstract;
-    function GetCalced: TPointF;
-//    procedure SetPositionChange(const Value: TPosition);
   protected
     FCenter: TPointF;
   public
@@ -30,12 +23,16 @@ type
     procedure Rotate(const AValue: Single); virtual; abstract;
     procedure Scale(const AValue: TPointF); virtual; abstract;
     procedure Translate(const AValue: TPointF); virtual; abstract;
+    procedure FastMigration(const ATranslate, AScale: TPointF; const ARotate: Single); virtual; abstract; // ¬ыполн€ет действи€ в одной последовательности.
+    function BelongPoint(const AX, AY: Single): Boolean; virtual; abstract;
+    procedure Draw(AImage: TImage); virtual; abstract;
 
     procedure Assign(const AFigure: TFigure); virtual;
     function Clone: TFigure; virtual;
     function FigureRect: TRectF; virtual; abstract;
-
     constructor Create; virtual;
+  const
+    pi180 = 0.01745329251;
   end;
 
 implementation
@@ -64,22 +61,6 @@ begin
   FPositionChange.ScaleY := 1;
   FPositionChange.Rotate := 0; }
 end;
-
-function TFigure.GetCalced: TPointF;
-begin
-
-end;
-
-{function TFigure.GetPoints: TArray<TPointF>;
-begin
-//  Compute;
-  Result := FPoints;
-end;  }
-
-{procedure TFigure.SetPositionChange(const Value: TPosition);
-begin
-  FPositionChange := Value;
-end;   }
 
 end.
 

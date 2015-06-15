@@ -5,7 +5,8 @@ interface
 uses
   SysUtils,
   uEngine2D, uEngine2DSprite, uDemoObjects, uIntersectorClasses,
-  uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses;
+  uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
+  uIntersectorCircle;
 
 type
   TLoader = class
@@ -49,6 +50,7 @@ end;
 function TLoader.CreateShip: TShip;
 var
   vSpr: TShip;
+  vShape: TCircleFigure;
 begin
   vSpr := TShip.Create(FEngine);
   vSpr.Parent := FEngine;
@@ -58,6 +60,9 @@ begin
   vSpr.y := 200;//Random(FEngine.Height);
   vSpr.Rotate := Random(360);
   vSpr.Scale := 0.5;
+  vShape := TCircleFigure.Create;
+  vShape.Radius := 170;
+  vSpr.Shape.AddFigure(vShape);
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
 
   Result := vSpr;

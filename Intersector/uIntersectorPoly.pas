@@ -19,6 +19,7 @@ type
     procedure Rotate(const AValue: Single); override;
     procedure Scale(const AValue: TPointF); override;
     procedure Translate(const AValue: TPointF); override;
+
   end;
 
 implementation
