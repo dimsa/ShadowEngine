@@ -3,10 +3,10 @@ unit uDemoGameLoader;
 interface
 
 uses
-  SysUtils,
+  SysUtils, System.Types,
   uEngine2D, uEngine2DSprite, uDemoObjects, uIntersectorClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
-  uIntersectorCircle;
+  uIntersectorCircle, uIntersectorPoly;
 
 type
   TLoader = class
@@ -51,6 +51,7 @@ function TLoader.CreateShip: TShip;
 var
   vSpr: TShip;
   vShape: TCircleFigure;
+  vPoly: TPolyFigure;
 begin
   vSpr := TShip.Create(FEngine);
   vSpr.Parent := FEngine;
@@ -60,9 +61,14 @@ begin
   vSpr.y := 200;//Random(FEngine.Height);
   vSpr.Rotate := Random(360);
   vSpr.Scale := 0.5;
-  vShape := TCircleFigure.Create;
-  vShape.Radius := 170;
-  vSpr.Shape.AddFigure(vShape);
+  vPoly := TPolyFigure.Create;
+  vPoly.AddPoint(PointF(0,0));
+  vPoly.AddPoint(PointF(150,0));
+  vPoly.AddPoint(PointF(150,50));
+
+//  vShape := TCircleFigure.Create;
+//  vShape.Radius := 170;
+  vSpr.Shape.AddFigure(vPoly);
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
 
   Result := vSpr;

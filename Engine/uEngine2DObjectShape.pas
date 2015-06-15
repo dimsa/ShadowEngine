@@ -35,7 +35,6 @@ type
     property OuterRect: TRectF read GetOuterRect;
     property Size: Single read FSize write SetSize; // »спльзуетс€ дл€ быстрых расчетов
     procedure Draw; // –исует форму фигуры
-    procedure Compute; virtual;
 //    procedure Recalc; // ѕересчитывает фигуры, согласно масштабу, повороту и положению хоз€ина
     function AddFigure(AFigure: TFigure): Integer;
     function RemoveFigure(const AIndex: Integer): TFigure;
@@ -61,25 +60,6 @@ begin
   FCalcedFigures[High(FOriginFigures)] := AFigure.Clone;
 
   Result := High(FCalcedFigures);
-end;
-
-procedure TObjectShape.Compute;
-var
-  i, vN: Integer;
-begin
-  {vN := FModificators.Count - 1;
-  for i := 0 to vN do
-    FModificators[i].Apply();
-    FFigures[i].Compute;   }
-
-{  vN := FFigures.Count - 1;
-  for i := 0 to vN do
-  begin
-    FFigures[i].Scale(PointF(tEngine2DObject(FOwner).ScaleX, tEngine2DObject(FOwner).ScaleY));
-    FFigures[i].Rotate(tEngine2DObject(FOwner).Rotate);
-    FFigures[i].Translate(PointF(tEngine2DObject(FOwner).X, tEngine2DObject(FOwner).Y));
-  end; }
-
 end;
 
 constructor TObjectShape.Create;

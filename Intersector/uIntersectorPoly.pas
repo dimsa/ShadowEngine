@@ -3,26 +3,34 @@ unit uIntersectorPoly;
 interface
 
 uses
-  System.Types, System.Math,
+  System.Types, System.Math, FMX.Objects, System.UITypes,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uIntersectorFigure;
 
 type
   TPolyFigure = class(TFigure)
   private
-    FPolygon: TPolygon;
+
   protected
-    FPoints: TArray<TPointF>;
+    FPolygon: TPolygon;
   public
     property AsType: TPolygon read FPolygon;
     procedure AddPoint(const APoint: TPointF);
     procedure Rotate(const AValue: Single); override;
     procedure Scale(const AValue: TPointF); override;
     procedure Translate(const AValue: TPointF); override;
+    procedure FastMigration(const ATranslate, AScale: TPointF; const ARotate: Single); override;
+    function BelongPoint(const AX, AY: Single): Boolean; override;
+    procedure Draw(AImage: TImage); override;
 
+    procedure Assign(const AFigure: TFigure); override;
+    function Clone: TFigure; override;
   end;
 
 implementation
+
+uses
+  uIntersectorMethods;
 
 
 { TPolyFigure }
@@ -33,16 +41,77 @@ begin
   FPolygon[High(FPolygon)] := APoint;
 end;
 
+procedure TPolyFigure.Assign(const AFigure: TFigure);
+begin
+  inherited;
+  Self.FPolygon := TPolyFigure(AFigure).AsType;
+end;
+
+function TPolyFigure.BelongPoint(const AX, AY: Single): Boolean;
+begin
+  Result := uIntersectorMethods.IsPointInPolygon(PointF(AX, AY), FPolygon);
+end;
+
+function TPolyFigure.Clone: TFigure;
+var
+  vRes: TPolyFigure;
+begin
+  vRes := TPolyFigure.Create;
+  vRes.Assign(Self);
+  Result := vRes;
+end;
+
+procedure TPolyFigure.Draw(AImage: TImage);
+begin
+  inherited;
+  AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Blue;
+  AImage.Bitmap.Canvas.FillPolygon(FPolygon, 0.75);
+end;
+
+procedure TPolyFigure.FastMigration(const ATranslate, AScale: TPointF;
+  const ARotate: Single);
+var
+  i, vN: Integer;
+  vTemp: Single;
+begin
+  inherited;
+
+  vN := Length(FPolygon) - 1;
+  for i := 0 to vN do
+  begin
+//  FCircle.Radius := FCircle.Radius * AScale.X;
+    FPolygon[i] := FPolygon[i] * AScale;
+    vTemp := FPolygon[i].X;
+    FPolygon[i].X := (FPolygon[i].X) * Cos(ARotate * pi180) - (FPolygon[i].Y ) * Cos(ARotate * pi180);
+    FPolygon[i].Y := (vTemp) * Sin(ARotate * pi180) + (FPolygon[i].Y) * Cos(ARotate * pi180);
+    FCenter := FCenter + ATranslate;
+
+  end;
+
+ { FCenter.X := FCenter.X * Cos(ARotate * pi180) - FCenter.Y * Cos(ARotate * pi180);
+  FCenter.Y := FCenter.X * Sin(ARotate * pi180) + FCenter.Y * Cos(ARotate * pi180);
+
+  FCircle.X := FCenter.X + ATranslate.X;
+  FCircle.Y := FCenter.Y + ATranslate.Y;   }
+end;
+
 procedure TPolyFigure.Rotate(const AValue: Single);
 var
   i, vN: Integer;
+  vTemp: Single;
 begin
   vN := Length(FPolygon) - 1;
   for i := 0 to vN do
   begin
-    FPolygon[i].X := FCenter.X * Cos(AValue) - FCenter.Y * Cos(AValue);
-    FPolygon[i].Y := FCenter.X * Sin(AValue) + FCenter.Y * Cos(AValue);
+    vTemp := FPolygon[i].X;
+    FPolygon[i].X := (FPolygon[i].X) * Cos(AValue * pi180) - (FPolygon[i].Y) * Cos(AValue * pi180);
+    FPolygon[i].Y := (vTemp) * Sin(AValue * pi180) + (FPolygon[i].Y) * Cos(AValue * pi180);
   end;
+
+ { Self.FCenter := PointF(
+    Center.X * Cos(AValue) - Center.Y * Cos(AValue),
+    Center.Y * Sin(AValue) + Center.Y * Cos(AValue)
+  );}
 end;
 
 procedure TPolyFigure.Scale(const AValue: TPointF);
@@ -55,12 +124,8 @@ begin
 end;
 
 procedure TPolyFigure.Translate(const AValue: TPointF);
-var
-  i, vN: Integer;
 begin
-  vN := Length(FPolygon) - 1;
-  for i := 0 to vN do
-    FPolygon[i] := FPolygon[i] + AValue;
+  Self.FCenter := Self.FCenter + AValue;
 end;
 
 end.
