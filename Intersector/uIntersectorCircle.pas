@@ -17,8 +17,9 @@ type
 
     procedure Rotate(const AValue: Single); override;
     procedure Scale(const AValue: TPointF); override;
-    procedure Translate(const AValue: TPointF); override;
-    procedure FastMigration(const ATranslate, AScale: TPointF; const ARotate: Single); override;
+    //procedure Translate(const AValue: TPointF); override;
+    function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPoint): TCircleFigure;
+//    procedure FastMigration(const AScale: TPointF; const ARotate: Single); override;
     function BelongPoint(const AX, AY: Single): Boolean; override;
     procedure Draw(AImage: TImage); override;
 
@@ -82,17 +83,18 @@ begin
     );
 end;
 
-procedure TCircleFigure.FastMigration(const ATranslate, AScale: TPointF;
-  const ARotate: Single);
+{procedure TCircleFigure.FastMigration(const AScale: TPointF; const ARotate: Single);
 begin
-  FCircle.Radius := FCircle.Radius * AScale.X;
+  Self.Scale(AScale);
+  Self.Rotate(ARotate);
+  {FCircle.Radius := FCircle.Radius * AScale.X;
 
   FCenter.X := FCenter.X * Cos(ARotate * pi180) - FCenter.Y * Cos(ARotate * pi180);
-  FCenter.Y := FCenter.X * Sin(ARotate * pi180) + FCenter.Y * Cos(ARotate * pi180);
+  FCenter.Y := FCenter.X * Sin(ARotate * pi180) + FCenter.Y * Cos(ARotate * pi180);    }
 
-  FCircle.X := FCenter.X + ATranslate.X;
-  FCircle.Y := FCenter.Y + ATranslate.Y;
-end;
+{  FCircle.X := FCenter.X + ATranslate.X;
+  FCircle.Y := FCenter.Y + ATranslate.Y; }
+//end;
 
 function TCircleFigure.FigureRect: TRectF;
 begin
@@ -102,6 +104,12 @@ begin
     Self.X + Radius,
     Self.Y + Radius
   );
+end;
+
+function TCircleFigure.InGlobal(const AScale: TPointF; const ARotate: Single;
+  const ATranslate: TPoint): TCircleFigure;
+begin
+
 end;
 
 procedure TCircleFigure.Rotate(const AValue: Single);
@@ -127,12 +135,12 @@ begin
   FCircle.Radius := Value;
 end;
 
-procedure TCircleFigure.Translate(const AValue: TPointF);
+{procedure TCircleFigure.Translate(const AValue: TPointF);
 begin
   inherited;
   Self.FCenter := Self.FCenter + AValue;
   Self.FCircle.X := Self.FCenter.X;
   Self.FCircle.Y := Self.FCenter.Y;
-end;
+end; }
 
 end.

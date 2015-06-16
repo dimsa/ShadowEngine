@@ -4,8 +4,8 @@ interface
 
 uses
   System.Types, System.Generics.Collections,
-  uEngine2DClasses, uIntersectorFigure, uIntersectorMethods,
-  uIntersectorShapeModificator;
+  uEngine2DClasses, uIntersectorFigure, uIntersectorCircle, uIntersectorPoly,
+  uIntersectorMethods, uIntersectorShapeModificator;
 
 type
   TObjectShape = class
@@ -27,7 +27,7 @@ type
     property Parent: Pointer read FParent write FParent; // ——ылка на TEngine2D
     property Owner: Pointer read FOwner write FOwner; // ’оз€ин фигуры TEngine2DObject
     property Figures[Index: Integer]: TFigure read GetFigure;// write SetFigure; default; // Ёто уже посчитанные фигуры
-    function ToWorldCoord(const AFigure: TFigure): TFigure;
+//    function ToWorldCoord(const AFigure: TFigure): TFigure;
 //    property OriginFigures
 //    property OriginFigures: TList<TFigure> read FOriginFigures;
 //    property Modificators: TList<TShapeModificator> read FModificators write FModificators;
@@ -36,6 +36,7 @@ type
     property Size: Single read FSize write SetSize; // »спльзуетс€ дл€ быстрых расчетов
     procedure Draw; // –исует форму фигуры
 //    procedure Recalc; // ѕересчитывает фигуры, согласно масштабу, повороту и положению хоз€ина
+    function IsPointInFigure(const APoint: TPointF; const AFigure: TFigure): Boolean;
     function AddFigure(AFigure: TFigure): Integer;
     function RemoveFigure(const AIndex: Integer): TFigure;
     function UnderTheMouse(const MouseX, MouseY: double): boolean; virtual; // √оворит, попала ли мышь в круг спрайта.  руг с диаметром - диагональю пр€моугольника спрайта
@@ -93,7 +94,7 @@ begin
     for vFigure in FOriginFigures do
     begin
       vTemp := vFigure.Clone;
-      vTemp.Translate(PointF(TEngine2DObject(Owner).x, TEngine2DObject(Owner).y));
+//      vTemp.Translate(PointF(TEngine2DObject(Owner).x, TEngine2DObject(Owner).y));
       vTemp.Draw(TEngine2DObject(Owner).Image);
     end;
   end else
@@ -162,6 +163,17 @@ begin
   Result := False;  }
 end;
 
+function TObjectShape.IsPointInFigure(const APoint: TPointF; const AFigure: TFigure): Boolean;
+begin
+  Result := False;
+
+  if AFigure is TPolyFigure then
+    Result := uIntersectorMethods.IsPointInPolygon(APoint, TPolyFigure(AFigure).AsType);
+
+  if AFigure is TCircleFigure then
+    Result := uIntersectorMethods.IsPointInCircle(APoint, TCircleFigure(AFigure).AsType);
+end;
+
 function TObjectShape.RemoveFigure(const AIndex: Integer): TFigure;
 begin
 
@@ -186,7 +198,7 @@ begin
   FSize := Value;
 end;
 
-function TObjectShape.ToWorldCoord(const AFigure: TFigure): TFigure;
+(* function TObjectShape.ToWorldCoord(const AFigure: TFigure): TFigure;
 var
   i, vN: Integer;
 begin
@@ -201,7 +213,6 @@ begin
   begin
     FCalcedFigures[i].Assign(FOriginFigures[i]);
     FCalcedFigures[i].FastMigration(
-      PointF(TEngine2DObject(Owner).x,  TEngine2DObject(Owner).y),
       PointF(TEngine2DObject(Owner).ScaleX,  TEngine2DObject(Owner).ScaleY),
       TEngine2DObject(Owner).Rotate
     );
@@ -216,17 +227,19 @@ begin
     TEngine2DObject(Owner).x +  TEngine2DObject(Owner).w*0.5,
     TEngine2DObject(Owner).y +  TEngine2DObject(Owner).h*0.5),   }
 
-end;
+end;   *)
 
 function TObjectShape.UnderTheMouse(const MouseX, MouseY: double): boolean;
 var
   i: Integer;
 begin
-  ToWorldCoord(Nil);
+  //ToWorldCoord(Nil);
   for i := 0 to High(FCalcedFigures) do
   begin
-    if FCalcedFigures[i].BelongPoint(MouseX, MouseY) then
-      Exit(True);
+
+//    uIntersectorMethods.
+   { if FCalcedFigures[i].BelongPoint(MouseX, MouseY) then
+      Exit(True);  }
   end;
 
   Result := False;

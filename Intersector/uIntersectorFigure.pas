@@ -15,15 +15,16 @@ type
     FCenter: TPointF;
   public
     // На случай, если кто-то решит расширять набор фигур
-    property X: Single read FCenter.X;// write FCenter.X; // Центр фигуры, от которого считаются сдвиги
-    property Y: Single read FCenter.Y;// write FCenter.Y; // Центр фигуры, от которого считаются сдвиги
+    property X: Single read FCenter.X write FCenter.X; // write FCenter.X; // Центр фигуры, от которого считаются сдвиги
+    property Y: Single read FCenter.Y write FCenter.Y;// write FCenter.Y; // Центр фигуры, от которого считаются сдвиги
     property Size: Single read GetSize write SetSize;
-    property Center: TPointF read FCenter;// write FCenter; // Заданный центр. Модифкаторы работают от него
+    property Center: TPointF read FCenter write FCenter;// write FCenter; // Заданный центр. Модифкаторы работают от него
 
     procedure Rotate(const AValue: Single); virtual; abstract;
     procedure Scale(const AValue: TPointF); virtual; abstract;
-    procedure Translate(const AValue: TPointF); virtual; abstract;
-    procedure FastMigration(const ATranslate, AScale: TPointF; const ARotate: Single); virtual; abstract; // Выполняет действия в одной последовательности.
+    //function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPoint): TFigure; virtual; abstract;
+//    procedure Translate(const AValue: TPointF); virtual; abstract;
+//    procedure FastMigration(const AScale: TPointF; const ARotate: Single); virtual; abstract; // Выполняет действия в одной последовательности.
     function BelongPoint(const AX, AY: Single): Boolean; virtual; abstract;
     procedure Draw(AImage: TImage); virtual; abstract;
 
