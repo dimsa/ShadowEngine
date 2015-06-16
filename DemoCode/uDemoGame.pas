@@ -65,14 +65,14 @@ begin
   FBackObjects := TList<TLittleAsteroid>.Create;
   vLoader := TLoader.Create(FEngine);
   // Создаем астеройдное поле
-  for i := 0 to 47 do
+  for i := 0 to 49 do
     FBackObjects.Add(vLoader.RandomAstroid);
 
   // Создаем корабль
   FShip := vLoader.CreateShip;
 
   FAsteroids := TList<TAsteroid>.Create;
-  for i := 0 to 3 do
+  for i := 0 to 19 do
     FAsteroids.Add(vLoader.BigAstroid);
 
   fEngine.Start;

@@ -9,10 +9,9 @@ uses
 
 type
   TPolyFigure = class(TFigure)
-  private
-
   protected
     FPolygon: TPolygon;
+    function CalcedPoly: TPolygon;
   public
     property AsType: TPolygon read FPolygon;
     procedure AddPoint(const APoint: TPointF);
@@ -42,14 +41,34 @@ begin
 end;
 
 procedure TPolyFigure.Assign(const AFigure: TFigure);
+var
+  vPoly: TPolygon;
+  i, vN: Integer;
 begin
   inherited;
-  Self.FPolygon := TPolyFigure(AFigure).AsType;
+  vN := Length(TPolyFigure(AFigure).AsType);
+  SetLength(vPoly, vN);
+  for i := 0 to vN - 1 do
+    vPoly[i] := TPolyFigure(AFigure).AsType[i];
+
+  Self.FPolygon := vPoly; //TPolyFigure(AFigure).AsType;
 end;
 
 function TPolyFigure.BelongPoint(const AX, AY: Single): Boolean;
 begin
   Result := uIntersectorMethods.IsPointInPolygon(PointF(AX, AY), FPolygon);
+end;
+
+function TPolyFigure.CalcedPoly: TPolygon;
+var
+  i, vN: Integer;
+  vPoly: TPolygon;
+begin
+  vN := Length(FPolygon) ;
+  SetLength(vPoly, vN);
+  for i := 0 to vN-1 do
+    vPoly[i] := FPolygon[i] + Self.FCenter;
+  Result := vPoly;
 end;
 
 function TPolyFigure.Clone: TFigure;
@@ -65,7 +84,7 @@ procedure TPolyFigure.Draw(AImage: TImage);
 begin
   inherited;
   AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Blue;
-  AImage.Bitmap.Canvas.FillPolygon(FPolygon, 0.75);
+  AImage.Bitmap.Canvas.FillPolygon(CalcedPoly, 0.75);
 end;
 
 procedure TPolyFigure.FastMigration(const ATranslate, AScale: TPointF;
