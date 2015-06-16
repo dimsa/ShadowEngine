@@ -244,7 +244,7 @@ begin
        ((Polygon[j].y <= Point.y) and (Point.y < Polygon[i].y)) then  // a downward crossing
     begin
       (* compute the edge-ray intersect @ the x-coordinate *)
-      if (Point.x - Polygon[i].x < ((Polygon[j].x - Polygon[i].x) * (Point.y - Polygon[i].y) / (Polygon[j].y - Polygon[i].y))) then
+      if ((Point.x - Polygon[i].x) < ((Polygon[j].x - Polygon[i].x) * (Point.y - Polygon[i].y) / (Polygon[j].y - Polygon[i].y))) then
         Result := not Result;
     end;
     j := i;

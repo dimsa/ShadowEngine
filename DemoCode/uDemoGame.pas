@@ -75,7 +75,7 @@ begin
   for i := 0 to 19 do
     FAsteroids.Add(vLoader.BigAstroid);
 
-  fEngine.Start;
+  FEngine.Start;
 end;
 
 procedure TDemoGame.SetImage(const Value: TImage);

@@ -56,7 +56,7 @@ end;
 
 function TPolyFigure.BelongPoint(const AX, AY: Single): Boolean;
 begin
-  Result := uIntersectorMethods.IsPointInPolygon(PointF(AX, AY), FPolygon);
+  Result := uIntersectorMethods.IsPointInPolygon(PointF(AX, AY), CalcedPoly);
 end;
 
 function TPolyFigure.CalcedPoly: TPolygon;
@@ -103,7 +103,7 @@ begin
     vTemp := FPolygon[i].X;
     FPolygon[i].X := (FPolygon[i].X) * Cos(ARotate * pi180) - (FPolygon[i].Y ) * Cos(ARotate * pi180);
     FPolygon[i].Y := (vTemp) * Sin(ARotate * pi180) + (FPolygon[i].Y) * Cos(ARotate * pi180);
-    FCenter := FCenter + ATranslate;
+    FCenter := ATranslate;
 
   end;
 
@@ -144,7 +144,7 @@ end;
 
 procedure TPolyFigure.Translate(const AValue: TPointF);
 begin
-  Self.FCenter := Self.FCenter + AValue;
+  Self.FCenter := {Self.FCenter + }AValue;
 end;
 
 end.

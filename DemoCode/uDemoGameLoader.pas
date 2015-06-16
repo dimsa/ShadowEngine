@@ -62,9 +62,10 @@ begin
   vSpr.Rotate := Random(360);
   vSpr.Scale := 0.5;
   vPoly := TPolyFigure.Create;
-  vPoly.AddPoint(PointF(0,0));
-  vPoly.AddPoint(PointF(150,0));
-  vPoly.AddPoint(PointF(150,50));
+  vPoly.AddPoint(PointF(-100,-100));
+  vPoly.AddPoint(PointF(-100,100));
+  vPoly.AddPoint(PointF(100,100));
+  vPoly.AddPoint(PointF(100,-100));
 
 //  vShape := TCircleFigure.Create;
 //  vShape.Radius := 170;
