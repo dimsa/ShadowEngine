@@ -10,7 +10,7 @@ uses
 type
   TPolyFigure = class(TFigure)
   private
-    function BelongPoint(const AX, AY: Single): Boolean;
+    //function BelongPoint(const AX, AY: Single): Boolean;
     procedure FastMigration(const AScale: TPointF; const ARotate: Single);
   protected
     FPolygon: TPolygon;
@@ -22,8 +22,8 @@ type
     procedure Scale(const AValue: TPointF); override;
     //procedure Translate(const AValue: TPointF); override;
 //    procedure FastMigration(const AScale: TPointF; const ARotate: Single); override;
-    function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPoint): TPolyFigure;
-//    function BelongPoint(const AX, AY: Single): Boolean; override;
+//    function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPoint): TPolyFigure;
+    function BelongPointLocal(const AX, AY: Single): Boolean; override;
     procedure Draw(AImage: TImage); override;
 
     procedure Assign(const AFigure: TFigure); override;
@@ -58,7 +58,7 @@ begin
   Self.FPolygon := vPoly; //TPolyFigure(AFigure).AsType;
 end;
 
-function TPolyFigure.BelongPoint(const AX, AY: Single): Boolean;
+function TPolyFigure.BelongPointLocal(const AX, AY: Single): Boolean;
 begin
   Result := uIntersectorMethods.IsPointInPolygon(PointF(AX, AY), CalcedPoly);
 end;
@@ -119,12 +119,6 @@ begin
   FCircle.Y := FCenter.Y + ATranslate.Y;   }
 end;
 
-function TPolyFigure.InGlobal(const AScale: TPointF; const ARotate: Single;
-  const ATranslate: TPoint): TPolyFigure;
-begin
-
-end;
-
 procedure TPolyFigure.Rotate(const AValue: Single);
 var
   i, vN: Integer;
@@ -136,7 +130,7 @@ begin
     vTemp := FPolygon[i].X;
   {  FPolygon[i].X := (FPolygon[i].X) * Cos(AValue * pi180) - (FPolygon[i].Y) * Cos(AValue * pi180);
     FPolygon[i].Y := (vTemp) * Sin(AValue * pi180) + (FPolygon[i].Y) * Cos(AValue * pi180);}
-    FPolygon[i].X := (FPolygon[i].X - FCenter.X) * Cos(AValue * pi180) - (FPolygon[i].Y  - FCenter.Y) * Cos(AValue * pi180);
+    FPolygon[i].X := (FPolygon[i].X - FCenter.X) * Cos(AValue * pi180) - (FPolygon[i].Y  - FCenter.Y) * Sin(AValue * pi180);
     FPolygon[i].Y := (vTemp - FCenter.X) * Sin(AValue * pi180) + (FPolygon[i].Y - FCenter.Y) * Cos(AValue * pi180);
   end;
 

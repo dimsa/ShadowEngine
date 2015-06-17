@@ -25,7 +25,7 @@ type
     //function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPoint): TFigure; virtual; abstract;
 //    procedure Translate(const AValue: TPointF); virtual; abstract;
 //    procedure FastMigration(const AScale: TPointF; const ARotate: Single); virtual; abstract; // ¬ыполн€ет действи€ в одной последовательности.
-    function BelongPoint(const AX, AY: Single): Boolean; virtual; abstract;
+    function BelongPointLocal(const AX, AY: Single): Boolean; virtual; abstract;
     procedure Draw(AImage: TImage); virtual; abstract;
 
     procedure Assign(const AFigure: TFigure); virtual;

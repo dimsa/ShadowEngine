@@ -20,7 +20,7 @@ type
     //procedure Translate(const AValue: TPointF); override;
     function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPoint): TCircleFigure;
 //    procedure FastMigration(const AScale: TPointF; const ARotate: Single); override;
-    function BelongPoint(const AX, AY: Single): Boolean; override;
+    function BelongPointLocal(const AX, AY: Single): Boolean; override; // Тут координаты должны вводиться в местных координатах, т.е. например MouseX - Figure.X и т.д.
     procedure Draw(AImage: TImage); override;
 
     procedure Assign(const AFigure: TFigure); override;
@@ -42,7 +42,7 @@ begin
   Self.Radius := TCircleFigure(AFigure).Radius;
 end;
 
-function TCircleFigure.BelongPoint(const AX, AY: Single): Boolean;
+function TCircleFigure.BelongPointLocal(const AX, AY: Single): Boolean;
 begin
    Result := IsPointInCircle(PointF(AX, AY), FCircle);
 end;
