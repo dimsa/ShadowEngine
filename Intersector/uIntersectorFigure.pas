@@ -13,10 +13,12 @@ type
     procedure SetSize(const Value: Single); virtual; abstract;
   protected
     FCenter: TPointF;
+    procedure SetCenterX(const Value: Single); virtual;
+    procedure SetCenterY(const Value: Single); virtual;
   public
     // На случай, если кто-то решит расширять набор фигур
-    property X: Single read FCenter.X write FCenter.X; // write FCenter.X; // Центр фигуры, от которого считаются сдвиги
-    property Y: Single read FCenter.Y write FCenter.Y;// write FCenter.Y; // Центр фигуры, от которого считаются сдвиги
+    property X: Single read FCenter.X write SetCenterX;// FCenter.X; // write FCenter.X; // Центр фигуры, от которого считаются сдвиги
+    property Y: Single read FCenter.Y write SetCenterY;//FCenter.Y;// write FCenter.Y; // Центр фигуры, от которого считаются сдвиги
     property Size: Single read GetSize write SetSize;
     property Center: TPointF read FCenter write FCenter;// write FCenter; // Заданный центр. Модифкаторы работают от него
 
@@ -25,15 +27,14 @@ type
     //function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPoint): TFigure; virtual; abstract;
 //    procedure Translate(const AValue: TPointF); virtual; abstract;
 //    procedure FastMigration(const AScale: TPointF; const ARotate: Single); virtual; abstract; // Выполняет действия в одной последовательности.
-    function BelongPointLocal(const AX, AY: Single): Boolean; virtual; abstract;
+//    function BelongPointLocal(const AX, AY: Single): Boolean; overload; virtual; abstract;
+    function BelongPointLocal(const APoint: TPointF): Boolean; overload; virtual; abstract;
     procedure Draw(AImage: TImage); virtual; abstract;
 
     procedure Assign(const AFigure: TFigure); virtual;
     function Clone: TFigure; virtual;
     function FigureRect: TRectF; virtual; abstract;
     constructor Create; virtual;
-  const
-    pi180 = 0.01745329251;
   end;
 
 implementation
@@ -61,6 +62,16 @@ begin
   FPositionChange.ScaleX := 1;
   FPositionChange.ScaleY := 1;
   FPositionChange.Rotate := 0; }
+end;
+
+procedure TFigure.SetCenterX(const Value: Single);
+begin
+  FCenter.X := Value;
+end;
+
+procedure TFigure.SetCenterY(const Value: Single);
+begin
+  FCenter.Y := Value;
 end;
 
 end.

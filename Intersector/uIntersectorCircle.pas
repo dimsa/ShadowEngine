@@ -11,6 +11,9 @@ type
   private
     FCircle: TCircle;
     procedure SetRadius(const Value: Single);
+  protected
+    procedure SetCenterX(const Value: Single); override;
+    procedure SetCenterY(const Value: Single); override;
   public
     property Radius: Single read FCircle.Radius write SetRadius;
     property AsType: TCircle read FCircle;
@@ -20,7 +23,8 @@ type
     //procedure Translate(const AValue: TPointF); override;
     function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPoint): TCircleFigure;
 //    procedure FastMigration(const AScale: TPointF; const ARotate: Single); override;
-    function BelongPointLocal(const AX, AY: Single): Boolean; override; // Тут координаты должны вводиться в местных координатах, т.е. например MouseX - Figure.X и т.д.
+//    function BelongPointLocal(const AX, AY: Single): Boolean; override; // Тут координаты должны вводиться в местных координатах, т.е. например MouseX - Figure.X и т.д.
+    function BelongPointLocal(const APoint: TPointF): Boolean; override;
     procedure Draw(AImage: TImage); override;
 
     procedure Assign(const AFigure: TFigure); override;
@@ -42,9 +46,9 @@ begin
   Self.Radius := TCircleFigure(AFigure).Radius;
 end;
 
-function TCircleFigure.BelongPointLocal(const AX, AY: Single): Boolean;
+function TCircleFigure.BelongPointLocal(const APoint: TPointF): Boolean;
 begin
-   Result := IsPointInCircle(PointF(AX, AY), FCircle);
+   Result := IsPointInCircle(APoint, FCircle);
 end;
 
 function TCircleFigure.Clone: TFigure;
@@ -59,7 +63,7 @@ end;
 constructor TCircleFigure.Create;
 begin
   inherited;
-  FCenter := TPointF.Zero;
+  FCenter := PointF(0,0); //TPointF.Zero;
   FCircle.Radius := 0;
  { SetLength(FPoints, 2);
   // 0 - это центр окружности. 1 - Это радиус
@@ -75,10 +79,10 @@ begin
   AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Aqua;
   AImage.Bitmap.Canvas.FillEllipse(
     RectF(
-      FCircle.X - FCircle.Radius,
-      FCircle.Y - FCircle.Radius,
-      FCircle.X + FCircle.Radius,
-      FCircle.Y + FCircle.Radius),
+      FCenter.X - FCircle.Radius,
+      FCenter.Y - FCircle.Radius,
+      FCenter.X + FCircle.Radius,
+      FCenter.Y + FCircle.Radius),
       0.75
     );
 end;
@@ -128,6 +132,18 @@ procedure TCircleFigure.Scale(const AValue: TPointF);
 begin
   inherited;
   FCircle.Radius := FCircle.Radius * AValue.X;
+end;
+
+procedure TCircleFigure.SetCenterX(const Value: Single);
+begin
+  inherited;
+  FCircle.X := Value;
+end;
+
+procedure TCircleFigure.SetCenterY(const Value: Single);
+begin
+  inherited;
+  FCircle.Y := Value;
 end;
 
 procedure TCircleFigure.SetRadius(const Value: Single);

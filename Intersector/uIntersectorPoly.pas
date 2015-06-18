@@ -5,7 +5,7 @@ interface
 uses
   System.Types, System.Math, FMX.Objects, System.UITypes,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
-  uIntersectorFigure;
+  uIntersectorFigure, uIntersectorClasses;
 
 type
   TPolyFigure = class(TFigure)
@@ -20,10 +20,8 @@ type
     procedure AddPoint(const APoint: TPointF);
     procedure Rotate(const AValue: Single); override;
     procedure Scale(const AValue: TPointF); override;
-    //procedure Translate(const AValue: TPointF); override;
-//    procedure FastMigration(const AScale: TPointF; const ARotate: Single); override;
-//    function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPoint): TPolyFigure;
-    function BelongPointLocal(const AX, AY: Single): Boolean; override;
+//    function BelongPointLocal(const AX, AY: Single): Boolean; overload; override;
+    function BelongPointLocal(const APoint: TPointF): Boolean; overload; override;
     procedure Draw(AImage: TImage); override;
 
     procedure Assign(const AFigure: TFigure); override;
@@ -58,10 +56,15 @@ begin
   Self.FPolygon := vPoly; //TPolyFigure(AFigure).AsType;
 end;
 
-function TPolyFigure.BelongPointLocal(const AX, AY: Single): Boolean;
+function TPolyFigure.BelongPointLocal(const APoint: TPointF): Boolean;
+begin
+  Result := uIntersectorMethods.IsPointInPolygon(APoint, CalcedPoly);
+end;
+
+{function TPolyFigure.BelongPointLocal(const AX, AY: Single): Boolean;
 begin
   Result := uIntersectorMethods.IsPointInPolygon(PointF(AX, AY), CalcedPoly);
-end;
+end;}
 
 function TPolyFigure.CalcedPoly: TPolygon;
 var

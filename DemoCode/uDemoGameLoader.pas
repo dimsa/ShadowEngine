@@ -66,9 +66,16 @@ begin
   vPoly.AddPoint(PointF(-150,200));
   vPoly.AddPoint(PointF(150,200));
 
-//  vShape := TCircleFigure.Create;
-//  vShape.Radius := 170;
+  vPoly.X := 0;
+  vPoly.Y := -100;
+  vShape := TCircleFigure.Create;
+  vShape.X := 0;
+  vShape.Y := 100;
+  vShape.Radius := 100;
+
+
   vSpr.Shape.AddFigure(vPoly);
+  vSpr.Shape.AddFigure(vShape);
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
 
   Result := vSpr;

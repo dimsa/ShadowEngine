@@ -15,6 +15,7 @@ uses
 
     // Некоторые функции взяты или подсмотрены в FastGEO http://www.partow.net/projects/fastgeo/
   function IsPointInCircle(const APoint: TPointF; const AFigure: TCircle): Boolean;
+  function IsPointInEllipse(const APoint: TPointF; const AFigure: TEllipse): Boolean; experimental;
   function IsPointInPolygon(const Point: TPointF; const Polygon: TPolygon): Boolean;
 
   function IsLineIntersectLine(const x1, y1, x2, y2, x3, y3, x4, y4: Double): Boolean; overload;
@@ -27,9 +28,6 @@ uses
   function CircleCircleCollide(const AFigure1, AFigure2: TCircle): Boolean;
 
   function IsFiguresCollide(const AFigure1, AFigure2: TFigure): Boolean;
-
-  const
-    Zero = 0.0;
 
 implementation
 
@@ -228,6 +226,23 @@ begin
       +
       (APoint.Y - AFigure.Y) * (APoint.Y - AFigure.Y)
     ) <= AFigure.Radius * AFigure.Radius;
+end;
+
+function IsPointInEllipse(const APoint: TPointF; const AFigure: TEllipse): Boolean;
+var
+  vAngle: Single;
+  vR2: Single; // Квадрат радиуса для горизонтального эллипса в точке между сравниваемой точкой и центром эллипса
+begin
+  vAngle := ArcTan2(APoint.X, APoint.Y); // Угол до точки от центра эллипса
+  vR2 := (AFigure.R1 * Cos(vAngle)) * (AFigure.R2 * Sin(vAngle));
+  Result :=
+    (
+      (APoint.X - AFigure.X) * (APoint.X - AFigure.X)
+      +
+      (APoint.Y - AFigure.Y) * (APoint.Y - AFigure.Y)
+    ) <= vR2 * Cos(AFigure.Angle * pi180) + vR2 * Sin(AFigure.Angle * pi180)
+     //  (AFigure.R1 * Cos(vAngle)) * (AFigure.R2 * Sin(vAngle));
+     //  (AFigure.R1 * Cos(vAngle)) * (AFigure.R2 * Sin(vAngle));
 end;
 
 function IsPointInPolygon(const Point: TPointF;
