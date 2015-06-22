@@ -8,20 +8,19 @@ uses
 
 type
   TFigure = class abstract
-  private
-    function GetSize: Single; virtual; abstract;
-    procedure SetSize(const Value: Single); virtual; abstract;
   protected
     FCenter: TPointF;
+    FMaxRadius: Integer;
     procedure SetCenterX(const Value: Single); virtual;
     procedure SetCenterY(const Value: Single); virtual;
+    procedure SetCenter(const Value: TPointF); virtual;
   public
     // На случай, если кто-то решит расширять набор фигур
     property X: Single read FCenter.X write SetCenterX;// FCenter.X; // write FCenter.X; // Центр фигуры, от которого считаются сдвиги
     property Y: Single read FCenter.Y write SetCenterY;//FCenter.Y;// write FCenter.Y; // Центр фигуры, от которого считаются сдвиги
-    property Size: Single read GetSize write SetSize;
-    property Center: TPointF read FCenter write FCenter;// write FCenter; // Заданный центр. Модифкаторы работают от него
+    property Center: TPointF read FCenter write SetCenter;// write FCenter; // Заданный центр. Модифкаторы работают от него
 
+    procedure Translate(const AValue: TPointF); virtual; // Сдвигает центр
     procedure Rotate(const AValue: Single); virtual; abstract;
     procedure Scale(const AValue: TPointF); virtual; abstract;
     //function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPoint): TFigure; virtual; abstract;
@@ -64,6 +63,11 @@ begin
   FPositionChange.Rotate := 0; }
 end;
 
+procedure TFigure.SetCenter(const Value: TPointF);
+begin
+  FCenter := Value;
+end;
+
 procedure TFigure.SetCenterX(const Value: Single);
 begin
   FCenter.X := Value;
@@ -72,6 +76,11 @@ end;
 procedure TFigure.SetCenterY(const Value: Single);
 begin
   FCenter.Y := Value;
+end;
+
+procedure TFigure.Translate(const AValue: TPointF);
+begin
+  Center := FCenter + AValue;
 end;
 
 end.

@@ -14,6 +14,7 @@ type
   protected
     procedure SetCenterX(const Value: Single); override;
     procedure SetCenterY(const Value: Single); override;
+    procedure SetCenter(const Value: TPointF); override;
   public
     property Radius: Single read FCircle.Radius write SetRadius;
     property AsType: TCircle read FCircle;
@@ -134,6 +135,13 @@ begin
   FCircle.Radius := FCircle.Radius * AValue.X;
 end;
 
+procedure TCircleFigure.SetCenter(const Value: TPointF);
+begin
+  inherited;
+  FCircle.X := Value.X;
+  FCircle.Y := Value.Y;
+end;
+
 procedure TCircleFigure.SetCenterX(const Value: Single);
 begin
   inherited;
@@ -150,13 +158,5 @@ procedure TCircleFigure.SetRadius(const Value: Single);
 begin
   FCircle.Radius := Value;
 end;
-
-{procedure TCircleFigure.Translate(const AValue: TPointF);
-begin
-  inherited;
-  Self.FCenter := Self.FCenter + AValue;
-  Self.FCircle.X := Self.FCenter.X;
-  Self.FCircle.Y := Self.FCenter.Y;
-end; }
 
 end.
