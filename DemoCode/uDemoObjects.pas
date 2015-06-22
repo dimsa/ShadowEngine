@@ -105,7 +105,6 @@ var
 begin
   vEngine := Parent;
 
-
   vEX := Self.x - X;
   vEY := Self.y - y;
 

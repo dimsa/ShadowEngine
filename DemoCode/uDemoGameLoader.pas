@@ -51,7 +51,7 @@ function TLoader.CreateShip: TShip;
 var
   vSpr: TShip;
   vShape: TCircleFigure;
-  vPoly: TPolyFigure;
+  vPoly1, vPoly2, vPoly3: TPolyFigure;
 begin
   vSpr := TShip.Create(FEngine);
   vSpr.Parent := FEngine;
@@ -61,20 +61,45 @@ begin
   vSpr.y := 200;//Random(FEngine.Height);
   vSpr.Rotate := Random(360);
   vSpr.Scale := 0.5;
-  vPoly := TPolyFigure.Create;
-  vPoly.AddPoint(PointF(0,-200));
-  vPoly.AddPoint(PointF(-150,200));
-  vPoly.AddPoint(PointF(150,200));
+  vPoly1 := TPolyFigure.Create;
+  vPoly1.AddPoint(PointF(0,-200));
+  vPoly1.AddPoint(PointF(-50,200));
+  vPoly1.AddPoint(PointF(50,200));
+  vPoly1.AddPoint(PointF(80,-150));
+  vPoly1.AddPoint(PointF(120,-200));
 
-  vPoly.X := 0;
-  vPoly.Y := -100;
+  vPoly1.X := 100;
+  vPoly1.Y := 0;
+
+  vPoly2 := TPolyFigure.Create;
+  vPoly2.AddPoint(PointF(0,-200));
+  vPoly2.AddPoint(PointF(50,200));
+  vPoly2.AddPoint(PointF(-50,200));
+  vPoly2.AddPoint(PointF(-80,-150));
+  vPoly2.AddPoint(PointF(-120,-200));
+
+  vPoly2.X := -100;
+  vPoly2.Y := 0;
+
+  vPoly3 := TPolyFigure.Create;
+  vPoly3.AddPoint(PointF(0,300));
+  vPoly3.AddPoint(PointF(50, 0));
+  vPoly3.AddPoint(PointF(-50, 0));
+
+
+  vPoly3.X := 0;
+  vPoly3.Y := 200;
+
+
   vShape := TCircleFigure.Create;
   vShape.X := 0;
   vShape.Y := 100;
-  vShape.Radius := 100;
+  vShape.Radius := 150;
 
 
-  vSpr.Shape.AddFigure(vPoly);
+  vSpr.Shape.AddFigure(vPoly1);
+  vSpr.Shape.AddFigure(vPoly2);
+  vSpr.Shape.AddFigure(vPoly3);
   vSpr.Shape.AddFigure(vShape);
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
 

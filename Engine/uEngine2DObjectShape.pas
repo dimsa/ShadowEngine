@@ -3,7 +3,7 @@ unit uEngine2DObjectShape;
 interface
 
 uses
-  System.Types, System.Generics.Collections,System.Math,
+  System.Types, System.Generics.Collections,System.Math, System.UITypes,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2DClasses, uIntersectorFigure, uIntersectorCircle, uIntersectorPoly,
   uIntersectorMethods, uIntersectorShapeModificator;
@@ -98,20 +98,39 @@ begin
       vTemp := vFigure.Clone;
       vTemp.X := vTemp.X + TEngine2DObject(Owner).x;
       vTemp.Y := vTemp.Y + TEngine2DObject(Owner).y;
-//      vTemp.Center := vTemp.Center - TEngine2DObject(Owner).Position
       vTemp.Draw(TEngine2DObject(Owner).Image);
-    end;
-  end else
 
-    TEngine2DObject(Owner).
-    image.Bitmap.Canvas.FillEllipse(
-    RectF(
-      TEngine2DObject(Owner).x - TEngine2DObject(Owner).w*0.5,
-      TEngine2DObject(Owner).y - TEngine2DObject(Owner).h*0.5,
-      TEngine2DObject(Owner).x + TEngine2DObject(Owner).w*0.5,
-      TEngine2DObject(Owner).y + TEngine2DObject(Owner).h*0.5),
-      TEngine2DObject(Owner).opacity
-    );
+      with TEngine2DObject(Owner) do
+      begin
+        // Maximal radius of Figure to quick select
+        Image.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Gray;
+        Image.Bitmap.Canvas.FillEllipse(
+          RectF(
+            X - vFigure.MaxRadius, Y - vFigure.MaxRadius,
+            X + vFigure.MaxRadius, Y + vFigure.MaxRadius),
+          0.15
+        );
+      end;
+    end;
+  end
+  else begin
+    TEngine2DObject(Owner).Image.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Red;
+    TEngine2DObject(Owner).Image.Bitmap.Canvas.FillEllipse
+      (RectF(
+        TEngine2DObject(Owner).X - TEngine2DObject(Owner).w * 0.5,
+        TEngine2DObject(Owner).Y - TEngine2DObject(Owner).h * 0.5,
+        TEngine2DObject(Owner).X + TEngine2DObject(Owner).w * 0.5,
+        TEngine2DObject(Owner).Y + TEngine2DObject(Owner).h * 0.5),
+        TEngine2DObject(Owner).opacity * 0.5);
+
+  end;
+
+  // Center of the all figures. Base point of sprite
+  with TEngine2DObject(Owner) do
+  begin
+    Image.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Aliceblue;
+    Image.Bitmap.Canvas.FillEllipse(RectF(X - 3, Y - 3, X + 3, Y + 3), 1);
+  end;
 end;
 
 function TObjectShape.GetCount: Integer;
@@ -129,7 +148,7 @@ var
   vLeft, vRight: TPointF;
   i, vN: Integer;
 begin
-{  if FFigures.Count > 0 then
+  { if FFigures.Count > 0 then
   begin
     vLeft := FFigures[0].FigureRect.TopLeft;
     vRight := FFigures[0].FigureRect.BottomRight;
@@ -272,23 +291,13 @@ function TObjectShape.UnderTheMouse(const MouseX, MouseY: double): boolean;
 var
   i: Integer;
 begin
-  //ToWorldCoord(Nil);
   for i := 0 to High(FFigures) do
   begin
     if IsPointInFigure(PointF(MouseX, MouseY), Self.FFigures[i]) then
       Exit(True);
-
-//    uIntersectorMethods.
-   { if FCalcedFigures[i].BelongPoint(MouseX, MouseY) then
-      Exit(True);  }
   end;
 
   Result := False;
 end;
 
 end.
-
-
-
-
-

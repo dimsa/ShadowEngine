@@ -15,6 +15,7 @@ type
   protected
     FPolygon: TPolygon;
     function CalcedPoly: TPolygon;
+    procedure CalculateMaxRadius; override;
   public
     property AsType: TPolygon read FPolygon;
     procedure AddPoint(const APoint: TPointF);
@@ -33,13 +34,14 @@ implementation
 uses
   uIntersectorMethods;
 
-
 { TPolyFigure }
 
 procedure TPolyFigure.AddPoint(const APoint: TPointF);
 begin
   SetLength(FPolygon, Length(FPolygon) + 1);
   FPolygon[High(FPolygon)] := APoint;
+  if Self.AutoCalcMaxRadius then
+    CalculateMaxRadius;
 end;
 
 procedure TPolyFigure.Assign(const AFigure: TFigure);
@@ -76,6 +78,19 @@ begin
   for i := 0 to vN-1 do
     vPoly[i] := FPolygon[i] + Self.FCenter;
   Result := vPoly;
+end;
+
+procedure TPolyFigure.CalculateMaxRadius;
+var
+  i, vN: Integer;
+  vMax, vL: Single;
+begin
+  vN := High(Self.FPolygon);
+  vMax := 0;
+  for i := 0 to vN do
+    if vMax < Sqr(FPolygon[i].X + FCenter.X) + Sqr(FPolygon[i].Y + FCenter.Y) then
+      vMax := Sqr(FPolygon[i].X + FCenter.X) + Sqr(FPolygon[i].Y + FCenter.Y);
+  FMaxRadius := Sqrt(vMax);
 end;
 
 function TPolyFigure.Clone: TFigure;
@@ -141,6 +156,7 @@ begin
     Center.X * Cos(AValue) - Center.Y * Cos(AValue),
     Center.Y * Sin(AValue) + Center.Y * Cos(AValue)
   );}
+  inherited;
 end;
 
 procedure TPolyFigure.Scale(const AValue: TPointF);
@@ -150,6 +166,7 @@ begin
   vN := Length(FPolygon) - 1;
   for i := 0 to vN do
     FPolygon[i] := (FPolygon[i] - FCenter) * AValue;
+  inherited;
 end;
 
 {procedure TPolyFigure.Translate(const AValue: TPointF);

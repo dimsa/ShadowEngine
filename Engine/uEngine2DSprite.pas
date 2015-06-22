@@ -82,9 +82,6 @@ procedure tSprite.Repaint;
 begin
   inherited;
 
-  if DrawSelect then
-    Shape.Draw;
-
   Image.Bitmap.Canvas.DrawBitmap(
     fResources[fCurRes{Animation.Frames[fFrame].num}].bmp,
     fResources[fCurRes{Animation.Frames[fFrame].num}].rect,
@@ -94,6 +91,9 @@ begin
               y + hHalf),
               opacity{, False}
             );
+
+  if DrawSelect then
+    Shape.Draw;
 end;
 
 procedure tSprite.SetCurRes(const Value: Integer);
