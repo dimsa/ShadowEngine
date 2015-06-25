@@ -17,10 +17,8 @@ type
     FOwner: Pointer;
     FNeedRecalc: Boolean;
     FSize: Single;
-    FModificators: TList<TShapeModificator>;
     function GetOuterRect: TRectF;
     function GetFigure(Index: Integer): TFigure;
-    //procedure SetFigure(Index: Integer; const Value: TFigure);
     function GetCount: Integer;
     procedure SetSize(const Value: Single);
     function PointToLocal(const APoint: TPointF): TPointF;
@@ -170,20 +168,39 @@ begin
 end;
 
 function TObjectShape.Intersections: TList<TObjectShape>;
+var
+  vRes: TList<TObjectShape>;
+  i, vN: Integer;
 begin
+  vRes :=  TList<TObjectShape>.Create;
+ { vN :=
+  for I := Low to High do   }
+
 end;
 
 function TObjectShape.IsIntersectWith(AShape: TObjectShape): Boolean;
 var
   i, j, vN: Integer;
+  vFigure: TFigure;
 begin
-{  vN := Self.FFigures.Count - 1;
-  for i := 0 to vN do
-    for j := 0 to AShape.Count - 1 do
-      if TIntersectionComparer.IsFiguresCollide(Self.FFigures[i], AShape.Figures[j]) then
-        Exit(True);
+{  Sqr(FFigures[i].X - FFigures[j].X) + Sqr(FFigures[i].Y - FFigures[j].Y) <=
+   Sqr(FFigures[i].MaxRadius+FFigures[j].MaxRadius)}
 
-  Result := False;  }
+  vN := Length(FFigures) - 1;
+  for i := 0 to vN do
+  begin
+    vFigure := FFigures[i].InGlobal(
+      tEngine2DObject(FOwner).Center, tEngine2DObject(FOwner).Rotate, tEngine2DObject(FOwner).ScalePoint);
+    for j := 0 to AShape.Count - 1 do
+      if Sqr(FFigures[i].X - FFigures[j].X) + Sqr(FFigures[i].Y - FFigures[j].Y) <=
+        Sqr(FFigures[i].MaxRadius+FFigures[j].MaxRadius) then
+        begin
+         if IsFiguresCollide(vFigure, FFigures[j]) then
+          Exit(True)
+        end;
+  end;
+
+  Result := False;
 end;
 
 function TObjectShape.IsPointInFigure(const APoint: TPointF; const AFigure: TFigure): Boolean;
@@ -293,8 +310,9 @@ var
 begin
   for i := 0 to High(FFigures) do
   begin
-    if IsPointInFigure(PointF(MouseX, MouseY), Self.FFigures[i]) then
-      Exit(True);
+    if Self.FFigures[i].FastBelong(PointF(MouseX, MouseY)) then
+      if IsPointInFigure(PointF(MouseX, MouseY), Self.FFigures[i]) then
+        Exit(True);
   end;
 
   Result := False;

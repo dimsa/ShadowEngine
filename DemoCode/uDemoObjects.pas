@@ -178,6 +178,10 @@ begin
 
   if Self.y > tEngine2d(Parent).Height + Self.scH then
     Self.y := -Self.scH;
+
+//  if Self.Shape.IsIntersectWith() then
+
+
   inherited;
 end;
 

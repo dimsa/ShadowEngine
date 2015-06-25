@@ -25,10 +25,15 @@ type
     property MaxRadius: Single read FMaxRadius;
     property AutoCalcMaxRadius: Boolean read FAutoCalcRadius write FAutoCalcRadius;
 
+    function IsIntersectCircle(const AFigure: TFigure): Boolean; virtual; abstract;
+    function IsIntersectPoly(const AFigure: TFigure): Boolean; virtual; abstract;
+
     procedure Translate(const AValue: TPointF); virtual; // Сдвигает центр
     procedure Rotate(const AValue: Single); virtual;
     procedure Scale(const AValue: TPointF); virtual;
-    //function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPoint): TFigure; virtual; abstract;
+    function FastBelong(const APoint: TPointF): Boolean; virtual;
+
+    function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPointF): TFigure; virtual; abstract;
 //    procedure Translate(const AValue: TPointF); virtual; abstract;
 //    procedure FastMigration(const AScale: TPointF; const ARotate: Single); virtual; abstract; // Выполняет действия в одной последовательности.
 //    function BelongPointLocal(const AX, AY: Single): Boolean; overload; virtual; abstract;
@@ -64,6 +69,11 @@ begin
   FAutoCalcRadius := True;
   FCenter.X := 0;
   FCenter.Y := 0;
+end;
+
+function TFigure.FastBelong(const APoint: TPointF): Boolean;
+begin
+  Result := (Self.FMaxRadius*Self.FMaxRadius) <= (APoint.X*APoint.X + APoint.Y*APoint.Y);
 end;
 
 procedure TFigure.Rotate(const AValue: Single);
