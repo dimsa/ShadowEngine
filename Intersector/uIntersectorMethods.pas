@@ -149,7 +149,7 @@ begin
     if AFigure2 is TPolyFigure then
       Result := PolyPolyCollide(TPolyFigure(AFigure1).AsType, TPolyFigure(AFigure2).AsType);
     if AFigure2 is TCircleFigure then
-      Result := CircleCircleCollide(TCircleFigure(AFigure1).AsType, TCircleFigure(AFigure2).AsType)
+      Result := CirclePolyCollide(TPolyFigure(AFigure1).AsType, TCircleFigure(AFigure2).AsType)
   end;
 end;
 

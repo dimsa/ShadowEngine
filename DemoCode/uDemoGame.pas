@@ -7,7 +7,7 @@ interface
 uses
   FMX.Types, System.UITypes, System.Classes, System.Types,
   FMX.Objects, System.Generics.Collections,
-  uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects;
+  uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape;
 
 type
   TDemoGame = class
@@ -20,6 +20,7 @@ type
     procedure SetImage(const Value: TImage);
     procedure mouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; x, y: single);
+    procedure FindCollide;
   public
     property Image: TImage read GetImage write SetImage;
     procedure Prepare;
@@ -33,6 +34,22 @@ implementation
 constructor TDemoGame.Create;
 begin
   FEngine := TDemoEngine.Create;
+end;
+
+procedure TDemoGame.FindCollide;
+var
+  vShipFigure: TObjectShape;
+  i, vN: Integer;
+begin
+//  vShipFigure := FShip.Shape.
+  vN := FAsteroids.Count - 1;
+  for i := 0 to vN do
+    if FShip.Shape.IsIntersectWith(FAsteroids[i].Shape) then
+    begin
+      FAsteroids[i].DX := - FAsteroids[i].DX;
+      FAsteroids[i].DY := - FAsteroids[i].DY;
+    end;
+
 end;
 
 function TDemoGame.GetImage: TImage;
@@ -75,6 +92,7 @@ begin
   for i := 0 to 19 do
     FAsteroids.Add(vLoader.BigAstroid);
 
+  FEngine.InBeginPaintBehavior := FindCollide;
   FEngine.Start;
 end;
 

@@ -36,8 +36,10 @@ type
 
   TAsteroid = class(TSprite)
   private
-    FDx, FDY, FDA: Double; // Сдвиги
+    FDx, FDy, FDA: Double; // Сдвиги
   public
+    property DX: Double read FDx write FDx;
+    property DY: Double read FDy write FDy;
     procedure Repaint; override;
     constructor Create(newParent: pointer); override;
   end;

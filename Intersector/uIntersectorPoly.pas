@@ -14,6 +14,7 @@ type
     procedure FastMigration(const AScale: TPointF; const ARotate: Single);
   protected
     FPolygon: TPolygon;
+    FSelfInGlobal: TPolyFigure;
     function CalcedPoly: TPolygon;
     procedure CalculateMaxRadius; override;
   public
@@ -21,12 +22,14 @@ type
     procedure AddPoint(const APoint: TPointF);
     procedure Rotate(const AValue: Single); override;
     procedure Scale(const AValue: TPointF); override;
+    function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPointF): TFigure; override;
 //    function BelongPointLocal(const AX, AY: Single): Boolean; overload; override;
     function BelongPointLocal(const APoint: TPointF): Boolean; overload; override;
     procedure Draw(AImage: TImage); override;
 
     procedure Assign(const AFigure: TFigure); override;
     function Clone: TFigure; override;
+    constructor Create; override;
   end;
 
 implementation
@@ -102,6 +105,12 @@ begin
   Result := vRes;
 end;
 
+constructor TPolyFigure.Create;
+begin
+  inherited;
+//  Self.FSelfInGlobal := TPolyFigure.Create;
+end;
+
 procedure TPolyFigure.Draw(AImage: TImage);
 begin
   inherited;
@@ -135,6 +144,30 @@ begin
 
   FCircle.X := FCenter.X + ATranslate.X;
   FCircle.Y := FCenter.Y + ATranslate.Y;   }
+end;
+
+function TPolyFigure.InGlobal(const AScale: TPointF; const ARotate: Single;
+  const ATranslate: TPointF): TFigure;
+var
+  vRes: TFigure;
+begin
+ { if FSelfInGlobal = Nil then
+    FSelfInGlobal := TPolyFigure.Create;
+  FSelfInGlobal.Assign(Self);
+
+  FSelfInGlobal.Scale(AScale);
+  FSelfInGlobal.Rotate(ARotate);
+  FSelfInGlobal.Translate(ATranslate);
+
+  Result := FSelfInGlobal;  }
+  vRes := TPolyFigure.Create;
+  vRes.Assign(Self);
+
+  vRes.Translate(ATranslate);
+  vRes.Scale(AScale);
+  vRes.Rotate(ARotate);
+
+  Result := vRes;
 end;
 
 procedure TPolyFigure.Rotate(const AValue: Single);
