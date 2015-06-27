@@ -11,7 +11,6 @@ uses
 type
   TObjectShape = class
   private
-//    FCalcedFigures: TArray<TFigure>;
     FFigures: TArray<TFigure>;
     FParent: Pointer;
     FOwner: Pointer;
@@ -22,6 +21,7 @@ type
     function GetCount: Integer;
     procedure SetSize(const Value: Single);
     function PointToLocal(const APoint: TPointF): TPointF;
+    function IsPointInFigure(const APoint: TPointF; const AFigure: TFigure): Boolean;
   public
     property NeedRecalc: Boolean read FNeedRecalc write fNeedRecalc; // Показывает, нужно ли пересчитывать фигуры
     property Parent: Pointer read FParent write FParent; // ССылка на TEngine2D
@@ -31,12 +31,11 @@ type
 //    property OriginFigures
 //    property OriginFigures: TList<TFigure> read FOriginFigures;
 //    property Modificators: TList<TShapeModificator> read FModificators write FModificators;
+//    procedure Recalc; // Пересчитывает фигуры, согласно масштабу, повороту и положению хозяина
     property Count: Integer read GetCount;
     property OuterRect: TRectF read GetOuterRect;
     property Size: Single read FSize write SetSize; // Испльзуется для быстрых расчетов
     procedure Draw; // Рисует форму фигуры
-//    procedure Recalc; // Пересчитывает фигуры, согласно масштабу, повороту и положению хозяина
-    function IsPointInFigure(const APoint: TPointF; const AFigure: TFigure): Boolean;
     function AddFigure(AFigure: TFigure): Integer;
     function RemoveFigure(const AIndex: Integer): TFigure;
     function UnderTheMouse(const MouseX, MouseY: double): boolean; virtual; // Говорит, попала ли мышь в круг спрайта. Круг с диаметром - диагональю прямоугольника спрайта
@@ -211,7 +210,7 @@ var
   vPoint: TPointF;
 begin
 //  Result := False;
-  vPoint := PointToLocal(APoint);
+//  vPoint := PointToLocal(APoint);
   Result := AFigure.BelongPointLocal(vPoint);
 
 //  Result := AFigure.BelongPointLocal(APoint.X - TEngine2DObject(Owner).x, APoint.Y - TEngine2DObject(Owner).y)
@@ -227,29 +226,9 @@ var
   vRes: TVector;
   vScale, vRotate, vTranslate: TMatrix;
 begin
-//  with tEngine2DObject(Owner) do
-//  begin
-//    vTranslate := TMatrix.CreateTranslation(tEngine2DObject(Owner).x, tEngine2DObject(Owner).y )
     vRotate := TMatrix.CreateRotation(-tEngine2DObject(Owner).Rotate * pi180);
     vScale := TMatrix.CreateScaling(1 / tEngine2DObject(Owner).ScaleX, 1 / tEngine2DObject(Owner).ScaleY);
-    Result := TVector.Create(APoint.X - tEngine2DObject(Owner).x, APoint.y - tEngine2DObject(Owner).y) * vScale * vRotate;
- // end;
-
-
-  //vScale :=
-//X = x0 + (x - x0) * cos(a) - (y - y0) * sin(a);
-//Y = y0 + (y - y0) * cos(a) + (x - x0) * sin(a);
-{  with tEngine2DObject(Owner) do
-  Result := PointF(
-    (AX * ScaleX - x) * Cos(Rotate * pi180)
-      -
-    (AY * ScaleY - y) * Sin(Rotate * pi180)
-      - x
-      ,
-    (AY * ScaleY - y) * Cos(Rotate * pi180)
-      +
-    (AX * ScaleX - x) * Sin(Rotate * pi180)
-  ); }
+    Result := TVector.Create(APoint.X - tEngine2DObject(Owner).x, APoint.Y - tEngine2DObject(Owner).y) * vScale * vRotate;// + TVector.Create(APoint.X, APoint.Y);
 end;
 
 function TObjectShape.RemoveFigure(const AIndex: Integer): TFigure;
@@ -310,11 +289,13 @@ end;   *)
 function TObjectShape.UnderTheMouse(const MouseX, MouseY: double): boolean;
 var
   i: Integer;
+  vPoint: TPointF;
 begin
   for i := 0 to High(FFigures) do
   begin
-    if Self.FFigures[i].FastBelong(PointF(MouseX, MouseY)) then
-      if IsPointInFigure(PointF(MouseX, MouseY), Self.FFigures[i]) then
+    vPoint := PointToLocal(PointF(MouseX, MouseY));
+  //  if Self.FFigures[i].FastBelong(vPoint) then
+      if IsPointInFigure(vPoint, Self.FFigures[i]) then
         Exit(True);
   end;
 

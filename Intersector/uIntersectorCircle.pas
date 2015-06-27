@@ -125,9 +125,10 @@ begin
   vRes := TCircleFigure.Create;
   vRes.Assign(Self);
 
-  vRes.Translate(ATranslate);
   vRes.Scale(AScale);
   vRes.Rotate(ARotate);
+  vRes.Center := ATranslate;
+//  vRes.Translate(ATranslate);
 
   Result := vRes;
 end;

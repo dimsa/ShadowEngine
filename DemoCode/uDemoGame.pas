@@ -42,6 +42,7 @@ var
   i, vN: Integer;
 begin
 //  vShipFigure := FShip.Shape.
+Exit;
   vN := FAsteroids.Count - 1;
   for i := 0 to vN do
     if FShip.Shape.IsIntersectWith(FAsteroids[i].Shape) then

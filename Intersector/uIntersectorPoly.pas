@@ -11,7 +11,7 @@ type
   TPolyFigure = class(TFigure)
   private
     //function BelongPoint(const AX, AY: Single): Boolean;
-    procedure FastMigration(const AScale: TPointF; const ARotate: Single);
+//    procedure FastMigration(const AScale: TPointF; const ARotate: Single);
   protected
     FPolygon: TPolygon;
     FSelfInGlobal: TPolyFigure;
@@ -118,7 +118,7 @@ begin
   AImage.Bitmap.Canvas.FillPolygon(CalcedPoly, 0.75);
 end;
 
-procedure TPolyFigure.FastMigration(const AScale: TPointF; const ARotate: Single);
+{procedure TPolyFigure.FastMigration(const AScale: TPointF; const ARotate: Single);
 var
   i, vN: Integer;
   vTemp: Single;
@@ -144,28 +144,20 @@ begin
 
   FCircle.X := FCenter.X + ATranslate.X;
   FCircle.Y := FCenter.Y + ATranslate.Y;   }
-end;
+//end;
 
 function TPolyFigure.InGlobal(const AScale: TPointF; const ARotate: Single;
   const ATranslate: TPointF): TFigure;
 var
   vRes: TFigure;
 begin
- { if FSelfInGlobal = Nil then
-    FSelfInGlobal := TPolyFigure.Create;
-  FSelfInGlobal.Assign(Self);
-
-  FSelfInGlobal.Scale(AScale);
-  FSelfInGlobal.Rotate(ARotate);
-  FSelfInGlobal.Translate(ATranslate);
-
-  Result := FSelfInGlobal;  }
   vRes := TPolyFigure.Create;
   vRes.Assign(Self);
 
-  vRes.Translate(ATranslate);
   vRes.Scale(AScale);
   vRes.Rotate(ARotate);
+  vRes.Center := ATranslate;
+//  vRes.Translate(ATranslate);
 
   Result := vRes;
 end;
@@ -179,8 +171,6 @@ begin
   for i := 0 to vN do
   begin
     vTemp := FPolygon[i].X;
-  {  FPolygon[i].X := (FPolygon[i].X) * Cos(AValue * pi180) - (FPolygon[i].Y) * Cos(AValue * pi180);
-    FPolygon[i].Y := (vTemp) * Sin(AValue * pi180) + (FPolygon[i].Y) * Cos(AValue * pi180);}
     FPolygon[i].X := (FPolygon[i].X - FCenter.X) * Cos(AValue * pi180) - (FPolygon[i].Y  - FCenter.Y) * Sin(AValue * pi180);
     FPolygon[i].Y := (vTemp - FCenter.X) * Sin(AValue * pi180) + (FPolygon[i].Y - FCenter.Y) * Cos(AValue * pi180);
   end;
