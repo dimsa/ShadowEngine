@@ -9,6 +9,11 @@ uses
 type
   // Базовый класс для объекта отрисовки движка
   tEngine2DUnclickableObject = class abstract
+  private
+    function GetCenter: TPointF;
+    procedure SetCenter(const Value: TPointF);
+    function GetScalePoint: TPointF;
+    procedure SetScalePoint(const Value: TPointF);
   protected
     fPosition: TPosition;
     fVisible: boolean; // Отрисовывать объект или нет
@@ -38,6 +43,8 @@ type
     property Position: TPosition read fPosition write SetPosition; // Быстрое получение всех данных о позиции спрайта
     property x: single read fPosition.x write setX; // Координата X на главном битмапе
     property y: single read fPosition.y write setY; // Координата Y на главном битмапе
+    property Center: TPointF read GetCenter write SetCenter;
+    property ScalePoint: TPointF read GetScalePoint write SetScalePoint;
     property w: single read getW; // Оригинальная ширина
     property h: single read getH; // Оригинальная высота
     property Rotate: single read fPosition.rotate write setRotate; // Угол поворота относительно центра
@@ -86,6 +93,16 @@ begin
   fImage := Nil;
 end;
 
+function tEngine2DUnclickableObject.GetCenter: TPointF;
+begin
+  Result := PointF(Position.X, Position.Y);
+end;
+
+function tEngine2DUnclickableObject.GetScalePoint: TPointF;
+begin
+  Result := PointF(FPosition.ScaleX, FPosition.ScaleY)
+end;
+
 {procedure tEngine2DUnclickableObject.Format;
 begin
   if fFormatter.Text = '' then
@@ -119,6 +136,12 @@ begin
   fAnimation.Init;
 end;                      }
 
+procedure tEngine2DUnclickableObject.SetCenter(const Value: TPointF);
+begin
+  Self.X := Value.X;
+  Self.Y:= Value.Y
+end;
+
 procedure tEngine2DUnclickableObject.SetPosition(const Value: TPosition);
 begin
   fPosition := Value;
@@ -133,6 +156,12 @@ procedure tEngine2DUnclickableObject.setScale(AValue: single);
 begin
   fPosition.scaleX := AValue;
   fPosition.scaleY := AValue;
+end;
+
+procedure tEngine2DUnclickableObject.SetScalePoint(const Value: TPointF);
+begin
+  Self.ScaleX := Value.X;
+  Self.ScaleY:= Value.Y
 end;
 
 procedure tEngine2DUnclickableObject.setScaleX(const Value: single);

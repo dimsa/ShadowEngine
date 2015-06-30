@@ -176,14 +176,29 @@ end;
 function TObjectShape.IsIntersectWith(AShape: TObjectShape): Boolean;
 var
   i, j, vN: Integer;
+  vFigure: TFigure;
 begin
-{  vN := Self.FFigures.Count - 1;
-  for i := 0 to vN do
-    for j := 0 to AShape.Count - 1 do
-      if TIntersectionComparer.IsFiguresCollide(Self.FFigures[i], AShape.Figures[j]) then
-        Exit(True);
+{  Sqr(FFigures[i].X - FFigures[j].X) + Sqr(FFigures[i].Y - FFigures[j].Y) <=
+   Sqr(FFigures[i].MaxRadius+FFigures[j].MaxRadius)}
 
-  Result := False;  }
+  vN := Length(FFigures) - 1;
+  for i := 0 to vN do
+  begin
+    vFigure := FFigures[i].InGlobal(
+      tEngine2DObject(FOwner).ScalePoint, tEngine2DObject(FOwner).Rotate, tEngine2DObject(FOwner).Center);
+    for j := 0 to AShape.Count - 1 do
+      if Sqr(FFigures[i].X - FFigures[j].X) + Sqr(FFigures[i].Y - FFigures[j].Y) <=
+        Sqr(FFigures[i].MaxRadius * tEngine2DObject(AShape.Owner).ScaleX +FFigures[j].MaxRadius *tEngine2DObject(AShape.Owner).ScaleX ) then
+        begin
+         if IsFiguresCollide(
+           vFigure,
+           AShape.Figures[j].InGlobal(tEngine2DObject(AShape.Owner).ScalePoint, tEngine2DObject(AShape.Owner).Rotate, tEngine2DObject(AShape.Owner).Center)
+         ) then
+          Exit(True)
+        end;
+  end;
+
+  Result := False;
 end;
 
 function TObjectShape.IsPointInFigure(const APoint: TPointF; const AFigure: TFigure): Boolean;

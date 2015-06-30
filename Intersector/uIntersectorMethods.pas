@@ -5,7 +5,7 @@ interface
 uses
   System.Types, System.Math,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
-  uIntersectorClasses, uIntersectorFigure, uIntersectorCircle,
+  uIntersectorClasses, uIntersectorFigure, uIntersectorPoly, uIntersectorCircle,
   uIntersectorRectangle, uIntersectorTriangle;
 
   function SqrDistance(const APoint1, APoint2: TPointF): Double; overload; // Находит сумму квадратов
@@ -26,6 +26,8 @@ uses
 
     // This includes both situatution! If one figure in another and if they are intersect
   function CircleCircleCollide(const AFigure1, AFigure2: TCircle): Boolean;
+  function CirclePolyCollide(const AFigure1: TPolygon; const AFigure2: TCircle): Boolean;
+  function PolyPolyCollide(const AFigure1, AFigure2: TPolygon): Boolean;
 
   function IsFiguresCollide(const AFigure1, AFigure2: TFigure): Boolean;
 
@@ -40,6 +42,54 @@ begin
     (sqr(AFigure1.X-AFigure2.X)+sqr(AFigure1.Y-AFigure2.Y))
     <=
     (AFigure1.Radius + AFigure2.Radius);
+end;
+
+function CirclePolyCollide(const AFigure1: TPolygon; const AFigure2: TCircle): Boolean;
+var
+  i, vN: Integer;
+begin
+  if IsPointInPolygon(PointF(AFigure2.X, AFigure2.Y), AFigure1) then
+    Exit(True);
+
+  vN := Length(AFigure1) - 1;
+
+  for i := 0 to vN do
+    if IsPointInCircle(AFigure1[i], AFigure2) then
+      Exit(True);
+
+  for i := 0 to vN-1 do
+    if IsLineIntersectCircle(AFigure1[i],AFigure1[i+1], AFigure2) then
+      Exit(True);
+
+  Result := False;
+end;
+
+function PolyPolyCollide(const AFigure1, AFigure2: TPolygon): Boolean;
+begin
+  if IsPolyIntersectPoly(AFigure1, AFigure2) then
+    Exit(True);
+
+  // If there are no intersection, so you have only two variants.
+  // All points of figure1 in figure2 or vice versa.
+  // So if one of point of polygon in another it is this situation
+
+  if isPointInPolygon(AFigure1[0], AFigure2) then
+    Exit(True);
+
+  if isPointInPolygon(AFigure2[0], AFigure1) then
+    Exit(True);
+
+  Result := False;
+{  vN := Length(AFigure1) - 1;
+  for i := 0 to vN do
+    if isPointInPolygon(AFigure1[i], AFigure2)  then
+      Exit(True);
+
+  vN := Length(AFigure1) - 1;
+  for i := 0 to vN do
+    if isPointInPolygon(AFigure1[i], AFigure2)  then
+      Exit(True);    }
+
 end;
 
 function Distance(const AX1, AY1, AX2, AY2: Double): Double;
@@ -86,8 +136,21 @@ end;
 function IsFiguresCollide(const AFigure1,AFigure2: TFigure): Boolean;
 begin
   Result := False;
- { if (AFigure1 is TCircleFigure) and (AFigure2 is TCircleFigure) then
-    Result := CircleCircleCollide(TCircleFigure(AFigure1), TCircleFigure(AFigure2)); }
+  if AFigure1 is TCircleFigure then
+  begin
+    if AFigure2 is TPolyFigure then
+      Result := CirclePolyCollide(TPolyFigure(AFigure2).AsType, TCircleFigure(AFigure1).AsType);
+    if AFigure2 is TCircleFigure then
+      Result := CircleCircleCollide(TCircleFigure(AFigure1).AsType, TCircleFigure(AFigure2).AsType)
+  end;
+
+  if AFigure1 is TPolyFigure then
+  begin
+    if AFigure2 is TPolyFigure then
+      Result := PolyPolyCollide(TPolyFigure(AFigure1).AsType, TPolyFigure(AFigure2).AsType);
+    if AFigure2 is TCircleFigure then
+      Result := CirclePolyCollide(TPolyFigure(AFigure1).AsType, TCircleFigure(AFigure2).AsType)
+  end;
 end;
 
 function IsLineIntersectCircle(const APoint1, APoint2: TPointF; const AFigure: TCircle): Boolean;

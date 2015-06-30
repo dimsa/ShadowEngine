@@ -14,11 +14,8 @@ type
   TFormatterList = class(TEngine2DNamedList<TEngineFormatter>)
   public
     procedure Add(AObject: tEngine2DObject; const AText: String); overload;
-//    procedure AddAndApply(AObject: tEngine2DObject; const AText: String); overload;
     procedure ClearForSubject(AObject: tEngine2DObject);
     procedure ApplyForSubject(AObject: tEngine2DObject);
-//    function PseudoFormatter(const AText: String): tEngineFormatter; overload;
-//    function PseudoFormatter(const ASpriteForClone: tSprite; const AText: String): tEngineFormatter; overload;
     function PseudoFormatter(const ASpriteForClone: tSprite; const AText: String): tEngine2DObject;
     function PseudoFormatterPosition(const ASpriteForClone: tSprite; const AText: String): TPosition;
     constructor Create{(const AParent: Pointer)}; override;
@@ -146,30 +143,4 @@ begin
   vRes.Free;
 end;
 
-{function TFormatterList.PseudoFormatter(
-  const AText: String): TEngineFormatter;
-var
-  vRes: TEngineFormatter;
-  vObj: tEngine2DObject;
-begin
-  vObj := tEngine2DObject.Create(Self.Parent);
-  vRes := TEngineFormatter.Create(vObj);
-  vRes.Text := AText;
-  vRes.Format;
-  Result := vRes;
-  vObj.Free;
-end;    }
-
 end.
-
-
-
-
-
-
-
-
-
-
-
-

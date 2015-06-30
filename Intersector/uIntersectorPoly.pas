@@ -23,6 +23,7 @@ type
     procedure Scale(const AValue: TPointF); override;
 //    function BelongPointLocal(const AX, AY: Single): Boolean; overload; override;
     function BelongPointLocal(const APoint: TPointF): Boolean; overload; override;
+    function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPointF): TFigure; override;
     procedure Draw(AImage: TImage); override;
 
     procedure Assign(const AFigure: TFigure); override;
@@ -135,6 +136,22 @@ begin
 
   FCircle.X := FCenter.X + ATranslate.X;
   FCircle.Y := FCenter.Y + ATranslate.Y;   }
+end;
+
+function TPolyFigure.InGlobal(const AScale: TPointF; const ARotate: Single;
+  const ATranslate: TPointF): TFigure;
+var
+  vRes: TFigure;
+begin
+  vRes := TPolyFigure.Create;
+  vRes.Assign(Self);
+
+  vRes.Scale(AScale);
+  vRes.Rotate(ARotate);
+  vRes.Center := ATranslate;
+//  vRes.Translate(ATranslate);
+
+  Result := vRes;
 end;
 
 procedure TPolyFigure.Rotate(const AValue: Single);

@@ -1,5 +1,12 @@
 unit uEngine2D;
 
+{******************************************************************************
+Shadow Object Engine (SO Engine)
+By Dmitriy Sorokin.
+
+Some comments in English, some in Russian. And it depends on mood :-) Sorry!)
+*******************************************************************************}
+
 interface
 
 uses
@@ -38,6 +45,8 @@ type
     fWidth, fHeight: integer; // Размер поля имеджа и движка
     fDebug: Boolean; // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
     FBackgroundBehavior: TProcedure;
+    FInBeginPaintBehavior: TProcedure;
+    FInEndPaintBehavior: TProcedure;
 
     // Механизм теневого объекты необычен. Но кроме всего прочего TEngine2DObject не имеет способов определения
     {FShadowSprite: tSprite; //
@@ -55,6 +64,9 @@ type
     procedure setBackGround(ABmp: tBitmap);
 
     procedure BackgroundDefaultBehavior;
+    procedure InBeginPaintDefaultBehavior;
+    procedure InEndPaintDefaultBehavior;
+
     function GetIfHor: Boolean;
     function GetHeight: integer;
     function GetWidth: integer;
@@ -64,6 +76,8 @@ type
     property EngineThread: TEngineThread read fEngineThread write fEngineThread;
     property Image: TImage read FImage write FImage;
     property BackgroundBehavior: TProcedure read FBackgroundBehavior write SetBackgroundBehavior;
+    property InBeginPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
+    property InEndPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
     // Ключевые списки движка
     property Resources: TEngine2DResources read FResources;
     property AnimationList: TEngine2DAnimationList read fAnimationList;
@@ -231,6 +245,8 @@ begin
   fOptions.ToClickOnlyTop := False;
   fCritical := TCriticalSection.Create;
   FBackgroundBehavior := BackgroundDefaultBehavior;
+  FInBeginPaintBehavior := InBeginPaintDefaultBehavior;
+  FInEndPaintBehavior := InEndPaintDefaultBehavior;
   fDebug := False;
   prepareFastFields;
   clearSprites;
@@ -355,8 +371,9 @@ begin
     begin
       if bitmap.Canvas.BeginScene() then
       try
-
+        FInBeginPaintBehavior;
         FBackgroundBehavior;
+
 
         l := (fSprites.Count - 1);
         for i := 1 to l do
@@ -375,7 +392,62 @@ begin
             fSprites[fSpriteOrder[i]].Repaint;
           end;
       finally
-        // bitmap.Canvas.Blending:=true;
+        FInEndPaintBehavior;
+
+        bitmap.Canvas.endScene();
+      end;
+  end;
+
+  fCritical.Leave;
+end;
+
+{function tEngine2d.ResToSF(const AId: Integer): TSpriteFrame;
+var
+  vTmp: TSpriteFrame;
+begin
+  vTmp.num := AId;
+  vTmp.w := fResources[AId].bmp.Width;
+  vTmp.h := fResources[AId].bmp.Height;
+
+  Result := vTmp;
+end;}
+
+{function tEngine2d.getBitmap(index: integer): tBitmap;
+var
+  temp: tBitmap;
+begin
+  temp := tBitmap.Create;
+  temp.Assign(fResources[index].bmp);
+  result := temp;
+end; }
+
+function tEngine2d.getObject(index: integer): tEngine2DObject;
+begin
+  fCritical.Enter;
+  result := fSprites[index];
+  fCritical.Leave;
+end;
+
+function tEngine2d.getSpriteCount: integer;
+begin
+  result := fSprites.Count;//length(fSprites)
+end;
+
+function tEngine2d.GetWidth: integer;
+begin
+  Result := Round(Self.fImage.Width);
+end;
+
+procedure tEngine2d.InBeginPaintDefaultBehavior;
+begin
+
+end;
+
+procedure tEngine2d.InEndPaintDefaultBehavior;
+begin
+  with FImage do
+  begin
+  // bitmap.Canvas.Blending:=true;
         bitmap.Canvas.SetMatrix(tMatrix.Identity);
         bitmap.Canvas.Fill.Color := TAlphaColorRec.Brown;
         {$IFDEF VER290}
@@ -420,49 +492,7 @@ begin
           TTextAlign.taLeading
         );
         {$ENDIF}
-
-        bitmap.Canvas.endScene();
-      end;
   end;
-
-  fCritical.Leave;
-end;
-
-{function tEngine2d.ResToSF(const AId: Integer): TSpriteFrame;
-var
-  vTmp: TSpriteFrame;
-begin
-  vTmp.num := AId;
-  vTmp.w := fResources[AId].bmp.Width;
-  vTmp.h := fResources[AId].bmp.Height;
-
-  Result := vTmp;
-end;}
-
-{function tEngine2d.getBitmap(index: integer): tBitmap;
-var
-  temp: tBitmap;
-begin
-  temp := tBitmap.Create;
-  temp.Assign(fResources[index].bmp);
-  result := temp;
-end; }
-
-function tEngine2d.getObject(index: integer): tEngine2DObject;
-begin
-  fCritical.Enter;
-  result := fSprites[index];
-  fCritical.Leave;
-end;
-
-function tEngine2d.getSpriteCount: integer;
-begin
-  result := fSprites.Count;//length(fSprites)
-end;
-
-function tEngine2d.GetWidth: integer;
-begin
-  Result := Round(Self.fImage.Width);
 end;
 
 procedure tEngine2d.init(newImage: tImage);

@@ -28,6 +28,7 @@ implementation
 function TLoader.BigAstroid: TAsteroid;
 var
   vSpr: TAsteroid;
+  vFigure: TCircleFigure;
 begin
   vSpr := TAsteroid.Create(FEngine);
   vSpr.Parent := FEngine;
@@ -37,6 +38,13 @@ begin
   vSpr.y := Random(FEngine.Height);
   vSpr.Rotate := Random(360);
   vSpr.Scale := 0.5;
+
+  vFigure := TCircleFigure.Create;
+  vFigure.X := 0;
+  vFigure.Y := 0;
+  vFigure.Radius := 50;
+  vSpr.Shape.AddFigure(vFigure);
+
   FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
 
   Result := vSpr;
