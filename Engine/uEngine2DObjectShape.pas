@@ -188,7 +188,8 @@ begin
       tEngine2DObject(FOwner).ScalePoint, tEngine2DObject(FOwner).Rotate, tEngine2DObject(FOwner).Center);
     for j := 0 to AShape.Count - 1 do
       if Sqr(FFigures[i].X - FFigures[j].X) + Sqr(FFigures[i].Y - FFigures[j].Y) <=
-        Sqr(FFigures[i].MaxRadius * tEngine2DObject(AShape.Owner).ScaleX +FFigures[j].MaxRadius *tEngine2DObject(AShape.Owner).ScaleX ) then
+       Sqr(FFigures[i].MaxRadius * tEngine2DObject(AShape.Owner).ScaleX +FFigures[j].MaxRadius * tEngine2DObject(AShape.Owner).ScaleX )
+      then
         begin
          if IsFiguresCollide(
            vFigure,
@@ -197,6 +198,9 @@ begin
           Exit(True)
         end;
   end;
+
+//  if (FFigures[i]) is TCircleFigure
+
 
   Result := False;
 end;

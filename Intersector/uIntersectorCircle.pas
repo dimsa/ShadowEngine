@@ -23,7 +23,7 @@ type
     procedure Rotate(const AValue: Single); override;
     procedure Scale(const AValue: TPointF); override;
 
-    function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPoint): TFigure;
+    function InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPointF): TFigure; override;
 //    procedure FastMigration(const AScale: TPointF; const ARotate: Single); override;
 //    function BelongPointLocal(const AX, AY: Single): Boolean; override; // Тут координаты должны вводиться в местных координатах, т.е. например MouseX - Figure.X и т.д.
     function BelongPointLocal(const APoint: TPointF): Boolean; override;
@@ -118,14 +118,13 @@ begin
   );
 end;  }
 
-function TCircleFigure.InGlobal(const AScale: TPointF; const ARotate: Single;
-  const ATranslate: TPoint): TFigure;
+function TCircleFigure.InGlobal(const AScale: TPointF; const ARotate: Single; const ATranslate: TPointF): TFigure;
 var
   vRes: TFigure;
 begin
   vRes := TCircleFigure.Create;
   vRes.Assign(Self);
-
+  vRes.AutoCalcMaxRadius := False;
   vRes.Scale(AScale);
   vRes.Rotate(ARotate);
   vRes.Center := ATranslate;

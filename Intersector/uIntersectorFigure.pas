@@ -7,6 +7,7 @@ uses
   uIntersectorClasses, uIntersectorShapeModificator;
 
 type
+  // Это класс, хранящий в себе информацию о геометрической фигуре
   TFigure = class abstract
   private
     FAutoCalcRadius: Boolean;

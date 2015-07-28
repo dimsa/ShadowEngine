@@ -28,6 +28,8 @@ type
 
     procedure Assign(const AFigure: TFigure); override;
     function Clone: TFigure; override;
+
+    constructor Create; override;
   end;
 
 implementation
@@ -103,6 +105,12 @@ begin
   Result := vRes;
 end;
 
+constructor TPolyFigure.Create;
+begin
+  inherited;
+
+end;
+
 procedure TPolyFigure.Draw(AImage: TImage);
 begin
   inherited;
@@ -145,7 +153,7 @@ var
 begin
   vRes := TPolyFigure.Create;
   vRes.Assign(Self);
-
+  vRes.AutoCalcMaxRadius := False;
   vRes.Scale(AScale);
   vRes.Rotate(ARotate);
   vRes.Center := ATranslate;

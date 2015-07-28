@@ -41,7 +41,7 @@ var
   vShipFigure: TObjectShape;
   i, vN: Integer;
 begin
-exit;
+//exit;
 //  vShipFigure := FShip.Shape.
   vN := FAsteroids.Count - 1;
   for i := 0 to vN do
