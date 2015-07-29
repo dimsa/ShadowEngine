@@ -6,22 +6,17 @@ object mainForm: TmainForm
   ClientWidth = 691
   FormFactor.Width = 320
   FormFactor.Height = 480
-  FormFactor.Devices = [dkDesktop, dkiPhone, dkiPad]
+  FormFactor.Devices = [Desktop, iPhone, iPad]
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnResize = FormResize
-  DesignerMobile = False
-  DesignerWidth = 0
-  DesignerHeight = 0
-  DesignerDeviceName = ''
-  DesignerOrientation = 0
-  DesignerOSVersion = ''
+  DesignerMasterStyle = 0
   object mainImage: TImage
     MultiResBitmap = <
       item
       end>
-    Height = 50.000000000000000000
-    Width = 50.000000000000000000
+    Size.Width = 50.000000000000000000
+    Size.Height = 50.000000000000000000
+    Size.PlatformDefault = False
   end
 end
-

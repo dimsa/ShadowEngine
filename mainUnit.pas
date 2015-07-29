@@ -26,14 +26,33 @@ var
   DrawSelect: Boolean;
 implementation
 
+uses
+  uNewFigure, uIntersectorClasses{$IFDEF VER290}, System.Math.Vectors {$ENDIF};
+
 {$R *.fmx}
 
 procedure TmainForm.FormCreate(Sender: TObject);
+var
+  vFigure: TNewFigure;
+  vCircle: TCircle;
+  vPoly: TPolygon;
 begin
   Game := TDemoGame.Create;
   Game.Image := mainImage;
   DrawSelect := False;
   Game.Prepare;
+
+  SetLength(vPoly, 3);
+  vPoly[0] := PointF(25, 25);
+  vPoly[1] := PointF(37, 37);
+  vPoly[2] := PointF(-80, -80);
+
+  vCircle.X := 26;
+  vCircle.Y := -26;
+  vCircle.Radius := 99;
+
+  vFigure := TNewFigure.Create(TNewFigure.cfPoly);
+  vFigure.SetData(vPoly);
 end;
 
 procedure TmainForm.FormKeyDown(Sender: TObject; var Key: Word;
@@ -57,4 +76,5 @@ begin
 end;
 
 end.
+
 

@@ -11,6 +11,7 @@ uses
   function SqrDistance(const APoint1, APoint2: TPointF): Double; overload; // Находит сумму квадратов
   function SqrDistance(const AX1, AY1, AX2, AY2: Double): Double; overload; // Находит сумму квадратов
   function Distance(const APoint1, APoint2: TPointF): Double; overload; // Находит растояние между точками
+  function Distance(const APoint: TPointF): Double; overload; // Находит растояние между точками, где первая в нуле
   function Distance(const AX1, AY1, AX2, AY2: Double): Double; overload; // Находит растояние между точками
 
     // Некоторые функции взяты или подсмотрены в FastGEO http://www.partow.net/projects/fastgeo/
@@ -29,11 +30,49 @@ uses
   function CirclePolyCollide(const AFigure1: TPolygon; const AFigure2: TCircle): Boolean;
   function PolyPolyCollide(const AFigure1, AFigure2: TPolygon): Boolean;
 
+  procedure RotatePoly(var AFigure: TPolygon; const AAngle: Single);
+  procedure TranslatePoly(var AFigure: TPolygon; const APoint: TPointF);
+  procedure ScalePoly(var AFigure: TPolygon; const APoint: TPointF);
+
+  procedure RotateCircle(var AFigure: TCircle; const AAngle: Single);
+  procedure TranslateCircle(var AFigure: TCircle; const APoint: TPointF);
+  procedure ScaleCircle(var AFigure: TCircle; const APoint: TPointF);
+
   function IsFiguresCollide(const AFigure1, AFigure2: TFigure): Boolean;
 
 implementation
 
-{ TIntersectionComparer }
+procedure RotatePoly(var AFigure: TPolygon; const AAngle: Single);
+begin
+
+end;
+
+procedure TranslatePoly(var AFigure: TPolygon; const APoint: TPointF);
+begin
+
+end;
+
+procedure ScalePoly(var AFigure: TPolygon; const APoint: TPointF);
+begin
+
+end;
+
+
+procedure RotateCircle(var AFigure: TCircle; const AAngle: Single);
+begin
+
+end;
+
+procedure TranslateCircle(var AFigure: TCircle; const APoint: TPointF);
+begin
+
+end;
+
+procedure ScaleCircle(var AFigure: TCircle; const APoint: TPointF);
+begin
+
+end;
+
 
 function CircleCircleCollide(const AFigure1,
   AFigure2: TCircle): Boolean;
@@ -94,12 +133,17 @@ end;
 
 function Distance(const AX1, AY1, AX2, AY2: Double): Double;
 begin
-  Result := Sqrt((AX2 - AX1) + (AY2 - AY1));
+  Result := Sqrt(Sqr(AX2 - AX1) + Sqr(AY2 - AY1));
 end;
 
 function Distance(const APoint1, APoint2: TPointF): Double;
 begin
-  Result := Sqrt((APoint2.X - APoint1.X) + (APoint2.Y - APoint1.Y));
+  Result := Sqrt(Sqr(APoint2.X - APoint1.X) + Sqr(APoint2.Y - APoint1.Y));
+end;
+
+function Distance(const APoint: TPointF): Double;
+begin
+  Result := Sqrt((APoint.X * APoint.X) + (APoint.Y * APoint.Y));
 end;
 
 {function Instance: TIntersectionComparer;

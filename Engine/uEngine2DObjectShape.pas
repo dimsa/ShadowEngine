@@ -6,18 +6,16 @@ uses
   System.Types, System.Generics.Collections,System.Math, System.UITypes,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2DClasses, uIntersectorFigure, uIntersectorCircle, uIntersectorPoly,
-  uIntersectorMethods, uIntersectorShapeModificator;
+  uIntersectorMethods, uIntersectorShapeModificator, uIntersectorClasses;
 
 type
   TObjectShape = class
   private
-//    FCalcedFigures: TArray<TFigure>;
     FFigures: TArray<TFigure>;
     FParent: Pointer;
     FOwner: Pointer;
     FNeedRecalc: Boolean;
     FSize: Single;
-    FModificators: TList<TShapeModificator>;
     function GetOuterRect: TRectF;
     function GetFigure(Index: Integer): TFigure;
     //procedure SetFigure(Index: Integer; const Value: TFigure);
@@ -175,27 +173,62 @@ end;
 
 function TObjectShape.IsIntersectWith(AShape: TObjectShape): Boolean;
 var
-  i, j, vN: Integer;
+  i, j, vN, vL: Integer;
   vFigure: TFigure;
+  vPoly1, vPoly2: TPolygon;
+  vCircle1, vCircle2: TCircle;
+  vOwner, vShapeOwner: tEngine2DObject;
 begin
 {  Sqr(FFigures[i].X - FFigures[j].X) + Sqr(FFigures[i].Y - FFigures[j].Y) <=
    Sqr(FFigures[i].MaxRadius+FFigures[j].MaxRadius)}
-
-  vN := Length(FFigures) - 1;
+  vOwner := FParent;
+  vShapeOwner := AShape.Owner;
+  vN := Self.Count - 1;
+  vL := AShape.Count - 1;
   for i := 0 to vN do
   begin
-    vFigure := FFigures[i].InGlobal(
-      tEngine2DObject(FOwner).ScalePoint, tEngine2DObject(FOwner).Rotate, tEngine2DObject(FOwner).Center);
-    for j := 0 to AShape.Count - 1 do
-      if Sqr(FFigures[i].X - FFigures[j].X) + Sqr(FFigures[i].Y - FFigures[j].Y) <=
-       Sqr(FFigures[i].MaxRadius * tEngine2DObject(AShape.Owner).ScaleX +FFigures[j].MaxRadius * tEngine2DObject(AShape.Owner).ScaleX )
+    vFigure := FFigures[i];
+    if vFigure is TPolyFigure then
+    begin
+      vPoly1 := TPolyFigure(vFigure).AsType;
+      ScalePoly(vPoly1, vOwner.ScalePoint);
+      RotatePoly(vPoly1, vOwner.Rotate);
+      TranslatePoly(vPoly1, vOwner.Center);
+    end;
+
+    for j := 0 to vL do
+    begin
+      if AShape.Figures[j] is TPolyFigure then
+        vPoly2 := TPolyFigure(AShape.Figures[j]).AsType;
+    end;
+
+
+{    vFigure := FFigures[i].InGlobal(
+      tEngine2DObject(FOwner).ScalePoint, tEngine2DObject(FOwner).Rotate, tEngine2DObject(FOwner).Center); }
+
+    for j := 0 to vL do
+      if Sqr(FFigures[i].X - AShape.Figures[j].X) + Sqr(FFigures[i].Y - AShape.Figures[j].Y) <=
+       Sqr(
+         FFigures[i].MaxRadius * tEngine2DObject(Self.Owner).ScaleX +
+         AShape.Figures[j].MaxRadius * tEngine2DObject(AShape.Owner).ScaleX )
       then
         begin
-         if IsFiguresCollide(
+           //ÍÀÄÎ ÏÅÐÅÂÎÄÈÒÜ Â ÃËÎÁÀËÜÍÛÅ ÊÎÎÐËÈÍÀÒÛ ÏÅÐÅÄ ÑÐÀÂÍÅÍÈÅÌ
+          Exit(True)
+
+      {    if Distance(FFigures[i].Center, FFigures[j].Center) <
+            Sqrt(FFigures[i].MaxRadius *  tEngine2DObject(Self.Owner).ScaleX) }
+  {  vFigure := FFigures[i];
+    if vFigure is TPolyFigure then
+      vPoly1 := MatrixTransform(TPolyFigure(vFigure).AsType);
+    if vFigure is TPolyFigure then
+      vCircle1 := MatrixTransform(TCircleFigure(vFigure).AsType);  }
+
+{         if IsFiguresCollide(
            vFigure,
            AShape.Figures[j].InGlobal(tEngine2DObject(AShape.Owner).ScalePoint, tEngine2DObject(AShape.Owner).Rotate, tEngine2DObject(AShape.Owner).Center)
          ) then
-          Exit(True)
+          Exit(True)  }
         end;
   end;
 
