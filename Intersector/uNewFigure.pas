@@ -68,7 +68,19 @@ end;
 
 function TNewFigure.IsIntersectWith(const AFigure: TNewFigure): Boolean;
 begin
-
+  case FKind of
+    cfCircle:
+      case AFigure.Kind of
+        cfCircle: Exit(CircleCircleCollide(Self.AsCircle, AFigure.AsCircle));
+        cfPoly: Exit(CirclePolyCollide(AFigure.AsPoly, Self.AsCircle));
+      end;
+    cfPoly:
+      case AFigure.Kind of
+        cfCircle: Exit(CirclePolyCollide(Self.AsPoly, AFigure.AsCircle));
+        cfPoly: Exit(PolyPolyCollide(Self.AsPoly, AFigure.AsPoly));
+      end;
+  end;
+  Result := False;
 end;
 
 procedure TNewFigure.RecalcMaxRadius;
@@ -104,11 +116,6 @@ begin
 end;
 
 procedure TNewFigure.SetData(const vData: TCircle);
-{var
-  vP: Pointer;
-begin
-  vP := @vData;
-  GetMem(vP, SizeOf(Single) *4);  }
 begin
   if Length(FData) < 2 then
     SetLength(FData, 2);
@@ -139,7 +146,6 @@ begin
     FTemp[i].Y := (vTemp) * Sin(AAngle * pi180) + (FTemp[i].Y) * Cos(AAngle * pi180);
   end;
 
-//  RecalcMaxRadius;
 end;
 
 procedure TNewFigure.TempScale(const APoint: TPointF);
@@ -160,8 +166,6 @@ begin
   vN := Length(FTemp) - 1;
   for i := 0 to vN do
     FTemp[i] := FTemp[i] + APoint;
-
-  //RecalcMaxRadius;
 end;
 
 end.
