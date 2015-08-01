@@ -5,7 +5,7 @@ interface
 uses
   System.Generics.Collections, System.Types, System.Classes,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math,
-  uIntersectorClasses, uIntersectorMethods;
+  uIntersectorClasses, uIntersectorMethods, FMX.Objects, System.UITypes;
 
 type
   TNewFigure = class
@@ -15,27 +15,33 @@ type
     FTemp: TArray<TPointF>; // Темповые координаты. Задаются через Temp методы
     FTempMaxRadius: Single;
     procedure RecalcMaxRadius;
-    function GetCircle: TCircle;
+    function GetCircle: uIntersectorClasses.TCircle;
     function GetPoly: TPolygon; // Вызывается в SetData
   public
     property Kind: Byte read FKind; // Тип. Круг или полигон пока что
     property Temp: TArray<TPointF> read FTemp write FTemp;
     property TempMaxRadius: Single read FTempMaxRadius; // Временный радиус. Т.е. с учетом масштаба
-    property AsCircle: TCircle read GetCircle;
+    property AsCircle: uIntersectorClasses.TCircle read GetCircle;
     property AsPoly: TPolygon read GetPoly;
 
     procedure Reset; // Сбрасывает темповые координат на начальные.
     procedure SetData(const vData: TArray<TPointF>); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const vData: TPolygon); overload;// Трактует данные в зависимости от своего типа
-    procedure SetData(const vData: TCircle); overload;// Трактует данные в зависимости от своего типа
+    procedure SetData(const vData: uIntersectorClasses.TCircle); overload;// Трактует данные в зависимости от своего типа
+    procedure AddPoint(const APoint: TPointF); // Добавляет точку фигуре и пересчитывает её
 
     procedure TempTranslate(const APoint: TPointF);
     procedure TempRotate(const AAngle: Single);
     procedure TempScale(const APoint: TPointF);
 
     function IsIntersectWith(const AFigure: TNewFigure): Boolean;
+    function FastIntersectWith(const AFigure: TNewFigure): Boolean;
+    function BelongPointLocal(const APoint: TPointF): Boolean;
+    procedure Draw(AImage: TImage);
 
     constructor Create(const AKind: Byte);
+    constructor CreatePoly;
+    constructor CreateCircle;
   const
     cfCircle = 1;
     cfPoly = 2;
@@ -47,6 +53,22 @@ implementation
 
 { TNewFigure }
 
+procedure TNewFigure.AddPoint(const APoint: TPointF);
+begin
+  SetLength(FData, Length(FData) + 1);
+  FData[High(FData)] := APoint;
+  Reset;
+end;
+
+function TNewFigure.BelongPointLocal(const APoint: TPointF): Boolean;
+begin
+  Reset;
+  case FKind of
+    cfCircle: Exit(uIntersectorMethods.IsPointInCircle(APoint, AsCircle));
+    cfPoly: Exit(uIntersectorMethods.IsPointInPolygon(APoint, AsPoly));
+  end;
+end;
+
 constructor TNewFigure.Create(const AKind: Byte);
 begin
   FKind := AKind;
@@ -54,7 +76,48 @@ begin
   FTemp := FData;
 end;
 
-function TNewFigure.GetCircle: TCircle;
+constructor TNewFigure.CreateCircle;
+begin
+  Self.Create(cfCircle);
+end;
+
+constructor TNewFigure.CreatePoly;
+begin
+  Self.Create(cfPoly);
+end;
+
+procedure TNewFigure.Draw(AImage: TImage);
+begin
+  case FKind of
+    cfCircle:
+    begin
+      AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Aqua;
+      AImage.Bitmap.Canvas.FillEllipse(
+        RectF(
+        FTemp[0].X - FTemp[1].X,
+        Temp[0].Y - FTemp[1].X,
+        Temp[0].X + FTemp[1].X,
+        Temp[0].Y + FTemp[1].X),
+        0.75
+      );
+    end;
+    cfPoly:
+    begin
+      AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Blue;
+      AImage.Bitmap.Canvas.FillPolygon(AsPoly, 0.75);
+    end;
+  end;
+end;
+
+function TNewFigure.FastIntersectWith(const AFigure: TNewFigure): Boolean;
+begin
+  Result :=
+    (Sqr(Self.FTemp[0].X - AFigure.Temp[0].Y) +
+    Sqr(Self.FTemp[0].Y - AFigure.Temp[0].X)) <
+    Sqr(AFigure.TempMaxRadius + Self.TempMaxRadius);
+end;
+
+function TNewFigure.GetCircle: uIntersectorClasses.TCircle;
 begin
   Result.X := FTemp[0].X;
   Result.Y := FTemp[0].Y;
@@ -64,6 +127,7 @@ end;
 function TNewFigure.GetPoly: TPolygon;
 begin
   Result := @FTemp;
+  SetLength(Result, Length(FTemp));
 end;
 
 function TNewFigure.IsIntersectWith(const AFigure: TNewFigure): Boolean;
@@ -112,10 +176,10 @@ begin
   FData := @vData[0];
  // SetLength(FData, Length(vData));
   FTemp := FData;
-  RecalcMaxRadius;
+  Reset;
 end;
 
-procedure TNewFigure.SetData(const vData: TCircle);
+procedure TNewFigure.SetData(const vData: uIntersectorClasses.TCircle);
 begin
   if Length(FData) < 2 then
     SetLength(FData, 2);
@@ -123,13 +187,13 @@ begin
   FData[0] := PointF(vData.X, vData.Y);
   FData[1] := PointF(vData.Radius, vData.Radius);
   FTemp := FData;
-  RecalcMaxRadius;
+  Reset;
 end;
 
 procedure TNewFigure.SetData(const vData: TArray<TPointF>);
 begin
   FData := vData;
-  FTemp := FData;
+  Reset;
 end;
 
 procedure TNewFigure.TempRotate(const AAngle: Single);

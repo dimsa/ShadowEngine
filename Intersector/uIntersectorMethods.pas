@@ -30,45 +30,57 @@ uses
   function CirclePolyCollide(const AFigure1: TPolygon; const AFigure2: TCircle): Boolean;
   function PolyPolyCollide(const AFigure1, AFigure2: TPolygon): Boolean;
 
-  procedure RotatePoly(var AFigure: TPolygon; const AAngle: Single);
-  procedure TranslatePoly(var AFigure: TPolygon; const APoint: TPointF);
-  procedure ScalePoly(var AFigure: TPolygon; const APoint: TPointF);
+  procedure Rotate(var AFigure: TPolygon; const AAngle: Single); overload;
+  procedure Translate(var AFigure: TPolygon; const APoint: TPointF); overload;
+  procedure Scale(var AFigure: TPolygon; const APoint: TPointF); overload;
 
-  procedure RotateCircle(var AFigure: TCircle; const AAngle: Single);
-  procedure TranslateCircle(var AFigure: TCircle; const APoint: TPointF);
-  procedure ScaleCircle(var AFigure: TCircle; const APoint: TPointF);
+  procedure Rotate(var AFigure: TCircle; const AAngle: Single); overload;
+  procedure Translate(var AFigure: TCircle; const APoint: TPointF); overload;
+  procedure Scale(var AFigure: TCircle; const APoint: TPointF); overload;
+  procedure AddPoint(var AFigure: TPolygon; const APoint: TPointF);
+  procedure Clear(var AFigure: TPolygon);
 
   function IsFiguresCollide(const AFigure1, AFigure2: TFigure): Boolean;
 
 implementation
 
-procedure RotatePoly(var AFigure: TPolygon; const AAngle: Single);
+procedure Clear(var AFigure: TPolygon);
+begin
+  SetLength(AFigure, 0);
+end;
+
+procedure AddPoint(var AFigure: TPolygon; const APoint: TPointF);
+begin
+  SetLength(AFigure, Length(AFigure) + 1);
+  AFigure[High(AFigure)] := APoint;
+end;
+
+procedure Rotate(var AFigure: TPolygon; const AAngle: Single); overload;
 begin
 
 end;
 
-procedure TranslatePoly(var AFigure: TPolygon; const APoint: TPointF);
+procedure Translate(var AFigure: TPolygon; const APoint: TPointF); overload;
 begin
 
 end;
 
-procedure ScalePoly(var AFigure: TPolygon; const APoint: TPointF);
+procedure Scale(var AFigure: TPolygon; const APoint: TPointF); overload;
 begin
 
 end;
 
-
-procedure RotateCircle(var AFigure: TCircle; const AAngle: Single);
+procedure Rotate(var AFigure: TCircle; const AAngle: Single); overload;
 begin
 
 end;
 
-procedure TranslateCircle(var AFigure: TCircle; const APoint: TPointF);
+procedure Translate(var AFigure: TCircle; const APoint: TPointF); overload;
 begin
 
 end;
 
-procedure ScaleCircle(var AFigure: TCircle; const APoint: TPointF);
+procedure Scale(var AFigure: TCircle; const APoint: TPointF); overload;
 begin
 
 end;

@@ -3,21 +3,21 @@ unit uEngine2DObjectShape;
 interface
 
 uses
-  System.Types, System.Generics.Collections,System.Math, System.UITypes,
+  System.Types, System.Generics.Collections, System.UITypes, System.Math,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2DClasses, uIntersectorFigure, uIntersectorCircle, uIntersectorPoly,
-  uIntersectorMethods, uIntersectorShapeModificator, uIntersectorClasses;
+  uIntersectorMethods, uIntersectorShapeModificator, uIntersectorClasses, uNewFigure;
 
 type
   TObjectShape = class
   private
-    FFigures: TArray<TFigure>;
+    FFigures: TArray<TNewFigure>;
     FParent: Pointer;
     FOwner: Pointer;
     FNeedRecalc: Boolean;
     FSize: Single;
     function GetOuterRect: TRectF;
-    function GetFigure(Index: Integer): TFigure;
+    function GetFigure(Index: Integer): TNewFigure;
     //procedure SetFigure(Index: Integer; const Value: TFigure);
     function GetCount: Integer;
     procedure SetSize(const Value: Single);
@@ -26,7 +26,7 @@ type
     property NeedRecalc: Boolean read FNeedRecalc write fNeedRecalc; // Показывает, нужно ли пересчитывать фигуры
     property Parent: Pointer read FParent write FParent; // ССылка на TEngine2D
     property Owner: Pointer read FOwner write FOwner; // Хозяин фигуры TEngine2DObject
-    property Figures[Index: Integer]: TFigure read GetFigure;// write SetFigure; default; // Это уже посчитанные фигуры
+    property Figures[Index: Integer]: TNewFigure read GetFigure; default;
 //    function ToWorldCoord(const AFigure: TFigure): TFigure;
 //    property OriginFigures
 //    property OriginFigures: TList<TFigure> read FOriginFigures;
@@ -36,12 +36,13 @@ type
     property Size: Single read FSize write SetSize; // Испльзуется для быстрых расчетов
     procedure Draw; // Рисует форму фигуры
 //    procedure Recalc; // Пересчитывает фигуры, согласно масштабу, повороту и положению хозяина
-    function IsPointInFigure(const APoint: TPointF; const AFigure: TFigure): Boolean;
-    function AddFigure(AFigure: TFigure): Integer;
+    function IsPointInFigure(const APoint: TPointF; const AFigure: TNewFigure): Boolean;
+    function AddFigure(AFigure: TNewFigure): Integer;
     function RemoveFigure(const AIndex: Integer): TFigure;
     function UnderTheMouse(const MouseX, MouseY: double): boolean; virtual; // Говорит, попала ли мышь в круг спрайта. Круг с диаметром - диагональю прямоугольника спрайта
     function IsIntersectWith(AShape: TObjectShape): Boolean; // Пересекаеися ли с конкретной фигурой
     function Intersections: TList<TObjectShape>; // Список всех пересечений с другими фигурами
+    procedure ToGlobal;
     constructor Create;
     destructor Destroy;
   const
@@ -55,7 +56,7 @@ uses
 
 { TObjectShape }
 
-function TObjectShape.AddFigure(AFigure: TFigure): Integer;
+function TObjectShape.AddFigure(AFigure: TNewFigure): Integer;
 begin
 //  SetLength(FCalcedFigures, Length(FCalcedFigures) + 1);
   SetLength(FFigures, Length(FFigures) + 1);
@@ -86,17 +87,15 @@ end;
 
 procedure TObjectShape.Draw;
 var
-  vFigure, vTemp: TFigure;
+  vFigure: TNewFigure;
 begin
-  // it's only for debug, so it not very fast
+  // it's only for debug, so it is not very fast
   if Length(Self.FFigures) > 0 then
   begin
     for vFigure in FFigures do
     begin
-      vTemp := vFigure.Clone;
-      vTemp.X := vTemp.X + TEngine2DObject(Owner).x;
-      vTemp.Y := vTemp.Y + TEngine2DObject(Owner).y;
-      vTemp.Draw(TEngine2DObject(Owner).Image);
+//      vTemp := vFigure.Clone;
+      vFigure.TempTranslate(PointF(TEngine2DObject(Owner).x, TEngine2DObject(Owner).y));
 
       with TEngine2DObject(Owner) do
       begin
@@ -104,8 +103,8 @@ begin
         Image.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Gray;
         Image.Bitmap.Canvas.FillEllipse(
           RectF(
-            X - vFigure.MaxRadius, Y - vFigure.MaxRadius,
-            X + vFigure.MaxRadius, Y + vFigure.MaxRadius),
+            X - vFigure.TempMaxRadius, Y - vFigure.TempMaxRadius,
+            X + vFigure.TempMaxRadius, Y + vFigure.TempMaxRadius),
           0.15
         );
       end;
@@ -136,7 +135,7 @@ begin
   Result := Length(FFigures);
 end;
 
-function TObjectShape.GetFigure(Index: Integer): TFigure;
+function TObjectShape.GetFigure(Index: Integer): TNewFigure;
 begin
   Result := FFigures[Index];
 end;
@@ -174,9 +173,7 @@ end;
 function TObjectShape.IsIntersectWith(AShape: TObjectShape): Boolean;
 var
   i, j, vN, vL: Integer;
-  vFigure: TFigure;
-  vPoly1, vPoly2: TPolygon;
-  vCircle1, vCircle2: TCircle;
+  vFigure: TNewFigure;
   vOwner, vShapeOwner: tEngine2DObject;
 begin
 {  Sqr(FFigures[i].X - FFigures[j].X) + Sqr(FFigures[i].Y - FFigures[j].Y) <=
@@ -185,33 +182,18 @@ begin
   vShapeOwner := AShape.Owner;
   vN := Self.Count - 1;
   vL := AShape.Count - 1;
+  AShape.ToGlobal;
+  Self.ToGlobal;
   for i := 0 to vN do
   begin
-    vFigure := FFigures[i];
-    if vFigure is TPolyFigure then
-    begin
-      vPoly1 := TPolyFigure(vFigure).AsType;
-      ScalePoly(vPoly1, vOwner.ScalePoint);
-      RotatePoly(vPoly1, vOwner.Rotate);
-      TranslatePoly(vPoly1, vOwner.Center);
-    end;
+   // vFigure := FFigures[i];
 
     for j := 0 to vL do
-    begin
-      if AShape.Figures[j] is TPolyFigure then
-        vPoly2 := TPolyFigure(AShape.Figures[j]).AsType;
-    end;
-
-
-{    vFigure := FFigures[i].InGlobal(
-      tEngine2DObject(FOwner).ScalePoint, tEngine2DObject(FOwner).Rotate, tEngine2DObject(FOwner).Center); }
-
-    for j := 0 to vL do
-      if Sqr(FFigures[i].X - AShape.Figures[j].X) + Sqr(FFigures[i].Y - AShape.Figures[j].Y) <=
-       Sqr(
-         FFigures[i].MaxRadius * tEngine2DObject(Self.Owner).ScaleX +
-         AShape.Figures[j].MaxRadius * tEngine2DObject(AShape.Owner).ScaleX )
-      then
+      if FFigures[i].FastIntersectWith(AShape[j]) then
+        if FFigures[i].IsIntersectWith(AShape[j]) then
+          Exit(True);
+  end;
+     { then
         begin
            //НАДО ПЕРЕВОДИТЬ В ГЛОБАЛЬНЫЕ КООРЛИНАТЫ ПЕРЕД СРАВНЕНИЕМ
           Exit(True)
@@ -229,16 +211,14 @@ begin
            AShape.Figures[j].InGlobal(tEngine2DObject(AShape.Owner).ScalePoint, tEngine2DObject(AShape.Owner).Rotate, tEngine2DObject(AShape.Owner).Center)
          ) then
           Exit(True)  }
-        end;
-  end;
-
+      //  end;
 //  if (FFigures[i]) is TCircleFigure
 
 
   Result := False;
 end;
 
-function TObjectShape.IsPointInFigure(const APoint: TPointF; const AFigure: TFigure): Boolean;
+function TObjectShape.IsPointInFigure(const APoint: TPointF; const AFigure: TNewFigure): Boolean;
 var
   vPoint: TPointF;
 begin
@@ -259,9 +239,6 @@ var
   vRes: TVector;
   vScale, vRotate, vTranslate: TMatrix;
 begin
-//  with tEngine2DObject(Owner) do
-//  begin
-//    vTranslate := TMatrix.CreateTranslation(tEngine2DObject(Owner).x, tEngine2DObject(Owner).y )
     vRotate := TMatrix.CreateRotation(-tEngine2DObject(Owner).Rotate * pi180);
     vScale := TMatrix.CreateScaling(1 / tEngine2DObject(Owner).ScaleX, 1 / tEngine2DObject(Owner).ScaleY);
     Result := TVector.Create(APoint.X - tEngine2DObject(Owner).x, APoint.y - tEngine2DObject(Owner).y) * vScale * vRotate;
@@ -306,6 +283,19 @@ end;}
 procedure TObjectShape.SetSize(const Value: Single);
 begin
   FSize := Value;
+end;
+
+procedure TObjectShape.ToGlobal;
+var
+  vFigure: TNewFigure;
+begin
+  for vFigure in FFigures do
+  begin
+    vFigure.Reset;
+    vFigure.TempScale(tEngine2DObject(Owner).ScalePoint);
+    vFigure.TempRotate(tEngine2DObject(Owner).Rotate);
+    vFigure.TempTranslate(tEngine2DObject(Owner).Center);
+  end;
 end;
 
 (* function TObjectShape.ToWorldCoord(const AFigure: TFigure): TFigure;
