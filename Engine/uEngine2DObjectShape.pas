@@ -5,7 +5,7 @@ interface
 uses
   System.Types, System.Generics.Collections, System.UITypes, System.Math,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
-  uEngine2DClasses, uIntersectorFigure, uIntersectorCircle, uIntersectorPoly,
+  uEngine2DClasses,
   uIntersectorMethods, uIntersectorShapeModificator, uIntersectorClasses, uNewFigure;
 
 type
@@ -38,11 +38,12 @@ type
 //    procedure Recalc; // Пересчитывает фигуры, согласно масштабу, повороту и положению хозяина
     function IsPointInFigure(const APoint: TPointF; const AFigure: TNewFigure): Boolean;
     function AddFigure(AFigure: TNewFigure): Integer;
-    function RemoveFigure(const AIndex: Integer): TFigure;
+    function RemoveFigure(const AIndex: Integer): TNewFigure;
     function UnderTheMouse(const MouseX, MouseY: double): boolean; virtual; // Говорит, попала ли мышь в круг спрайта. Круг с диаметром - диагональю прямоугольника спрайта
     function IsIntersectWith(AShape: TObjectShape): Boolean; // Пересекаеися ли с конкретной фигурой
     function Intersections: TList<TObjectShape>; // Список всех пересечений с другими фигурами
     procedure ToGlobal;
+    procedure ToLocal;
     constructor Create;
     destructor Destroy;
   const
@@ -90,24 +91,12 @@ var
   vFigure: TNewFigure;
 begin
   // it's only for debug, so it is not very fast
+  //Self.ToLocal;
   if Length(Self.FFigures) > 0 then
   begin
     for vFigure in FFigures do
     begin
-//      vTemp := vFigure.Clone;
-      vFigure.TempTranslate(PointF(TEngine2DObject(Owner).x, TEngine2DObject(Owner).y));
-
-      with TEngine2DObject(Owner) do
-      begin
-        // Maximal radius of Figure to quick select
-        Image.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Gray;
-        Image.Bitmap.Canvas.FillEllipse(
-          RectF(
-            X - vFigure.TempMaxRadius, Y - vFigure.TempMaxRadius,
-            X + vFigure.TempMaxRadius, Y + vFigure.TempMaxRadius),
-          0.15
-        );
-      end;
+      vFigure.Draw(TEngine2DObject(Owner).Image);
     end;
   end
   else begin
@@ -119,7 +108,6 @@ begin
         TEngine2DObject(Owner).X + TEngine2DObject(Owner).w * 0.5,
         TEngine2DObject(Owner).Y + TEngine2DObject(Owner).h * 0.5),
         TEngine2DObject(Owner).opacity * 0.5);
-
   end;
 
   // Center of the all figures. Base point of sprite
@@ -189,7 +177,7 @@ begin
    // vFigure := FFigures[i];
 
     for j := 0 to vL do
-      if FFigures[i].FastIntersectWith(AShape[j]) then
+      //if FFigures[i].FastIntersectWith(AShape[j]) then
         if FFigures[i].IsIntersectWith(AShape[j]) then
           Exit(True);
   end;
@@ -261,7 +249,7 @@ begin
   ); }
 end;
 
-function TObjectShape.RemoveFigure(const AIndex: Integer): TFigure;
+function TObjectShape.RemoveFigure(const AIndex: Integer): TNewFigure;
 begin
 
 end;
@@ -296,6 +284,15 @@ begin
     vFigure.TempRotate(tEngine2DObject(Owner).Rotate);
     vFigure.TempTranslate(tEngine2DObject(Owner).Center);
   end;
+end;
+
+procedure TObjectShape.ToLocal;
+var
+  vN, i: Integer;
+begin
+  vN := Length(FFigures) - 1;
+  for i := 0 to vN do
+    FFigures[i].Reset;
 end;
 
 (* function TObjectShape.ToWorldCoord(const AFigure: TFigure): TFigure;

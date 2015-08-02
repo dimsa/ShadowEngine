@@ -11,21 +11,21 @@ type
   TNewFigure = class
   private
     FKind: Byte;
-    FData: TArray<TPointF>; // Оригинальная фигура. Задается через SetData
-    FTemp: TArray<TPointF>; // Темповые координаты. Задаются через Temp методы
+    FData: TPolygon; // Оригинальная фигура. Задается через SetData
+    FTemp: TPolygon; // Темповые координаты. Задаются через Temp методы
     FTempMaxRadius: Single;
     procedure RecalcMaxRadius;
     function GetCircle: uIntersectorClasses.TCircle;
     function GetPoly: TPolygon; // Вызывается в SetData
   public
     property Kind: Byte read FKind; // Тип. Круг или полигон пока что
-    property Temp: TArray<TPointF> read FTemp write FTemp;
+    property Temp: TPolygon read FTemp write FTemp;
     property TempMaxRadius: Single read FTempMaxRadius; // Временный радиус. Т.е. с учетом масштаба
     property AsCircle: uIntersectorClasses.TCircle read GetCircle;
     property AsPoly: TPolygon read GetPoly;
 
     procedure Reset; // Сбрасывает темповые координат на начальные.
-    procedure SetData(const vData: TArray<TPointF>); overload;// Трактует данные в зависимости от своего типа
+//    procedure SetData(const vData: TArray<TPointF>); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const vData: TPolygon); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const vData: uIntersectorClasses.TCircle); overload;// Трактует данные в зависимости от своего типа
     procedure AddPoint(const APoint: TPointF); // Добавляет точку фигуре и пересчитывает её
@@ -73,7 +73,7 @@ constructor TNewFigure.Create(const AKind: Byte);
 begin
   FKind := AKind;
   SetLength(FData, 0);
-  FTemp := FData;
+  FTemp := Copy(FData);
 end;
 
 constructor TNewFigure.CreateCircle;
@@ -88,16 +88,16 @@ end;
 
 procedure TNewFigure.Draw(AImage: TImage);
 begin
-  case FKind of
+   case FKind of
     cfCircle:
     begin
       AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Aqua;
       AImage.Bitmap.Canvas.FillEllipse(
         RectF(
         FTemp[0].X - FTemp[1].X,
-        Temp[0].Y - FTemp[1].X,
-        Temp[0].X + FTemp[1].X,
-        Temp[0].Y + FTemp[1].X),
+        FTemp[0].Y - FTemp[1].X,
+        FTemp[0].X + FTemp[1].X,
+        FTemp[0].Y + FTemp[1].X),
         0.75
       );
     end;
@@ -126,8 +126,7 @@ end;
 
 function TNewFigure.GetPoly: TPolygon;
 begin
-  Result := @FTemp;
-  SetLength(Result, Length(FTemp));
+  Result := FTemp;
 end;
 
 function TNewFigure.IsIntersectWith(const AFigure: TNewFigure): Boolean;
@@ -152,32 +151,35 @@ var
   i, vN: Integer;
 begin
   case FKind of
-    cfCircle: FTempMaxRadius := Distance(FData[0]) + FData[1].X;
+    cfCircle: FTempMaxRadius := Distance(FData[0]) + FTemp[1].X;
     cfPoly:
     begin
       vN := Length(FData) - 1;
-      FTempMaxRadius := Distance(FData[0]);
+      FTempMaxRadius := Distance(FTemp[0]);
       for i := 1 to vN do
-        FTempMaxRadius := Max(Distance(FData[i]), FTempMaxRadius)
+        FTempMaxRadius := Max(Distance(FTemp[i]), FTempMaxRadius)
     end;
   end;
 end;
 
 procedure TNewFigure.Reset;
 begin
-  FTemp := FData;
+  FTemp := Copy(FData);
   RecalcMaxRadius;
 end;
 
-procedure TNewFigure.SetData(const vData: TPolygon);
-
+{procedure TNewFigure.SetData(const vData: TPolygon);
+var
+  i, vN: Integer;
 begin
-  SetLength(FData, Length(vData));
-  FData := @vData[0];
- // SetLength(FData, Length(vData));
+  vN := Length(vData);
+  SetLength(FData, vN);
+  for i := 0 to vN - 1 do
+    FData[i] := vData[i];
+
   FTemp := FData;
   Reset;
-end;
+end; }
 
 procedure TNewFigure.SetData(const vData: uIntersectorClasses.TCircle);
 begin
@@ -186,13 +188,13 @@ begin
 
   FData[0] := PointF(vData.X, vData.Y);
   FData[1] := PointF(vData.Radius, vData.Radius);
-  FTemp := FData;
+  FTemp := Copy(FData);
   Reset;
 end;
 
-procedure TNewFigure.SetData(const vData: TArray<TPointF>);
+procedure TNewFigure.SetData(const vData: TPolygon);
 begin
-  FData := vData;
+  FData := Copy(vData);
   Reset;
 end;
 
@@ -201,7 +203,7 @@ var
   i, vN: Integer;
   vTemp: Single;
 begin
-  vN := Length(FTemp);
+  vN := Length(FTemp) - 1;
 
   for i := 0 to vN do
   begin
@@ -209,7 +211,6 @@ begin
     FTemp[i].X := (FTemp[i].X) * Cos(AAngle * pi180) - (FTemp[i].Y) * Sin(AAngle * pi180);
     FTemp[i].Y := (vTemp) * Sin(AAngle * pi180) + (FTemp[i].Y) * Cos(AAngle * pi180);
   end;
-
 end;
 
 procedure TNewFigure.TempScale(const APoint: TPointF);
@@ -227,9 +228,17 @@ procedure TNewFigure.TempTranslate(const APoint: TPointF);
 var
   i, vN: Integer;
 begin
-  vN := Length(FTemp) - 1;
-  for i := 0 to vN do
-    FTemp[i] := FTemp[i] + APoint;
+
+  case FKind of
+    cfCircle: FTemp[0] := FTemp[0] + APoint;
+    cfPoly:
+    begin
+      vN := Length(FTemp) - 1;
+      for i := 0 to vN do
+        FTemp[i] := FTemp[i] + APoint;
+    end;
+  end;
+
 end;
 
 end.

@@ -56,33 +56,57 @@ begin
 end;
 
 procedure Rotate(var AFigure: TPolygon; const AAngle: Single); overload;
+var
+  i, vN: Integer;
+  vTemp: Single;
 begin
+  vN := Length(AFigure);
 
+  for i := 0 to vN do
+  begin
+    vTemp := AFigure[i].X;
+    AFigure[i].X := (AFigure[i].X) * Cos(AAngle * pi180) - (AFigure[i].Y) * Sin(AAngle * pi180);
+    AFigure[i].Y := (vTemp) * Sin(AAngle * pi180) + (AFigure[i].Y) * Cos(AAngle * pi180);
+  end;
 end;
 
 procedure Translate(var AFigure: TPolygon; const APoint: TPointF); overload;
+var
+  i, vN: Integer;
 begin
-
+  vN := Length(AFigure) - 1;
+  for i := 0 to vN do
+    AFigure[i] := AFigure[i] + APoint;
 end;
 
 procedure Scale(var AFigure: TPolygon; const APoint: TPointF); overload;
+var
+  i, vN: Integer;
 begin
-
+  vN := Length(AFigure) - 1;
+  for i := 0 to vN do
+    AFigure[i] := AFigure[i] * APoint;
 end;
 
 procedure Rotate(var AFigure: TCircle; const AAngle: Single); overload;
+var
+  vTemp: Single;
 begin
-
+  vTemp := AFigure.X;
+  AFigure.X := (AFigure.X) * Cos(AAngle * pi180) - (AFigure.Y) * Sin(AAngle * pi180);
+  AFigure.Y := (vTemp) * Sin(AAngle * pi180) + (AFigure.Y) * Cos(AAngle * pi180);
 end;
 
 procedure Translate(var AFigure: TCircle; const APoint: TPointF); overload;
 begin
-
+  AFigure.X := AFigure.X + APoint.X;
+  AFigure.Y := AFigure.Y + APoint.Y;
 end;
 
 procedure Scale(var AFigure: TCircle; const APoint: TPointF); overload;
 begin
-
+  AFigure.X := AFigure.X * APoint.X;
+  AFigure.Y := AFigure.Y * APoint.Y;
 end;
 
 
