@@ -46,10 +46,12 @@ begin
   vN := FAsteroids.Count - 1;
   for i := 0 to vN do
     if FShip.Shape.IsIntersectWith(FAsteroids[i].Shape) then
-    begin
+      FAsteroids[i].Collide;
+    {begin
+
       FAsteroids[i].DX := - FAsteroids[i].DX;
       FAsteroids[i].DY := - FAsteroids[i].DY;
-    end;
+    end;  }
 
 end;
 

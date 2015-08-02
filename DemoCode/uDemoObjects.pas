@@ -9,8 +9,6 @@ uses
 
 type
 
-
-
   TShipFire = class(TSprite)
   private
     FTip: Byte;
@@ -37,10 +35,12 @@ type
   TAsteroid = class(TSprite)
   private
     FDx, FDy, FDA: Double; // —двиги
+    FNotChange: Integer; //  ол-во тиков, которое не будет измен€тьс€ направление при коллайдер
   public
     property DX: Double read FDx write FDx;
     property DY: Double read FDy write FDy;
     procedure Repaint; override;
+    procedure Collide;
     constructor Create(newParent: pointer); override;
   end;
 
@@ -156,12 +156,22 @@ end;
 
 { TAsteroid }
 
+procedure TAsteroid.Collide;
+begin
+  if FNotChange > 0 then
+     Exit;
+  FDX := - FDX;
+  FDY := - FDY;
+  FNotChange := 60;
+end;
+
 constructor TAsteroid.Create(newParent: pointer);
 begin
   inherited;
   FDx := Random;
   FDy := Random;
   FDA := Random - 0.5;
+  FNotChange := 0;
 end;
 
 procedure TAsteroid.Repaint;
@@ -176,13 +186,19 @@ begin
     Self.Rotate := 0;
 
   if Self.x > tEngine2d(Parent).Width + Self.scW then
-    Self.x := -Self.scW;
+    Self.x := -Self.scW
+  else
+    if Self.x < 0 - Self.scW then
+      Self.x :=  tEngine2d(Parent).Width + Self.scW;
 
   if Self.y > tEngine2d(Parent).Height + Self.scH then
-    Self.y := -Self.scH;
+    Self.y := -Self.scH
+  else
+  if Self.y < 0 - Self.scH then
+    Self.y := tEngine2d(Parent).Height + Self.scH;
 
-//  if Self.Shape.IsIntersectWith() then
-
+  if FNotChange > 0 then
+    Dec(FNotChange);
 
   inherited;
 end;

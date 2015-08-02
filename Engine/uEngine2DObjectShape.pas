@@ -91,11 +91,14 @@ var
   vFigure: TNewFigure;
 begin
   // it's only for debug, so it is not very fast
-  //Self.ToLocal;
+  ToGlobal;
   if Length(Self.FFigures) > 0 then
   begin
+
     for vFigure in FFigures do
     begin
+      vFigure.Reset;
+      vFigure.TempTranslate(tEngine2DObject(Owner).Center);
       vFigure.Draw(TEngine2DObject(Owner).Image);
     end;
   end
@@ -107,7 +110,7 @@ begin
         TEngine2DObject(Owner).Y - TEngine2DObject(Owner).h * 0.5,
         TEngine2DObject(Owner).X + TEngine2DObject(Owner).w * 0.5,
         TEngine2DObject(Owner).Y + TEngine2DObject(Owner).h * 0.5),
-        TEngine2DObject(Owner).opacity * 0.5);
+        TEngine2DObject(Owner).Opacity * 0.5);
   end;
 
   // Center of the all figures. Base point of sprite
