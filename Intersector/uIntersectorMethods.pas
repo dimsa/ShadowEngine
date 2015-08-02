@@ -11,6 +11,7 @@ uses
   function SqrDistance(const APoint1, APoint2: TPointF): Double; overload; // Находит сумму квадратов
   function SqrDistance(const AX1, AY1, AX2, AY2: Double): Double; overload; // Находит сумму квадратов
   function Distance(const APoint1, APoint2: TPointF): Double; overload; // Находит растояние между точками
+  function Distance(const APoint: TPointF): Double; overload; // Находит растояние между точками, где первая в нуле
   function Distance(const AX1, AY1, AX2, AY2: Double): Double; overload; // Находит растояние между точками
 
     // Некоторые функции взяты или подсмотрены в FastGEO http://www.partow.net/projects/fastgeo/
@@ -29,19 +30,93 @@ uses
   function CirclePolyCollide(const AFigure1: TPolygon; const AFigure2: TCircle): Boolean;
   function PolyPolyCollide(const AFigure1, AFigure2: TPolygon): Boolean;
 
+  procedure Rotate(var AFigure: TPolygon; const AAngle: Single); overload;
+  procedure Translate(var AFigure: TPolygon; const APoint: TPointF); overload;
+  procedure Scale(var AFigure: TPolygon; const APoint: TPointF); overload;
+
+  procedure Rotate(var AFigure: TCircle; const AAngle: Single); overload;
+  procedure Translate(var AFigure: TCircle; const APoint: TPointF); overload;
+  procedure Scale(var AFigure: TCircle; const APoint: TPointF); overload;
+  procedure AddPoint(var AFigure: TPolygon; const APoint: TPointF);
+  procedure Clear(var AFigure: TPolygon);
+
   function IsFiguresCollide(const AFigure1, AFigure2: TFigure): Boolean;
 
 implementation
 
-{ TIntersectionComparer }
+procedure Clear(var AFigure: TPolygon);
+begin
+  SetLength(AFigure, 0);
+end;
+
+procedure AddPoint(var AFigure: TPolygon; const APoint: TPointF);
+begin
+  SetLength(AFigure, Length(AFigure) + 1);
+  AFigure[High(AFigure)] := APoint;
+end;
+
+procedure Rotate(var AFigure: TPolygon; const AAngle: Single); overload;
+var
+  i, vN: Integer;
+  vTemp: Single;
+begin
+  vN := Length(AFigure);
+
+  for i := 0 to vN do
+  begin
+    vTemp := AFigure[i].X;
+    AFigure[i].X := (AFigure[i].X) * Cos(AAngle * pi180) - (AFigure[i].Y) * Sin(AAngle * pi180);
+    AFigure[i].Y := (vTemp) * Sin(AAngle * pi180) + (AFigure[i].Y) * Cos(AAngle * pi180);
+  end;
+end;
+
+procedure Translate(var AFigure: TPolygon; const APoint: TPointF); overload;
+var
+  i, vN: Integer;
+begin
+  vN := Length(AFigure) - 1;
+  for i := 0 to vN do
+    AFigure[i] := AFigure[i] + APoint;
+end;
+
+procedure Scale(var AFigure: TPolygon; const APoint: TPointF); overload;
+var
+  i, vN: Integer;
+begin
+  vN := Length(AFigure) - 1;
+  for i := 0 to vN do
+    AFigure[i] := AFigure[i] * APoint;
+end;
+
+procedure Rotate(var AFigure: TCircle; const AAngle: Single); overload;
+var
+  vTemp: Single;
+begin
+  vTemp := AFigure.X;
+  AFigure.X := (AFigure.X) * Cos(AAngle * pi180) - (AFigure.Y) * Sin(AAngle * pi180);
+  AFigure.Y := (vTemp) * Sin(AAngle * pi180) + (AFigure.Y) * Cos(AAngle * pi180);
+end;
+
+procedure Translate(var AFigure: TCircle; const APoint: TPointF); overload;
+begin
+  AFigure.X := AFigure.X + APoint.X;
+  AFigure.Y := AFigure.Y + APoint.Y;
+end;
+
+procedure Scale(var AFigure: TCircle; const APoint: TPointF); overload;
+begin
+  AFigure.X := AFigure.X * APoint.X;
+  AFigure.Y := AFigure.Y * APoint.Y;
+end;
+
 
 function CircleCircleCollide(const AFigure1,
   AFigure2: TCircle): Boolean;
 begin
   Result :=
-    (sqr(AFigure1.X-AFigure2.X)+sqr(AFigure1.Y-AFigure2.Y))
+    (sqr(AFigure2.X - AFigure1.X)+sqr(AFigure2.Y - AFigure1.Y))
     <=
-    (AFigure1.Radius + AFigure2.Radius);
+    Sqr(AFigure1.Radius + AFigure2.Radius);
 end;
 
 function CirclePolyCollide(const AFigure1: TPolygon; const AFigure2: TCircle): Boolean;
@@ -56,10 +131,10 @@ begin
   for i := 0 to vN do
     if IsPointInCircle(AFigure1[i], AFigure2) then
       Exit(True);
-
-  for i := 0 to vN-1 do
+                 { TODO : Fix LineCircleIntersection }
+  {for i := 0 to vN-1 do
     if IsLineIntersectCircle(AFigure1[i],AFigure1[i+1], AFigure2) then
-      Exit(True);
+      Exit(True);  }
 
   Result := False;
 end;
@@ -79,7 +154,10 @@ begin
   if isPointInPolygon(AFigure2[0], AFigure1) then
     Exit(True);
 
+{ TODO : Add Line-Line Intersection of polygon }
+
   Result := False;
+
 {  vN := Length(AFigure1) - 1;
   for i := 0 to vN do
     if isPointInPolygon(AFigure1[i], AFigure2)  then
@@ -94,12 +172,17 @@ end;
 
 function Distance(const AX1, AY1, AX2, AY2: Double): Double;
 begin
-  Result := Sqrt((AX2 - AX1) + (AY2 - AY1));
+  Result := Sqrt(Sqr(AX2 - AX1) + Sqr(AY2 - AY1));
 end;
 
 function Distance(const APoint1, APoint2: TPointF): Double;
 begin
-  Result := Sqrt((APoint2.X - APoint1.X) + (APoint2.Y - APoint1.Y));
+  Result := Sqrt(Sqr(APoint2.X - APoint1.X) + Sqr(APoint2.Y - APoint1.Y));
+end;
+
+function Distance(const APoint: TPointF): Double;
+begin
+  Result := Sqrt((APoint.X * APoint.X) + (APoint.Y * APoint.Y));
 end;
 
 {function Instance: TIntersectionComparer;
@@ -149,7 +232,7 @@ begin
     if AFigure2 is TPolyFigure then
       Result := PolyPolyCollide(TPolyFigure(AFigure1).AsType, TPolyFigure(AFigure2).AsType);
     if AFigure2 is TCircleFigure then
-      Result := CircleCircleCollide(TCircleFigure(AFigure1).AsType, TCircleFigure(AFigure2).AsType)
+      Result := CirclePolyCollide(TPolyFigure(AFigure1).AsType, TCircleFigure(AFigure2).AsType)
   end;
 end;
 

@@ -43,7 +43,8 @@ uses
   uIntersectorPoly in 'Intersector\uIntersectorPoly.pas',
   uEngine2DObjectShape in 'Engine\uEngine2DObjectShape.pas',
   uIntersectorShapeModificator in 'Intersector\uIntersectorShapeModificator.pas',
-  uEngine2DShapedSprite in 'Engine\uEngine2DShapedSprite.pas';
+  uEngine2DShapedSprite in 'Engine\uEngine2DShapedSprite.pas',
+  uNewFigure in 'Intersector\uNewFigure.pas';
 
 {$R *.res}
 

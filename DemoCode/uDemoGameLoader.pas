@@ -3,10 +3,11 @@ unit uDemoGameLoader;
 interface
 
 uses
-  SysUtils, System.Types,
+  SysUtils, System.Types, System.Math,
+  {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2D, uEngine2DSprite, uDemoObjects, uIntersectorClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
-  uIntersectorCircle, uIntersectorPoly;
+  uIntersectorCircle, uIntersectorPoly, uNewFigure, uIntersectorMethods;
 
 type
   TLoader = class
@@ -28,6 +29,8 @@ implementation
 function TLoader.BigAstroid: TAsteroid;
 var
   vSpr: TAsteroid;
+  vFigure: TNewFigure;
+  vCircle: TCircle;
 begin
   vSpr := TAsteroid.Create(FEngine);
   vSpr.Parent := FEngine;
@@ -37,6 +40,14 @@ begin
   vSpr.y := Random(FEngine.Height);
   vSpr.Rotate := Random(360);
   vSpr.Scale := 0.5;
+
+  vFigure := TNewFigure.Create(TNewFigure.cfCircle);
+  vCircle.X := 0;
+  vCircle.Y := 0;
+  vCircle.Radius := 50;
+  vFigure.SetData(vCircle);
+  vSpr.Shape.AddFigure(vFigure);
+
   FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
 
   Result := vSpr;
@@ -50,8 +61,11 @@ end;
 function TLoader.CreateShip: TShip;
 var
   vSpr: TShip;
-  vShape: TCircleFigure;
-  vPoly1, vPoly2, vPoly3: TPolyFigure;
+  vShape: TNewFigure;
+  vPoly: TPolygon;
+  vCircle: TCircle;
+  vPoly1, vPoly2, vPoly3: TNewFigure;
+
 begin
   vSpr := TShip.Create(FEngine);
   vSpr.Parent := FEngine;
@@ -61,41 +75,38 @@ begin
   vSpr.y := 200;//Random(FEngine.Height);
   vSpr.Rotate := Random(360);
   vSpr.Scale := 0.5;
-  vPoly1 := TPolyFigure.Create;
-  vPoly1.AddPoint(PointF(0,-200));
-  vPoly1.AddPoint(PointF(-50,200));
-  vPoly1.AddPoint(PointF(50,200));
-  vPoly1.AddPoint(PointF(80,-150));
-  vPoly1.AddPoint(PointF(120,-200));
 
-  vPoly1.X := 100;
-  vPoly1.Y := 0;
+  vPoly1 := TNewFigure.CreatePoly;
+  Clear(vPoly);
+  AddPoint(vPoly, PointF(0, -165));
+  AddPoint(vPoly, PointF(-50, -55));
+  AddPoint(vPoly, PointF(50, -55));
+  Scale(vPoly, PointF(0.9, 0.9));
+  vPoly1.SetData(vPoly);
 
-  vPoly2 := TPolyFigure.Create;
-  vPoly2.AddPoint(PointF(0,-200));
-  vPoly2.AddPoint(PointF(50,200));
-  vPoly2.AddPoint(PointF(-50,200));
-  vPoly2.AddPoint(PointF(-80,-150));
-  vPoly2.AddPoint(PointF(-120,-200));
+  vPoly2 := TNewFigure.CreatePoly;
+  Clear(vPoly);
+  AddPoint(vPoly, PointF(-95, -115));
+  AddPoint(vPoly, PointF(-70, -85));
+  AddPoint(vPoly, PointF(-55, -45));
+  AddPoint(vPoly, PointF(-115, 20));
+  Scale(vPoly, PointF(0.9, 0.9));
+  vPoly2.SetData(vPoly);
 
-  vPoly2.X := -100;
-  vPoly2.Y := 0;
+  vPoly3 := TNewFigure.CreatePoly;
+  Clear(vPoly);
+  AddPoint(vPoly, PointF(95, -115));
+  AddPoint(vPoly, PointF(70, -85));
+  AddPoint(vPoly, PointF(55, -45));
+  AddPoint(vPoly, PointF(115, 20));
+  Scale(vPoly, PointF(0.9, 0.9));
+  vPoly3.SetData(vPoly);
 
-  vPoly3 := TPolyFigure.Create;
-  vPoly3.AddPoint(PointF(0,300));
-  vPoly3.AddPoint(PointF(50, 0));
-  vPoly3.AddPoint(PointF(-50, 0));
-
-
-  vPoly3.X := 0;
-  vPoly3.Y := 200;
-
-
-  vShape := TCircleFigure.Create;
-  vShape.X := 0;
-  vShape.Y := 100;
-  vShape.Radius := 150;
-
+  vShape := TNewFigure.CreateCircle;// TCircleFigure.Create;
+  vCircle.X := 0;
+  vCircle.Y := 50;
+  vCircle.Radius := 115;
+  vShape.SetData(vCircle);
 
   vSpr.Shape.AddFigure(vPoly1);
   vSpr.Shape.AddFigure(vPoly2);

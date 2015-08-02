@@ -86,7 +86,6 @@ begin
       1,
       true);
 
-
     if FParalX >= Background.Width then
       FParalX := 0;
     if FParalY >= Background.Height then
@@ -95,9 +94,6 @@ begin
       FParalX := Background.Width;
     if FParalY < 0 then
       FParalY := Background.Height;
-
-
-
   end;
 end;
 

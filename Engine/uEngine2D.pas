@@ -371,8 +371,9 @@ begin
     begin
       if bitmap.Canvas.BeginScene() then
       try
-
+        FInBeginPaintBehavior;
         FBackgroundBehavior;
+
 
         l := (fSprites.Count - 1);
         for i := 1 to l do

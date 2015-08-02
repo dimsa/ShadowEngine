@@ -12,7 +12,7 @@ type
     ScaleX, ScaleY: single;
   end;
 
-  TCircle = record
+  TCircle = packed record
     X, Y: Single;
     Radius: Single;
   end;
