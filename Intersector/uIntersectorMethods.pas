@@ -114,9 +114,9 @@ function CircleCircleCollide(const AFigure1,
   AFigure2: TCircle): Boolean;
 begin
   Result :=
-    (sqr(AFigure1.X-AFigure2.X)+sqr(AFigure1.Y-AFigure2.Y))
+    (sqr(AFigure2.X - AFigure1.X)+sqr(AFigure2.Y - AFigure1.Y))
     <=
-    (AFigure1.Radius + AFigure2.Radius);
+    Sqr(AFigure1.Radius + AFigure2.Radius);
 end;
 
 function CirclePolyCollide(const AFigure1: TPolygon; const AFigure2: TCircle): Boolean;

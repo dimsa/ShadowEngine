@@ -110,9 +110,9 @@ begin
   vCircle.Radius := 150;
   vShape.SetData(vCircle);
 
-  vSpr.Shape.AddFigure(vPoly1);
+{  vSpr.Shape.AddFigure(vPoly1);
   vSpr.Shape.AddFigure(vPoly2);
-  vSpr.Shape.AddFigure(vPoly3);
+  vSpr.Shape.AddFigure(vPoly3);}
   vSpr.Shape.AddFigure(vShape);
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
 

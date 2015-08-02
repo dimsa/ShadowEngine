@@ -126,7 +126,7 @@ end;
 
 function TNewFigure.GetPoly: TPolygon;
 begin
-  Result := FTemp;
+  Result := Copy(FTemp);
 end;
 
 function TNewFigure.IsIntersectWith(const AFigure: TNewFigure): Boolean;
@@ -203,7 +203,10 @@ var
   i, vN: Integer;
   vTemp: Single;
 begin
-  vN := Length(FTemp) - 1;
+  case FKind of
+    cfCircle: vN := 0;
+    cfPoly: vN := Length(FTemp) - 1;
+  end;
 
   for i := 0 to vN do
   begin
@@ -228,7 +231,6 @@ procedure TNewFigure.TempTranslate(const APoint: TPointF);
 var
   i, vN: Integer;
 begin
-
   case FKind of
     cfCircle: FTemp[0] := FTemp[0] + APoint;
     cfPoly:
