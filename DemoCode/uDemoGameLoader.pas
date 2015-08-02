@@ -78,41 +78,39 @@ begin
 
   vPoly1 := TNewFigure.CreatePoly;
   Clear(vPoly);
-  AddPoint(vPoly, PointF(0, -200));
-  AddPoint(vPoly, PointF(-50, 200));
-  AddPoint(vPoly, PointF(50, 200));
-  AddPoint(vPoly, PointF(80, -150));
-  AddPoint(vPoly, PointF(120, -200));
-  Translate(vPoly, PointF(100, 0));
+  AddPoint(vPoly, PointF(0, -165));
+  AddPoint(vPoly, PointF(-50, -55));
+  AddPoint(vPoly, PointF(50, -55));
+  Scale(vPoly, PointF(0.9, 0.9));
   vPoly1.SetData(vPoly);
 
   vPoly2 := TNewFigure.CreatePoly;
   Clear(vPoly);
-  AddPoint(vPoly, PointF(0,-200));
-  AddPoint(vPoly, PointF(50,200));
-  AddPoint(vPoly, PointF(-50,200));
-  AddPoint(vPoly, PointF(-80,-150));
-  AddPoint(vPoly, PointF(-120,-200));
-  Translate(vPoly, PointF(-100, 0));
+  AddPoint(vPoly, PointF(-95, -115));
+  AddPoint(vPoly, PointF(-70, -85));
+  AddPoint(vPoly, PointF(-55, -45));
+  AddPoint(vPoly, PointF(-115, 20));
+  Scale(vPoly, PointF(0.9, 0.9));
   vPoly2.SetData(vPoly);
 
   vPoly3 := TNewFigure.CreatePoly;
   Clear(vPoly);
-  AddPoint(vPoly, PointF(0,300));
-  AddPoint(vPoly, PointF(50, 0));
-  AddPoint(vPoly, PointF(-50, 0));
-  Translate(vPoly, PointF(0, 200));
+  AddPoint(vPoly, PointF(95, -115));
+  AddPoint(vPoly, PointF(70, -85));
+  AddPoint(vPoly, PointF(55, -45));
+  AddPoint(vPoly, PointF(115, 20));
+  Scale(vPoly, PointF(0.9, 0.9));
   vPoly3.SetData(vPoly);
 
   vShape := TNewFigure.CreateCircle;// TCircleFigure.Create;
   vCircle.X := 0;
-  vCircle.Y := 100;
-  vCircle.Radius := 150;
+  vCircle.Y := 50;
+  vCircle.Radius := 115;
   vShape.SetData(vCircle);
 
-{  vSpr.Shape.AddFigure(vPoly1);
+  vSpr.Shape.AddFigure(vPoly1);
   vSpr.Shape.AddFigure(vPoly2);
-  vSpr.Shape.AddFigure(vPoly3);}
+  vSpr.Shape.AddFigure(vPoly3);
   vSpr.Shape.AddFigure(vShape);
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
 

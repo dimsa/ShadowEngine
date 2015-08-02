@@ -26,8 +26,8 @@ type
 
     procedure Reset; // Сбрасывает темповые координат на начальные.
 //    procedure SetData(const vData: TArray<TPointF>); overload;// Трактует данные в зависимости от своего типа
-    procedure SetData(const vData: TPolygon); overload;// Трактует данные в зависимости от своего типа
-    procedure SetData(const vData: uIntersectorClasses.TCircle); overload;// Трактует данные в зависимости от своего типа
+    procedure SetData(const AData: TPolygon); overload;// Трактует данные в зависимости от своего типа
+    procedure SetData(const AData: uIntersectorClasses.TCircle); overload;// Трактует данные в зависимости от своего типа
     procedure AddPoint(const APoint: TPointF); // Добавляет точку фигуре и пересчитывает её
 
     procedure TempTranslate(const APoint: TPointF);
@@ -181,20 +181,20 @@ begin
   Reset;
 end; }
 
-procedure TNewFigure.SetData(const vData: uIntersectorClasses.TCircle);
+procedure TNewFigure.SetData(const AData: uIntersectorClasses.TCircle);
 begin
   if Length(FData) < 2 then
     SetLength(FData, 2);
 
-  FData[0] := PointF(vData.X, vData.Y);
-  FData[1] := PointF(vData.Radius, vData.Radius);
+  FData[0] := PointF(AData.X, AData.Y);
+  FData[1] := PointF(AData.Radius, AData.Radius);
   FTemp := Copy(FData);
   Reset;
 end;
 
-procedure TNewFigure.SetData(const vData: TPolygon);
+procedure TNewFigure.SetData(const AData: TPolygon);
 begin
-  FData := Copy(vData);
+  FData := Copy(AData);
   Reset;
 end;
 

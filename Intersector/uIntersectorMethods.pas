@@ -131,10 +131,10 @@ begin
   for i := 0 to vN do
     if IsPointInCircle(AFigure1[i], AFigure2) then
       Exit(True);
-
-  for i := 0 to vN-1 do
+                 { TODO : Fix LineCircleIntersection }
+  {for i := 0 to vN-1 do
     if IsLineIntersectCircle(AFigure1[i],AFigure1[i+1], AFigure2) then
-      Exit(True);
+      Exit(True);  }
 
   Result := False;
 end;
@@ -154,7 +154,10 @@ begin
   if isPointInPolygon(AFigure2[0], AFigure1) then
     Exit(True);
 
+{ TODO : Add Line-Line Intersection of polygon }
+
   Result := False;
+
 {  vN := Length(AFigure1) - 1;
   for i := 0 to vN do
     if isPointInPolygon(AFigure1[i], AFigure2)  then
