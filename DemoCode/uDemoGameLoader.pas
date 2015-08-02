@@ -7,7 +7,7 @@ uses
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2D, uEngine2DSprite, uDemoObjects, uIntersectorClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
-  uIntersectorCircle, uIntersectorPoly, uNewFigure, uIntersectorMethods;
+  uNewFigure, uIntersectorMethods;
 
 type
   TLoader = class

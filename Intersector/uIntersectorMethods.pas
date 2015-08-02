@@ -5,8 +5,7 @@ interface
 uses
   System.Types, System.Math,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
-  uIntersectorClasses, uIntersectorFigure, uIntersectorPoly, uIntersectorCircle,
-  uIntersectorRectangle, uIntersectorTriangle;
+  uIntersectorClasses;
 
   function SqrDistance(const APoint1, APoint2: TPointF): Double; overload; // Находит сумму квадратов
   function SqrDistance(const AX1, AY1, AX2, AY2: Double): Double; overload; // Находит сумму квадратов
@@ -40,7 +39,7 @@ uses
   procedure AddPoint(var AFigure: TPolygon; const APoint: TPointF);
   procedure Clear(var AFigure: TPolygon);
 
-  function IsFiguresCollide(const AFigure1, AFigure2: TFigure): Boolean;
+//  function IsFiguresCollide(const AFigure1, AFigure2: TFigure): Boolean;
 
 implementation
 
@@ -216,7 +215,7 @@ begin
   end;
 end;
 
-function IsFiguresCollide(const AFigure1,AFigure2: TFigure): Boolean;
+{function IsFiguresCollide(const AFigure1,AFigure2: TFigure): Boolean;
 begin
   Result := False;
   if AFigure1 is TCircleFigure then
@@ -234,7 +233,7 @@ begin
     if AFigure2 is TCircleFigure then
       Result := CirclePolyCollide(TPolyFigure(AFigure1).AsType, TCircleFigure(AFigure2).AsType)
   end;
-end;
+end; }
 
 function IsLineIntersectCircle(const APoint1, APoint2: TPointF; const AFigure: TCircle): Boolean;
 begin

@@ -6,7 +6,7 @@ uses
   System.Types, System.Generics.Collections, System.UITypes, System.Math,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2DClasses,
-  uIntersectorMethods, uIntersectorShapeModificator, uIntersectorClasses, uNewFigure;
+  uIntersectorMethods, uIntersectorClasses, uNewFigure;
 
 type
   TObjectShape = class
@@ -37,7 +37,7 @@ type
     procedure ToGlobal;
     procedure ToLocal;
     constructor Create;
-    destructor Destroy;
+    destructor Destroy; override;
   const
     pi180 = 0.01745329251;
   end;

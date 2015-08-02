@@ -34,15 +34,9 @@ uses
   uDemoEngine in 'DemoCode\uDemoEngine.pas',
   uDemoGameLoader in 'DemoCode\uDemoGameLoader.pas',
   uDemoObjects in 'DemoCode\uDemoObjects.pas',
-  uIntersectorFigure in 'Intersector\uIntersectorFigure.pas',
   uIntersectorMethods in 'Intersector\uIntersectorMethods.pas',
   uIntersectorClasses in 'Intersector\uIntersectorClasses.pas',
-  uIntersectorCircle in 'Intersector\uIntersectorCircle.pas',
-  uIntersectorRectangle in 'Intersector\uIntersectorRectangle.pas',
-  uIntersectorTriangle in 'Intersector\uIntersectorTriangle.pas',
-  uIntersectorPoly in 'Intersector\uIntersectorPoly.pas',
   uEngine2DObjectShape in 'Engine\uEngine2DObjectShape.pas',
-  uIntersectorShapeModificator in 'Intersector\uIntersectorShapeModificator.pas',
   uEngine2DShapedSprite in 'Engine\uEngine2DShapedSprite.pas',
   uNewFigure in 'Intersector\uNewFigure.pas';
 

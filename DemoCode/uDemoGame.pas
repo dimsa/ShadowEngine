@@ -38,21 +38,12 @@ end;
 
 procedure TDemoGame.FindCollide;
 var
-  vShipFigure: TObjectShape;
   i, vN: Integer;
 begin
-//exit;
-//  vShipFigure := FShip.Shape.
   vN := FAsteroids.Count - 1;
   for i := 0 to vN do
     if FShip.Shape.IsIntersectWith(FAsteroids[i].Shape) then
       FAsteroids[i].Collide;
-    {begin
-
-      FAsteroids[i].DX := - FAsteroids[i].DX;
-      FAsteroids[i].DY := - FAsteroids[i].DY;
-    end;  }
-
 end;
 
 function TDemoGame.GetImage: TImage;

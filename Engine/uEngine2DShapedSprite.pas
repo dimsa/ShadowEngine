@@ -3,8 +3,7 @@ unit uEngine2DShapedSprite;
 interface
 
 uses
-  uEngine2DSprite, uEngine2DObjectShape, uIntersectorCircle,
-  uIntersectorRectangle;
+  uEngine2DSprite, uEngine2DObjectShape;
 
 implementation
 

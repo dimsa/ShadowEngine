@@ -203,6 +203,7 @@ var
   i, vN: Integer;
   vTemp: Single;
 begin
+  vN := 0;
   case FKind of
     cfCircle: vN := 0;
     cfPoly: vN := Length(FTemp) - 1;
@@ -244,3 +245,4 @@ begin
 end;
 
 end.
+
