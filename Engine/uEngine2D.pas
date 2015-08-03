@@ -73,7 +73,7 @@ type
     procedure SetBackgroundBehavior(const Value: TProcedure);
   public
     // Ключевые свойства движка
-    property EngineThread: TEngineThread read fEngineThread write fEngineThread;
+    property EngineThread: TEngineThread read fEngineThread;
     property Image: TImage read FImage write FImage;
     property BackgroundBehavior: TProcedure read FBackgroundBehavior write SetBackgroundBehavior;
     property InBeginPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;

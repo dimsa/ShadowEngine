@@ -21,8 +21,10 @@ type
     procedure mouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; x, y: single);
     procedure FindCollide;
+    function GetSpeed: Single;
   public
     property Image: TImage read GetImage write SetImage;
+    property Speed: Single read GetSpeed;
     procedure Prepare;
     constructor Create;
   end;
@@ -49,6 +51,11 @@ end;
 function TDemoGame.GetImage: TImage;
 begin
   Result := FEngine.Image;
+end;
+
+function TDemoGame.GetSpeed: Single;
+begin
+  Result := FEngine.EngineThread.Speed;
 end;
 
 procedure TDemoGame.mouseDown(Sender: TObject; Button: TMouseButton;
