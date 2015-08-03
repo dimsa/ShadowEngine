@@ -161,7 +161,10 @@ var
 begin
     vRotate := TMatrix.CreateRotation(-tEngine2DObject(Owner).Rotate * pi180);
     vScale := TMatrix.CreateScaling(1 / tEngine2DObject(Owner).ScaleX, 1 / tEngine2DObject(Owner).ScaleY);
-    Result := TVector.Create(APoint.X - tEngine2DObject(Owner).x, APoint.y - tEngine2DObject(Owner).y) * vScale * vRotate;
+    Result := PointF(
+        APoint.X - tEngine2DObject(Owner).X,
+        APoint.Y - tEngine2DObject(Owner).Y
+      ) * vScale * vRotate;
 end;
 
 function TObjectShape.RemoveFigure(const AIndex: Integer): TNewFigure;
