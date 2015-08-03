@@ -6,8 +6,9 @@ interface
 
 uses
   FMX.Types, System.UITypes, System.Classes, System.Types,
-  FMX.Objects, System.Generics.Collections,
-  uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape;
+  FMX.Objects, System.Generics.Collections, System.Math,
+  uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape,
+  uEngine2DAnimation, uIntersectorClasses;
 
 type
   TDemoGame = class
@@ -45,7 +46,7 @@ begin
   vN := FAsteroids.Count - 1;
   for i := 0 to vN do
     if FShip.Shape.IsIntersectWith(FAsteroids[i].Shape) then
-      FAsteroids[i].Collide;
+      FAsteroids[i].Collide(FShip);
 end;
 
 function TDemoGame.GetImage: TImage;
@@ -62,14 +63,28 @@ procedure TDemoGame.mouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; x, y: single);
 var
   i, vL: Integer;
+  vAni: TAnimation;
+  vPos: TPosition;
 begin
-  { Логика выбора карт }
   fEngine.mouseDown(Sender, Button, Shift, x, y);
 
   vL := Length(fEngine.Downed) - 1;
 
   for i := 0 to vL do
     fEngine.sprites[fEngine.Downed[i]].OnMouseDown(Sender, Button, Shift, x, y);
+
+  vPos.X := X;
+  vPos.Y := Y;
+  vPos.Rotate := (ArcTan2(y - FShip.y, x - FShip.x ) / Pi) * 180 + 90;
+  if vPos.Rotate > 360 then
+    vPos.Rotate := vPos.Rotate - 360;
+
+
+  vPos.ScaleX := FShip.ScaleX;
+  vPos.ScaleY := FShip.ScaleY;
+  vAni := TLoader.ShipFlyAnimation(FShip, vPos);
+  vAni.Parent := FEngine;
+  FEngine.AnimationList.Add(vAni);
 end;
 
 procedure TDemoGame.Prepare;

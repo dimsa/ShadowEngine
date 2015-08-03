@@ -5,7 +5,7 @@ interface
 uses
   FMX.Types, System.UITypes, System.Classes, System.Types, System.SysUtils, System.Math,
   uEngine2DSprite, uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
-  uIntersectorClasses;
+  uEngine2DObject, uIntersectorClasses;
 
 type
 
@@ -40,7 +40,7 @@ type
     property DX: Double read FDx write FDx;
     property DY: Double read FDy write FDy;
     procedure Repaint; override;
-    procedure Collide;
+    procedure Collide(const AObject: TEngine2DObject);
     constructor Create(newParent: pointer); override;
   end;
 
@@ -140,9 +140,9 @@ begin
 
   inherited;
 
-  Self.Rotate := Self.Rotate + random - 0.5;
-  Self.X := Self.x + random - 0.5;
-  Self.Y := Self.y + random - 0.5;
+  Self.Rotate := Self.Rotate + (random - 0.5) * 0.5;
+  Self.X := Self.x + (random - 0.5) * 0.5;
+  Self.Y := Self.y + (random - 0.5) * 0.5;
 
   FLeftFire.Rotate := Self.Rotate;
   FLeftFire.x := Self.x + (scW*0.15 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.7 - 0) * sin((Self.Rotate / 180) * pi);
@@ -156,13 +156,26 @@ end;
 
 { TAsteroid }
 
-procedure TAsteroid.Collide;
+procedure TAsteroid.Collide(const AObject: TEngine2DObject);
+var
+  vArcTan: Extended;
+  vDX: Single;
 begin
   if FNotChange > 0 then
-     Exit;
-  FDX := - FDX;
-  FDY := - FDY;
-  FNotChange := 60;
+  begin
+    FNotChange := 10;
+    Exit;     
+  end;
+  vArcTan := ArcTan2(AObject.y - Self.y, AObject.x - Self.x);
+  vDX := FDx;
+{  FDX := Cos(vArcTan + Pi) * (FDX) - Sin(vArcTan + Pi) * (FDY);
+  FDY := Sin(vArcTan + Pi) * (vDX) + Cos(vArcTan + Pi) * (FDY);}
+  FDx := - FDx;
+  FDy := - FDy;  
+  AObject.x := AObject.x - FDx * Game.Speed * 2;
+  AObject.y := AObject.y - FDy * Game.Speed * 2;  
+  AObject.Rotate := AObject.Rotate + (vArcTan / pi180) * 0.01;
+  FNotChange := 10;
 end;
 
 constructor TAsteroid.Create(newParent: pointer);
