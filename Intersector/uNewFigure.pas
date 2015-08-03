@@ -14,6 +14,7 @@ type
     FData: TPolygon; // Оригинальная фигура. Задается через SetData
     FTemp: TPolygon; // Темповые координаты. Задаются через Temp методы
     FTempMaxRadius: Single;
+    FTempCenter: TPointF;
     procedure RecalcMaxRadius;
     function GetCircle: uIntersectorClasses.TCircle;
     function GetPoly: TPolygon; // Вызывается в SetData
@@ -23,6 +24,7 @@ type
     property TempMaxRadius: Single read FTempMaxRadius; // Временный радиус. Т.е. с учетом масштаба
     property AsCircle: uIntersectorClasses.TCircle read GetCircle;
     property AsPoly: TPolygon read GetPoly;
+    property TempCenter: TPointF read FTempCenter write FTempCenter;
 
     procedure Reset; // Сбрасывает темповые координат на начальные.
 //    procedure SetData(const vData: TArray<TPointF>); overload;// Трактует данные в зависимости от своего типа
@@ -35,7 +37,7 @@ type
     procedure TempScale(const APoint: TPointF);
 
     function IsIntersectWith(const AFigure: TNewFigure): Boolean;
-    function FastIntersectWith(const AFigure: TNewFigure): Boolean;
+    function FastIntersectWith(const AFigure: TNewFigure): Boolean; experimental; // APoint это центры фигур для сравнения. Нужны, т.к. у полигонов нет центра
     function BelongPointLocal(const APoint: TPointF): Boolean;
     procedure Draw(AImage: TImage);
 
@@ -107,14 +109,37 @@ begin
       AImage.Bitmap.Canvas.FillPolygon(AsPoly, 0.75);
     end;
   end;
+
+  AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Yellow;
+  AImage.Bitmap.Canvas.FillEllipse(
+    RectF(
+    FTempCenter.X - FTempMaxRadius,
+    FTempCenter.Y - FTempMaxRadius,
+    FTempCenter.X + FTempMaxRadius,
+    FTempCenter.Y + FTempMaxRadius),
+    0.1
+  );
+
+     AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Green;
+     AImage.Bitmap.Canvas.FillEllipse(
+        RectF(
+        FTempCenter.X - 5,
+        FTempCenter.Y - 5,
+        FTempCenter.X + 5,
+        FTempCenter.Y + 5),
+        1
+      );
 end;
 
 function TNewFigure.FastIntersectWith(const AFigure: TNewFigure): Boolean;
 begin
   Result :=
-    (Sqr(Self.FTemp[0].X - AFigure.Temp[0].Y) +
-    Sqr(Self.FTemp[0].Y - AFigure.Temp[0].X)) <
-    Sqr(AFigure.TempMaxRadius + Self.TempMaxRadius);
+    (
+      Sqr(FTempCenter.X - AFigure.TempCenter.Y) +
+      Sqr(FTempCenter.Y - AFigure.TempCenter.X)
+    )
+      <
+    Sqr(AFigure.TempMaxRadius) + Sqr(Self.TempMaxRadius);
 end;
 
 function TNewFigure.GetCircle: uIntersectorClasses.TCircle;
@@ -151,19 +176,24 @@ var
   i, vN: Integer;
 begin
   case FKind of
-    cfCircle: FTempMaxRadius := Distance(FData[0]) + FTemp[1].X;
+    cfCircle: FTempMaxRadius := Distance(FTempCenter) + FTemp[1].X;
     cfPoly:
     begin
       vN := Length(FData) - 1;
-      FTempMaxRadius := Distance(FTemp[0]);
+      FTempMaxRadius := Distance(FTempCenter, FTemp[0]);
       for i := 1 to vN do
-        FTempMaxRadius := Max(Distance(FTemp[i]), FTempMaxRadius)
+        FTempMaxRadius := Max(Distance(FTempCenter, FTemp[i]), FTempMaxRadius)
     end;
   end;
 end;
 
 procedure TNewFigure.Reset;
 begin
+  case FKind of
+    cfCircle: FTempCenter := FData[0];
+    cfPoly: FTempCenter := PointF(0, 0);
+  end;
+
   FTemp := Copy(FData);
   RecalcMaxRadius;
 end;
@@ -185,7 +215,6 @@ procedure TNewFigure.SetData(const AData: uIntersectorClasses.TCircle);
 begin
   if Length(FData) < 2 then
     SetLength(FData, 2);
-
   FData[0] := PointF(AData.X, AData.Y);
   FData[1] := PointF(AData.Radius, AData.Radius);
   FTemp := Copy(FData);
@@ -215,6 +244,10 @@ begin
     FTemp[i].X := (FTemp[i].X) * Cos(AAngle * pi180) - (FTemp[i].Y) * Sin(AAngle * pi180);
     FTemp[i].Y := (vTemp) * Sin(AAngle * pi180) + (FTemp[i].Y) * Cos(AAngle * pi180);
   end;
+
+  vTemp := FTempCenter.X;
+  FTempCenter.X := (FTempCenter.X) * Cos(AAngle * pi180) - (FTempCenter.Y) * Sin(AAngle * pi180);
+  FTempCenter.Y := (vTemp) * Sin(AAngle * pi180) + (FTempCenter.Y) * Cos(AAngle * pi180);
 end;
 
 procedure TNewFigure.TempScale(const APoint: TPointF);
@@ -224,7 +257,7 @@ begin
   vN := Length(FTemp) - 1;
   for i := 0 to vN do
     FTemp[i] := FTemp[i] * APoint;
-
+  FTempCenter := FTempCenter * APoint;
   RecalcMaxRadius;
 end;
 
@@ -241,6 +274,7 @@ begin
         FTemp[i] := FTemp[i] + APoint;
     end;
   end;
+  FTempCenter := FTempCenter + APoint;
 
 end;
 

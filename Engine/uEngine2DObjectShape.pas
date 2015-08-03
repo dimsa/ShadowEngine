@@ -14,19 +14,20 @@ type
     FFigures: TArray<TNewFigure>;
     FParent: Pointer;
     FOwner: Pointer;
-    FNeedRecalc: Boolean;
     FSize: Single;
+    FMaxRadius: Single;
     function GetFigure(Index: Integer): TNewFigure;
     function GetCount: Integer;
     procedure SetSize(const Value: Single);
     function PointToLocal(const APoint: TPointF): TPointF;
   public
-    property NeedRecalc: Boolean read FNeedRecalc write fNeedRecalc; // Показывает, нужно ли пересчитывать фигуры
+   // property NeedRecalc: Boolean read FNeedRecalc write fNeedRecalc; // Показывает, нужно ли пересчитывать фигуры
     property Parent: Pointer read FParent write FParent; // ССылка на TEngine2D
     property Owner: Pointer read FOwner write FOwner; // Хозяин фигуры TEngine2DObject
     property Figures[Index: Integer]: TNewFigure read GetFigure; default;
     property Count: Integer read GetCount;
     property Size: Single read FSize write SetSize; // Испльзуется для быстрых расчетов
+    property MaxRadius: Single read FMaxRadius;
     procedure Draw; // Рисует форму фигуры
     function IsPointInFigure(const APoint: TPointF; const AFigure: TNewFigure): Boolean;
     function AddFigure(AFigure: TNewFigure): Integer;
@@ -108,6 +109,8 @@ begin
   begin
     Image.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Aliceblue;
     Image.Bitmap.Canvas.FillEllipse(RectF(X - 3, Y - 3, X + 3, Y + 3), 1);
+    Image.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Pink;
+    Image.Bitmap.Canvas.FillEllipse(RectF(X - MaxRadius, Y - MaxRadius, X + MaxRadius, Y + MaxRadius), 0.5);
   end;
 end;
 
@@ -135,14 +138,20 @@ begin
   vL := AShape.Count - 1;
   AShape.ToGlobal;
   Self.ToGlobal;
-  for i := 0 to vN do
+  if SqrDistance(
+    tEngine2DObject(Self.Owner).Center,
+    tEngine2DObject(AShape.Owner).Center
+  ) < Sqr(AShape.MaxRadius + Self.MaxRadius) then
   begin
-    for j := 0 to vL do
+    for i := 0 to vN do
+    begin
+      for j := 0 to vL do
     { TODO : Add Fast Intersection }
-      //if FFigures[i].FastIntersectWith(AShape[j]) then
+//      if FFigures[i].FastIntersectWith(AShape[j]) then
       // Owner Center!!!!
         if FFigures[i].IsIntersectWith(AShape[j]) then
           Exit(True);
+    end;
   end;
   Result := False;
 end;
@@ -168,7 +177,13 @@ begin
 end;
 
 function TObjectShape.RemoveFigure(const AIndex: Integer): TNewFigure;
+var
+  i, vN: Integer;
 begin
+  Result := FFigures[AIndex];
+  vN := Length(FFigures) - 2;
+  for i := AIndex to vN do
+    FFigures[i] := FFigures[i + 1];
 
 end;
 
@@ -181,13 +196,17 @@ procedure TObjectShape.ToGlobal;
 var
   vFigure: TNewFigure;
 begin
+  FMaxRadius := 0;
   for vFigure in FFigures do
   begin
     vFigure.Reset;
     vFigure.TempScale(tEngine2DObject(Owner).ScalePoint);
     vFigure.TempRotate(tEngine2DObject(Owner).Rotate);
     vFigure.TempTranslate(tEngine2DObject(Owner).Center);
+    if vFigure.TempMaxRadius > FMaxRadius then
+      FMaxRadius := vFigure.TempMaxRadius;
   end;
+  //FMaxRadius := FMaxRadius * Max(tEngine2DObject(FOwner).ScaleX, tEngine2DObject(FOwner).ScaleY);
 end;
 
 procedure TObjectShape.ToLocal;

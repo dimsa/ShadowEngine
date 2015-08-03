@@ -414,13 +414,13 @@ end;
 function SqrDistance(const AX1, AY1, AX2,
   AY2: Double): Double;
 begin
-  Result := (AX2 - AX1) + (AY2 - AY1);
+  Result := Sqr(AX2 - AX1) + Sqr(AY2 - AY1);
 end;
 
 function SqrDistance(const APoint1,
   APoint2: TPointF): Double;
 begin
-  Result := (APoint2.X - APoint1.X) + (APoint2.Y - APoint1.Y);
+  Result := Sqr(APoint2.X - APoint1.X) + Sqr(APoint2.Y - APoint1.Y);
 end;
 
 end.
