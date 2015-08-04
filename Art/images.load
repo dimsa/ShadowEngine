@@ -1,5 +1,5 @@
 0 0 240 340 ship
-240 143 140 140 asteroid
+240 143 140 117 asteroid
 240 0 70 143 fire1 
 310 0 70 143 fire2
 380 0 70 143 fire3
@@ -7,3 +7,7 @@
 415 143 35 35 littleasteroid2
 380 178 35 35 littleasteroid3
 415 178 35 35 star
+240 260 40 80 collision1
+280 260 40 80 collision2
+320 260 40 80 collision3
+360 260 40 80 collision4

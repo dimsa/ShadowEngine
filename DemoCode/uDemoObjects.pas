@@ -54,6 +54,12 @@ type
     constructor Create(newParent: pointer); override;
   end;
 
+  TExplosion = class(TSprite)
+  public
+    procedure Repaint; override;
+    constructor Create(newParent: pointer); override;
+  end;
+
   TStar = class(TSprite)
   public
     procedure Repaint; override;
@@ -159,23 +165,44 @@ end;
 procedure TAsteroid.Collide(const AObject: TEngine2DObject);
 var
   vArcTan: Extended;
-  vDX: Single;
+//  vDX: Single;
+  vLoader: TLoader;
+  vAng: Double;
+  vAni: TAnimation;
+  vExp: TExplosion;
 begin
   if FNotChange > 0 then
   begin
     FNotChange := 10;
     Exit;     
   end;
+
   vArcTan := ArcTan2(AObject.y - Self.y, AObject.x - Self.x);
-  vDX := FDx;
+//  vDX := FDx;
 {  FDX := Cos(vArcTan + Pi) * (FDX) - Sin(vArcTan + Pi) * (FDY);
   FDY := Sin(vArcTan + Pi) * (vDX) + Cos(vArcTan + Pi) * (FDY);}
   FDx := - FDx;
   FDy := - FDy;  
   AObject.x := AObject.x - FDx * Game.Speed * 2;
-  AObject.y := AObject.y - FDy * Game.Speed * 2;  
+  AObject.y := AObject.y - FDy * Game.Speed * 2;
+
+  vLoader := TLoader.Create(FParent);
+  vAng := vArcTan / pi180;
+
+  vExp := vLoader.Explosion(
+    Self.x + (Self.Shape.MaxRadius * 1) * Cos(vArcTan),
+    Self.y + (Self.Shape.MaxRadius * 1) * Sin(vArcTan),
+    vAng);
+
+  vAni := vLoader.ExplosionAnimation(vExp);
+
+
+
   AObject.Rotate := AObject.Rotate + (vArcTan / pi180) * 0.01;
   FNotChange := 10;
+
+  vAni.Parent := fParent;
+  tEngine2d(fParent).AnimationList.Add(vAni);
 end;
 
 constructor TAsteroid.Create(newParent: pointer);
@@ -265,6 +292,19 @@ begin
   inherited;
   FTip := Random(3);
   curRes := FTip + 2;
+end;
+
+{ TExplosion }
+
+constructor TExplosion.Create(newParent: pointer);
+begin
+  inherited;
+end;
+
+procedure TExplosion.Repaint;
+begin
+  inherited;
+
 end;
 
 end.

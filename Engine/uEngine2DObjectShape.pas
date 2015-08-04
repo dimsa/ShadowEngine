@@ -132,7 +132,6 @@ end;
 function TObjectShape.IsIntersectWith(AShape: TObjectShape): Boolean;
 var
   i, j, vN, vL: Integer;
-  vvShapeOwner: tEngine2DObject;
 begin
   vN := Self.Count - 1;
   vL := AShape.Count - 1;

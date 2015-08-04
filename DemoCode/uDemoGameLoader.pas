@@ -17,6 +17,8 @@ type
     function RandomAstroid: TLittleAsteroid;
     function BigAstroid: TAsteroid;
     function CreateShip: TShip;
+    function Explosion(const AX, AY, AAng: Double): TExplosion;
+    function ExplosionAnimation(ASubject: TSprite): TSpriteAnimation;
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
     constructor Create(AEngine: TEngine2D);
   end;
@@ -115,6 +117,44 @@ begin
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
 
   Result := vSpr;
+end;
+
+function TLoader.Explosion(const AX, AY, AAng: Double): TExplosion;
+var
+  vSpr: TExplosion;
+begin
+  vSpr := TExplosion.Create(FEngine);
+  vSpr.Parent := FEngine;
+  vSpr.Resources := FEngine.Resources;
+  vSpr.CurRes := 9;
+  vSpr.Group := 'activeobject';
+  vSpr.x := AX;
+  vSpr.y := AY;
+  vSpr.Rotate := AAng;
+  vSpr.Scale := 0.5;
+  FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
+
+  Result := vSpr;
+end;
+
+function TLoader.ExplosionAnimation(ASubject: TSprite): TSpriteAnimation;
+var
+  vRes: TSpriteAnimation;
+  vSlides: tIntArray;
+  i: Integer;
+begin
+  SetLength(vSlides, 4);
+  for i := 0 to High(vSlides) do
+    vSlides[i] := i + 9;
+  vRes := TSpriteAnimation.Create;
+  vRes.Parent := fEngine;
+  vRes.Slides := vSlides;
+  vRes.TimeTotal := 250;
+  vRes.Subject := ASubject;
+  vRes.OnSetup := ASubject.SendToFront;
+  vRes.OnDestroy := vRes.DeleteSubject;
+
+  Result := vRes;
 end;
 
 function TLoader.RandomAstroid: TLittleAsteroid;

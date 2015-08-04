@@ -83,8 +83,8 @@ begin
   inherited;
 
   Image.Bitmap.Canvas.DrawBitmap(
-    fResources[fCurRes{Animation.Frames[fFrame].num}].bmp,
-    fResources[fCurRes{Animation.Frames[fFrame].num}].rect,
+    fResources[fCurRes].bmp,
+    fResources[fCurRes].rect,
               RectF(x - wHalf,
               y - hHalf,
               x + wHalf,

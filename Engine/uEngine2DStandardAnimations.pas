@@ -4,7 +4,8 @@ interface
 
 uses
   uIntersectorClasses,
-  uEngine2DClasses, uEngine2DAnimation, uEngine2DObject, uEngine2D;
+  uEngine2DClasses, uEngine2DAnimation, uEngine2DObject, uEngine2D,
+  uEngine2DSprite;
 
 type
   TMigrationAnimation = class(TAnimation)
@@ -18,12 +19,28 @@ type
     constructor Create; override;
 end;
 
+  TSpriteAnimation = class(TAnimation)
+  strict private
+    FCurSlide: Integer;
+    FSprite: tEngine2DObject;
+    FSlides: tIntArray;
+  public
+    function Animate: Byte; override;
+    procedure Finalize; override;
+    procedure RecoverStart; override;
+    property Slides: tIntArray read FSlides write FSlides;
+    property CurSlide: Integer read FCurSlide write FCurSlide;
+    // Time for one slide is (fulltime / slide count)
+    constructor Create; override;
+end;
+
   TEmptyAnimation = class(TAnimation)
   public
     function Animate: Byte; override;
   end;
 
 implementation
+
 
 { TMigrationAnimation }
 
@@ -41,25 +58,8 @@ begin
     vSprite.Rotate := StartPosition.rotate + ((FEndPos.rotate - StartPosition.rotate) / TimeTotal) * (TimePassed);
     vSprite.Scale := StartPosition.ScaleX + ((FEndPos.ScaleX - StartPosition.ScaleX) / TimeTotal) * (TimePassed);
   end;
- {  else
-  begin
-    vSprite.Position := FEndPos;
-  end;  }
 
   Result := vRes;
- { Result := CAnimationInProcess;
-  vSprite := tEngine2DObject(Subject);
-  vEngine := Parent;
-
-  if TimePassed < TimeTotal then
-  begin
-    TimePassed := TimePassed + Round((1000 / vEngine.EngineThread.FPS));
-
-  end else
-  begin
-    vSprite.Position := FEndPos;
-    Result := Inherited;
-  end;  }
 end;
 
 constructor TMigrationAnimation.Create;
@@ -88,14 +88,45 @@ end;
 function TEmptyAnimation.Animate: Byte;
 begin
   Result := inherited;
-{  vEngine := Parent;
-  TimePassed := TimePassed + Round((1000 /  vEngine.EngineThread.FPS));
+end;
 
-  if TimePassed < TimeTotal then
+{ TSpriteAnimation }
+
+function TSpriteAnimation.Animate: Byte;
+var
+  vSprite: TSprite;
+  vRes: Byte;
+begin
+  vRes := inherited;
+  vSprite := Subject;
+  if vRes = CAnimationInProcess then
   begin
-    Result := CAnimationInProcess;
-  end else
-    Result := Inherited;  }
+    vSprite.CurRes :=
+      FSlides[Trunc((TimePassed / TimeTotal) * (Length(FSlides) - 1))];
+  end;
+
+  Result := vRes;
+end;
+
+constructor TSpriteAnimation.Create;
+begin
+  inherited;
+
+end;
+
+procedure TSpriteAnimation.Finalize;
+var
+  vSprite: TSprite;
+begin
+  inherited;
+  vSprite := Subject;
+  vSprite.CurRes := FSlides[High(FSlides)];
+end;
+
+procedure TSpriteAnimation.RecoverStart;
+begin
+  inherited;
+
 end;
 
 end.

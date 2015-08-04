@@ -47,7 +47,8 @@ type
     function Animate: Byte; virtual; // Главная рабочая функция. Когда True, то значит анимация объекта завершена
 
     function AddNextAnimation(AAnimation: TAnimation): Integer; // Добавляет следующую анимацию, а если следующая анимация уже есть, то добавляет следующую анимацию следующей анимации и т.д. Выдает порядквый номер следующей анимации
-    procedure Setup; virtual;// Нужно для отложенного сетапа. На этот метод аниация запоминает стартовые параметры, например начальное положение
+    procedure Setup; virtual;// Нужно для отложенного сетапа. На этот метод анимация запоминает стартовые параметры, например начальное положение
+    procedure DeleteSubject;
     constructor Create; virtual;
 //    constructor DelayedCreate; virtual; // Создается без сетапа
     destructor Destroy; override;
@@ -124,6 +125,17 @@ begin
   FTimeTotal := CDefaultTotalTime;
   FTimePassed := 0;
 end;   }
+
+procedure TAnimation.DeleteSubject;
+var
+  vEngine: tEngine2d;
+  vObj: tEngine2DObject;
+begin
+  vEngine := FParent;
+  vObj := FSubject;
+  vEngine.DeleteObject(vObj);
+  vObj.Free;
+end;
 
 destructor tAnimation.Destroy;
 begin
