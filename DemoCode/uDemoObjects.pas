@@ -24,10 +24,14 @@ type
   private
     FLeftFire: TShipFire;
     FRightFire: TShipFire;
+    FLeftFireCenter: TShipFire;
+    FRightFireCenter: TShipFire;
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single); virtual;
   public
     property LeftFire: TShipFire read FLeftFire write FLeftFire;
     property RightFire: TShipFire read FRightFire write FRightFire;
+    property LeftFireCenter: TShipFire read FRightFireCenter write FRightFireCenter;
+    property RightFireCenter: TShipFire read FRightFireCenter write FRightFireCenter;
     procedure Repaint; override;
     constructor Create(newParent: pointer); override;
   end;
@@ -97,8 +101,23 @@ begin
   FRightFire.ScaleX := -Self.ScaleX;
   FRightFire.ScaleY := Self.ScaleY;
   FRightFire.Opacity := 0.5;
-
   vEngine.AddObject(FRightFire);
+
+  FLeftFireCenter := TShipFire.Create(newParent);
+  FLeftFireCenter.Parent := newParent;
+  FLeftFireCenter.Resources := vEngine.Resources;
+  FLeftFireCenter.ScaleX := Self.ScaleX;
+  FLeftFireCenter.ScaleY := Self.ScaleY;
+  FLeftFireCenter.Opacity := 0.5;
+  vEngine.AddObject(FLeftFireCenter);
+
+  FRightFireCenter := TShipFire.Create(newParent);
+  FRightFireCenter.Parent := newParent;
+  FRightFireCenter.Resources := vEngine.Resources;
+  FRightFireCenter.ScaleX := -Self.ScaleX;
+  FRightFireCenter.ScaleY := Self.ScaleY;
+  FRightFireCenter.Opacity := 0.5;
+  vEngine.AddObject(FRightFireCenter);
 
   Self.OnMouseDown := Self.MouseDown;
 end;
@@ -151,12 +170,20 @@ begin
   Self.Y := Self.y + (random - 0.5) * 0.5;
 
   FLeftFire.Rotate := Self.Rotate;
-  FLeftFire.x := Self.x + (scW*0.15 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.7 - 0) * sin((Self.Rotate / 180) * pi);
-  FLeftFire.y :=  Self.y + (scW*0.15 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.7 - 0) * cos((Self.Rotate / 180) * pi);
+  FLeftFire.x := Self.x + (scW*0.15 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.6 - 0) * sin((Self.Rotate / 180) * pi);
+  FLeftFire.y :=  Self.y + (scW*0.15 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.6 - 0) * cos((Self.Rotate / 180) * pi);
 
   FRightFire.Rotate := Self.Rotate;
-  FRightFire.x := Self.x + (-scW*0.15 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.7 - 0) * sin((Self.Rotate / 180) * pi);
-  FRightFire.y :=  Self.y + (-scW*0.15 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.7 - 0) * cos((Self.Rotate / 180) * pi);
+  FRightFire.x := Self.x + (-scW*0.15 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.6 - 0) * sin((Self.Rotate / 180) * pi);
+  FRightFire.y :=  Self.y + (-scW*0.15 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.6 - 0) * cos((Self.Rotate / 180) * pi);
+
+  FLeftFireCenter.Rotate := Self.Rotate;
+  FLeftFireCenter.x := Self.x + (scW*0.0 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.75 - 0) * sin((Self.Rotate / 180) * pi);
+  FLeftFireCenter.y :=  Self.y + (scW*0.0 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.75 - 0) * cos((Self.Rotate / 180) * pi);
+
+  FRightFireCenter.Rotate := Self.Rotate;
+  FRightFireCenter.x := Self.x + (-scW*0.0 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.75 - 0) * sin((Self.Rotate / 180) * pi);
+  FRightFireCenter.y :=  Self.y + (-scW*0.0 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.75 - 0) * cos((Self.Rotate / 180) * pi);
 
 end;
 
@@ -178,11 +205,7 @@ begin
   end;
 
   vArcTan := ArcTan2(AObject.y - Self.y, AObject.x - Self.x);
-  vArcTan2 := ArcTan2(-FDy, -FDx);// + Self.Rotate * pi180 - vArcTan;// * Abs(ArcTan2(FDy, FDx)) / ArcTan2(FDy, FDx);// + pi * Abs(FDx) / FDx;
-  {if vArcTan2 > Pi then
-    vArcTan2 := vArcTan - Pi;
-  if vArcTan2 < -Pi then
-    vArcTan2 := vArcTan + Pi;}
+  vArcTan2 := ArcTan2(-FDy, FDx) + vArcTan;
 
   vDX := FDx;
   FDX := Cos(vArcTan2) * (FDX) - Sin(vArcTan2) * (FDY);

@@ -22,7 +22,6 @@ end;
   TSpriteAnimation = class(TAnimation)
   strict private
     FCurSlide: Integer;
-    FSprite: tEngine2DObject;
     FSlides: tIntArray;
   public
     function Animate: Byte; override;

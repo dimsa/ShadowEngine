@@ -51,7 +51,10 @@ begin
   for i := 0 to vN do
     for j := i + 1 to vN do
       if FAsteroids[i].Shape.IsIntersectWith(FAsteroids[j].Shape) then
+      begin
         FAsteroids[i].Collide(FAsteroids[j]);
+        FAsteroids[j].Collide(FAsteroids[i]);
+      end;
 end;
 
 function TDemoGame.GetImage: TImage;
