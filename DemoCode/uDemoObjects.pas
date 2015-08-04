@@ -164,8 +164,8 @@ end;
 
 procedure TAsteroid.Collide(const AObject: TEngine2DObject);
 var
-  vArcTan: Extended;
-//  vDX: Single;
+  vArcTan, vArcTan2: Extended;
+  vDX: Single;
   vLoader: TLoader;
   vAng: Double;
   vAni: TAnimation;
@@ -174,15 +174,21 @@ begin
   if FNotChange > 0 then
   begin
     FNotChange := 10;
-    Exit;     
+    Exit;
   end;
 
   vArcTan := ArcTan2(AObject.y - Self.y, AObject.x - Self.x);
-//  vDX := FDx;
-{  FDX := Cos(vArcTan + Pi) * (FDX) - Sin(vArcTan + Pi) * (FDY);
-  FDY := Sin(vArcTan + Pi) * (vDX) + Cos(vArcTan + Pi) * (FDY);}
+  vArcTan2 := ArcTan2(-FDy, -FDx);// + Self.Rotate * pi180 - vArcTan;// * Abs(ArcTan2(FDy, FDx)) / ArcTan2(FDy, FDx);// + pi * Abs(FDx) / FDx;
+  {if vArcTan2 > Pi then
+    vArcTan2 := vArcTan - Pi;
+  if vArcTan2 < -Pi then
+    vArcTan2 := vArcTan + Pi;}
+
+  vDX := FDx;
+  FDX := Cos(vArcTan2) * (FDX) - Sin(vArcTan2) * (FDY);
+  FDY := Sin(vArcTan2) * (vDX) + Cos(vArcTan2) * (FDY);
   FDx := - FDx;
-  FDy := - FDy;  
+  FDy := - FDy;
   AObject.x := AObject.x - FDx * Game.Speed * 2;
   AObject.y := AObject.y - FDy * Game.Speed * 2;
 
@@ -198,7 +204,7 @@ begin
 
 
 
-  AObject.Rotate := AObject.Rotate + (vArcTan / pi180) * 0.01;
+  AObject.Rotate := AObject.Rotate + (vArcTan / pi180) * 0.02;
   FNotChange := 10;
 
   vAni.Parent := fParent;

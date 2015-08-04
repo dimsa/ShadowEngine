@@ -9,12 +9,12 @@ uses
 type
   TEngineThread = class(TThread) // Наследник треда, считает фпс
   private
-    FTickCount, fTickBegin, fTickEnd: int64;
-    FLastFPS: single;
-    FSleep: integer; // Модификатор FPS
+    FTickCount, FTickBegin, FTickEnd: Int64;
+    FLastFPS: Single;
+    FSleep: Integer; // Модификатор FPS
     FWorkProcedure: TProcedure;
-    procedure SetTickEnd(AValue: int64);
-    procedure SetTickBegin(AValue: int64);
+    procedure SetTickEnd(AValue: Int64);
+    procedure SetTickBegin(AValue: Int64);
     procedure DoNothing;
     function GetLastFps: single;
     function GetSpeed: Single;

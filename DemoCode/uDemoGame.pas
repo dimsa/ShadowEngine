@@ -41,12 +41,17 @@ end;
 
 procedure TDemoGame.FindCollide;
 var
-  i, vN: Integer;
+  i, j, vN: Integer;
 begin
   vN := FAsteroids.Count - 1;
   for i := 0 to vN do
     if FShip.Shape.IsIntersectWith(FAsteroids[i].Shape) then
       FAsteroids[i].Collide(FShip);
+
+  for i := 0 to vN do
+    for j := i + 1 to vN do
+      if FAsteroids[i].Shape.IsIntersectWith(FAsteroids[j].Shape) then
+        FAsteroids[i].Collide(FAsteroids[j]);
 end;
 
 function TDemoGame.GetImage: TImage;
