@@ -1,0 +1,3 @@
+.\assets\internal\back.jpg
+.\assets\internal\res.png
+.\assets\internal\images.load

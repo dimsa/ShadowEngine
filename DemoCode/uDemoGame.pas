@@ -32,6 +32,9 @@ type
 
 implementation
 
+uses
+  FMX.Dialogs;
+
 { TDemoGame }
 
 constructor TDemoGame.Create;
