@@ -345,7 +345,6 @@ var
   i, l: integer;
   iA, lA: Integer; // Счетчики анимации и форматирования
   m: tMatrix;
-//  srcRect, destRect: tRectF;
   vAnimation: tAnimation;
 begin
 
@@ -365,6 +364,7 @@ begin
 
   if fDebug then
    fDebug := False;
+
   fCritical.Enter;
   if (lA > 0) or (FOptions.ToAnimateForever)  then
     with fImage do
@@ -373,7 +373,6 @@ begin
       try
         FInBeginPaintBehavior;
         FBackgroundBehavior;
-
 
         l := (fSprites.Count - 1);
         for i := 1 to l do

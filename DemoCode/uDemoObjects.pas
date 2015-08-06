@@ -12,56 +12,59 @@ type
   TShipFire = class(TSprite)
   private
     FTip: Byte;
-//    FShip: TShip;
   public
     property Tip: Byte read FTip write FTip; // Тип огня
-//    property Ship: TShip read FShip write FShip; // Корабль, коотру принадлежит огонь
     procedure Repaint; override;
-    constructor Create(newParent: pointer); override;
+    constructor Create(AParent: pointer); override;
   end;
 
-  TShip = class(TSprite)
+  TMovingUnit = class(TSprite)
+  protected
+    FDx, FDy, FDA: Double; // Сдвиги
+  public
+    property DX: Double read FDx write FDx;
+    property DY: Double read FDy write FDy;
+    property DA: Double read FDa write FDa;
+  end;
+
+  TShip = class(TMovingUnit)
   private
     FLeftFire: TShipFire;
     FRightFire: TShipFire;
     FLeftFireCenter: TShipFire;
     FRightFireCenter: TShipFire;
-    procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single); virtual;
+    procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   public
     property LeftFire: TShipFire read FLeftFire write FLeftFire;
     property RightFire: TShipFire read FRightFire write FRightFire;
     property LeftFireCenter: TShipFire read FRightFireCenter write FRightFireCenter;
     property RightFireCenter: TShipFire read FRightFireCenter write FRightFireCenter;
     procedure Repaint; override;
-    constructor Create(newParent: pointer); override;
+    constructor Create(AParent: pointer); override;
   end;
 
-  TAsteroid = class(TSprite)
+  TAsteroid = class(TMovingUnit)
   private
-    FDx, FDy, FDA: Double; // Сдвиги
     FNotChange: Integer; // Кол-во тиков, которое не будет изменяться направление при коллайдер
   public
-    property DX: Double read FDx write FDx;
-    property DY: Double read FDy write FDy;
     procedure Repaint; override;
     procedure Collide(const AObject: TEngine2DObject);
-    constructor Create(newParent: pointer); override;
+    constructor Create(AParent: pointer); override;
   end;
 
-  TLittleAsteroid = class(TSprite)
+  TLittleAsteroid = class(TMovingUnit)
   private
     FTip: Byte;
-    FDx, FDY: Double; // Сдвиги
   public
     property Tip: Byte read FTip write FTip; // Тип астеройда
     procedure Repaint; override;
-    constructor Create(newParent: pointer); override;
+    constructor Create(AParent: pointer); override;
   end;
 
   TExplosion = class(TSprite)
   public
     procedure Repaint; override;
-    constructor Create(newParent: pointer); override;
+    constructor Create(AParent: pointer); override;
   end;
 
   TStar = class(TSprite)
@@ -77,42 +80,40 @@ uses
 
 { TShip }
 
-constructor TShip.Create(newParent: pointer);
+constructor TShip.Create(AParent: pointer);
 var
   vEngine: TEngine2D;
 begin
   inherited;
 
-  vEngine := newParent;
+  vEngine := AParent;
 
-//  Self.Shape.AddFigure(TFigure)
-
-  FLeftFire := TShipFire.Create(newParent);
-  FLeftFire.Parent := newParent;
+  FLeftFire := TShipFire.Create(AParent);
+  FLeftFire.Parent := AParent;
   FLeftFire.Resources := vEngine.Resources;
   FLeftFire.ScaleX := Self.ScaleX;
   FLeftFire.ScaleY := Self.ScaleY;
   FLeftFire.Opacity := 0.5;
   vEngine.AddObject(FLeftFire);
 
-  FRightFire := TShipFire.Create(newParent);
-  FRightFire.Parent := newParent;
+  FRightFire := TShipFire.Create(AParent);
+  FRightFire.Parent := AParent;
   FRightFire.Resources := vEngine.Resources;
   FRightFire.ScaleX := -Self.ScaleX;
   FRightFire.ScaleY := Self.ScaleY;
   FRightFire.Opacity := 0.5;
   vEngine.AddObject(FRightFire);
 
-  FLeftFireCenter := TShipFire.Create(newParent);
-  FLeftFireCenter.Parent := newParent;
+  FLeftFireCenter := TShipFire.Create(AParent);
+  FLeftFireCenter.Parent := AParent;
   FLeftFireCenter.Resources := vEngine.Resources;
   FLeftFireCenter.ScaleX := Self.ScaleX;
   FLeftFireCenter.ScaleY := Self.ScaleY;
   FLeftFireCenter.Opacity := 0.5;
   vEngine.AddObject(FLeftFireCenter);
 
-  FRightFireCenter := TShipFire.Create(newParent);
-  FRightFireCenter.Parent := newParent;
+  FRightFireCenter := TShipFire.Create(AParent);
+  FRightFireCenter.Parent := AParent;
   FRightFireCenter.Resources := vEngine.Resources;
   FRightFireCenter.ScaleX := -Self.ScaleX;
   FRightFireCenter.ScaleY := Self.ScaleY;
@@ -234,7 +235,7 @@ begin
   tEngine2d(fParent).AnimationList.Add(vAni);
 end;
 
-constructor TAsteroid.Create(newParent: pointer);
+constructor TAsteroid.Create(AParent: pointer);
 begin
   inherited;
   FDx := 200 * Random;
@@ -247,6 +248,8 @@ procedure TAsteroid.Repaint;
 begin
   curRes := 1;
 
+  inherited;
+
   Self.x := Self.x + FDx * Game.Speed;
   Self.y := Self.y + FDy * Game.Speed;
   Self.Rotate := Self.Rotate + FDa * Game.Speed;
@@ -254,27 +257,25 @@ begin
   if Self.Rotate >= 360 then
     Self.Rotate := 0;
 
-  if Self.x > tEngine2d(Parent).Width + Self.scW then
+  if Self.x >= tEngine2d(Parent).Width + Self.scW then
     Self.x := -Self.scW
   else
     if Self.x < 0 - Self.scW then
-      Self.x :=  tEngine2d(Parent).Width + Self.scW;
+      Self.x := tEngine2d(Parent).Width;
 
-  if Self.y > tEngine2d(Parent).Height + Self.scH then
+  if Self.y >= tEngine2d(Parent).Height + Self.scH then
     Self.y := -Self.scH
   else
-  if Self.y < 0 - Self.scH then
-    Self.y := tEngine2d(Parent).Height + Self.scH;
+    if Self.y < 0 - Self.scH then
+     Self.y := tEngine2d(Parent).Height;
 
   if FNotChange > 0 then
     Dec(FNotChange);
-
-  inherited;
 end;
 
 { TLittleAsteroid }
 
-constructor TLittleAsteroid.Create(newParent: pointer);
+constructor TLittleAsteroid.Create(AParent: pointer);
 begin
   inherited;
   FTip := Random(6);
@@ -288,6 +289,8 @@ end;
 procedure TLittleAsteroid.Repaint;
 begin
   curRes := FTip + 5;
+  inherited;
+
   Self.x := Self.x + FDx * Game.Speed;
   Self.y := Self.y + FDy * Game.Speed;
 
@@ -296,8 +299,6 @@ begin
 
   if Self.y > tEngine2d(Parent).Height then
     Self.y := -1;
-  inherited;
-
 end;
 
 { TStar }
@@ -310,7 +311,7 @@ end;
 
 { TShipFire }
 
-constructor TShipFire.Create(newParent: pointer);
+constructor TShipFire.Create(AParent: pointer);
 begin
   inherited;
   FTip := Random(3);
@@ -325,7 +326,7 @@ end;
 
 { TExplosion }
 
-constructor TExplosion.Create(newParent: pointer);
+constructor TExplosion.Create(AParent: pointer);
 begin
   inherited;
 end;
