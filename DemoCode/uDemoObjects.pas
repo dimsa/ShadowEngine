@@ -4,10 +4,22 @@ interface
 
 uses
   FMX.Types, System.UITypes, System.Classes, System.Types, System.SysUtils, System.Math,
-  uEngine2DSprite, uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
+  uEngine2DSprite, uEngine2DText, uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
   uEngine2DObject, uIntersectorClasses;
 
 type
+  TGameButton = class
+  private
+    FParent: Pointer; // Engine2d
+    FBack: TSprite;
+    FText: TEngine2DText;
+    function GetText: String;
+    procedure SetText(const Value: String);
+  public
+    constructor Create(AParent: Pointer);
+    destructor Destroy; override;
+    property Text: String read GetText write SetText;
+  end;
 
   TShipFire = class(TSprite)
   private
@@ -16,6 +28,11 @@ type
     property Tip: Byte read FTip write FTip; // Тип огня
     procedure Repaint; override;
     constructor Create(AParent: pointer); override;
+  end;
+
+  TShipLight = class(TSprite)
+  public
+    procedure Repaint; override;
   end;
 
   TMovingUnit = class(TSprite)
@@ -33,6 +50,7 @@ type
     FRightFire: TShipFire;
     FLeftFireCenter: TShipFire;
     FRightFireCenter: TShipFire;
+    FShipLight: TShipLight;
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   public
     property LeftFire: TShipFire read FLeftFire write FLeftFire;
@@ -120,6 +138,12 @@ begin
   FRightFireCenter.Opacity := 0.5;
   vEngine.AddObject(FRightFireCenter);
 
+  FShipLight := TShipLight.Create(AParent);
+  FShipLight.Resources := vEngine.Resources;
+  FShipLight.ScaleX := Self.ScaleX;
+  FShipLight.ScaleY := Self.ScaleY;
+  vEngine.AddObject(FShipLight);
+
   Self.OnMouseDown := Self.MouseDown;
 end;
 
@@ -171,20 +195,30 @@ begin
   Self.Y := Self.y + (random - 0.5) * 0.5;
 
   FLeftFire.Rotate := Self.Rotate;
+  FLeftFire.ScalePoint := Self.ScalePoint * 2;
   FLeftFire.x := Self.x + (scW*0.15 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.6 - 0) * sin((Self.Rotate / 180) * pi);
   FLeftFire.y :=  Self.y + (scW*0.15 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.6 - 0) * cos((Self.Rotate / 180) * pi);
 
   FRightFire.Rotate := Self.Rotate;
+  FRightFire.ScalePoint := Self.ScalePoint * PointF(-2, 2);
   FRightFire.x := Self.x + (-scW*0.15 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.6 - 0) * sin((Self.Rotate / 180) * pi);
   FRightFire.y :=  Self.y + (-scW*0.15 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.6 - 0) * cos((Self.Rotate / 180) * pi);
 
   FLeftFireCenter.Rotate := Self.Rotate;
+  FLeftFireCenter.ScalePoint := Self.ScalePoint * 2;
   FLeftFireCenter.x := Self.x + (scW*0.0 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.75 - 0) * sin((Self.Rotate / 180) * pi);
   FLeftFireCenter.y :=  Self.y + (scW*0.0 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.75 - 0) * cos((Self.Rotate / 180) * pi);
 
   FRightFireCenter.Rotate := Self.Rotate;
+  FRightFireCenter.ScalePoint := Self.ScalePoint * PointF(-2, 2);
   FRightFireCenter.x := Self.x + (-scW*0.0 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.75 - 0) * sin((Self.Rotate / 180) * pi);
   FRightFireCenter.y :=  Self.y + (-scW*0.0 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.75 - 0) * cos((Self.Rotate / 180) * pi);
+
+  FShipLight.ScalePoint := Self.ScalePoint;
+  FShipLight.Rotate := Self.Rotate;
+  FShipLight.x := Self.x + (-scW*0.0 - 0) * cos((Self.Rotate / 180) * pi) - (scH * 0.4) * sin((Self.Rotate / 180) * pi);
+  FShipLight.y :=  Self.y + (-scW*0.0 - 0) * sin((Self.Rotate / 180) * pi) + (scH * 0.4) * cos((Self.Rotate / 180) * pi);
+  FShipLight.SendToFront;
 
 end;
 
@@ -335,6 +369,55 @@ procedure TExplosion.Repaint;
 begin
   inherited;
 
+end;
+
+{ TShipLight }
+
+procedure TShipLight.Repaint;
+begin
+  Opacity := 0.8 + Random * 0.2;
+  CurRes := 13 + Random(2);
+  inherited;
+end;
+
+{ TGameButton }
+
+constructor TGameButton.Create(AParent: Pointer);
+var
+  vEngine: tEngine2d;
+begin
+  vEngine := AParent;
+  FParent := vEngine;
+  FBack := TSprite.Create(vEngine);
+  FBack.CurRes := vEngine.Resources.IndexOf('button');
+  FBack.Group := 'menu';
+  FText := TEngine2DText.Create(vEngine);
+  FText.Group := 'menu';
+
+  vEngine.AddObject(FBack);
+  vEngine.AddObject(FText);
+end;
+
+destructor TGameButton.Destroy;
+var
+  vEngine: tEngine2d;
+begin
+  vEngine := FParent;
+  vEngine.DeleteObject(FText);
+  FText.Free;
+  vEngine.DeleteObject(FBack);
+  FBack.Free;
+  inherited;
+end;
+
+function TGameButton.GetText: String;
+begin
+  Result := FText.Text;
+end;
+
+procedure TGameButton.SetText(const Value: String);
+begin
+  Ftext.Text := Value;
 end;
 
 end.

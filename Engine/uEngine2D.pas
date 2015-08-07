@@ -383,10 +383,10 @@ begin
           begin
             m :=
               TMatrix.CreateTranslation(-fSprites[fSpriteOrder[i]].x, -fSprites[fSpriteOrder[i]].y) *
-              TMatrix.CreateScaling(fSprites[fSpriteOrder[i]].ScaleX,fSprites[fSpriteOrder[i]].ScaleY) *
+              TMatrix.CreateScaling(fSprites[fSpriteOrder[i]].ScaleX, fSprites[fSpriteOrder[i]].ScaleY) *
               TMatrix.CreateRotation(fSprites[fSpriteOrder[i]].rotate * pi180) *
               TMatrix.CreateTranslation(fSprites[fSpriteOrder[i]].x, fSprites[fSpriteOrder[i]].y);
-            bitmap.Canvas.SetMatrix(m);
+            Bitmap.Canvas.SetMatrix(m);
 
             fSprites[fSpriteOrder[i]].Repaint;
           end;
