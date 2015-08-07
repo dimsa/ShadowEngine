@@ -72,6 +72,7 @@ begin
   mainImage.Height:=round(vSize.Y + 0.4);
   mainImage.Bitmap.Width:=round(vSize.X + 0.4);
   mainImage.Bitmap.Height:=round(vSize.Y + 0.4);
+  Game.Resize(vSize);
 end;
 
 end.

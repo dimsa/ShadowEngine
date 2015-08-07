@@ -36,12 +36,25 @@ uses
   procedure Rotate(var AFigure: TCircle; const AAngle: Single); overload;
   procedure Translate(var AFigure: TCircle; const APoint: TPointF); overload;
   procedure Scale(var AFigure: TCircle; const APoint: TPointF); overload;
+  function PolyFromRect(const ARect: TRectF): TPolygon;
   procedure AddPoint(var AFigure: TPolygon; const APoint: TPointF);
   procedure Clear(var AFigure: TPolygon);
 
 //  function IsFiguresCollide(const AFigure1, AFigure2: TFigure): Boolean;
 
 implementation
+
+function PolyFromRect(const ARect: TRectF): TPolygon;
+var
+  vPoly: TPolygon;
+begin
+  SetLength(vPoly, 4);
+  vPoly[0] := ARect.TopLeft;
+  vPoly[1] := PointF(ARect.Right, ARect.Top);
+  vPoly[2] := ARect.BottomRight;
+  vPoly[3] := PointF(ARect.Left, ARect.Bottom);
+  Result := vPoly;
+end;
 
 procedure Clear(var AFigure: TPolygon);
 begin

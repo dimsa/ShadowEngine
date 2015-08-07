@@ -38,7 +38,8 @@ uses
   uIntersectorClasses in 'Intersector\uIntersectorClasses.pas',
   uEngine2DObjectShape in 'Engine\uEngine2DObjectShape.pas',
   uEngine2DShapedSprite in 'Engine\uEngine2DShapedSprite.pas',
-  uNewFigure in 'Intersector\uNewFigure.pas';
+  uNewFigure in 'Intersector\uNewFigure.pas',
+  uDemoMenu in 'DemoCode\uDemoMenu.pas';
 
 {$R *.res}
 

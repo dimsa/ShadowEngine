@@ -67,7 +67,6 @@ var
   vPoly: TPolygon;
   vCircle: TCircle;
   vPoly1, vPoly2, vPoly3: TNewFigure;
-
 begin
   vSpr := TShip.Create(FEngine);
   vSpr.Parent := FEngine;

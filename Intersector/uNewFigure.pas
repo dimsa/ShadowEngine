@@ -29,6 +29,7 @@ type
     procedure Reset; // Сбрасывает темповые координат на начальные.
 //    procedure SetData(const vData: TArray<TPointF>); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const AData: TPolygon); overload;// Трактует данные в зависимости от своего типа
+    procedure SetData(const AData: TRectF); overload;// Быстрое задание ректангла
     procedure SetData(const AData: uIntersectorClasses.TCircle); overload;// Трактует данные в зависимости от своего типа
     procedure AddPoint(const APoint: TPointF); // Добавляет точку фигуре и пересчитывает её
 
@@ -196,6 +197,19 @@ begin
 
   FTemp := Copy(FData);
   RecalcMaxRadius;
+end;
+
+procedure TNewFigure.SetData(const AData: TRectF);
+var
+  vData: TPolygon;
+begin
+  SetLength(vData, 4);
+  vData[0] := AData.TopLeft;
+  vData[1] := PointF(AData.Right, AData.Top);
+  vData[2] := AData.BottomRight;
+  vData[3] := PointF(AData.Left, AData.Bottom);
+  FData := vData;
+  Reset;
 end;
 
 {procedure TNewFigure.SetData(const vData: TPolygon);

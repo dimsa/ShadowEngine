@@ -8,7 +8,7 @@ uses
   FMX.Types, System.UITypes, System.Classes, System.Types,
   FMX.Objects, System.Generics.Collections, System.Math,
   uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape,
-  uEngine2DAnimation, uIntersectorClasses;
+  uEngine2DAnimation, uIntersectorClasses, uDemoMenu;
 
 type
   TDemoGame = class
@@ -16,6 +16,7 @@ type
     FEngine: TDemoEngine;
     FBackObjects: TList<TLittleAsteroid>; // Летящие бэки
     FShip: TShip;
+    FMenu: TList<TGameButton>;
     FAsteroids: TList<TAsteroid>;
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
@@ -27,7 +28,9 @@ type
     property Image: TImage read GetImage write SetImage;
     property Speed: Single read GetSpeed;
     procedure Prepare;
+    procedure Resize(ASize: TPointF);
     constructor Create;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -40,6 +43,31 @@ uses
 constructor TDemoGame.Create;
 begin
   FEngine := TDemoEngine.Create;
+
+end;
+
+destructor TDemoGame.Destroy;
+var
+  i, vN: Integer;
+begin
+  vN := FMenu.Count - 1;
+  for i := 0 to vN do
+    FMenu[i].Free;
+  FMenu.Free;
+
+  vN := FAsteroids.Count - 1;
+  for i := 0 to vN do
+    FAsteroids[i].Free;
+  FAsteroids.Free;
+
+  vN := FBackObjects.Count - 1;
+  for i := 0 to vN do
+    FBackObjects[i].Free;
+  FBackObjects.Free;
+
+  FShip.Free;
+
+  inherited;
 end;
 
 procedure TDemoGame.FindCollide;
@@ -102,9 +130,15 @@ procedure TDemoGame.Prepare;
 var
   vLoader: TLoader;
   i: Integer;
+  vBut: TGameButton;
 begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
+
+  {FMenu := TList<TGameButton>.Create;
+  vBut := TGameButton.Create(FEngine);
+  vBut.Text := 'Start Game'; }
+
 
   FBackObjects := TList<TLittleAsteroid>.Create;
   vLoader := TLoader.Create(FEngine);
@@ -121,6 +155,13 @@ begin
 
   FEngine.InBeginPaintBehavior := FindCollide;
   FEngine.Start;
+end;
+
+procedure TDemoGame.Resize(ASize: TPointF);
+begin
+  FEngine.Width := Round(ASize.X);
+  FEngine.Height := Round(ASize.Y);
+  FEngine.DoTheFullWindowResize;
 end;
 
 procedure TDemoGame.SetImage(const Value: TImage);

@@ -8,19 +8,6 @@ uses
   uEngine2DObject, uIntersectorClasses;
 
 type
-  TGameButton = class
-  private
-    FParent: Pointer; // Engine2d
-    FBack: TSprite;
-    FText: TEngine2DText;
-    function GetText: String;
-    procedure SetText(const Value: String);
-  public
-    constructor Create(AParent: Pointer);
-    destructor Destroy; override;
-    property Text: String read GetText write SetText;
-  end;
-
   TShipFire = class(TSprite)
   private
     FTip: Byte;
@@ -80,9 +67,6 @@ type
   end;
 
   TExplosion = class(TSprite)
-  public
-    procedure Repaint; override;
-    constructor Create(AParent: pointer); override;
   end;
 
   TStar = class(TSprite)
@@ -219,8 +203,7 @@ begin
   FShipLight.x := Self.x + (-scW*0.0 - 0) * cos((Self.Rotate / 180) * pi) - (scH * 0.4) * sin((Self.Rotate / 180) * pi);
   FShipLight.y :=  Self.y + (-scW*0.0 - 0) * sin((Self.Rotate / 180) * pi) + (scH * 0.4) * cos((Self.Rotate / 180) * pi);
   FShipLight.SendToFront;
-
-end;
+ end;
 
 { TAsteroid }
 
@@ -259,8 +242,6 @@ begin
     vAng);
 
   vAni := vLoader.ExplosionAnimation(vExp);
-
-
 
   AObject.Rotate := AObject.Rotate + (vArcTan / pi180) * 0.02;
   FNotChange := 10;
@@ -358,19 +339,6 @@ begin
   curRes := FTip + 2;
 end;
 
-{ TExplosion }
-
-constructor TExplosion.Create(AParent: pointer);
-begin
-  inherited;
-end;
-
-procedure TExplosion.Repaint;
-begin
-  inherited;
-
-end;
-
 { TShipLight }
 
 procedure TShipLight.Repaint;
@@ -378,46 +346,6 @@ begin
   Opacity := 0.8 + Random * 0.2;
   CurRes := 13 + Random(2);
   inherited;
-end;
-
-{ TGameButton }
-
-constructor TGameButton.Create(AParent: Pointer);
-var
-  vEngine: tEngine2d;
-begin
-  vEngine := AParent;
-  FParent := vEngine;
-  FBack := TSprite.Create(vEngine);
-  FBack.CurRes := vEngine.Resources.IndexOf('button');
-  FBack.Group := 'menu';
-  FText := TEngine2DText.Create(vEngine);
-  FText.Group := 'menu';
-
-  vEngine.AddObject(FBack);
-  vEngine.AddObject(FText);
-end;
-
-destructor TGameButton.Destroy;
-var
-  vEngine: tEngine2d;
-begin
-  vEngine := FParent;
-  vEngine.DeleteObject(FText);
-  FText.Free;
-  vEngine.DeleteObject(FBack);
-  FBack.Free;
-  inherited;
-end;
-
-function TGameButton.GetText: String;
-begin
-  Result := FText.Text;
-end;
-
-procedure TGameButton.SetText(const Value: String);
-begin
-  Ftext.Text := Value;
 end;
 
 end.

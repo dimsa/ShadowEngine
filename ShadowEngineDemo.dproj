@@ -228,6 +228,7 @@
         <DCCReference Include="Engine\uEngine2DObjectShape.pas"/>
         <DCCReference Include="Engine\uEngine2DShapedSprite.pas"/>
         <DCCReference Include="Intersector\uNewFigure.pas"/>
+        <DCCReference Include="DemoCode\uDemoMenu.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
