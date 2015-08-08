@@ -3,7 +3,8 @@ unit uEngine2DText;
 interface
 
 uses
-  System.Types, System.UITypes, FMX.Graphics, FMX.Objects, FMX.Types, System.SysUtils,
+  System.Types, System.UITypes, FMX.Graphics, FMX.Objects, FMX.Types,
+  System.Math, System.SysUtils,
   uEngine2DClasses, uEngine2DResources,
   uEngine2DObject;
 
@@ -17,10 +18,14 @@ type
     FVerAlign, FHorAlign: TTextAlign; // Выравнивание текста
     FTextRect: TRectF;
   private
+    FFontSizeRatio: Single;
+    FAutoSize: Boolean;
+    FWordWrap: Boolean;
     procedure SetFont(const Value: tFont);
     procedure SetText(const Value: string);
 //    procedure RenewRec;
     procedure SetTextRect(const Value: TRectF);
+    procedure SetWordWrap(const Value: Boolean);
   protected
     function GetW: single; override;
     function GetH: single; override;
@@ -32,7 +37,10 @@ type
     property Text: string read fText write SetText;
     property TextRec: TRectF read FTextRect write SetTextRect;
     property Color: TAlphaColor read FColor write FColor;
-    procedure AutoChooseFontSize; // Автоматически подбирает размер шрифта
+    property AutoSizeFont: Boolean read FAutoSize write FAutoSize;
+    property FontSizeRation: Single read FFontSizeRatio write FFontSizeRatio;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap;
+    procedure AutoResizeFont(const ARatio: Single = 0); // Автоматически подбирает размер шрифта
 
  //   procedure copy(var AText: TEngine2DText); // Делает копию объекта
     function UnderTheMouse(const Mousex, MouseY: Double): boolean; override;
@@ -45,9 +53,22 @@ implementation
 
 { TEngine2DText }
 
-procedure TEngine2DText.AutoChooseFontSize;
+procedure TEngine2DText.AutoResizeFont(const ARatio: Single);
+var
+  vRect: TRectF;
+  vRatio: Single;
 begin
+  if FText <> '' then
+   fFont.Size := fFont.Size * Self.ScaleX;
+  {if FText <> '' then
 
+   with Image do
+   begin
+      vRect := FTextRect;
+      Bitmap.Canvas.MeasureText(vRect, fText, FWordWrap, [], TTextAlign.Leading, TTextAlign.Leading);
+      vRatio := Min(FTextRect.Height / vRect.Height, FTextRect.Width / vRect.Width);
+
+   end;}
 end;
 
 constructor TEngine2DText.Create(AParent: pointer);
@@ -55,9 +76,12 @@ begin
   inherited;
   fFont := tFont.Create; // Шрифт надписи
   fFont.Family := 'Arial';
-  fFont.Size := 14;
+  fFont.Size := 12;
   fColor := TAlphaColorRec.Black; // Цвет текста
-  FTextRect := RectF(-50, -50, 50, 50);
+  FFontSizeRatio := 0.8;
+  FAutoSize := True;
+  FWordWrap := False;
+  FTextRect := RectF(-50, -25, 50, 25);
   {$IFDEF VER290}
     FFillTextFlags := [TFillTextFlag.RightToLeft]; // Свойство текста
     FVerAlign := TTextAlign.Center;
@@ -115,7 +139,7 @@ begin
     Bitmap.Canvas.Font.Assign(FFont);
 
 //    Bitmap.Canvas.FillRect(FTextRect, 0, 0, [], 0.5);
-    Bitmap.Canvas.FillText( FTextRect, FText, False, Opacity, FFillTextFlags,
+    Bitmap.Canvas.FillText( FTextRect, FText, FWordWrap, Opacity, FFillTextFlags,
     FHorAlign, FVerAlign);
     Bitmap.Canvas.Font.Assign(vTmp);
     vTmp.Free;
@@ -132,16 +156,29 @@ begin
   inherited;
   fTextRect.TopLeft := fTextRect.TopLeft * AValue;
   fTextRect.BottomRight := FTextRect.BottomRight * AValue;
+  if FAutoSize then
+    AutoResizeFont(FFontSizeRatio);
 end;
 
 procedure TEngine2DText.SetText(const Value: string);
 begin
   fText := Value;
+  if FAutoSize then
+    AutoResizeFont(FFontSizeRatio);
 end;
 
 procedure TEngine2DText.SetTextRect(const Value: TRectF);
 begin
   FTextRect := Value;
+  if FAutoSize then
+    AutoResizeFont(FFontSizeRatio);
+end;
+
+procedure TEngine2DText.SetWordWrap(const Value: Boolean);
+begin
+  FWordWrap := Value;
+  if FAutoSize then
+    AutoResizeFont(FFontSizeRatio);
 end;
 
 procedure TEngine2DText.setX(AValue: single);

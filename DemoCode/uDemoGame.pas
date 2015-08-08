@@ -16,7 +16,7 @@ type
     FEngine: TDemoEngine;
     FBackObjects: TList<TLittleAsteroid>; // Летящие бэки
     FShip: TShip;
-    FMenu: TList<TGameButton>;
+    FMenu: TGameMenu;
     FAsteroids: TList<TAsteroid>;
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
@@ -43,16 +43,12 @@ uses
 constructor TDemoGame.Create;
 begin
   FEngine := TDemoEngine.Create;
-
 end;
 
 destructor TDemoGame.Destroy;
 var
   i, vN: Integer;
 begin
-  vN := FMenu.Count - 1;
-  for i := 0 to vN do
-    FMenu[i].Free;
   FMenu.Free;
 
   vN := FAsteroids.Count - 1;
@@ -135,22 +131,36 @@ begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
 
- { FMenu := TList<TGameButton>.Create;
+  FMenu := TGameMenu.Create(FEngine);
   vBut := TGameButton.Create(FEngine);
-  vBut.Text := 'Start Game'; }
+  vBut.Name := 'button1';
+  vBut.Text := 'Start Game';
+  FMenu.Add(vBut);
+  vBut := TGameButton.Create(FEngine);
+  vBut.Text := 'Statistics';
+  vBut.Name := 'button2';
+  FMenu.Add(vBut);
+  vBut := TGameButton.Create(FEngine);
+  vBut.Text := 'About';
+  vBut.Name := 'button3';
+  FMenu.Add(vBut);
+  vBut := TGameButton.Create(FEngine);
+  vBut.Text := 'Exit';
+  vBut.Name := 'button4';
+  FMenu.Add(vBut);
 
 
   FBackObjects := TList<TLittleAsteroid>.Create;
   vLoader := TLoader.Create(FEngine);
   // Создаем астеройдное поле
-  for i := 0 to 49 do
+  for i := 0 to 149 do
     FBackObjects.Add(vLoader.RandomAstroid);
 
   // Создаем корабль
   FShip := vLoader.CreateShip;
 
   FAsteroids := TList<TAsteroid>.Create;
-  for i := 0 to 19 do
+  for i := 0 to 49 do
     FAsteroids.Add(vLoader.BigAstroid);
 
   FEngine.InBeginPaintBehavior := FindCollide;

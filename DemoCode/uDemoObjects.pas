@@ -253,9 +253,9 @@ end;
 constructor TAsteroid.Create(AParent: pointer);
 begin
   inherited;
-  FDx := 200 * Random;
-  FDy := 200 * Random;
-  FDA := 180 * Random - 90;
+  FDx := 5 * Random;
+  FDy := 5 * Random;
+  FDA := 20 * Random - 10;
   FNotChange := 0;
 end;
 
@@ -297,14 +297,20 @@ begin
   if FTip > 3 then
     FTip := 3; // Чтобы звезд побольше было
 
-  FDX := Random * 350;
-  FDY := Random * 350 ;
+  FDX := Random * 6;
+  FDY := Random * 6 ;
+  FDA := 30 * Random - 15;
 end;
 
 procedure TLittleAsteroid.Repaint;
 begin
   curRes := FTip + 5;
   inherited;
+
+  Self.Rotate := Self.Rotate + FDa * Game.Speed;
+
+  if Self.Rotate >= 360 then
+    Self.Rotate := 0;
 
   Self.x := Self.x + FDx * Game.Speed;
   Self.y := Self.y + FDy * Game.Speed;

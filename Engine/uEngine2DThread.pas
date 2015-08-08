@@ -30,14 +30,14 @@ type
     destructor Destroy; override;
   const
   {$IFDEF WIN32}
-    CLeftFPSBorder = 180;
-    CRightFPSBorder = 300;
-    CMiddleFPS = 240;
+    CLeftFPSBorder = 30;
+    CRightFPSBorder = 120;
+    CMiddleFPS = 60;
   {$ENDIF WIN32}
   {$IFDEF ANDROID}
-    CLeftFPSBorder = 30;
-    CRightFPSBorder = 90;
-    CMiddleFPS = 60;
+    CLeftFPSBorder = 20;
+    CRightFPSBorder = 60;
+    CMiddleFPS = 40;
   {$ENDIF ANDROID}
   end;
 
@@ -95,9 +95,9 @@ end;
 function TEngineThread.GetSpeed: Single;
 begin
   if (FPS > CRightFPSBorder) or (FPS < CLeftFPSBorder) then
-    Exit(1 / CMiddleFPS);
+    Exit(60 / CMiddleFPS);
 
-  Result := 1 / FPS;
+  Result := 60 / FPS;
 end;
 
 procedure tEngineThread.setTickBegin(AValue: int64);

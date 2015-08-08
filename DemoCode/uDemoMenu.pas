@@ -3,7 +3,7 @@ unit uDemoMenu;
 interface
 
 uses
-  System.Types, System.UITypes, System.Math,
+  System.Types, System.UITypes, System.Math,  System.Generics.Collections,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2DObject, uEngine2DText, uEngine2DSprite, uEngineFormatter,
   uIntersectorMethods;
@@ -15,12 +15,25 @@ type
     FBack: TSprite;
     FText: TEngine2DText;
     FFormatters: TEngineFormatter;
+    FName: String;
     function GetText: String;
     procedure SetText(const Value: String);
   public
-    constructor Create(AParent: Pointer);
+    constructor Create(const AParent: Pointer);
     destructor Destroy; override;
+    procedure AddToEngine(const AFormatterText: String);
     property Text: String read GetText write SetText;
+    property Name: String read FName write FName;
+  end;
+
+  TGameMenu = class
+  private
+    FParent: Pointer; // Engine2d
+    FList: TList<TGameButton>;
+  public
+    procedure Add(const AButton: TGameButton);
+    constructor Create(const AParent: Pointer);
+    destructor Destroy; override;
   end;
 
 
@@ -31,7 +44,7 @@ uses
 
 { TGameButton }
 
-constructor TGameButton.Create(AParent: Pointer);
+procedure TGameButton.AddToEngine(const AFormatterText: String);
 var
   vEngine: tEngine2d;
   vFormatter: TEngineFormatter;
@@ -39,28 +52,20 @@ var
   vPoly: TPolygon;
   vFText: String;
 begin
-  vEngine := AParent;
-  FParent := vEngine;
-  FBack := TSprite.Create(vEngine);
-  FBack.Resources := vEngine.Resources;
-  FBack.CurRes := vEngine.Resources.IndexOf('button');
-  FBack.Group := 'menu';
-  FText := TEngine2DText.Create(vEngine);
-  FText.Group := 'menu';
-  FText.Color := TAlphaColorRec.White;
+  vEngine := FParent;
 
-  vEngine.AddObject('button1', FBack);
+  vEngine.AddObject(Self.FName, FBack);
   vEngine.AddObject(FText);
 
   vFormatter := TEngineFormatter.Create(FBack);
   vFormatter.Parent := vEngine;
-  vFText := 'left: engine.width * 0.5; top: engine.height * 0.2; width: engine.width * 0.5';
+  vFText := AFormatterText; //''ft: engine.width * 0.5; top: engine.height * 0.2; width: engine.width * 0.5';
   vFormatter.Text := vFText;
   vEngine.FormatterList.Add(vFormatter);
 
   vFormatter := TEngineFormatter.Create(FText);
   vFormatter.Parent := vEngine;
-  vFText := 'left: engine.width * 0.5; top: engine.height * 0.2; ';
+  vFText := 'left: ' + Self.FName + '.left; top: ' + Self.FName + '.top; width: ' + Self.FName + '.width;';
   vFormatter.Text := vFText;
   vEngine.FormatterList.Add(vFormatter);
 
@@ -72,8 +77,21 @@ begin
   vFigure.SetData(vPoly);
 
   FBack.Shape.AddFigure(vFigure);
+end;
 
-
+constructor TGameButton.Create(const AParent: Pointer);
+var
+  vEngine: tEngine2d;
+begin
+  vEngine := AParent;
+  FParent := vEngine;
+  FBack := TSprite.Create(vEngine);
+  FBack.Resources := vEngine.Resources;
+  FBack.CurRes := vEngine.Resources.IndexOf('button');
+  FBack.Group := 'menu';
+  FText := TEngine2DText.Create(vEngine);
+  FText.Group := 'menu';
+  FText.Color := TAlphaColorRec.White;
 end;
 
 destructor TGameButton.Destroy;
@@ -96,6 +114,30 @@ end;
 procedure TGameButton.SetText(const Value: String);
 begin
   Ftext.Text := Value;
+end;
+
+{ TGameMenu }
+
+procedure TGameMenu.Add(const AButton: TGameButton);
+begin
+end;
+
+constructor TGameMenu.Create(const AParent: Pointer);
+begin
+  FParent := AParent;
+  FList := TList<TGameButton>.Create;
+end;
+
+destructor TGameMenu.Destroy;
+var
+  i, vN: Integer;
+begin
+ vN := FList.Count - 1;
+  for i := 0 to vN do
+    FList[i].Free;
+  FList.Free;
+
+  inherited;
 end;
 
 end.
