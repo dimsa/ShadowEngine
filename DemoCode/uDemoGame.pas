@@ -135,7 +135,7 @@ begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
 
-  {FMenu := TList<TGameButton>.Create;
+ { FMenu := TList<TGameButton>.Create;
   vBut := TGameButton.Create(FEngine);
   vBut.Text := 'Start Game'; }
 
@@ -172,4 +172,5 @@ begin
 end;
 
 end.
+
 

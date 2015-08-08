@@ -54,13 +54,13 @@ begin
 
   vFormatter := TEngineFormatter.Create(FBack);
   vFormatter.Parent := vEngine;
-  vFText := 'left: engine.width * 0.5; top: engine.height * 0.2; width: engine.width * 0.25';
+  vFText := 'left: engine.width * 0.5; top: engine.height * 0.2; width: engine.width * 0.5';
   vFormatter.Text := vFText;
   vEngine.FormatterList.Add(vFormatter);
 
   vFormatter := TEngineFormatter.Create(FText);
   vFormatter.Parent := vEngine;
-  vFText := 'left: engine.width * 0.5; top: engine.height * 0.2; width: button1.width * 0.2; ';
+  vFText := 'left: engine.width * 0.5; top: engine.height * 0.2; ';
   vFormatter.Text := vFText;
   vEngine.FormatterList.Add(vFormatter);
 

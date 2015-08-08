@@ -16,9 +16,9 @@ type
     procedure SetScalePoint(const Value: TPointF);
   protected
     fPosition: TPosition;
-    fVisible: boolean; // Отрисовывать объект или нет
+    fVisible: Boolean; // Отрисовывать объект или нет
     fOpacity: Single; // Прозрачность
-    fSelectable: boolean; // Участвует ли в выделении
+    fSelectable: Boolean; // Участвует ли в выделении
     fParent: pointer; // Должен быть tEngine2d
     fImage: TImage;
     fCreationNumber: integer; // Номер спрайта в массиве спрайтов
