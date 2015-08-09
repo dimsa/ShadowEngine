@@ -11,9 +11,9 @@ type
   TmainForm = class(TForm)
     mainImage: TImage;
     procedure FormCreate(Sender: TObject);
-    procedure FormResize(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
+    procedure FormResize(Sender: TObject);
   private
     { Private declarations }
   public

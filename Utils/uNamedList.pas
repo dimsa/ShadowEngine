@@ -37,7 +37,7 @@ type
     property Items[Name: String]: T read GetItemS write SetItemS; default;
     property Count: Integer read GetCount;{ write SetCount;}
 
-    function Add(const AName: String; Const AValue: T): Integer; reintroduce; overload; virtual;
+    function Add(const AName: String; const AValue: T): Integer; reintroduce; overload; virtual;
     function Add(AValue: T): Integer; reintroduce; overload; virtual;
 
     function AddIfNo(const AName: String; Const AValue: T): Integer; overload; virtual;

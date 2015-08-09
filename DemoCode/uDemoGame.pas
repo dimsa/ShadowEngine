@@ -126,29 +126,11 @@ procedure TDemoGame.Prepare;
 var
   vLoader: TLoader;
   i: Integer;
-  vBut: TGameButton;
 begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
 
   FMenu := TGameMenu.Create(FEngine);
-  vBut := TGameButton.Create(FEngine);
-  vBut.Name := 'button1';
-  vBut.Text := 'Start Game';
-  FMenu.Add(vBut);
-  vBut := TGameButton.Create(FEngine);
-  vBut.Text := 'Statistics';
-  vBut.Name := 'button2';
-  FMenu.Add(vBut);
-  vBut := TGameButton.Create(FEngine);
-  vBut.Text := 'About';
-  vBut.Name := 'button3';
-  FMenu.Add(vBut);
-  vBut := TGameButton.Create(FEngine);
-  vBut.Text := 'Exit';
-  vBut.Name := 'button4';
-  FMenu.Add(vBut);
-
 
   FBackObjects := TList<TLittleAsteroid>.Create;
   vLoader := TLoader.Create(FEngine);
