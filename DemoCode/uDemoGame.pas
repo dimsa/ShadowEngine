@@ -130,8 +130,6 @@ begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
 
-  FMenu := TGameMenu.Create(FEngine);
-
   FBackObjects := TList<TLittleAsteroid>.Create;
   vLoader := TLoader.Create(FEngine);
   // Создаем астеройдное поле
@@ -145,14 +143,16 @@ begin
   for i := 0 to 49 do
     FAsteroids.Add(vLoader.BigAstroid);
 
+ // FMenu := TGameMenu.Create(FEngine);
+
   FEngine.InBeginPaintBehavior := FindCollide;
   FEngine.Start;
 end;
 
 procedure TDemoGame.Resize(ASize: TPointF);
 begin
-  FEngine.Width := Round(ASize.X);
-  FEngine.Height := Round(ASize.Y);
+{  FEngine.Width := Round(ASize.X);
+  FEngine.Height := Round(ASize.Y);  }
   FEngine.DoTheFullWindowResize;
 end;
 

@@ -38,6 +38,8 @@ type
   public
     function Add(const AName: String; Const AValue: T): Integer; override;
     function Add(AValue: T): Integer; override;
+    function Insert(const AIndex: Integer; const AName: String; const AValue: T): Integer; override;
+    function Insert(const AIndex: Integer; AValue: T): Integer; override;
     procedure Delete(const AName: String); overload; override;
     procedure Delete(const AT: T); overload; override;
     procedure Delete(const AIndex: Integer); overload; override;
@@ -168,6 +170,28 @@ begin
   vEngine := Parent;
   vEngine.Critical.Enter;
   inherited Delete(AIndex);
+  vEngine.Critical.Leave;
+end;
+
+function TEngine2DNamedList<T>.Insert(const AIndex: Integer;
+  const AName: String; const AValue: T): Integer;
+var
+  vEngine: tEngine2d;
+begin
+  vEngine := Parent;
+  vEngine.Critical.Enter;
+  Result := inherited Insert(AIndex, AName, AValue);
+  vEngine.Critical.Leave;
+end;
+
+function TEngine2DNamedList<T>.Insert(const AIndex: Integer;
+  AValue: T): Integer;
+var
+  vEngine: tEngine2d;
+begin
+  vEngine := Parent;
+  vEngine.Critical.Enter;
+  Result := inherited Insert(AIndex, AValue);
   vEngine.Critical.Leave;
 end;
 

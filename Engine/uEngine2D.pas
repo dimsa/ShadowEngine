@@ -47,6 +47,7 @@ type
     FBackgroundBehavior: TProcedure;
     FInBeginPaintBehavior: TProcedure;
     FInEndPaintBehavior: TProcedure;
+    FAddedSprite: Integer; // Считает сколько спрайтов добавлено всего. Без учета удалений
 
     // Механизм теневого объекты необычен. Но кроме всего прочего TEngine2DObject не имеет способов определения
     {FShadowSprite: tSprite; //
@@ -153,7 +154,8 @@ var
   l: integer;
 begin
   l := spriteCount;
-  addObject('genname'+IntToStr(l)+'x'+IntToStr(Random(65536)), AObject);
+  Inc(FAddedSprite);
+  addObject('genname'+IntToStr(FAddedSprite)+'x'+IntToStr(Random(65536)), AObject);
 end;
 
 procedure tEngine2d.addObject(const AName: String;
@@ -247,6 +249,7 @@ begin
   FBackgroundBehavior := BackgroundDefaultBehavior;
   FInBeginPaintBehavior := InBeginPaintDefaultBehavior;
   FInEndPaintBehavior := InEndPaintDefaultBehavior;
+  FAddedSprite := 0;
   fDebug := False;
   prepareFastFields;
   clearSprites;

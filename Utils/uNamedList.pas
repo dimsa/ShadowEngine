@@ -18,6 +18,7 @@ type
   strict private
     FParent: Pointer; // Pointer to master
   //  FNames: TList<TNameAndValue>;
+    FAdded: Integer; // Считает количество добавленных всего элементов
     FDict: TDictionary<String,T>;
     FList: TList<T>;
     FLink: TList<String>;//array of string;// TDictionary<Integer,String>;
@@ -39,6 +40,9 @@ type
 
     function Add(const AName: String; const AValue: T): Integer; reintroduce; overload; virtual;
     function Add(AValue: T): Integer; reintroduce; overload; virtual;
+
+    function Insert(const AIndex: Integer; const AName: String; const AValue: T): Integer; reintroduce; overload; virtual;
+    function Insert(const AIndex: Integer; AValue: T): Integer; reintroduce; overload; virtual;
 
     function AddIfNo(const AName: String; Const AValue: T): Integer; overload; virtual;
     function AddIfNo(AValue: T): Integer; overload; virtual;
@@ -107,6 +111,7 @@ begin
 
 {  if IsHere(AName) then
     Exit;}
+  Inc(FAdded);
   FDict.Add(AName, AValue);
   vIndex := FList.Add(AValue);
   FLink.Add(AName);
@@ -135,7 +140,7 @@ begin
   vName := StringReplace(vName, '-', '', [rfReplaceAll]);
   System.Delete(vName, 1, 1);
   System.Delete(vName, Length(vName), 1);
-  vName:= 'GUID'+vName;//+IntToStr(Random(65536));
+  vName:= 'GUID'+vName + IntToStr(FAdded);//+IntToStr(Random(65536));
   Result := Self.Add(vName, AValue);
 end;
 
@@ -214,6 +219,7 @@ begin
   FList := TList<T>.Create;
   FDict := TDictionary<String,T>.Create;
   FLink := TList<String>.Create;//TDictionary<Integer,String>.Create;
+  FAdded := 0;
 end;
 
 procedure TNamedList<T>.Delete(const AName: String);
@@ -311,6 +317,47 @@ function TNamedList<T>.IndexOfItem(const Value: T;
   Direction: TDirection): Integer;
 begin
   Result := FList.IndexOfItem(Value, Direction);
+end;
+
+function TNamedList<T>.Insert(const AIndex: Integer; const AName: String;
+  const AValue: T): Integer;
+var
+  vExisting: Integer;
+  vIndex: Integer;
+  vT: T;
+  i: Integer;
+begin
+  Inc(FAdded);
+  FDict.Add(AName, AValue);
+  FList.Insert(AIndex, AValue);
+  FLink.Insert(AIndex, AName);
+
+  Result := AIndex;
+end;
+
+function TNamedList<T>.Insert(const AIndex: Integer; AValue: T): Integer;
+var
+  vIndex: Integer;
+  vName: String;
+  Guid: TGUID;
+  i: Integer;
+begin
+
+  // Почему-то андройд по-другому не создает уникальный ГУИД
+  Guid := Guid.Empty;
+  Guid.D1 := Random(Cardinal.MaxValue);
+  Guid.D2 := Random(Word.MaxValue+1);
+  Guid.D3 := Random(Word.MaxValue+1);
+
+  for i := 0 to 7 do
+    Guid.D4[i] := Random(Byte.MaxValue+1);
+
+  vName := Guid.ToString;
+  vName := StringReplace(vName, '-', '', [rfReplaceAll]);
+  System.Delete(vName, 1, 1);
+  System.Delete(vName, Length(vName), 1);
+  vName:= 'GUID'+vName + IntToStr(FAdded);
+  Result := Self.Insert(AIndex, vName, AValue);
 end;
 
 function TNamedList<T>.IsHere(const AObject: T): Boolean;

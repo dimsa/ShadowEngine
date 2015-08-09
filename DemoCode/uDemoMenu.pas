@@ -86,9 +86,12 @@ begin
   vEngine.AddObject(FName, FBack);
   vEngine.AddObject(FText);
 
+  FBack.SendToFront;
+  FText.SendToFront;
+
   vFormatter := TEngineFormatter.Create(FText);
   vFormatter.Parent := vEngine;
-  vFText := 'left: ' + Self.FName + '.left; top: ' + Self.FName + '.top; width: ' + Self.FName + '.width;';
+  vFText := 'left: ' + Self.FName + '.left; top: ' + Self.FName + '.top; min-width:'  + Self.FName + '.width * 1.5; width: ' + Self.FName + '.width; max-width: ' + Self.FName + '.width;';
   vFormatter.Text := vFText;
   vEngine.FormatterList.Add(vFormatter);
   vPoly := PolyFromRect(RectF(0, 0, FBack.w, FBack.h));
@@ -153,32 +156,32 @@ begin
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
-    IntToStr(FList.Count) + '; width: engine.width * 0.5; max-height: engine.height * 0.18;';
-  vEngine.FormatterList.Add(vFormatter);
+    IntToStr(FList.Count) + '; width: engine.width * 0.8; max-height: engine.height * 0.18;';
+  vEngine.FormatterList.Insert(0, vFormatter);
 
   vBut := TGameButton.Create('button2', vEngine);
   vBut.Text := 'Statistics';
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
-    IntToStr(FList.Count) +'; width: engine.width * 0.5; max-height: engine.height * 0.18;';
-  vEngine.FormatterList.Add(vFormatter);
+    IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.18;';
+  vEngine.FormatterList.Insert(0, vFormatter);
 
   vBut := TGameButton.Create('button3', vEngine);
   vBut.Text := 'About';
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
-    IntToStr(FList.Count) +'; width: engine.width * 0.5; max-height: engine.height * 0.18;';
-  vEngine.FormatterList.Add(vFormatter);
+    IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.18;';
+  vEngine.FormatterList.Insert(0, vFormatter);
 
   vBut := TGameButton.Create('button4', vEngine);
   vBut.Text := 'Exit';
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
-    IntToStr(FList.Count) +'; width: engine.width * 0.5; max-height: engine.height * 0.18;';
-  vEngine.FormatterList.Add(vFormatter);
+    IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.18;';
+  vEngine.FormatterList.Insert(0, vFormatter);
 end;
 
 destructor TGameMenu.Destroy;
