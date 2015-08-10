@@ -86,10 +86,11 @@ end;
 
 function tEngineThread.GetLastFps: Single;
 begin
-  if FLastFps <> 0 then
+  if FLastFps > 1 then
     Exit(FLastFPS)
-  else
+  else begin
     Result := 1;
+  end;
 end;
 
 function TEngineThread.GetSpeed: Single;

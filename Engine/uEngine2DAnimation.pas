@@ -90,6 +90,8 @@ begin
   begin
     vEngine := Parent;
     TimePassed := TimePassed + (1000 / vEngine.EngineThread.FPS);
+    if TimePassed > TimeTotal then
+      Result := CAnimationEnd;
   end else
   begin
     if FNextAnimation <> Nil then

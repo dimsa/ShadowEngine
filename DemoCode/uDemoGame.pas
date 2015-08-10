@@ -22,8 +22,14 @@ type
     procedure SetImage(const Value: TImage);
     procedure mouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; x, y: single);
+    procedure mouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; x, y: single);
     procedure FindCollide;
     function GetSpeed: Single;
+    procedure StartGame(ASender: TObject);
+    procedure StatGame(ASender: TObject);
+    procedure AboutGame(ASender: TObject);
+    procedure ExitGame(ASender: TObject);
   public
     property Image: TImage read GetImage write SetImage;
     property Speed: Single read GetSpeed;
@@ -36,9 +42,14 @@ type
 implementation
 
 uses
-  FMX.Dialogs;
+  FMX.Dialogs, uEngine2DSprite;
 
 { TDemoGame }
+
+procedure TDemoGame.AboutGame(ASender: TObject);
+begin
+
+end;
 
 constructor TDemoGame.Create;
 begin
@@ -64,6 +75,11 @@ begin
   FShip.Free;
 
   inherited;
+end;
+
+procedure TDemoGame.ExitGame(ASender: TObject);
+begin
+  Halt;
 end;
 
 procedure TDemoGame.FindCollide;
@@ -122,6 +138,18 @@ begin
   FEngine.AnimationList.Add(vAni);
 end;
 
+procedure TDemoGame.mouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; x, y: single);
+var
+  vL, i: Integer;
+begin
+  fEngine.mouseUp(Sender, Button, Shift, x, y);
+  vL := Length(FEngine.Clicked) - 1;
+  if vL >= 0 then
+    for i := 0 to 0{vL} do
+      fEngine.sprites[fEngine.Downed[i]].OnClick(Sender);
+end;
+
 procedure TDemoGame.Prepare;
 var
   vLoader: TLoader;
@@ -143,7 +171,11 @@ begin
   for i := 0 to 49 do
     FAsteroids.Add(vLoader.BigAstroid);
 
- // FMenu := TGameMenu.Create(FEngine);
+  FMenu := TGameMenu.Create(FEngine);
+  FMenu.StartGame := StartGame;
+  FMenu.AboutGame := AboutGame;
+  FMenu.StatGame := StatGame;
+  FMenu.ExitGame := ExitGame;
 
   FEngine.InBeginPaintBehavior := FindCollide;
   FEngine.Start;
@@ -160,7 +192,36 @@ procedure TDemoGame.SetImage(const Value: TImage);
 begin
   fEngine.init(Value);
   Value.OnMouseDown := Self.MouseDown;
-  Value.OnMouseUp := fEngine.MouseUp;
+  Value.OnMouseUp := Self.mouseUp;
+
+end;
+
+procedure TDemoGame.StartGame(ASender: TObject);
+var
+  vSpr: TSprite;
+  vLoader: TLoader;
+begin
+  FEngine.HideGroup('menu');
+  FEngine.ShowGroup('ship');
+  vLoader := TLoader.Create(FEngine);
+
+  for vSpr in FShip.Parts do
+  begin
+    vSpr.Opacity := 0;
+    FEngine.AnimationList.Add(
+      vLoader.OpacityAnimation(vSpr, 1)
+    );
+  end;
+
+  {FEngine.AnimationList.Add(
+      vLoader.ScaleAnimation(vSpr, 1.6)
+    );}
+
+end;
+
+procedure TDemoGame.StatGame(ASender: TObject);
+begin
+
 end;
 
 end.

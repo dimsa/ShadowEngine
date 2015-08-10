@@ -14,7 +14,6 @@ type
     FParent: Pointer; // Engine2d
     FBack: TSprite;
     FText: TEngine2DText;
-    FFormatters: TEngineFormatter;
     FName: String;
     FOnClick: TVCLProcedure;
     function GetText: String;
@@ -33,8 +32,19 @@ type
   private
     FParent: Pointer; // Engine2d
     FList: TList<TGameButton>;
-    FFormatterList: TList<TEngineFormatter>;
+    FStatGame: TVCLProcedure;
+    FExitGame: TVCLProcedure;
+    FAboutGame: TVCLProcedure;
+    FStartGame: TVCLProcedure;
+    procedure SetAboutGame(const Value: TVCLProcedure);
+    procedure SetExitGame(const Value: TVCLProcedure);
+    procedure SetStartGame(const Value: TVCLProcedure);
+    procedure SetStatGame(const Value: TVCLProcedure);
   public
+    property StartGame: TVCLProcedure write SetStartGame;
+    property AboutGame: TVCLProcedure write SetAboutGame;
+    property StatGame: TVCLProcedure write SetStatGame;
+    property ExitGame: TVCLProcedure write SetExitGame;
     procedure Add(const AButton: TGameButton);
     constructor Create(const AParent: Pointer);
     destructor Destroy; override;
@@ -153,6 +163,7 @@ begin
 
   vBut := TGameButton.Create('button1', vEngine);
   vBut.Text := 'Start Game';
+  vBut.OnClick := FStartGame;
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
@@ -161,6 +172,7 @@ begin
 
   vBut := TGameButton.Create('button2', vEngine);
   vBut.Text := 'Statistics';
+  vBut.OnClick := FStatGame;
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
@@ -169,6 +181,7 @@ begin
 
   vBut := TGameButton.Create('button3', vEngine);
   vBut.Text := 'About';
+  vBut.OnClick := FAboutGame;
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
@@ -177,6 +190,7 @@ begin
 
   vBut := TGameButton.Create('button4', vEngine);
   vBut.Text := 'Exit';
+  vBut.OnClick := FExitGame;
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
@@ -194,6 +208,26 @@ begin
   FList.Free;
 
   inherited;
+end;
+
+procedure TGameMenu.SetAboutGame(const Value: TVCLProcedure);
+begin
+  FList[1].OnClick := Value;
+end;
+
+procedure TGameMenu.SetExitGame(const Value: TVCLProcedure);
+begin
+  FList[3].OnClick := Value;
+end;
+
+procedure TGameMenu.SetStartGame(const Value: TVCLProcedure);
+begin
+  FList[0].OnClick := Value;
+end;
+
+procedure TGameMenu.SetStatGame(const Value: TVCLProcedure);
+begin
+  FList[2].OnClick := Value;
 end;
 
 end.

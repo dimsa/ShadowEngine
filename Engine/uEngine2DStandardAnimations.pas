@@ -26,10 +26,20 @@ end;
   public
     function Animate: Byte; override;
     procedure Finalize; override;
-    procedure RecoverStart; override;
     property Slides: tIntArray read FSlides write FSlides;
     property CurSlide: Integer read FCurSlide write FCurSlide;
     // Time for one slide is (fulltime / slide count)
+    constructor Create; override;
+end;
+
+ TOpacityAnimation = class(TAnimation)
+  strict private
+    FEndOpaque: Single;
+  public
+    function Animate: Byte; override;
+    procedure Finalize; override;
+    procedure RecoverStart; override;
+    property EndOpaque: Single read FEndOpaque write FEndOpaque;
     constructor Create; override;
 end;
 
@@ -98,7 +108,7 @@ var
 begin
   vRes := inherited;
   vSprite := Subject;
-  if vRes = CAnimationInProcess then
+  if (vRes = CAnimationInProcess) then
   begin
     vSprite.CurRes :=
       FSlides[Trunc((TimePassed / TimeTotal) * (Length(FSlides) - 1))];
@@ -122,7 +132,39 @@ begin
   vSprite.CurRes := FSlides[High(FSlides)];
 end;
 
-procedure TSpriteAnimation.RecoverStart;
+{ TOpaqueAnimation }
+
+function TOpacityAnimation.Animate: Byte;
+var
+  vSprite: TSprite;
+  vRes: Byte;
+begin
+  vRes := inherited;
+  vSprite := Subject;
+  if vRes = CAnimationInProcess then
+  begin
+    vSprite.Opacity := (TimePassed / TimeTotal) * FEndOpaque;
+  end;
+
+  Result := vRes;
+end;
+
+constructor TOpacityAnimation.Create;
+begin
+  inherited;
+
+end;
+
+procedure TOpacityAnimation.Finalize;
+var
+  vSprite: TSprite;
+begin
+  inherited;
+  vSprite := Subject;
+  vSprite.Opacity := FEndOpaque;
+end;
+
+procedure TOpacityAnimation.RecoverStart;
 begin
   inherited;
 

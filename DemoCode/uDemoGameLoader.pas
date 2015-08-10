@@ -19,6 +19,8 @@ type
     function CreateShip: TShip;
     function Explosion(const AX, AY, AAng: Double): TExplosion;
     function ExplosionAnimation(ASubject: TSprite): TSpriteAnimation;
+    function OpacityAnimation(ASubject: TSprite; const AEndOpacity: Double): TOpacityAnimation;
+    function ScaleAnimation(ASubject: TSprite; const AEndScale: Double): TMigrationAnimation;
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
     constructor Create(AEngine: TEngine2D);
   end;
@@ -71,7 +73,7 @@ begin
   vSpr := TShip.Create(FEngine);
   vSpr.Parent := FEngine;
   vSpr.Resources := FEngine.Resources;
-  vSpr.Group := 'activeobject';
+  vSpr.Group := 'ship';
   vSpr.x := 200;//Random(FEngine.Width);
   vSpr.y := 200;//Random(FEngine.Height);
   vSpr.Rotate := Random(360);
@@ -113,7 +115,9 @@ begin
   vSpr.Shape.AddFigure(vPoly2);
   vSpr.Shape.AddFigure(vPoly3);
   vSpr.Shape.AddFigure(vShape);
+  vSpr.Visible := False;
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
+  FEngine.HideGroup('ship');
 
   Result := vSpr;
 end;
@@ -156,6 +160,19 @@ begin
   Result := vRes;
 end;
 
+function TLoader.OpacityAnimation(ASubject: TSprite; const AEndOpacity: Double): TOpacityAnimation;
+var
+  vRes: TOpacityAnimation;
+begin
+  vRes := TOpacityAnimation.Create;
+  vRes.Parent := fEngine;
+  vRes.EndOpaque := AEndOpacity;
+  vRes.TimeTotal := 500;
+  vRes.Subject := ASubject;
+
+  Result := vRes;
+end;
+
 function TLoader.RandomAstroid: TLittleAsteroid;
 var
   vSpr: TLittleAsteroid;
@@ -173,12 +190,29 @@ begin
   Result := vSpr;
 end;
 
+function TLoader.ScaleAnimation(ASubject: TSprite;
+  const AEndScale: Double): TMigrationAnimation;
+var
+  vRes: TMigrationAnimation;
+  vPos: TPosition;
+begin
+  vRes := TMigrationAnimation.Create;
+  vRes.Parent := FEngine;
+  vPos := ASubject.Position;
+  vPos.ScaleX := AEndScale;
+  vPos.ScaleY := AEndScale;
+  vRes.EndPos := vPos;
+  vRes.TimeTotal := 200;
+  vRes.Subject := ASubject;
+
+  Result := vRes;
+end;
+
 class function TLoader.ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
 var
   vRes: TMigrationAnimation;
 begin
   vRes := TMigrationAnimation.Create;
-//  vRes.Parent := fEngine;
   vRes.EndPos := APosition;
   vRes.TimeTotal := 500;
   vRes.Subject := ASubject;

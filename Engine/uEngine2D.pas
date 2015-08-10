@@ -129,7 +129,10 @@ type
 
     procedure Init(newImage: tImage); // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
     procedure Repaint; virtual;
-    procedure ShowGroup(AGroup: String);
+
+    // Прячем или показывает группы
+    procedure ShowGroup(const AGroup: String);
+    procedure HideGroup(const AGroup: String);
 
     procedure Start; virtual; // Включает движок
     procedure Stop; virtual;// Выключает движок
@@ -440,6 +443,18 @@ begin
   Result := Round(Self.fImage.Width);
 end;
 
+procedure tEngine2d.HideGroup(const AGroup: String);
+var
+  i, l: Integer;
+begin
+  l := fSprites.Count - 1;
+
+  for i := 0 to l do
+    if FSprites[i].group = AGroup
+    then
+      FSprites[i].visible := False;
+end;
+
 procedure tEngine2d.InBeginPaintDefaultBehavior;
 begin
 
@@ -643,18 +658,16 @@ begin
   fWidth := newWidth;
 end;
 
-procedure tEngine2d.showGroup(AGroup: String);
+procedure tEngine2d.showGroup(const AGroup: String);
 var
   i, l: Integer;
 begin
-  l := fSprites.Count - 1;//Length(FSprites) - 1;
+  l := fSprites.Count - 1;
 
   for i := 0 to l do
     if FSprites[i].group = AGroup
     then
       FSprites[i].visible := True
-    else
-      FSprites[i].visible := False;
 end;
 
 procedure tEngine2d.spriteToBack(const n: integer);

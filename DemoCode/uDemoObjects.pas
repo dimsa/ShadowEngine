@@ -4,6 +4,7 @@ interface
 
 uses
   FMX.Types, System.UITypes, System.Classes, System.Types, System.SysUtils, System.Math,
+  System.Generics.Collections,
   uEngine2DSprite, uEngine2DText, uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
   uEngine2DObject, uIntersectorClasses;
 
@@ -33,6 +34,7 @@ type
 
   TShip = class(TMovingUnit)
   private
+    FParts: TList<TSprite>;// array[0..5] of TSprite;
     FLeftFire: TShipFire;
     FRightFire: TShipFire;
     FLeftFireCenter: TShipFire;
@@ -40,10 +42,12 @@ type
     FShipLight: TShipLight;
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   public
-    property LeftFire: TShipFire read FLeftFire write FLeftFire;
+{    property LeftFire: TShipFire read FLeftFire write FLeftFire;
     property RightFire: TShipFire read FRightFire write FRightFire;
     property LeftFireCenter: TShipFire read FRightFireCenter write FRightFireCenter;
-    property RightFireCenter: TShipFire read FRightFireCenter write FRightFireCenter;
+    property RightFireCenter: TShipFire read FRightFireCenter write FRightFireCenter; }
+    property Parts: TList<TSprite> read FParts;
+    procedure SetOpacity(const AOpacity: Integer);
     procedure Repaint; override;
     constructor Create(AParent: pointer); override;
   end;
@@ -92,6 +96,7 @@ begin
 
   FLeftFire := TShipFire.Create(AParent);
   FLeftFire.Parent := AParent;
+  FLeftFire.Group := 'ship';
   FLeftFire.Resources := vEngine.Resources;
   FLeftFire.ScaleX := Self.ScaleX;
   FLeftFire.ScaleY := Self.ScaleY;
@@ -101,6 +106,7 @@ begin
   FRightFire := TShipFire.Create(AParent);
   FRightFire.Parent := AParent;
   FRightFire.Resources := vEngine.Resources;
+  FRightFire.Group := 'ship';
   FRightFire.ScaleX := -Self.ScaleX;
   FRightFire.ScaleY := Self.ScaleY;
   FRightFire.Opacity := 0.5;
@@ -109,6 +115,7 @@ begin
   FLeftFireCenter := TShipFire.Create(AParent);
   FLeftFireCenter.Parent := AParent;
   FLeftFireCenter.Resources := vEngine.Resources;
+  FLeftFireCenter.Group := 'ship';
   FLeftFireCenter.ScaleX := Self.ScaleX;
   FLeftFireCenter.ScaleY := Self.ScaleY;
   FLeftFireCenter.Opacity := 0.5;
@@ -118,17 +125,27 @@ begin
   FRightFireCenter.Parent := AParent;
   FRightFireCenter.Resources := vEngine.Resources;
   FRightFireCenter.ScaleX := -Self.ScaleX;
+  FRightFireCenter.Group := 'ship';
   FRightFireCenter.ScaleY := Self.ScaleY;
   FRightFireCenter.Opacity := 0.5;
   vEngine.AddObject(FRightFireCenter);
 
   FShipLight := TShipLight.Create(AParent);
   FShipLight.Resources := vEngine.Resources;
+  FShipLight.Group := 'ship';
   FShipLight.ScaleX := Self.ScaleX;
   FShipLight.ScaleY := Self.ScaleY;
   vEngine.AddObject(FShipLight);
 
   Self.OnMouseDown := Self.MouseDown;
+
+  FParts := TList<TSprite>.Create;
+  FParts.Add(Self);
+  FParts.Add(FLeftFire);
+  FParts.Add(FRightFire);
+  FParts.Add(FLeftFireCenter);
+  FParts.Add(FRightFireCenter);
+  FParts.Add(FShipLight);
 end;
 
 procedure TShip.MouseDown(Sender: TObject; Button: TMouseButton;
@@ -204,6 +221,15 @@ begin
   FShipLight.y :=  Self.y + (-scW*0.0 - 0) * sin((Self.Rotate / 180) * pi) + (scH * 0.4) * cos((Self.Rotate / 180) * pi);
   FShipLight.SendToFront;
  end;
+
+procedure TShip.SetOpacity(const AOpacity: Integer);
+var
+  i: Integer;
+begin
+  Self.Opacity := AOpacity;
+  for i := 0 to FParts.Count - 1 do
+    FParts[i].Opacity := AOpacity;
+end;
 
 { TAsteroid }
 
@@ -349,9 +375,11 @@ end;
 
 procedure TShipLight.Repaint;
 begin
-  Opacity := 0.8 + Random * 0.2;
+  if Opacity > 0.1 then
+    Opacity := 0.8 + Random * 0.2;
   CurRes := 13 + Random(2);
   inherited;
 end;
 
 end.
+
