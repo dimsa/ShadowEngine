@@ -9,7 +9,7 @@ http://www.youtube.com/watch?v=k7TveCUHXCM <br />
 <b>Spaceship with Asteroids:</b><br /> 
 https://youtu.be/w6lGasU61HQ <i> Custom shaped Sprite. You could make parallax effect on Background</i>
 
-With every commit it getting better!<br />
+With every commit it gets better!<br />
 
 <br />
 Thank you for stars! <br />
