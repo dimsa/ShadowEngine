@@ -24,6 +24,7 @@ type
       Shift: TShiftState; x, y: single);
     procedure MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; x, y: single);
+    procedure BeforePaintBehavior;
     procedure FindCollide;
     function GetSpeed: Single;
     procedure StartGame(ASender: TObject);
@@ -51,6 +52,12 @@ begin
 
 end;
 
+procedure TDemoGame.BeforePaintBehavior;
+begin
+  FindCollide;
+  FMenu.SendToFront;
+end;
+
 constructor TDemoGame.Create;
 begin
   FEngine := TDemoEngine.Create;
@@ -73,6 +80,8 @@ begin
   FBackObjects.Free;
 
   FShip.Free;
+
+  FEngine.Free;
 
   inherited;
 end;
@@ -164,7 +173,7 @@ begin
   FBackObjects := TList<TLittleAsteroid>.Create;
   vLoader := TLoader.Create(FEngine);
   // Создаем астеройдное поле
-  for i := 0 to 69 do
+  for i := 0 to 39 do
     FBackObjects.Add(vLoader.RandomAstroid);
 
   // Создаем корабль
@@ -181,8 +190,10 @@ begin
   FMenu.ExitGame := ExitGame;
   FEngine.HideGroup('ship');
 
-  FEngine.InBeginPaintBehavior := FindCollide;
+  FEngine.InBeginPaintBehavior := BeforePaintBehavior;
   FEngine.Start;
+  vLoader.Free;
+//  FEngine.InBeginPaintBehavior :=
 end;
 
 procedure TDemoGame.Resize(ASize: TPointF);

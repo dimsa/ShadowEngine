@@ -117,7 +117,6 @@ begin
   vSpr.Shape.AddFigure(vShape);
   vSpr.Visible := False;
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
-  //FEngine.HideGroup('ship');
 
   Result := vSpr;
 end;
@@ -167,7 +166,7 @@ begin
   vRes := TOpacityAnimation.Create;
   vRes.Parent := fEngine;
   vRes.EndOpaque := AEndOpacity;
-  vRes.TimeTotal := 500;
+  vRes.TimeTotal := 800;
   vRes.Subject := ASubject;
 
   Result := vRes;

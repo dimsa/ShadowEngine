@@ -34,7 +34,7 @@ type
     function UnderTheMouse(const MouseX, MouseY: Double): boolean; override;
     procedure Repaint; override;
 
-    constructor Create(newParent: pointer); override;
+    constructor Create(AParent: pointer); override;
     destructor Destroy; override;
   end;
 
@@ -46,9 +46,9 @@ uses
 
 { tSprite }
 
-constructor tSprite.Create(newParent: pointer);
+constructor tSprite.Create(AParent: pointer);
 begin
-  inherited;
+  inherited Create(AParent);
   fCreationNumber := tEngine2d(fParent).spriteCount;
 end;
 

@@ -73,7 +73,7 @@ end;
 
 constructor TEngine2DText.Create(AParent: pointer);
 begin
-  inherited;
+  inherited Create(AParent);
   FFont := tFont.Create; // Шрифт надписи
   FFont.Family := 'Arial';
   FFont.Size := 12;
@@ -106,12 +106,12 @@ end;
 
 function TEngine2DText.getH: single;
 begin
-  Result := FStartTextRect.Height; //Image.Bitmap.Canvas.TextHeight(FText);
+  Result := FTextRect.Height;  //FStartTextRect.Height; //Image.Bitmap.Canvas.TextHeight(FText);
 end;
 
 function TEngine2DText.getW: single;
 begin
-  Result := FStartTextRect.Width;// Image.Bitmap.Canvas.TextWidth(FText);
+  Result := FTextRect.Width; //FStartTextRect.Width;// Image.Bitmap.Canvas.TextWidth(FText);
 end;
 
 {procedure TEngine2DText.RenewRec;
@@ -201,7 +201,7 @@ end;
 
 function TEngine2DText.underTheMouse(const MouseX, MouseY: Double): boolean;
 begin
-  Result := Inherited;
+  Result := Inherited UnderTheMouse(MouseX, MouseY);
 end;
 
 end.

@@ -5,10 +5,22 @@ interface
 uses
   System.Types, System.UITypes, System.Math,  System.Generics.Collections,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.SysUtils, System.Classes,
+  FMX.Dialogs,
   uEngine2DObject, uEngine2DText, uEngine2DSprite, uEngineFormatter,
   uIntersectorMethods, uClasses;
 
 type
+
+  {TMenuSpriteElement = class(TSprite)
+  public
+    procedure Repaint; override;
+  end;
+
+  TMenuTextElement = class(TEngine2DText)
+  public
+    procedure Repaint; override;
+  end;    }
+
   TGameButton = class
   private
     FParent: Pointer; // Engine2d
@@ -25,6 +37,7 @@ type
     property OnClick: TVCLProcedure read FOnClick write SetOnClick;
     constructor Create(const AName: string; const AParent: Pointer);
     destructor Destroy; override;
+    procedure SendToFront;
     property Text: String read GetText write SetText;
     property Name: String read FName write FName;
   end;
@@ -46,6 +59,7 @@ type
     property AboutGame: TVCLProcedure write SetAboutGame;
     property StatGame: TVCLProcedure write SetStatGame;
     property ExitGame: TVCLProcedure write SetExitGame;
+    procedure SendToFront;
     procedure Add(const AButton: TGameButton);
     constructor Create(const AParent: Pointer);
     destructor Destroy; override;
@@ -83,31 +97,31 @@ var
   vPoly: TPolygon;
   vFigure: TNewFigure;
 begin
+  FParent := AParent;
+  FName := AName;
+
   vEngine := AParent;
-  FParent := vEngine;
-  Self.FName := AName;
   FBack := TSprite.Create(vEngine);
+  FBack.Parent := vEngine;
   FBack.Resources := vEngine.Resources;
   FBack.CurRes := vEngine.Resources.IndexOf('button');
   FBack.Group := 'menu';
+
   FText := TEngine2DText.Create(vEngine);
   FText.Group := 'menu';
   FText.Color := TAlphaColorRec.White;
 
-  Self.FBack.OnMouseDown := MouseDown;
-
+  FBack.OnMouseDown := MouseDown;
 
   vEngine.AddObject(FName, FBack);
   vEngine.AddObject(FText);
-
-  FBack.SendToFront;
-  FText.SendToFront;
 
   vFormatter := TEngineFormatter.Create(FText);
   vFormatter.Parent := vEngine;
   vFText := 'left: ' + Self.FName + '.left; top: ' + Self.FName + '.top; min-width:'  + Self.FName + '.width * 0.8; width: ' + Self.FName + '.width; max-width: ' + Self.FName + '.width;';
   vFormatter.Text := vFText;
   vEngine.FormatterList.Add(vFormatter);
+
   vPoly := PolyFromRect(RectF(0, 0, FBack.w, FBack.h));
   Translate(vPoly, -PointF(FBack.wHalf, FBack.hHalf));
   vFigure := TNewFigure.CreatePoly;
@@ -150,7 +164,13 @@ begin
   tEngine2d(FParent).AnimationList.Add(
     vLoader.ButtonAnimation(FText, FText.ScaleX * 0.8)
   );
+  vLoader.Free;
+end;
 
+procedure TGameButton.SendToFront;
+begin
+  FBack.SendToFront;
+  FText.SendToFront;
 end;
 
 procedure TGameButton.SetOnClick(const Value: TVCLProcedure);
@@ -180,14 +200,9 @@ begin
   FParent := AParent;
   vEngine := FParent;
   FList := TList<TGameButton>.Create;
- // FFormatterList := TList<TEngineFormatter>.Create;
-
-
 
   vBut := TGameButton.Create('button1', vEngine);
   vBut.Text := 'Start Game';
-
-  vBut.OnClick := FStartGame;
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
@@ -196,7 +211,6 @@ begin
 
   vBut := TGameButton.Create('button2', vEngine);
   vBut.Text := 'Statistics';
-  vBut.OnClick := FStatGame;
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
@@ -205,7 +219,6 @@ begin
 
   vBut := TGameButton.Create('button3', vEngine);
   vBut.Text := 'About';
-  vBut.OnClick := FAboutGame;
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
@@ -214,7 +227,6 @@ begin
 
   vBut := TGameButton.Create('button4', vEngine);
   vBut.Text := 'Exit';
-  vBut.OnClick := FExitGame;
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
@@ -232,6 +244,14 @@ begin
   FList.Free;
 
   inherited;
+end;
+
+procedure TGameMenu.SendToFront;
+var
+  vBut: TGameButton;
+begin
+  for vBut in FList do
+    vBut.SendToFront;
 end;
 
 procedure TGameMenu.SetAboutGame(const Value: TVCLProcedure);
@@ -253,5 +273,21 @@ procedure TGameMenu.SetStatGame(const Value: TVCLProcedure);
 begin
   FList[2].OnClick := Value;
 end;
+
+{ TMenuSpriteElement }
+
+{procedure TMenuSpriteElement.Repaint;
+begin
+  Self.SendToFront;
+  inherited;
+end; }
+
+{ TMenuTextElement }
+
+{procedure TMenuTextElement.Repaint;
+begin
+  Self.SendToFront;
+  inherited;
+end; }
 
 end.

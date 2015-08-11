@@ -258,7 +258,7 @@ var
 begin
   if FNotChange > 0 then
   begin
-    FNotChange := 10;
+    FNotChange := 1;
     Exit;
   end;
 
