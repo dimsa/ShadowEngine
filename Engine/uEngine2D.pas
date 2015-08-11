@@ -112,7 +112,7 @@ type
 
     procedure MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; x, y: single); virtual;
-//    procedure mouseDown(const x, y: single); virtual;
+
     procedure MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; x, y: single); virtual;
 
@@ -153,10 +153,7 @@ implementation
 { tEngine2d }
 
 procedure tEngine2d.addObject(const AObject: tEngine2DObject);
-var
-  l: integer;
 begin
-  l := spriteCount;
   Inc(FAddedSprite);
   addObject('genname'+IntToStr(FAddedSprite)+'x'+IntToStr(Random(65536)), AObject);
 end;
@@ -524,12 +521,12 @@ begin
   self.height := round(size.y);
 end;
 
-procedure tEngine2d.mouseDown(Sender: TObject; Button: TMouseButton;
+procedure tEngine2d.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; x, y: single);
 var
   i, l: integer;
 begin
-  fIsMouseDowned := True;
+  FIsMouseDowned := True;
 
   flX := x * getScreenScale;
   flY := y * getScreenScale;
@@ -537,8 +534,6 @@ begin
 
   setLength(fClicked, 0);
   setLength(fMouseDowned, 0);
-
-  // mainForm.Caption:=floattostr(x)+' '+floattostr(y);
 
   for i := l downto 1 do
   begin
@@ -552,16 +547,14 @@ begin
 
       end;
   end;
-
- // Self.DeleteObject(FSprites[Random(fSprites.Count)]);
 end;
 
-procedure tEngine2d.mouseUp(Sender: TObject; Button: TMouseButton;
+procedure tEngine2d.MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; x, y: single);
 var
   i, l: integer;
 begin
-  fIsMouseDowned := False;
+  FIsMouseDowned := False;
 
   flX := x * getScreenScale;
   flY := y * getScreenScale;
@@ -660,13 +653,10 @@ end;
 
 procedure tEngine2d.showGroup(const AGroup: String);
 var
-  i, l: Integer;
+  i: Integer;
 begin
-  l := fSprites.Count - 1;
-
-  for i := 0 to l do
-    if FSprites[i].group = AGroup
-    then
+  for i := 0 to fSprites.Count - 1 do
+    if FSprites[i].group = AGroup then
       FSprites[i].visible := True
 end;
 

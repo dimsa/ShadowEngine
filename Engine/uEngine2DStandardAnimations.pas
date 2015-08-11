@@ -10,14 +10,29 @@ uses
 type
   TMigrationAnimation = class(TAnimation)
   strict private
-    FEndPos: tPosition;
+    FEndPos: TPosition;
   public
     function Animate: Byte; override;
     procedure Finalize; override;
     procedure RecoverStart; override;
     property EndPos: TPosition read FEndPos write FEndPos;
     constructor Create; override;
-end;
+  end;
+
+  TMouseDownMigrationAnimation = class(TAnimation)
+  private
+    FAway: Boolean;
+    FPressed: Boolean; // Нажати ли уже кнопка была
+    FTempEndPos, FTempStartPos: TPosition;
+    FEndPos: TPosition;
+  public
+    procedure Setup; override;
+    function Animate: Byte; override;
+    property EndPos: TPosition read FEndPos write FEndPos;
+    procedure Finalize; override;
+    constructor Create; override;
+    destructor Destroy; override;
+  end;
 
   TSpriteAnimation = class(TAnimation)
   strict private
@@ -168,6 +183,86 @@ procedure TOpacityAnimation.RecoverStart;
 begin
   inherited;
 
+end;
+
+{ TMouseDownMigrationAnimation }
+
+function TMouseDownMigrationAnimation.Animate: Byte;
+var
+  vObject: TEngine2dObject;
+  vRes: Byte;
+begin
+  vRes := inherited;
+  vObject := Subject;
+
+  if (TimePassed >= TimeTotal)  then
+    TimePassed := TimeTotal;
+
+  if (tEngine2d(Parent).IsMouseDowned) then
+    vRes := CAnimationInProcess;
+
+  if (tEngine2d(Parent).IsMouseDowned) and (not FPressed) then
+  begin
+    vRes := CAnimationInProcess;
+    FPressed := True;
+    FAway := False;
+    FTempEndPos := EndPos;
+    FTempStartPos := StartPosition;
+  end;
+
+  if (not tEngine2d(Parent).IsMouseDowned) and (FPressed) then
+  begin
+    FPressed := False;
+    FTempEndPos := StartPosition;
+    FTempStartPos := EndPos;
+    FAway := True;
+    TimePassed := TimeTotal - TimePassed;
+    vRes := CAnimationInProcess;
+  end;
+
+  if vRes = CAnimationInProcess then
+  begin
+    vObject.x := ((FTempEndPos.X - FTempStartPos.X) / TimeTotal) * (TimePassed) + FTempStartPos.X;
+    vObject.y := ((FTempEndPos.Y - FTempStartPos.Y) / TimeTotal) * (TimePassed) + FTempStartPos.Y;
+    vObject.Rotate := FTempStartPos.rotate + ((FTempEndPos.rotate - FTempStartPos.rotate) / TimeTotal) * (TimePassed);
+    vObject.Scale := FTempStartPos.ScaleX + ((FTempEndPos.ScaleX - FTempStartPos.ScaleX) / TimeTotal) * (TimePassed);
+  end;
+
+  Result := vRes;
+end;
+
+constructor TMouseDownMigrationAnimation.Create;
+begin
+  inherited;
+  FAway := False;
+  FPressed := False;
+end;
+
+destructor TMouseDownMigrationAnimation.Destroy;
+begin
+  Finalize;
+  inherited;
+end;
+
+procedure TMouseDownMigrationAnimation.Finalize;
+var
+  vObject: tEngine2DObject;
+begin
+  inherited;
+
+  vObject := Subject;
+  vObject.Position := FTempEndPos;
+  FAway := False;
+  FPressed := False;
+//  if FAway then
+
+end;
+
+procedure TMouseDownMigrationAnimation.Setup;
+begin
+  inherited;
+  FTempEndPos := EndPos;
+  FTempStartPos := StartPosition;
 end;
 
 end.

@@ -6,7 +6,8 @@ unit uNamedList;
 interface
 
 Uses
-  System.SysUtils, System.Generics.Collections, System.Generics.Defaults, System.Types;
+  System.SysUtils, System.Generics.Collections, System.Generics.Defaults,
+  System.Types, uClasses;
 
 type
   TNameAndValue = record
@@ -28,7 +29,6 @@ type
     function GetItemI(Index: Integer): T;
     procedure SetItemI(Index: Integer; const Value: T);
     function GetCount: Integer;
-    procedure SetCount(const Value: Integer); deprecated;
   protected
     function DoGetEnumerator: TEnumerator<T>; override;
   public
@@ -129,7 +129,7 @@ begin
 
   // Почему-то андройд по-другому не создает уникальный ГУИД
   Guid := Guid.Empty;
-  Guid.D1 := Random(Cardinal.MaxValue);
+  Guid.D1 := Random64;
   Guid.D2 := Random(Word.MaxValue+1);
   Guid.D3 := Random(Word.MaxValue+1);
 
@@ -345,7 +345,7 @@ begin
 
   // Почему-то андройд по-другому не создает уникальный ГУИД
   Guid := Guid.Empty;
-  Guid.D1 := Random(Cardinal.MaxValue);
+  Guid.D1 := Random64;
   Guid.D2 := Random(Word.MaxValue+1);
   Guid.D3 := Random(Word.MaxValue+1);
 
@@ -415,10 +415,10 @@ begin
   (self as TList<T>).Items[Index] := Value;
 end;}
 
-procedure TNamedList<T>.SetCount(const Value: Integer);
+{procedure TNamedList<T>.SetCount(const Value: Integer);
 begin
   FList.Count := Value;
-end;
+end; }
 
 procedure TNamedList<T>.SetItemI(Index: Integer; const Value: T);
 begin

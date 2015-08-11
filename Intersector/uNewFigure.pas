@@ -70,6 +70,7 @@ begin
     cfCircle: Exit(uIntersectorMethods.IsPointInCircle(APoint, AsCircle));
     cfPoly: Exit(uIntersectorMethods.IsPointInPolygon(APoint, AsPoly));
   end;
+  Result := False;
 end;
 
 constructor TNewFigure.Create(const AKind: Byte);

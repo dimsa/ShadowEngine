@@ -35,9 +35,9 @@ type
     CMiddleFPS = 60;
   {$ENDIF WIN32}
   {$IFDEF ANDROID}
-    CLeftFPSBorder = 20;
-    CRightFPSBorder = 60;
-    CMiddleFPS = 40;
+    CLeftFPSBorder = 25;
+    CRightFPSBorder = 45;
+    CMiddleFPS = 30;
   {$ENDIF ANDROID}
   end;
 
@@ -86,7 +86,7 @@ end;
 
 function tEngineThread.GetLastFps: Single;
 begin
-  if FLastFps > 1 then
+  if FLastFps >= 1 then
     Exit(FLastFPS)
   else begin
     Result := 1;

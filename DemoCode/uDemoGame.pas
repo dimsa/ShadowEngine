@@ -20,9 +20,9 @@ type
     FAsteroids: TList<TAsteroid>;
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
-    procedure mouseDown(Sender: TObject; Button: TMouseButton;
+    procedure MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; x, y: single);
-    procedure mouseUp(Sender: TObject; Button: TMouseButton;
+    procedure MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; x, y: single);
     procedure FindCollide;
     function GetSpeed: Single;
@@ -87,9 +87,13 @@ var
   i, j, vN: Integer;
 begin
   vN := FAsteroids.Count - 1;
-  for i := 0 to vN do
-    if FShip.Shape.IsIntersectWith(FAsteroids[i].Shape) then
-      FAsteroids[i].Collide(FShip);
+  if Assigned(FShip) then
+    if FShip.Visible then
+    begin
+      for i := 0 to vN do
+        if FShip.Shape.IsIntersectWith(FAsteroids[i].Shape) then
+          FAsteroids[i].Collide(FShip);
+    end;
 
   for i := 0 to vN do
     for j := i + 1 to vN do
@@ -110,26 +114,25 @@ begin
   Result := FEngine.EngineThread.Speed;
 end;
 
-procedure TDemoGame.mouseDown(Sender: TObject; Button: TMouseButton;
+procedure TDemoGame.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; x, y: single);
 var
   i, vL: Integer;
   vAni: TAnimation;
   vPos: TPosition;
 begin
-  fEngine.mouseDown(Sender, Button, Shift, x, y);
+  fEngine.MouseDown(Sender, Button, Shift, x, y);
 
   vL := Length(fEngine.Downed) - 1;
 
   for i := 0 to vL do
-    fEngine.sprites[fEngine.Downed[i]].OnMouseDown(Sender, Button, Shift, x, y);
+    fEngine.Sprites[fEngine.Downed[i]].OnMouseDown(fEngine.Sprites[fEngine.Downed[i]], Button, Shift, x, y);
 
   vPos.X := X;
   vPos.Y := Y;
   vPos.Rotate := (ArcTan2(y - FShip.y, x - FShip.x ) / Pi) * 180 + 90;
   if vPos.Rotate > 360 then
     vPos.Rotate := vPos.Rotate - 360;
-
 
   vPos.ScaleX := FShip.ScaleX;
   vPos.ScaleY := FShip.ScaleY;
@@ -138,16 +141,16 @@ begin
   FEngine.AnimationList.Add(vAni);
 end;
 
-procedure TDemoGame.mouseUp(Sender: TObject; Button: TMouseButton;
+procedure TDemoGame.MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; x, y: single);
 var
   vL, i: Integer;
 begin
-  fEngine.mouseUp(Sender, Button, Shift, x, y);
+  fEngine.MouseUp(Sender, Button, Shift, x, y);
   vL := Length(FEngine.Clicked) - 1;
   if vL >= 0 then
     for i := 0 to 0{vL} do
-      fEngine.sprites[fEngine.Downed[i]].OnClick(Sender);
+      fEngine.sprites[fEngine.Clicked[i]].OnClick(fEngine.Sprites[fEngine.Clicked[i]]);
 end;
 
 procedure TDemoGame.Prepare;
@@ -161,14 +164,14 @@ begin
   FBackObjects := TList<TLittleAsteroid>.Create;
   vLoader := TLoader.Create(FEngine);
   // Создаем астеройдное поле
-  for i := 0 to 149 do
+  for i := 0 to 69 do
     FBackObjects.Add(vLoader.RandomAstroid);
 
   // Создаем корабль
   FShip := vLoader.CreateShip;
 
   FAsteroids := TList<TAsteroid>.Create;
-  for i := 0 to 49 do
+  for i := 0 to 19 do
     FAsteroids.Add(vLoader.BigAstroid);
 
   FMenu := TGameMenu.Create(FEngine);
@@ -176,6 +179,7 @@ begin
   FMenu.AboutGame := AboutGame;
   FMenu.StatGame := StatGame;
   FMenu.ExitGame := ExitGame;
+  FEngine.HideGroup('ship');
 
   FEngine.InBeginPaintBehavior := FindCollide;
   FEngine.Start;
@@ -192,7 +196,7 @@ procedure TDemoGame.SetImage(const Value: TImage);
 begin
   fEngine.init(Value);
   Value.OnMouseDown := Self.MouseDown;
-  Value.OnMouseUp := Self.mouseUp;
+  Value.OnMouseUp := Self.MouseUp;
 
 end;
 

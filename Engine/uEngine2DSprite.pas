@@ -69,7 +69,6 @@ end;
 
 function tSprite.getH: single;
 begin
-
   Result := self.Resources[fCurRes].bmp.Height;
 end;
 

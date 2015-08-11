@@ -4,7 +4,7 @@ interface
 
 uses
   System.Types, System.UITypes, System.Math,  System.Generics.Collections,
-  {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.SysUtils,
+  {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.SysUtils, System.Classes,
   uEngine2DObject, uEngine2DText, uEngine2DSprite, uEngineFormatter,
   uIntersectorMethods, uClasses;
 
@@ -19,6 +19,7 @@ type
     function GetText: String;
     procedure SetText(const Value: String);
     procedure SetOnClick(const Value: TVCLProcedure);
+    procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   public
     property BackSprite: TSprite read FBack;
     property OnClick: TVCLProcedure read FOnClick write SetOnClick;
@@ -54,7 +55,7 @@ type
 implementation
 
 uses
-  uEngine2D, uEngine2DObjectShape, uNewFigure;
+  uEngine2D, uEngine2DObjectShape, uNewFigure, uDemoGameLoader;
 
 { TGameButton }
 
@@ -93,6 +94,9 @@ begin
   FText.Group := 'menu';
   FText.Color := TAlphaColorRec.White;
 
+  Self.FBack.OnMouseDown := MouseDown;
+
+
   vEngine.AddObject(FName, FBack);
   vEngine.AddObject(FText);
 
@@ -101,7 +105,7 @@ begin
 
   vFormatter := TEngineFormatter.Create(FText);
   vFormatter.Parent := vEngine;
-  vFText := 'left: ' + Self.FName + '.left; top: ' + Self.FName + '.top; min-width:'  + Self.FName + '.width * 1.5; width: ' + Self.FName + '.width; max-width: ' + Self.FName + '.width;';
+  vFText := 'left: ' + Self.FName + '.left; top: ' + Self.FName + '.top; min-width:'  + Self.FName + '.width * 0.8; width: ' + Self.FName + '.width; max-width: ' + Self.FName + '.width;';
   vFormatter.Text := vFText;
   vEngine.FormatterList.Add(vFormatter);
   vPoly := PolyFromRect(RectF(0, 0, FBack.w, FBack.h));
@@ -128,6 +132,25 @@ end;
 function TGameButton.GetText: String;
 begin
   Result := FText.Text;
+end;
+
+procedure TGameButton.MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+var
+  vLoader: TLoader;
+
+begin
+  vLoader := TLoader.Create(FParent);
+  tEngine2d(FParent).AnimationList.ClearForSubject(FBack);
+  tEngine2d(FParent).AnimationList.Add(
+    vLoader.ButtonAnimation(FBack, FBack.ScaleX * 0.8)
+  );
+
+  tEngine2d(FParent).AnimationList.ClearForSubject(FText);
+  tEngine2d(FParent).AnimationList.Add(
+    vLoader.ButtonAnimation(FText, FText.ScaleX * 0.8)
+  );
+
 end;
 
 procedure TGameButton.SetOnClick(const Value: TVCLProcedure);
@@ -163,6 +186,7 @@ begin
 
   vBut := TGameButton.Create('button1', vEngine);
   vBut.Text := 'Start Game';
+
   vBut.OnClick := FStartGame;
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);

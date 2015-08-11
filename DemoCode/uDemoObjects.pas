@@ -50,6 +50,7 @@ type
     procedure SetOpacity(const AOpacity: Integer);
     procedure Repaint; override;
     constructor Create(AParent: pointer); override;
+    destructor Destroy; override;
   end;
 
   TAsteroid = class(TMovingUnit)
@@ -146,6 +147,19 @@ begin
   FParts.Add(FLeftFireCenter);
   FParts.Add(FRightFireCenter);
   FParts.Add(FShipLight);
+end;
+
+destructor TShip.Destroy;
+var
+  i: Integer;
+begin
+  // Нулевой объект это сам корабль
+  for i := 1 to FParts.Count - 1 do
+    FParts[i].Free;
+
+  FParts.Free;
+
+  inherited;
 end;
 
 procedure TShip.MouseDown(Sender: TObject; Button: TMouseButton;

@@ -7,7 +7,6 @@ uses
 
 type
   TSpriteList = class(TEngine2dNamedList<tEngine2DObject>)
-  strict private
   public
     constructor Create; override;
     destructor Destroy; override;

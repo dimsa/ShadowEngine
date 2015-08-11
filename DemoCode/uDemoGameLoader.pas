@@ -5,7 +5,7 @@ interface
 uses
   SysUtils, System.Types, System.Math,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
-  uEngine2D, uEngine2DSprite, uDemoObjects, uIntersectorClasses,
+  uEngine2D, uEngine2DSprite, uEngine2DObject, uDemoObjects, uIntersectorClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
   uNewFigure, uIntersectorMethods;
 
@@ -20,7 +20,7 @@ type
     function Explosion(const AX, AY, AAng: Double): TExplosion;
     function ExplosionAnimation(ASubject: TSprite): TSpriteAnimation;
     function OpacityAnimation(ASubject: TSprite; const AEndOpacity: Double): TOpacityAnimation;
-    function ScaleAnimation(ASubject: TSprite; const AEndScale: Double): TMigrationAnimation;
+    function ButtonAnimation(ASubject: TEngine2dObject; const AEndScale: Double):  TMouseDownMigrationAnimation;
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
     constructor Create(AEngine: TEngine2D);
   end;
@@ -117,7 +117,7 @@ begin
   vSpr.Shape.AddFigure(vShape);
   vSpr.Visible := False;
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
-  FEngine.HideGroup('ship');
+  //FEngine.HideGroup('ship');
 
   Result := vSpr;
 end;
@@ -190,13 +190,13 @@ begin
   Result := vSpr;
 end;
 
-function TLoader.ScaleAnimation(ASubject: TSprite;
-  const AEndScale: Double): TMigrationAnimation;
+function TLoader.ButtonAnimation(ASubject: TEngine2dObject;
+  const AEndScale: Double): TMouseDownMigrationAnimation;
 var
-  vRes: TMigrationAnimation;
+  vRes:  TMouseDownMigrationAnimation;
   vPos: TPosition;
 begin
-  vRes := TMigrationAnimation.Create;
+  vRes := TMouseDownMigrationAnimation.Create;
   vRes.Parent := FEngine;
   vPos := ASubject.Position;
   vPos.ScaleX := AEndScale;
