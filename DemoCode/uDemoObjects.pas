@@ -6,7 +6,7 @@ uses
   FMX.Types, System.UITypes, System.Classes, System.Types, System.SysUtils, System.Math,
   System.Generics.Collections,
   uEngine2DSprite, uEngine2DText, uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
-  uEngine2DObject, uIntersectorClasses;
+  uEngine2DObject, uIntersectorClasses, uClasses;
 
 type
   TShipFire = class(TSprite)
@@ -40,7 +40,10 @@ type
     FLeftFireCenter: TShipFire;
     FRightFireCenter: TShipFire;
     FShipLight: TShipLight;
+    FDestination: TPosition;
+    FMaxDx, FMaxDy: Single;
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    function MinMax(const AValue: Single; const AMax: Single; const AMin: Single = 0): Single;
   public
 {    property LeftFire: TShipFire read FLeftFire write FLeftFire;
     property RightFire: TShipFire read FRightFire write FRightFire;
@@ -48,6 +51,7 @@ type
     property RightFireCenter: TShipFire read FRightFireCenter write FRightFireCenter; }
     property Parts: TList<TSprite> read FParts;
     procedure SetOpacity(const AOpacity: Integer);
+    property Destination: TPosition read FDestination write FDestination;
     procedure Repaint; override;
     constructor Create(AParent: pointer); override;
     destructor Destroy; override;
@@ -58,7 +62,7 @@ type
     FNotChange: Integer; // Кол-во тиков, которое не будет изменяться направление при коллайдер
   public
     procedure Repaint; override;
-    procedure Collide(const AObject: TEngine2DObject);
+    function Collide(const AObject: TEngine2DObject): Boolean;
     constructor Create(AParent: pointer); override;
   end;
 
@@ -83,7 +87,7 @@ implementation
 
 uses
   mainUnit,
-  uEngine2D, uDemoGameLoader;
+  uEngine2D, uDemoGameLoader, uIntersectorMethods;
 
 { TShip }
 
@@ -147,6 +151,13 @@ begin
   FParts.Add(FLeftFireCenter);
   FParts.Add(FRightFireCenter);
   FParts.Add(FShipLight);
+
+  DA := 3;
+  Dx := 10;
+  Dy := 10;
+
+  FMaxDx := 6;
+  FMaxDy := 6;
 end;
 
 destructor TShip.Destroy;
@@ -160,6 +171,16 @@ begin
   FParts.Free;
 
   inherited;
+end;
+
+function TShip.MinMax(const AValue, AMax, AMin: Single): Single;
+begin
+  Result := AValue;
+  if AValue > AMax then
+    Result := AMax;
+
+  if AValue < 0 then
+    Result := 0;
 end;
 
 procedure TShip.MouseDown(Sender: TObject; Button: TMouseButton;
@@ -200,34 +221,112 @@ begin
 end;
 
 procedure TShip.Repaint;
+var
+  vAngle: Single;
+  vDir: Single;
+  vKoef, vAnimKoef, vLeftKoef, vRightKoef, vAnimLeftKoef, vAnimRightKoef: Single;
+  vNewX, vNewY: Single;
+  vEngine: tEngine2d;
 begin
+  vEngine := Parent;
   curRes := 0;
 
   inherited;
+
+  vLeftKoef := 1;
+  vRightKoef := 1;
+  vAnimLeftKoef := vLeftKoef;
+  vAnimRightKoef := vRightKoef;
+
+  vKoef := Distance(Self.Center, FDestination.XY) / Self.w;
+  if vKoef > 1 then
+    vKoef := 1;
+
+  if vKoef < 0.225 then
+  begin
+    vKoef := 0.225;
+  end;
+
+  vAnimKoef := Min(1, vKoef * 2);
+
+  if vKoef > 0.3 then
+  begin
+  vAngle := Self.Rotate;
+  NormalizeAngle(vAngle);
+  Self.Rotate := vAngle;
+
+  vAngle := ArcTan2(FDestination.Y - Self.Y, FDestination.X - Self.x) / pi180;
+  vDir := (vAngle - Self.Rotate);
+
+  NormalizeAngle(vDir);
+
+  if (vDir < -90) or (vDir > 90) then
+  begin
+    Self.Rotate := Self.Rotate - DA * vKoef * vEngine.EngineThread.Speed;
+    vLeftKoef := 1;
+    vRightKoef := 0.4;
+  end
+  else begin
+    Self.Rotate := Self.Rotate + DA * vKoef * vEngine.EngineThread.Speed;
+    vLeftKoef := 0.4;
+    vRightKoef := 1;
+  end;
+
+  if ((Abs(vDir) > 165) and (Abs(vDir) < 180))  then
+  begin
+    vLeftKoef := 1;
+    vRightKoef := 1;
+  end;
+
+  if ((Abs(vDir) > 0) and (Abs(vDir) < 15)) then
+  begin
+    vLeftKoef := 1;// (vAngle - Self.Rotate) / 180;
+    vRightKoef := 1;// (S
+  end;
+
+  vAnimLeftKoef := Min(1, vLeftKoef * 2);
+  vAnimRightKoef := Min(1, vRightKoef * 2);
+
+    vNewX := Self.x - (Max(DX, 0.2) * Cos(Self.Rotate * pi180) * vKoef - DY * Sin(Self.Rotate * pi180) * vKoef);
+
+    if Distance(FDestination.XY, PointF(vNewX, Self.y)) <
+       Distance(FDestination.XY, Self.Center)
+     then
+       Self.x := Self.x - (DX * Cos(Self.Rotate * pi180) * vKoef - DY * Sin(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed;
+
+    vNewY := Self.Y - (DX * Sin(Self.Rotate *  pi180) * vKoef + Max(DY, 0.2) * Cos(Self.Rotate * pi180) * vKoef);
+    if Distance(FDestination.XY, PointF(Self.x, vNewY)) <
+       Distance(FDestination.XY, Self.Center)
+    then
+      Self.Y := Self.Y - (DX * Sin(Self.Rotate *  pi180) * vKoef + DY * Cos(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed;
+  end;
+
+{  Self.x := Self.x - (DX * 0.2 * Cos(Self.Rotate * pi180) * vKoef - DY * 0.2 * Sin(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed;
+  Self.Y := Self.Y - (DX * 0.2 * Sin(Self.Rotate *  pi180) * vKoef + DY * 0.2 * Cos(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed;}
 
   Self.Rotate := Self.Rotate + (random - 0.5) * 0.5;
   Self.X := Self.x + (random - 0.5) * 0.5;
   Self.Y := Self.y + (random - 0.5) * 0.5;
 
   FLeftFire.Rotate := Self.Rotate;
-  FLeftFire.ScalePoint := Self.ScalePoint * 2;
-  FLeftFire.x := Self.x + (scW*0.15 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.6 - 0) * sin((Self.Rotate / 180) * pi);
-  FLeftFire.y :=  Self.y + (scW*0.15 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.6 - 0) * cos((Self.Rotate / 180) * pi);
+  FLeftFire.ScalePoint := Self.ScalePoint * 2 * vKoef * vLeftKoef;
+  FLeftFire.x := Self.x + (scW*0.15 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.6 - 0) * sin((Self.Rotate / 180) * pi) * vAnimKoef * vAnimLeftKoef;
+  FLeftFire.y :=  Self.y + (scW*0.15 - 0) * sin((Self.Rotate / 180) * pi)+ (scH*0.6 - 0) * cos((Self.Rotate / 180) * pi) * vAnimKoef * vAnimLeftKoef;
 
   FRightFire.Rotate := Self.Rotate;
-  FRightFire.ScalePoint := Self.ScalePoint * PointF(-2, 2);
-  FRightFire.x := Self.x + (-scW*0.15 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.6 - 0) * sin((Self.Rotate / 180) * pi);
-  FRightFire.y :=  Self.y + (-scW*0.15 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.6 - 0) * cos((Self.Rotate / 180) * pi);
+  FRightFire.ScalePoint := Self.ScalePoint * PointF(-2, 2) * vKoef * vRightKoef;
+  FRightFire.x := Self.x + (-scW*0.15 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.6 - 0) * sin((Self.Rotate / 180) * pi) * vAnimKoef * vAnimRightKoef;
+  FRightFire.y :=  Self.y + (-scW*0.15 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.6 - 0) * cos((Self.Rotate / 180) * pi) * vAnimKoef * vAnimRightKoef;
 
   FLeftFireCenter.Rotate := Self.Rotate;
-  FLeftFireCenter.ScalePoint := Self.ScalePoint * 2;
-  FLeftFireCenter.x := Self.x + (scW*0.0 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.75 - 0) * sin((Self.Rotate / 180) * pi);
-  FLeftFireCenter.y :=  Self.y + (scW*0.0 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.75 - 0) * cos((Self.Rotate / 180) * pi);
+  FLeftFireCenter.ScalePoint := Self.ScalePoint * 2 * vKoef;
+  FLeftFireCenter.x := Self.x + (scW*0.0 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.75 - 0) * sin((Self.Rotate / 180) * pi) * vKoef;
+  FLeftFireCenter.y :=  Self.y + (scW*0.0 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.75 - 0) * cos((Self.Rotate / 180) * pi) * vKoef;
 
   FRightFireCenter.Rotate := Self.Rotate;
-  FRightFireCenter.ScalePoint := Self.ScalePoint * PointF(-2, 2);
-  FRightFireCenter.x := Self.x + (-scW*0.0 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.75 - 0) * sin((Self.Rotate / 180) * pi);
-  FRightFireCenter.y :=  Self.y + (-scW*0.0 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.75 - 0) * cos((Self.Rotate / 180) * pi);
+  FRightFireCenter.ScalePoint := Self.ScalePoint * PointF(-2, 2) * vKoef;
+  FRightFireCenter.x := Self.x + (-scW*0.0 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.75 - 0) * sin((Self.Rotate / 180) * pi) * vKoef;
+  FRightFireCenter.y :=  Self.y + (-scW*0.0 - 0) * sin((Self.Rotate / 180) * pi) + (scH*0.75 - 0) * cos((Self.Rotate / 180) * pi) * vKoef;
 
   FShipLight.ScalePoint := Self.ScalePoint;
   FShipLight.Rotate := Self.Rotate;
@@ -247,7 +346,7 @@ end;
 
 { TAsteroid }
 
-procedure TAsteroid.Collide(const AObject: TEngine2DObject);
+function TAsteroid.Collide(const AObject: TEngine2DObject): Boolean;
 var
   vArcTan, vArcTan2: Extended;
   vDX: Single;
@@ -258,8 +357,8 @@ var
 begin
   if FNotChange > 0 then
   begin
-    FNotChange := 1;
-    Exit;
+    FNotChange := 5;
+    Exit(False);
   end;
 
   vArcTan := ArcTan2(AObject.y - Self.y, AObject.x - Self.x);
@@ -288,6 +387,7 @@ begin
 
   vAni.Parent := fParent;
   tEngine2d(fParent).AnimationList.Add(vAni);
+  Result := True;
 end;
 
 constructor TAsteroid.Create(AParent: pointer);
@@ -396,4 +496,5 @@ begin
 end;
 
 end.
+
 

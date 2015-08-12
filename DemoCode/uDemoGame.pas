@@ -5,10 +5,11 @@ unit uDemoGame;
 interface
 
 uses
-  FMX.Types, System.UITypes, System.Classes, System.Types,
-  FMX.Objects, System.Generics.Collections, System.Math,
+  FMX.Types, System.UITypes, System.Classes, System.Types, FMX.Graphics,
+  FMX.Objects, System.Generics.Collections, System.Math, System.SysUtils,
   uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape,
-  uEngine2DAnimation, uIntersectorClasses, uDemoMenu;
+  uEngine2DAnimation, uIntersectorClasses, uDemoMenu, uClasses, uEngine2DText,
+  uEngineFormatter;
 
 type
   TDemoGame = class
@@ -16,8 +17,12 @@ type
     FEngine: TDemoEngine;
     FBackObjects: TList<TLittleAsteroid>; // Летящие бэки
     FShip: TShip;
+    FCollisions: Integer;
+    FSeconds: Single;
+    FCollisionsText, FSecondsText: TEngine2DText;
     FMenu: TGameMenu;
     FAsteroids: TList<TAsteroid>;
+
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
     procedure MouseDown(Sender: TObject; Button: TMouseButton;
@@ -53,14 +58,27 @@ begin
 end;
 
 procedure TDemoGame.BeforePaintBehavior;
+var
+  vS: String;
 begin
   FindCollide;
+  FShip.SendToFront;
   FMenu.SendToFront;
+
+  Str(FSeconds:0:2, vS);
+  FSeconds := FSeconds + 1/FEngine.EngineThread.FPS;
+  FSecondsText.Text := 'Секунд: ' + vS;
+  FCollisionsText.Text := 'Столкновений: ' + IntToStr(FCollisions);
+
+{  if Assigned(FShip) then
+    FShip.FireToBack; }
 end;
 
 constructor TDemoGame.Create;
 begin
   FEngine := TDemoEngine.Create;
+  FCollisions := 0;
+  FSeconds := 0;
 end;
 
 destructor TDemoGame.Destroy;
@@ -101,7 +119,8 @@ begin
     begin
       for i := 0 to vN do
         if FShip.Shape.IsIntersectWith(FAsteroids[i].Shape) then
-          FAsteroids[i].Collide(FShip);
+          if FAsteroids[i].Collide(FShip) then
+            Inc(FCollisions);
     end;
 
   for i := 0 to vN do
@@ -129,6 +148,7 @@ var
   i, vL: Integer;
   vAni: TAnimation;
   vPos: TPosition;
+  vAngle: Single;
 begin
   fEngine.MouseDown(Sender, Button, Shift, x, y);
 
@@ -137,17 +157,31 @@ begin
   for i := 0 to vL do
     fEngine.Sprites[fEngine.Downed[i]].OnMouseDown(fEngine.Sprites[fEngine.Downed[i]], Button, Shift, x, y);
 
-  vPos.X := X;
+
+{  vPos.X := X;
   vPos.Y := Y;
   vPos.Rotate := (ArcTan2(y - FShip.y, x - FShip.x ) / Pi) * 180 + 90;
-  if vPos.Rotate > 360 then
-    vPos.Rotate := vPos.Rotate - 360;
 
-  vPos.ScaleX := FShip.ScaleX;
+  FShip.Position    }
+
+ //
+ //  Старое передвжиение с помщью аниматоров
+  vPos.XY(x, y);
+  vAngle := (ArcTan2(y - FShip.y, x - FShip.x ) / Pi) * 180 + 90;
+  NormalizeAngle(vAngle);
+  vPos.Rotate := vAngle;
+  vPos.Scale(FShip.ScalePoint);
+
+  FShip.Destination := vPos;
+ { if vPos.Rotate > 360 then
+    vPos.Rotate := vPos.Rotate - 360;  }
+
+
+ { vPos.ScaleX := FShip.ScaleX;
   vPos.ScaleY := FShip.ScaleY;
   vAni := TLoader.ShipFlyAnimation(FShip, vPos);
   vAni.Parent := FEngine;
-  FEngine.AnimationList.Add(vAni);
+  FEngine.AnimationList.Add(vAni); }
 end;
 
 procedure TDemoGame.MouseUp(Sender: TObject; Button: TMouseButton;
@@ -166,6 +200,8 @@ procedure TDemoGame.Prepare;
 var
   vLoader: TLoader;
   i: Integer;
+  vFormatter: TEngineFormatter;
+  vFont: TFont;
 begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
@@ -180,8 +216,38 @@ begin
   FShip := vLoader.CreateShip;
 
   FAsteroids := TList<TAsteroid>.Create;
-  for i := 0 to 1 do
+  for i := 0 to 5 do
     FAsteroids.Add(vLoader.BigAstroid);
+
+  vFont := TFont.Create;
+  vFont.Style := [TFontStyle.fsBold];
+  vFont.Size := 14;
+  FCollisionsText := TEngine2DText.Create(FEngine);
+  FCollisionsText.Group := 'stat';
+  FCollisionsText.Font := vFont;
+  FCollisionsText.TextRec := RectF(-100, -25, 100, 25);
+  FCollisionsText.Color := TAlphaColorRec.Aqua;
+  FSecondsText := TEngine2DText.Create(FEngine);
+  FSecondsText.TextRec := RectF(-100, -25, 100, 25);
+  FSecondsText.Font := vFont;
+  FSecondsText.Group := 'stat';
+  FSecondsText.Color := TAlphaColorRec.Aqua;
+
+  FEngine.AddObject(FCollisionsText);
+  FEngine.AddObject(FSecondsText);
+
+  vFormatter := TEngineFormatter.Create(FCollisionsText);
+  vFormatter.Parent := FEngine;
+  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height - height * 1.2';
+  FEngine.FormatterList.Add(vFormatter);
+
+  vFormatter := TEngineFormatter.Create(FSecondsText);
+  vFormatter.Parent := FEngine;
+  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height - height * 0.6;';
+  FEngine.FormatterList.Add(vFormatter);
+
+  FEngine.HideGroup('stat');
+
 
   FMenu := TGameMenu.Create(FEngine);
   FMenu.StartGame := StartGame;
@@ -228,6 +294,11 @@ begin
     );
   end;
 
+  FSeconds := 0;
+  FCollisions := 0;
+
+  FEngine.ShowGroup('stat');
+
   {FEngine.AnimationList.Add(
       vLoader.ScaleAnimation(vSpr, 1.6)
     );}
@@ -240,5 +311,6 @@ begin
 end;
 
 end.
+
 
 

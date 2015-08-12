@@ -10,8 +10,25 @@ type
   TVCLProcedure = procedure(ASender: TObject) of Object;
 
   function Random64: Int64;
+  procedure NormalizeAngle(var AAngle: Single);
 
 implementation
+
+procedure NormalizeAngle(var AAngle: Single);
+begin
+  if AAngle < -180 then
+  begin
+    AAngle := AAngle + 360;
+    NormalizeAngle(AAngle);
+  end;
+
+  if AAngle > 180 then
+  begin
+    AAngle := AAngle - 360;
+    NormalizeAngle(AAngle);
+  end;
+
+end;
 
 function Random64: Int64;
 begin
