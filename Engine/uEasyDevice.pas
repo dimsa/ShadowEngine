@@ -96,7 +96,7 @@ begin
     vBMP.LoadFromFile(AFileName);
   {$ENDIF WIN32}
   {$IFDEF ANDROID}
-    vS := TPath.Combine(TPath.GetDocumentsPath, AFileName); { Внутренний доступ }
+    vS := TPath.Combine(TPath.GetDocumentsPath, AFileName); { Внутренний доступ}
     vBMP.LoadFromFile(vS);
   {$ENDIF ANDROID}
   Result := vBMP;
@@ -111,17 +111,20 @@ begin
     IInterface(ScreenSvc)) then
   begin
     result := ScreenSvc.getScreenScale;
-  end else Result := 1;
+  end else
+    Result := 1;
 end;
 
 function getMinLength: single;
 var
   screenSizeInPx: tPointF;
 begin
-  screenSizeInPx:=getDisplaySizeInPx;
+  screenSizeInPx := getDisplaySizeInPx;
 
-  if screenSizeInPx.X>screenSizeInPx.Y then
-  result:=screenSizeInPx.Y else result:=screenSizeInPx.X;
+  if screenSizeInPx.X > screenSizeInPx.Y then
+    result:=screenSizeInPx.Y
+  else
+    result:=screenSizeInPx.X;
 
 end;
 

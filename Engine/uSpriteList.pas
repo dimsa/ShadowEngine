@@ -6,7 +6,7 @@ uses
   uEngine2DClasses, uEngine2DResources, uEngine2DObject, uNamedList;
 
 type
-  TSpriteList = class(TEngine2dNamedList<tEngine2DObject>)
+  TObjectsList = class(TEngine2dNamedList<tEngine2DObject>)
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -16,13 +16,13 @@ implementation
 
 { TSpriteList }
 
-constructor TSpriteList.Create;
+constructor TObjectsList.Create;
 begin
   inherited;
 
 end;
 
-destructor TSpriteList.Destroy;
+destructor TObjectsList.Destroy;
 begin
 
   inherited;

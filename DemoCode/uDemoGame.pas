@@ -180,7 +180,7 @@ begin
   FShip := vLoader.CreateShip;
 
   FAsteroids := TList<TAsteroid>.Create;
-  for i := 0 to 19 do
+  for i := 0 to 1 do
     FAsteroids.Add(vLoader.BigAstroid);
 
   FMenu := TGameMenu.Create(FEngine);

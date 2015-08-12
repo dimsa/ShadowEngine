@@ -19,9 +19,6 @@ type
   protected
     function GetW: single; override;
     function GetH: single; override;
-    procedure SetScaleX(const AValue: single); override;
-    procedure SetScaleY(const AValue: single); override;
-    procedure SetScale(AValue: single); override;
     procedure SetCurRes(const Value: Integer); virtual;
   public
     property Resources: TEngine2DResources read FResources write FResources;
@@ -100,24 +97,6 @@ begin
   FCurRes := Value;
   Self.fWhalf := (W / 2){ * fPosition.scaleX};
   Self.fHhalf := (H / 2){ * fPosition.scaleY};
-end;
-
-procedure tSprite.setScale(AValue: single);
-begin
-  inherited;
-
-end;
-
-procedure tSprite.SetScaleX(const AValue: single);
-begin
-  inherited;
-
-end;
-
-procedure tSprite.SetScaleY(const AValue: single);
-begin
-  inherited;
-
 end;
 
 function tSprite.UnderTheMouse(const MouseX, MouseY: Double): boolean;
