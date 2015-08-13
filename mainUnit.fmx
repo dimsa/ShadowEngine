@@ -16,9 +16,10 @@ object mainForm: TmainForm
       item
       end>
     Align = Client
+    DisableInterpolation = True
     Size.Width = 380.000000000000000000
     Size.Height = 477.000000000000000000
     Size.PlatformDefault = False
-    WrapMode = Stretch
+    WrapMode = Original
   end
 end

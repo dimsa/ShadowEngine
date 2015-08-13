@@ -56,9 +56,6 @@ begin
   vSpr.Group := 'activeobject';
   vSpr.x := Random(FEngine.Width);
   vSpr.y := Random(FEngine.Height);
-  vSpr.Rotate := Random(360);
-  vSpr.Scale := MonitorScale;
-
 
   vFigure := TNewFigure.Create(TNewFigure.cfCircle);
   vCircle.X := 0;
@@ -198,7 +195,7 @@ begin
   vSpr.x := Random(FEngine.Width);
   vSpr.y := Random(FEngine.Height);
   vSpr.Rotate := Random(360);
-  vSpr.Scale := 0.5;
+  vSpr.Scale := 0.3;
   FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
 
   Result := vSpr;

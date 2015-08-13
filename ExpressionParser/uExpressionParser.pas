@@ -18,6 +18,8 @@ type
     function RightExp(APos: Integer): TValue; virtual;
     function OuterBrackets: TList<TStrAndPos>; virtual;
     function GetAllElements: TNamedList<TValue>;
+    function IsStartByFuncName(const AText: string): Boolean;
+    function StartByBrackets(const AText: string): string;
   protected
     FParsed: Boolean; // Показывает, отпарсино ли выражение.
     FExpression: String; // В отличие от оригинального текста не имеет лишних символов
@@ -109,17 +111,20 @@ procedure TExpression.DeleteSurfaceBrackets(var AText: String);
 var
   i, vN: Integer;
   vLevel: Integer;
+  vBrac: string;
 begin
   vN := Length(AText);
 
-  if ({AText[1]}Copy(AText, 1, 1) = '(') and ({AText[Length(AText)]}Copy(AText, Length(AText), 1) = ')') then
+  { TODO : You need to add there deletion of function bracket like sqrt( }
+  if ((Copy(AText, 1, 1) = '(')) and (Copy(AText, Length(AText), 1) = ')') then
   begin
     vLevel := 1;
-    for i := 2 to vN-1 do
+    vBrac := StartByBrackets(AText);
+    for i := 1 + Length(vBrac) to vN-1 do
     begin
-      if {AText[i]}Copy(AText, i, 1) = '(' then
+      if Copy(AText, i, 1) = '(' then
         vLevel := vLevel + 1;
-      if {AText[i]}Copy(AText, i, 1) = ')' then
+      if Copy(AText, i, 1) = ')' then
         vLevel := vLevel - 1;
 
       if vLevel <= 0 then
@@ -128,13 +133,46 @@ begin
 
     if vLevel = 1 then
     begin
-      Delete(AText, 1, 1);
+      Delete(AText, 1, Length(vBrac));
       Delete(AText, Length(AText), 1);
       DeleteSurfaceBrackets(AText);
     end;
   end;
 
 end;
+
+{procedure TExpression.DeleteSurfaceBrackets(var AText: String);
+var
+  i, vN: Integer;
+  vLevel: Integer;
+  vBrac: string;
+begin
+  vN := Length(AText);
+
+  if ((Copy(AText, 1, 1) = '(') or (IsStartByFuncName(AText))) and (Copy(AText, Length(AText), 1) = ')') then
+  begin
+    vLevel := 1;
+    vBrac := StartByBrackets(AText);
+    for i := 1 + Length(vBrac) to vN-1 do
+    begin
+      if Copy(AText, i, 1) = '(' then
+        vLevel := vLevel + 1;
+      if Copy(AText, i, 1) = ')' then
+        vLevel := vLevel - 1;
+
+      if vLevel <= 0 then
+        Exit;
+    end;
+
+    if vLevel = 1 then
+    begin
+      Delete(AText, 1, Length(vBrac));
+      Delete(AText, Length(AText), 1);
+      DeleteSurfaceBrackets(AText);
+    end;
+  end;
+
+end; }
 
 function TExpression.OuterBrackets: TList<TStrAndPos>;
 var
@@ -230,7 +268,7 @@ begin
        begin
          // Создаем найденную функцию
          vTmp := CFastFuncNames[j].Create;
-         vTmp.ValueStack :=Self.ValueStack;
+         vTmp.ValueStack := Self.ValueStack;
          vTmp.BoundLeft := vList[i].StartPos - Length(CFuncNames[j]);
          vTmp.BoundRight := vList[i].EndPos;
          vTmp.Text := Copy(Expression, vTmp.BoundLeft, vTmp.BoundRight - vTmp.BoundLeft + 1);
@@ -430,6 +468,19 @@ begin
     ParseAll;
 end;
 
+function TExpression.StartByBrackets(const AText: string): string;
+var
+  i: Integer;
+begin
+  for i := 0 to CFuncNamesCount - 1 do
+    if Copy(AText, 1, Length(CFuncNames[i]) + 1) = (CFuncNames[i] + '(')  then
+      Exit(Copy(AText, 1, Length(CFuncNames[i]) + 1));
+  if Copy(AText, 1, 1) = '(' then
+    Exit('(');
+
+  Result := '';
+end;
+
 function TExpression.TypeOfValue(const AText: String): TValues;
 var
   vReg: TRegEx;
@@ -512,6 +563,16 @@ begin
 //                TExpression
   for i := vN downto 0 do
     if (APos >= FValues[i].BoundLeft) and (APos <= FValues[i].BoundRight) then
+      Exit(True);
+  Result := False;
+end;
+
+function TExpression.IsStartByFuncName(const AText: string): Boolean;
+var
+  i: Integer;
+begin
+  for i := 0 to CFuncNamesCount - 1 do
+    if Copy(AText, 1, Length(CFuncNames[i]) + 1) = (CFuncNames[i] + '(')  then
       Exit(True);
   Result := False;
 end;
@@ -605,6 +666,7 @@ begin
 end;}
 
 end.
+
 
 
 

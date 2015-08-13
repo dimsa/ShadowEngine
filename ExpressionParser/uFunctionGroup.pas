@@ -90,8 +90,16 @@ procedure TFunction.SetText(const AValue: String);
 var
   vText: string;
 begin
-  inherited;
-
+  //inherited;
+  {FExpression := StringReplace(Text, ' ', '',[rfReplaceAll]);
+  FParsed := False;
+  DeleteSurfaceBrackets(FExpression);
+  if not FParsed then
+    ParseAll; }
+  FText := AValue;
+  FName := LowerCase(AValue);
+  FExpression := StringReplace(Text, ' ', '',[rfReplaceAll]);
+  FParsed := False;
   vText := Expression;
   Delete(vText, 1, Pos('(', vText));
   Delete(vText, Length(vText), 1);

@@ -12,6 +12,22 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
     </ItemGroup>
     <ItemGroup Condition="'$(Platform)'=='Android'">
         <DeployFile Include="Android\Release\AndroidManifest.xml" Condition="'$(Config)'=='Release'">
@@ -272,6 +288,14 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
             <RemoteName>images.load</RemoteName>
@@ -308,6 +332,14 @@
             <RemoteDir>ShadowEngineDemo\library\lib\x86\</RemoteDir>
             <RemoteName>ShadowEngineDemo.exe</RemoteName>
             <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -388,6 +420,14 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>images.load</RemoteName>
@@ -396,8 +436,32 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
     </ItemGroup>
     <ItemGroup Condition="'$(Platform)'=='iOSDevice64'">
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
             <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
             <RemoteName>back.png</RemoteName>
@@ -432,9 +496,25 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>images.load</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -474,9 +554,25 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
             <RemoteName>images.load</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -516,9 +612,25 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
             <RemoteName>images.load</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.png" Condition="'$(Config)'=='Base'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>back.png</RemoteName>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>

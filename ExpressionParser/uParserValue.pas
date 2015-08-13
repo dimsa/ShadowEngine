@@ -9,10 +9,10 @@ type
 
  TValue = class
   strict private
-    FText: String;
-    FName: String; // Название значения, обычно это LowerCase от FText
     FBoundLeft, FBoundRight: Integer;
   protected
+    FText: String;
+    FName: String; // Название значения, обычно это LowerCase от FText
     procedure SetText(const Value: String); virtual;
    { function PosFromRight(const ASubStr, AStr: string;
       AOffset: Integer = 0): Integer;

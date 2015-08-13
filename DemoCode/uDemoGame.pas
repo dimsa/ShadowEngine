@@ -29,6 +29,8 @@ type
       Shift: TShiftState; x, y: single);
     procedure MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; x, y: single);
+    procedure MouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Single);
     procedure BeforePaintBehavior;
     procedure FindCollide;
     function GetSpeed: Single;
@@ -36,6 +38,7 @@ type
     procedure StatGame(ASender: TObject);
     procedure AboutGame(ASender: TObject);
     procedure ExitGame(ASender: TObject);
+    function DestinationFromClick(const Ax, Ay: Single): TPosition;
   public
     property Image: TImage read GetImage write SetImage;
     property Speed: Single read GetSpeed;
@@ -48,7 +51,7 @@ type
 implementation
 
 uses
-  FMX.Dialogs, uEngine2DSprite;
+  FMX.Dialogs, uEngine2DSprite, uEngine2DObject;
 
 { TDemoGame }
 
@@ -79,6 +82,17 @@ begin
   FEngine := TDemoEngine.Create;
   FCollisions := 0;
   FSeconds := 0;
+end;
+
+function TDemoGame.DestinationFromClick(const Ax, Ay: Single): TPosition;
+var
+  vAngle: Single;
+begin
+  Result.XY(Ax, Ay);
+  vAngle := (ArcTan2(Ay - FShip.y, Ax - FShip.x ) / Pi) * 180 + 90;
+  NormalizeAngle(vAngle);
+  Result.Rotate := vAngle;
+  Result.Scale(FShip.ScalePoint);
 end;
 
 destructor TDemoGame.Destroy;
@@ -147,7 +161,6 @@ procedure TDemoGame.MouseDown(Sender: TObject; Button: TMouseButton;
 var
   i, vL: Integer;
   vAni: TAnimation;
-  vPos: TPosition;
   vAngle: Single;
 begin
   fEngine.MouseDown(Sender, Button, Shift, x, y);
@@ -157,31 +170,15 @@ begin
   for i := 0 to vL do
     fEngine.Sprites[fEngine.Downed[i]].OnMouseDown(fEngine.Sprites[fEngine.Downed[i]], Button, Shift, x, y);
 
+  FShip.Destination := DestinationFromClick(x, y);
+end;
 
-{  vPos.X := X;
-  vPos.Y := Y;
-  vPos.Rotate := (ArcTan2(y - FShip.y, x - FShip.x ) / Pi) * 180 + 90;
-
-  FShip.Position    }
-
- //
- //  Старое передвжиение с помщью аниматоров
-  vPos.XY(x, y);
-  vAngle := (ArcTan2(y - FShip.y, x - FShip.x ) / Pi) * 180 + 90;
-  NormalizeAngle(vAngle);
-  vPos.Rotate := vAngle;
-  vPos.Scale(FShip.ScalePoint);
-
-  FShip.Destination := vPos;
- { if vPos.Rotate > 360 then
-    vPos.Rotate := vPos.Rotate - 360;  }
-
-
- { vPos.ScaleX := FShip.ScaleX;
-  vPos.ScaleY := FShip.ScaleY;
-  vAni := TLoader.ShipFlyAnimation(FShip, vPos);
-  vAni.Parent := FEngine;
-  FEngine.AnimationList.Add(vAni); }
+procedure TDemoGame.MouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Single);
+begin
+  if FEngine.IsMouseDowned then
+    FShip.Destination := DestinationFromClick(x, y);
+//    FShip.AddDestination(DestinationFromClick(x, y));
 end;
 
 procedure TDemoGame.MouseUp(Sender: TObject; Button: TMouseButton;
@@ -202,6 +199,7 @@ var
   i: Integer;
   vFormatter: TEngineFormatter;
   vFont: TFont;
+  vObj: TEngine2DObject;
 begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
@@ -210,14 +208,30 @@ begin
   vLoader := TLoader.Create(FEngine);
   // Создаем астеройдное поле
   for i := 0 to 39 do
-    FBackObjects.Add(vLoader.RandomAstroid);
+  begin
+    vObj := vLoader.RandomAstroid;
+    FBackObjects.Add(TLittleAsteroid(vObj));
+    vFormatter := TEngineFormatter.Create(vObj);
+    vFormatter.Text := 'width: sqrt(engine.width * engine.height) * 0.05;';
+    FEngine.FormatterList.Add(vFormatter);
+  end;
 
   // Создаем корабль
   FShip := vLoader.CreateShip;
+  vFormatter := TEngineFormatter.Create(FShip);
+  vFormatter.Text := 'width: sqrt(engine.width * engine.height) * 0.125;';
+  FEngine.FormatterList.Add(vFormatter);
 
   FAsteroids := TList<TAsteroid>.Create;
   for i := 0 to 5 do
-    FAsteroids.Add(vLoader.BigAstroid);
+  begin
+    vObj := vLoader.BigAstroid;
+    FAsteroids.Add(TAsteroid(vObj));
+
+    vFormatter := TEngineFormatter.Create(vObj);
+    vFormatter.Text := 'width: sqrt(engine.width * engine.height) * 0.2;';
+    FEngine.FormatterList.Add(vFormatter);
+  end;
 
   vFont := TFont.Create;
   vFont.Style := [TFontStyle.fsBold];
@@ -249,6 +263,8 @@ begin
   FEngine.HideGroup('stat');
 
 
+
+
   FMenu := TGameMenu.Create(FEngine);
   FMenu.StartGame := StartGame;
   FMenu.AboutGame := AboutGame;
@@ -269,19 +285,19 @@ begin
 {  FEngine.Width := Round(ASize.X);
   FEngine.Height := Round(ASize.Y);  }
   FEngine.DoTheFullWindowResize;
-  FShip.Scale := MonitorScale;
+ // FShip.Scale := MonitorScale;
   FShip.SetMonitorScale(MonitorScale);
   FShip.SetSpeedModScale(SpeedModScale);
   for i := 0 to FAsteroids.Count - 1 do
   begin
-    FAsteroids[i].Scale := MonitorScale;
+  //  FAsteroids[i].Scale := MonitorScale * 1.5;
     FAsteroids[i].SetMonitorScale(MonitorScale);
     FAsteroids[i].SetSpeedModScale(SpeedModScale);
   end;
 
   for i := 0 to FBackObjects.Count - 1 do
   begin
-    FBackObjects[i].Scale := MonitorScale*2;
+    //FBackObjects[i].Scale := MonitorScale*1.5;
     FBackObjects[i].SetMonitorScale(MonitorScale);
     FBackObjects[i].SetSpeedModScale(SpeedModScale);
   end;
@@ -292,6 +308,7 @@ begin
   fEngine.init(Value);
   Value.OnMouseDown := Self.MouseDown;
   Value.OnMouseUp := Self.MouseUp;
+  Value.OnMouseMove := Self.MouseMove;
 
 end;
 
