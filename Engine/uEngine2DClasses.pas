@@ -4,7 +4,7 @@ interface
 
 uses
   FMX.Graphics, System.SyncObjs, System.SysUtils, System.Types,
-  uIntersectorClasses, FMX.Types,
+  FMX.Types, uIntersectorClasses,
   System.Generics.Collections, uNamedList, System.Generics.Defaults;
 
 type
@@ -28,11 +28,19 @@ const
     (Left: -2; Top: -1; Right: 0; Bottom: 1), (Left: -1; Top: -1; Right: 1; Bottom: 1), (Left: 0; Top: -1; Right: 2; Bottom: 1),
     (Left: -2; Top:  0; Right: 0; Bottom: 2), (Left: -1; Top:  0; Right: 1; Bottom: 2), (Left: 0; Top:  0; Right: 2; Bottom: 2));
 
+  {$IFDEF VER290}
   CJustifyTextAlign: array[TObjectJustify] of TTextAlignRecord = (
-  (HorAlign: TTextAlign.Leading; VerAlign: TTextAlign.Leading), (HorAlign: TTextAlign.Center; VerAlign: TTextAlign.Leading), (HorAlign: TTextAlign.Trailing; VerAlign: TTextAlign.Leading),
-  (HorAlign: TTextAlign.Leading; VerAlign: TTextAlign.Center),  (HorAlign: TTextAlign.Center; VerAlign: TTextAlign.Center),  (HorAlign: TTextAlign.Trailing; VerAlign: TTextAlign.Center),
-  (HorAlign: TTextAlign.Leading; VerAlign: TTextAlign.Trailing),  (HorAlign: TTextAlign.Center; VerAlign: TTextAlign.Trailing),  (HorAlign: TTextAlign.Trailing; VerAlign: TTextAlign.Trailing));
+    (HorAlign: TTextAlign.Trailing; VerAlign: TTextAlign.Leading), (HorAlign: TTextAlign.Center; VerAlign: TTextAlign.Leading), (HorAlign: TTextAlign.Leading; VerAlign: TTextAlign.Leading),
+    (HorAlign: TTextAlign.Trailing; VerAlign: TTextAlign.Center),  (HorAlign: TTextAlign.Center; VerAlign: TTextAlign.Center),  (HorAlign: TTextAlign.Leading; VerAlign: TTextAlign.Center),
+    (HorAlign: TTextAlign.Trailing; VerAlign: TTextAlign.Trailing),  (HorAlign: TTextAlign.Center; VerAlign: TTextAlign.Trailing),  (HorAlign: TTextAlign.Leading; VerAlign: TTextAlign.Trailing));
+  {$ENDIF}
 
+  {$IFDEF VER260}
+  CJustifyTextAlign: array[TObjectJustify] of TTextAlignRecord = (
+    (HorAlign: TTextAlign.taTrailing; VerAlign: TTextAlign.taLeading), (HorAlign: TTextAlign.taCenter; VerAlign: TTextAlign.taLeading), (HorAlign: TTextAlign.taLeading; VerAlign: TTextAlign.taLeading),
+    (HorAlign: TTextAlign.taTrailing; VerAlign: TTextAlign.taCenter),  (HorAlign: TTextAlign.taCenter; VerAlign: TTextAlign.taCenter),  (HorAlign: TTextAlign.taLeading; VerAlign: TTextAlign.taCenter),
+    (HorAlign: TTextAlign.taTrailing; VerAlign: TTextAlign.taTrailing),  (HorAlign: TTextAlign.taCenter; VerAlign: TTextAlign.taTrailing),  (HorAlign: TTextAlign.taLeading; VerAlign: TTextAlign.taTrailing));
+  {$ENDIF}
 
 
 type

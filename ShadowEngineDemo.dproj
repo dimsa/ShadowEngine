@@ -341,6 +341,41 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="Art\back.png" Configuration="Base" Class="File">
+                    <Platform Name="iOSSimulator">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="Android">
+                        <RemoteDir>assets\internal\</RemoteDir>
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="iOSDevice32">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="Win32">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="All Platforms">
+                        <RemoteDir>assets\internal\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="Win64">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Android\Release\splash_image_def.xml" Configuration="Release" Class="AndroidSplashImageDef">
                     <Platform Name="Android">
                         <Overwrite>true</Overwrite>
@@ -544,6 +579,41 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="Art\back.png" Configuration="Base" Class="File">
+                    <Platform Name="All Platforms">
+                        <RemoteDir>assets\internal\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="Android">
+                        <RemoteDir>assets\internal\</RemoteDir>
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="Win64">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="Win32">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="iOSDevice32">
+                        <RemoteName>back.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Art\images.load" Configuration="Debug" Class="File">
                     <Platform Name="Android">
                         <RemoteDir>assets\internal\</RemoteDir>
@@ -695,13 +765,13 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="iPad_Launch2048">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -734,13 +804,13 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="ProjectiOSResource">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -757,13 +827,13 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="iPhone_Launch640">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -780,13 +850,13 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="iPhone_Launch320">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -866,24 +936,24 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="ProjectiOSInfoPList">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="iPad_Launch1024">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -908,13 +978,13 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="iPad_Launch768">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -974,13 +1044,13 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="iPhone_Launch640x1136">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -997,13 +1067,13 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="iPad_Launch1536">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>

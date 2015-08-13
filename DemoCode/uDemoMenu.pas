@@ -7,7 +7,7 @@ uses
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.SysUtils, System.Classes,
   FMX.Dialogs,
   uEngine2DObject, uEngine2DText, uEngine2DSprite, uEngineFormatter,
-  uIntersectorMethods, uClasses;
+  uIntersectorMethods, uClasses, uEngine2DClasses;
 
 type
 
@@ -110,6 +110,7 @@ begin
   FText := TEngine2DText.Create(vEngine);
   FText.Group := 'menu';
   FText.Color := TAlphaColorRec.White;
+  FText.Justify := Center;
 
   FBack.OnMouseDown := MouseDown;
 

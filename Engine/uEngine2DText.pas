@@ -160,7 +160,8 @@ end;
 procedure TEngine2DText.SetJustify(const Value: TObjectJustify);
 begin
   inherited;
-
+  FHorAlign := CJustifyTextAlign[Value].HorAlign;
+  FVerAlign := CJustifyTextAlign[Value].VerAlign;
 end;
 
 procedure TEngine2DText.SetScale(AValue: single);
