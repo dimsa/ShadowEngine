@@ -299,28 +299,30 @@ begin
 
     if ((Abs(vDir) > 0) and (Abs(vDir) < 15)) then
     begin
-      vLeftKoef := 1;// (vAngle - Self.Rotate) / 180;
-      vRightKoef := 1;// (S
+      vLeftKoef := 1;
+      vRightKoef := 1;
     end;
 
     vAnimLeftKoef := Min(1, vLeftKoef * 2);
     vAnimRightKoef := Min(1, vRightKoef * 2);
 
-    vNewX := Self.x - (Max(DX, 0.2) * Cos(Self.Rotate * pi180) * vKoef - DY * Sin(Self.Rotate * pi180) * vKoef);
+    vNewX := Self.x - (DX * Cos((Self.Rotate + 90) * pi180)) * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
 
     if Distance(FDestination.XY, PointF(vNewX, Self.y)) <
        Distance(FDestination.XY, Self.Center)
      then
-       Self.x := Self.x - (DX * Cos(Self.Rotate * pi180) * vKoef - DY * Sin(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed * FSpeedModScale;
+       Self.x := Self.x - (DX * Cos((Self.Rotate + 90) * pi180)) * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
 
-    vNewY := Self.Y - (DX * Sin(Self.Rotate *  pi180) * vKoef + Max(DY, 0.2) * Cos(Self.Rotate * pi180) * vKoef);
+    vNewY := Self.Y - (DY * Sin((Self.Rotate + 90) * pi180)) * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
     if Distance(FDestination.XY, PointF(Self.x, vNewY)) <
        Distance(FDestination.XY, Self.Center)
     then
-      Self.Y := Self.Y - (DX * Sin(Self.Rotate *  pi180) * vKoef + DY * Cos(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed * FSpeedModScale;
+      Self.Y := Self.Y - (DY * Sin((Self.Rotate + 90) * pi180)) * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
   end else
   begin
-  //  FDestinations.Delete(0);
+    Self.X := Self.X - (DX * Cos((Self.Rotate + 90) * pi180)) * 0.3 * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
+    Self.Y := Self.Y - (DY * Sin((Self.Rotate + 90) * pi180)) * 0.3 * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
+    FDestination.XY(Self.Center);
   end;
 
 {  Self.x := Self.x - (DX * 0.2 * Cos(Self.Rotate * pi180) * vKoef - DY * 0.2 * Sin(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed;
