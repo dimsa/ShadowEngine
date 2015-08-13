@@ -110,6 +110,7 @@ begin
   FText := TEngine2DText.Create(vEngine);
   FText.Group := 'menu';
   FText.Color := TAlphaColorRec.White;
+
   FText.Justify := Center;
 
   FBack.OnMouseDown := MouseDown;
