@@ -466,14 +466,14 @@ begin
           TTextAlign.Leading
         );
 
-          bitmap.Canvas.FillText(
+        {  bitmap.Canvas.FillText(
           RectF(15, 85, 165, 125),
           'scale=' + floattostr(getScreenScale),
           false, 1, [],
           TTextAlign.Leading
-        );
+        );  }
 
-        if length(self.fClicked) >= 1 then
+        {if length(self.fClicked) >= 1 then
         begin
           bitmap.Canvas.FillText(RectF(15, 45, 165, 145),
             'sel=' + inttostr(self.fClicked[0]), false, 1, [],
@@ -484,7 +484,7 @@ begin
           floattostr(flX) + ' ' + floattostr(flY),
           false, 1, [],
           TTextAlign.Leading
-        );
+        );                  }
         {$ENDIF}
         {$IFDEF VER260}
         bitmap.Canvas.FillText(
@@ -494,7 +494,7 @@ begin
           TTextAlign.taLeading
         );
 
-        if length(self.fClicked) >= 1 then
+      {  if length(self.fClicked) >= 1 then
         begin
           bitmap.Canvas.FillText(RectF(15, 45, 165, 145),
             'sel=' + inttostr(self.fClicked[0]), false, 1, [],
@@ -505,7 +505,7 @@ begin
           floattostr(flX) + ' ' + floattostr(flY),
           false, 1, [],
           TTextAlign.taLeading
-        );
+        );   }
         {$ENDIF}
   end;
 end;

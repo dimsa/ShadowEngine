@@ -4,17 +4,38 @@ interface
 
 uses
   FMX.Graphics, System.SyncObjs, System.SysUtils, System.Types,
-  uIntersectorClasses,
+  uIntersectorClasses, FMX.Types,
   System.Generics.Collections, uNamedList, System.Generics.Defaults;
 
 type
 
-{  TEngine2D = class
-  End;
+  TObjectJustify = (
+    TopLeft, TopCenter, TopRight,
+    CenterLeft, Center, CenterRight,
+    BottomLeft, BottomCenter, BottomRight);
 
-  TSprite = class
-  end;       }
+  TTextAlignRecord = record
+    HorAlign, VerAlign: TTextAlign;
+  end;
 
+const
+{  CJustifyPoints: array[TObjectJustify] of TPoint = (
+    (X: -2; Y: -1), (X: 0; Y: -1), (X: 1; Y: -1),
+    (X: -1; Y:  0), (X: 0; Y:  0), (X: 1; Y:  0),
+    (X: -1; Y:  1), (X: 0; Y:  1), (X: 1; Y:  1)); }
+  CJustifyPoints: array[TObjectJustify] of TRect = (
+    (Left: -2; Top: -2; Right: 0; Bottom: 0), (Left: -1; Top: -2; Right: 1; Bottom: 0), (Left: 0; Top: -2; Right: 2; Bottom: 0),
+    (Left: -2; Top: -1; Right: 0; Bottom: 1), (Left: -1; Top: -1; Right: 1; Bottom: 1), (Left: 0; Top: -1; Right: 2; Bottom: 1),
+    (Left: -2; Top:  0; Right: 0; Bottom: 2), (Left: -1; Top:  0; Right: 1; Bottom: 2), (Left: 0; Top:  0; Right: 2; Bottom: 2));
+
+  CJustifyTextAlign: array[TObjectJustify] of TTextAlignRecord = (
+  (HorAlign: TTextAlign.Leading; VerAlign: TTextAlign.Leading), (HorAlign: TTextAlign.Center; VerAlign: TTextAlign.Leading), (HorAlign: TTextAlign.Trailing; VerAlign: TTextAlign.Leading),
+  (HorAlign: TTextAlign.Leading; VerAlign: TTextAlign.Center),  (HorAlign: TTextAlign.Center; VerAlign: TTextAlign.Center),  (HorAlign: TTextAlign.Trailing; VerAlign: TTextAlign.Center),
+  (HorAlign: TTextAlign.Leading; VerAlign: TTextAlign.Trailing),  (HorAlign: TTextAlign.Center; VerAlign: TTextAlign.Trailing),  (HorAlign: TTextAlign.Trailing; VerAlign: TTextAlign.Trailing));
+
+
+
+type
   tSpriteResource = record
     rect: tRectF;
     bmp: tBitmap;
@@ -24,14 +45,6 @@ type
     ToClickOnlyTop: Boolean; // События кликов передаются только верхнему объекту в клике
     ToAnimateForever: Boolean; // Сообщает, что надо перерисовывать сцену, даже если нет анимаций
   end;
-
- { TPosition = record // Нужен для аниманиции спрайтов
-    X, Y: single;
-    Rotate: single;
-    ScaleX, ScaleY: single;
-    Opacity: single;
-//    NumOfFrame: integer;
-  end;  }
 
   // Потокобезопасный класс именованных листов для енджайна. Обязательно должен быть указан Парент!
   TEngine2DNamedList<T> = class(TNamedList<T>)

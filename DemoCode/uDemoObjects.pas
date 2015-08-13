@@ -26,10 +26,16 @@ type
   TMovingUnit = class(TSprite)
   protected
     FDx, FDy, FDA: Double; // Сдвиги
+    FMaxDx, FMaxDy, FMaxDa: Single;
+    FMonitorScale: Single;
+    FSpeedModScale: Single;
+    procedure SetScale(AValue: single); override;
   public
     property DX: Double read FDx write FDx;
     property DY: Double read FDy write FDy;
     property DA: Double read FDa write FDa;
+    procedure SetMonitorScale(const AValue: Single);
+    procedure SetSpeedModScale(const AValue: Single);
   end;
 
   TShip = class(TMovingUnit)
@@ -41,14 +47,16 @@ type
     FRightFireCenter: TShipFire;
     FShipLight: TShipLight;
     FDestination: TPosition;
-    FMaxDx, FMaxDy: Single;
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     function MinMax(const AValue: Single; const AMax: Single; const AMin: Single = 0): Single;
+  protected
+    procedure SetScale(AValue: single); override;
   public
 {    property LeftFire: TShipFire read FLeftFire write FLeftFire;
     property RightFire: TShipFire read FRightFire write FRightFire;
     property LeftFireCenter: TShipFire read FRightFireCenter write FRightFireCenter;
     property RightFireCenter: TShipFire read FRightFireCenter write FRightFireCenter; }
+
     property Parts: TList<TSprite> read FParts;
     procedure SetOpacity(const AOpacity: Integer);
     property Destination: TPosition read FDestination write FDestination;
@@ -152,12 +160,12 @@ begin
   FParts.Add(FRightFireCenter);
   FParts.Add(FShipLight);
 
-  DA := 3;
-  Dx := 10;
-  Dy := 10;
+  DA := 6;
+  Dx := 20;
+  Dy := 20;
 
-  FMaxDx := 6;
-  FMaxDy := 6;
+  FMaxDx := 20;
+  FMaxDy := 20;
 end;
 
 destructor TShip.Destroy;
@@ -242,14 +250,14 @@ begin
   if vKoef > 1 then
     vKoef := 1;
 
-  if vKoef < 0.225 then
+  if vKoef < 0.225 * SpeedModScale then
   begin
-    vKoef := 0.225;
+    vKoef := 0.225 * SpeedModScale;
   end;
 
   vAnimKoef := Min(1, vKoef * 2);
 
-  if vKoef > 0.3 then
+  if vKoef > 0.3 * (SpeedModScale) then
   begin
   vAngle := Self.Rotate;
   NormalizeAngle(vAngle);
@@ -262,12 +270,12 @@ begin
 
   if (vDir < -90) or (vDir > 90) then
   begin
-    Self.Rotate := Self.Rotate - DA * vKoef * vEngine.EngineThread.Speed;
+    Self.Rotate := Self.Rotate - DA * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
     vLeftKoef := 1;
     vRightKoef := 0.4;
   end
   else begin
-    Self.Rotate := Self.Rotate + DA * vKoef * vEngine.EngineThread.Speed;
+    Self.Rotate := Self.Rotate + DA * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
     vLeftKoef := 0.4;
     vRightKoef := 1;
   end;
@@ -292,21 +300,21 @@ begin
     if Distance(FDestination.XY, PointF(vNewX, Self.y)) <
        Distance(FDestination.XY, Self.Center)
      then
-       Self.x := Self.x - (DX * Cos(Self.Rotate * pi180) * vKoef - DY * Sin(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed;
+       Self.x := Self.x - (DX * Cos(Self.Rotate * pi180) * vKoef - DY * Sin(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed * FSpeedModScale;
 
     vNewY := Self.Y - (DX * Sin(Self.Rotate *  pi180) * vKoef + Max(DY, 0.2) * Cos(Self.Rotate * pi180) * vKoef);
     if Distance(FDestination.XY, PointF(Self.x, vNewY)) <
        Distance(FDestination.XY, Self.Center)
     then
-      Self.Y := Self.Y - (DX * Sin(Self.Rotate *  pi180) * vKoef + DY * Cos(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed;
+      Self.Y := Self.Y - (DX * Sin(Self.Rotate *  pi180) * vKoef + DY * Cos(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed * FSpeedModScale;
   end;
 
 {  Self.x := Self.x - (DX * 0.2 * Cos(Self.Rotate * pi180) * vKoef - DY * 0.2 * Sin(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed;
   Self.Y := Self.Y - (DX * 0.2 * Sin(Self.Rotate *  pi180) * vKoef + DY * 0.2 * Cos(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed;}
 
-  Self.Rotate := Self.Rotate + (random - 0.5) * 0.5;
-  Self.X := Self.x + (random - 0.5) * 0.5;
-  Self.Y := Self.y + (random - 0.5) * 0.5;
+//  Self.Rotate := Self.Rotate + (random - 0.5) * 0.5;
+ // Self.X := Self.x + (random - 0.5) * 0.5;
+  //Self.Y := Self.y + (random - 0.5) * 0.5;
 
   FLeftFire.Rotate := Self.Rotate;
   FLeftFire.ScalePoint := Self.ScalePoint * 2 * vKoef * vLeftKoef;
@@ -344,6 +352,15 @@ begin
     FParts[i].Opacity := AOpacity;
 end;
 
+procedure TShip.SetScale(AValue: single);
+var
+  i: Integer;
+begin
+  inherited;
+  for i := 1 to FParts.Count - 1 do
+    FParts[i].Scale := AValue;
+end;
+
 { TAsteroid }
 
 function TAsteroid.Collide(const AObject: TEngine2DObject): Boolean;
@@ -357,7 +374,7 @@ var
 begin
   if FNotChange > 0 then
   begin
-    FNotChange := 5;
+    FNotChange := 2;
     Exit(False);
   end;
 
@@ -369,8 +386,8 @@ begin
   FDY := Sin(vArcTan2) * (vDX) + Cos(vArcTan2) * (FDY);
   FDx := - FDx;
   FDy := - FDy;
-  AObject.x := AObject.x - FDx * Game.Speed * 2;
-  AObject.y := AObject.y - FDy * Game.Speed * 2;
+  AObject.x := AObject.x - FDx * Game.Speed * 2 * FSpeedModScale;
+  AObject.y := AObject.y - FDy * Game.Speed * 2 * FSpeedModScale;
 
   vLoader := TLoader.Create(FParent);
   vAng := vArcTan / pi180;
@@ -393,6 +410,11 @@ end;
 constructor TAsteroid.Create(AParent: pointer);
 begin
   inherited;
+
+  FMaxDx := 10;
+  FMaxDy := 10;
+  FMaxDa := 6;
+
   FDx := 5 * Random;
   FDy := 5 * Random;
   FDA := 20 * Random - 10;
@@ -405,9 +427,9 @@ begin
 
   inherited;
 
-  Self.x := Self.x + FDx * Game.Speed;
-  Self.y := Self.y + FDy * Game.Speed;
-  Self.Rotate := Self.Rotate + FDa * Game.Speed;
+  Self.x := Self.x + FDx * Game.Speed * FSpeedModScale;
+  Self.y := Self.y + FDy * Game.Speed * FSpeedModScale;
+  Self.Rotate := Self.Rotate + FDa * Game.Speed * FSpeedModScale;
 
   if Self.Rotate >= 360 then
     Self.Rotate := 0;
@@ -437,9 +459,13 @@ begin
   if FTip > 3 then
     FTip := 3; // Чтобы звезд побольше было
 
-  FDX := Random * 6;
-  FDY := Random * 6 ;
-  FDA := 30 * Random - 15;
+  FMaxDx := 20;
+  FMaxDy := 20;
+  FMaxDa := 10;
+
+  FDX := Random * 12;
+  FDY := Random * 12 ;
+  FDA := 60 * Random - 30;
 end;
 
 procedure TLittleAsteroid.Repaint;
@@ -447,13 +473,13 @@ begin
   curRes := FTip + 5;
   inherited;
 
-  Self.Rotate := Self.Rotate + FDa * Game.Speed;
+  Self.Rotate := Self.Rotate + FDa * Game.Speed * FSpeedModScale;
 
   if Self.Rotate >= 360 then
     Self.Rotate := 0;
 
-  Self.x := Self.x + FDx * Game.Speed;
-  Self.y := Self.y + FDy * Game.Speed;
+  Self.x := Self.x + FDx * Game.Speed * FSpeedModScale;
+  Self.y := Self.y + FDy * Game.Speed * FSpeedModScale;
 
   if Self.x > tEngine2d(Parent).Width then
     Self.x := -1;
@@ -493,6 +519,26 @@ begin
     Opacity := 0.8 + Random * 0.2;
   CurRes := 13 + Random(2);
   inherited;
+end;
+
+{ TMovingUnit }
+
+procedure TMovingUnit.SetMonitorScale(const AValue: Single);
+begin
+  FMonitorScale := AValue;
+end;
+
+procedure TMovingUnit.SetScale(AValue: single);
+begin
+  inherited;
+ { DX := (DX / abs(DX)) * FMaxDx * AValue;
+  DY := (DY / abs(DY)) * FMaxDy * AValue;
+  DA := (DA / abs(DA)) * FMaxDa * AValue;  }
+end;
+
+procedure TMovingUnit.SetSpeedModScale(const AValue: Single);
+begin
+  FSpeedModScale := AValue;
 end;
 
 end.

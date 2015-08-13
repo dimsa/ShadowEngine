@@ -35,6 +35,7 @@ type
     procedure SetScale(AValue: single); override;
     procedure SetX(AValue: single); override;
     procedure SetY(AValue: single); override;
+    procedure SetJustify(const Value: TObjectJustify); override;
   public
     property Font: tFont write SetFont;
     property Text: string read FText write SetText;
@@ -154,6 +155,12 @@ procedure TEngine2DText.SetFont(const Value: tFont);
 begin
   FFont := Value;
   FStartFont.Assign(FFont);
+end;
+
+procedure TEngine2DText.SetJustify(const Value: TObjectJustify);
+begin
+  inherited;
+
 end;
 
 procedure TEngine2DText.SetScale(AValue: single);

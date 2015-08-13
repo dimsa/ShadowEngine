@@ -263,10 +263,28 @@ begin
 end;
 
 procedure TDemoGame.Resize(ASize: TPointF);
+var
+  i: Integer;
 begin
 {  FEngine.Width := Round(ASize.X);
   FEngine.Height := Round(ASize.Y);  }
   FEngine.DoTheFullWindowResize;
+  FShip.Scale := MonitorScale;
+  FShip.SetMonitorScale(MonitorScale);
+  FShip.SetSpeedModScale(SpeedModScale);
+  for i := 0 to FAsteroids.Count - 1 do
+  begin
+    FAsteroids[i].Scale := MonitorScale;
+    FAsteroids[i].SetMonitorScale(MonitorScale);
+    FAsteroids[i].SetSpeedModScale(SpeedModScale);
+  end;
+
+  for i := 0 to FBackObjects.Count - 1 do
+  begin
+    FBackObjects[i].Scale := MonitorScale*2;
+    FBackObjects[i].SetMonitorScale(MonitorScale);
+    FBackObjects[i].SetSpeedModScale(SpeedModScale);
+  end;
 end;
 
 procedure TDemoGame.SetImage(const Value: TImage);

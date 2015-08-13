@@ -7,7 +7,7 @@ uses
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2D, uEngine2DSprite, uEngine2DObject, uDemoObjects, uIntersectorClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
-  uNewFigure, uIntersectorMethods;
+  uNewFigure, uIntersectorMethods, uEasyDevice;
 
 type
   TLoader = class
@@ -25,8 +25,22 @@ type
     constructor Create(AEngine: TEngine2D);
   end;
 
+  function MonitorScale: Single;
+  function SpeedModScale: Single;
 
 implementation
+
+function MonitorScale: Single;
+begin
+  Result := (
+    Sqrt(uEasyDevice.getDisplaySizeInPx.X * uEasyDevice.getDisplaySizeInPx.Y) * 0.1) * 0.005;
+end;
+
+function SpeedModScale: Single;
+begin
+  Result := (
+    Sqrt(uEasyDevice.getDisplaySizeInPx.X * uEasyDevice.getDisplaySizeInPx.Y) * 0.1) / 100;
+end;
 
 { TLoader }
 
@@ -43,7 +57,8 @@ begin
   vSpr.x := Random(FEngine.Width);
   vSpr.y := Random(FEngine.Height);
   vSpr.Rotate := Random(360);
-  vSpr.Scale := 0.5;
+  vSpr.Scale := MonitorScale;
+
 
   vFigure := TNewFigure.Create(TNewFigure.cfCircle);
   vCircle.X := 0;
@@ -77,7 +92,6 @@ begin
   vSpr.x := 200;//Random(FEngine.Width);
   vSpr.y := 200;//Random(FEngine.Height);
   vSpr.Rotate := Random(360);
-  vSpr.Scale := 0.5;
 
   vPoly1 := TNewFigure.CreatePoly;
   Clear(vPoly);
@@ -116,6 +130,7 @@ begin
   vSpr.Shape.AddFigure(vPoly3);
   vSpr.Shape.AddFigure(vShape);
   vSpr.Visible := False;
+  vSpr.Scale :=  MonitorScale;
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
 
   Result := vSpr;
@@ -221,3 +236,4 @@ begin
 end;
 
 end.
+

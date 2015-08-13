@@ -81,10 +81,10 @@ begin
   Image.Bitmap.Canvas.DrawBitmap(
     fResources[fCurRes].bmp,
     fResources[fCurRes].rect,
-              RectF(x - wHalf,
-              y - hHalf,
-              x + wHalf,
-              y + hHalf),
+              RectF(x + wHalf * CJustifyPoints[Justify].Left,
+              y + hHalf * CJustifyPoints[Justify].Top,
+              x + wHalf * CJustifyPoints[Justify].Right,
+              y + hHalf * CJustifyPoints[Justify].Bottom),
               opacity{, False}
             );
 

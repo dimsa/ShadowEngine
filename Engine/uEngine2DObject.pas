@@ -13,13 +13,16 @@ type
     FShape: TObjectShape;
     FOnMouseDown, FOnMouseUp: TMouseEvent;
     FOnClick: TVCLProcedure;
+    FJustify: TObjectJustify;
     procedure EmptyMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single); virtual;
     procedure EmptyMouseUp(Sender: TObject; Button: TMouseButton;  Shift: TShiftState; X, Y: Single); virtual;
     procedure EmptyClick(ASender: TObject); virtual;
   protected
     procedure ShapeCreating; virtual; // По умолчанию создает форму без фигур
+    procedure SetJustify(const Value: TObjectJustify); virtual;
   public
     property Shape: TObjectShape read FShape write FShape; // Форма спрайта
+    property Justify: TObjectJustify read FJustify write SetJustify;
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
     property OnClick: TVCLProcedure read FOnClick write FOnClick;
@@ -49,6 +52,7 @@ end;
 constructor tEngine2DObject.Create(AParent: pointer);
 begin
   inherited Create(AParent);
+  FJustify := TObjectJustify.Center;
   ShapeCreating;
   Self.OnMouseDown := EmptyMouseDown;
   Self.OnMouseUp := EmptyMouseUp;
@@ -83,6 +87,11 @@ begin
   tEngine2d(fParent).SpriteToFront(
     tEngine2d(fParent).SpriteList.IndexOfItem(Self, FromBeginning)
   );
+end;
+
+procedure tEngine2DObject.SetJustify(const Value: TObjectJustify);
+begin
+  FJustify := Value;
 end;
 
 procedure tEngine2DObject.ShapeCreating;
