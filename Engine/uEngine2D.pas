@@ -107,7 +107,6 @@ type
     procedure SpriteToFront(const n: integer);// Передвигает в массиве отрисовки спрайт
 
     procedure DoTheFullWindowResize;
-    procedure ApplyFormatters;
     procedure Clear; // Удаляет все спрайты и после этого удаляет все ресурсы
 
     procedure MouseDown(Sender: TObject; Button: TMouseButton;
@@ -174,10 +173,6 @@ begin
     fSpriteOrder[l] := l;
     fCritical.Leave;
   end;
-end;
-
-procedure tEngine2d.applyFormatters;
-begin
 end;
 
 procedure tEngine2d.AssignShadowObject(ASpr: tEngine2DObject);
@@ -311,16 +306,15 @@ end;
 
 procedure tEngine2d.DoTheFullWindowResize;
 var
-  size: tPointF;
+  vSize: tPointF;
   i: Integer;
 begin
-  size := getDisplaySizeInPx;
+  vSize := getDisplaySizeInPx;
 
 {  fFormatters.InitAll(size.X, size.Y);
   fFormatters.ApplyAll;  }
-
-  self.width := round(size.x);
-  self.height := round(size.y);
+  self.width := round(vSize.x);
+  self.height := round(vSize.y);
 
   // Форматирвание
   for i := 0 to fFormatters.Count - 1 do
@@ -524,9 +518,9 @@ begin
 //  fImage.Canvas.
   // Необходимо задавать имдеджу какую-то процедуру на клик
   // fImage.OnMouseDown := someFunction
-  size := getDisplaySizeInPx;
-  self.width := round(size.x);
-  self.height := round(size.y);
+ // size := getDisplaySizeInPx;
+  self.width := round(newImage.Width {size.x});
+  self.height := round(newImage.Height{ size.y});
 end;
 
 procedure tEngine2d.MouseDown(Sender: TObject; Button: TMouseButton;

@@ -43,7 +43,7 @@ type
     property Image: TImage read GetImage write SetImage;
     property Speed: Single read GetSpeed;
     procedure Prepare;
-    procedure Resize(ASize: TPointF);
+    procedure Resize;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -208,7 +208,7 @@ begin
     vObj := vLoader.RandomAstroid;
     FBackObjects.Add(TLittleAsteroid(vObj));
     vFormatter := TEngineFormatter.Create(vObj);
-    vFormatter.Text := 'width: sqrt(engine.width * engine.height) * 0.05;';
+    vFormatter.Text := 'width: sqrt(engine.width * engine.height) * 0.05; ';
     FEngine.FormatterList.Add(vFormatter);
   end;
 
@@ -221,7 +221,7 @@ begin
   FAsteroids := TList<TAsteroid>.Create;
   for i := 0 to 5 do
   begin
-    vObj := vLoader.BigAstroid;
+    vObj := vLoader.BigAsteroid;
     FAsteroids.Add(TAsteroid(vObj));
 
     vFormatter := TEngineFormatter.Create(vObj);
@@ -271,15 +271,16 @@ begin
   FEngine.InBeginPaintBehavior := BeforePaintBehavior;
   FEngine.Start;
   vLoader.Free;
+
+  FEngine.Repaint;
+    //Self.Resize(getDisplaySizeInPx);
 //  FEngine.InBeginPaintBehavior :=
 end;
 
-procedure TDemoGame.Resize(ASize: TPointF);
+procedure TDemoGame.Resize;
 var
   i: Integer;
 begin
-{  FEngine.Width := Round(ASize.X);
-  FEngine.Height := Round(ASize.Y);  }
   FEngine.DoTheFullWindowResize;
  // FShip.Scale := MonitorScale;
   FShip.SetMonitorScale(MonitorScale);

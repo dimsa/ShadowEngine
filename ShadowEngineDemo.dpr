@@ -18,7 +18,6 @@ uses
   uEngine2DAnimation in 'Engine\uEngine2DAnimation.pas',
   uEngine2DAnimationList in 'Engine\uEngine2DAnimationList.pas',
   uEngine2DClasses in 'Engine\uEngine2DClasses.pas',
-  uEngine2DExpression in 'Engine\uEngine2DExpression.pas',
   uEngine2DObject in 'Engine\uEngine2DObject.pas',
   uEngine2DResources in 'Engine\uEngine2DResources.pas',
   uEngine2DSprite in 'Engine\uEngine2DSprite.pas',

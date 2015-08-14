@@ -314,7 +314,21 @@ begin
   begin
     Self.X := Self.X - (DX * Cos((Self.Rotate + 90) * pi180)) * 0.3 * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
     Self.Y := Self.Y - (DY * Sin((Self.Rotate + 90) * pi180)) * 0.3 * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
+
+  if Self.x >= tEngine2d(Parent).Width + Self.scW then
+    Self.x := -Self.scW
+  else
+    if Self.x < 0 - Self.scW then
+      Self.x := tEngine2d(Parent).Width + Self.scW;
+
+  if Self.y >= tEngine2d(Parent).Height + Self.scH then
+    Self.y := -Self.scH
+  else
+    if Self.y < 0 - Self.scH then
+     Self.y := tEngine2d(Parent).Height + Self.scH;
+
     FDestination.XY(Self.Center);
+
   end;
 
 {  Self.x := Self.x - (DX * 0.2 * Cos(Self.Rotate * pi180) * vKoef - DY * 0.2 * Sin(Self.Rotate * pi180) * vKoef) * vEngine.EngineThread.Speed;
@@ -432,7 +446,6 @@ end;
 procedure TAsteroid.Repaint;
 begin
   curRes := 1;
-
   inherited;
 
   Self.x := Self.x + FDx * Game.Speed * FSpeedModScale;
@@ -446,13 +459,13 @@ begin
     Self.x := -Self.scW
   else
     if Self.x < 0 - Self.scW then
-      Self.x := tEngine2d(Parent).Width;
+      Self.x := tEngine2d(Parent).Width + Self.scW;
 
   if Self.y >= tEngine2d(Parent).Height + Self.scH then
     Self.y := -Self.scH
   else
     if Self.y < 0 - Self.scH then
-     Self.y := tEngine2d(Parent).Height;
+     Self.y := tEngine2d(Parent).Height + Self.scH;
 
   if FNotChange > 0 then
     Dec(FNotChange);

@@ -15,7 +15,7 @@ type
     FEngine: TEngine2D;
   public
     function RandomAstroid: TLittleAsteroid;
-    function BigAstroid: TAsteroid;
+    function BigAsteroid: TAsteroid;
     function CreateShip: TShip;
     function Explosion(const AX, AY, AAng: Double): TExplosion;
     function ExplosionAnimation(ASubject: TSprite): TSpriteAnimation;
@@ -44,7 +44,7 @@ end;
 
 { TLoader }
 
-function TLoader.BigAstroid: TAsteroid;
+function TLoader.BigAsteroid: TAsteroid;
 var
   vSpr: TAsteroid;
   vFigure: TNewFigure;
@@ -53,10 +53,10 @@ begin
   vSpr := TAsteroid.Create(FEngine);
   vSpr.Parent := FEngine;
   vSpr.Resources := FEngine.Resources;
+  vSpr.CurRes := 1;
   vSpr.Group := 'activeobject';
   vSpr.x := Random(FEngine.Width);
   vSpr.y := Random(FEngine.Height);
-
   vFigure := TNewFigure.Create(TNewFigure.cfCircle);
   vCircle.X := 0;
   vCircle.Y := 0;
@@ -82,6 +82,25 @@ var
   vCircle: TCircle;
   vPoly1, vPoly2, vPoly3: TNewFigure;
 begin
+
+ { vSpr := TAsteroid.Create(FEngine);
+  vSpr.Parent := FEngine;
+  vSpr.Resources := FEngine.Resources;
+  vSpr.Group := 'activeobject';
+  vSpr.x := Random(FEngine.Width);
+  vSpr.y := Random(FEngine.Height);
+
+  vFigure := TNewFigure.Create(TNewFigure.cfCircle);
+  vCircle.X := 0;
+  vCircle.Y := 0;
+  vCircle.Radius := 50;
+  vFigure.SetData(vCircle);
+  vSpr.Shape.AddFigure(vFigure);
+
+  FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
+
+  Result := vSpr;}
+
   vSpr := TShip.Create(FEngine);
   vSpr.Parent := FEngine;
   vSpr.Resources := FEngine.Resources;
@@ -127,7 +146,6 @@ begin
   vSpr.Shape.AddFigure(vPoly3);
   vSpr.Shape.AddFigure(vShape);
   vSpr.Visible := False;
-  vSpr.Scale :=  MonitorScale;
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
 
   Result := vSpr;
@@ -191,11 +209,12 @@ begin
   vSpr := TLittleAsteroid.Create(FEngine);
   vSpr.Parent := FEngine;
   vSpr.Resources := FEngine.Resources;
+  vSpr.CurRes := vSpr.Tip + 5;
   vSpr.Group := 'backobjects';
   vSpr.x := Random(FEngine.Width);
   vSpr.y := Random(FEngine.Height);
   vSpr.Rotate := Random(360);
-  vSpr.Scale := 0.3;
+  //vSpr.Scale := 0.3;
   FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
 
   Result := vSpr;

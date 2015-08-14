@@ -2,8 +2,8 @@ object mainForm: TmainForm
   Left = 0
   Top = 0
   Caption = 'ShadowEngine Demo'
-  ClientHeight = 477
-  ClientWidth = 380
+  ClientHeight = 638
+  ClientWidth = 563
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop, iPhone, iPad]
@@ -15,10 +15,10 @@ object mainForm: TmainForm
     MultiResBitmap = <
       item
       end>
-    Align = Client
+    Align = Fit
     DisableInterpolation = True
-    Size.Width = 380.000000000000000000
-    Size.Height = 477.000000000000000000
+    Size.Width = 563.000000000000000000
+    Size.Height = 638.000000000000000000
     Size.PlatformDefault = False
     WrapMode = Original
   end

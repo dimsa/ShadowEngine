@@ -3,7 +3,7 @@ unit uClasses;
 interface
 
 uses
-  System.SysUtils;
+  System.SysUtils, System.Types;
 
 type
   TProcedure = procedure of Object;
