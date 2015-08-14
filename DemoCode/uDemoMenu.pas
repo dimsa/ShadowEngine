@@ -50,6 +50,7 @@ type
     FExitGame: TVCLProcedure;
     FAboutGame: TVCLProcedure;
     FStartGame: TVCLProcedure;
+    FGameLogo: TSprite;
     procedure SetAboutGame(const Value: TVCLProcedure);
     procedure SetExitGame(const Value: TVCLProcedure);
     procedure SetStartGame(const Value: TVCLProcedure);
@@ -201,38 +202,53 @@ var
 begin
   FParent := AParent;
   vEngine := FParent;
-  FList := TList<TGameButton>.Create;
 
+  FGameLogo := TSprite.Create(vEngine);
+  FGameLogo.Resources := vEngine.Resources;
+  FGameLogo.Group := 'menu';
+  FGameLogo.CurRes := vEngine.Resources.IndexOf('gamelogo');
+  vEngine.AddObject('gamelogo', FGameLogo);
+
+  vFormatter := TEngineFormatter.Create(FGameLogo);
+  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.23; width: engine.width * 0.8; max-height: engine.height * 0.40;' +
+  'xifhor: engine.width * 0.25; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.5;';
+  vEngine.FormatterList.Add(vFormatter);
+
+  FList := TList<TGameButton>.Create;
   vBut := TGameButton.Create('button1', vEngine);
   vBut.Text := 'Start Game';
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
-    IntToStr(FList.Count) + '; width: engine.width * 0.8; max-height: engine.height * 0.18;';
+  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.36 + engine.height * 0.14 * ' +
+    IntToStr(FList.Count) + '; width: engine.width * 0.8; max-height: engine.height * 0.12; max-width: 0 + gamelogo.width;' +
+    'xifhor: engine.width * 0.75; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.2 *' + IntToStr(FList.Count);
   vEngine.FormatterList.Insert(0, vFormatter);
 
   vBut := TGameButton.Create('button2', vEngine);
   vBut.Text := 'Statistics';
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
-    IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.18;';
+  vFormatter.Text := 'left: engine.width * 0.5; top:engine.height * 0.36 + engine.height * 0.14 * ' +
+    IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.12; max-width: 0 + gamelogo.width;' +
+    'xifhor: engine.width * 0.75; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.2 *' + IntToStr(FList.Count);
   vEngine.FormatterList.Insert(0, vFormatter);
 
   vBut := TGameButton.Create('button3', vEngine);
   vBut.Text := 'About';
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
-    IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.18;';
+  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.36 + engine.height * 0.14 * ' +
+    IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.12; max-width: 0 + gamelogo.width;' +
+    'xifhor: engine.width * 0.75; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.2 *' + IntToStr(FList.Count);
   vEngine.FormatterList.Insert(0, vFormatter);
 
   vBut := TGameButton.Create('button4', vEngine);
   vBut.Text := 'Exit';
   FList.Add(vBut);
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.2 * ' +
-    IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.18;';
+  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.36 + engine.height * 0.14 * ' +
+    IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.12; max-width: 0 + gamelogo.width;' +
+    'xifhor: engine.width * 0.75; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.2 *' + IntToStr(FList.Count);
   vEngine.FormatterList.Insert(0, vFormatter);
 end;
 
@@ -293,3 +309,4 @@ begin
 end; }
 
 end.
+

@@ -27,6 +27,7 @@ type
     FRotateIfHor: TExpression;
     FXIfHor: TExpression;
     FYIfHor: TExpression;
+    FWidthIfHor, FHeightIfHor: TExpression;
     function CreateIfNil(var vExp: TExpression): TExpression;
     procedure SetText(const Value: String);
     function WhatExpression(const AText: String): TExpression;
@@ -52,6 +53,8 @@ type
    // Оказыается нужны координаты для вертикальной и горизонталньой версии
     property XIfHor: TExpression read FXIfHor;
     property YIfHor: TExpression read FYIfHor;
+    property WidthIfHor: TExpression read FWidthIfHor;
+    property HeightIfHor: TExpression read FHeightIfHor;
     property RotateIfHor: TExpression read FRotateIfHor;
 
     property Position: tPosition read GetPosition;
@@ -132,6 +135,10 @@ begin
   if FScaleX <> Nil then FScaleX.Free;
   if FScaleY <> Nil then FScaleY.Free;
   if FRotate <> Nil then FRotate.Free;
+  if FXIfHor <> nil then FXIfHor.Free;
+  if FYIfHor <> nil then FYIfHor.Free;
+  if FWidthIfHor <> nil then FWidthIfHor.Free;
+  if FHeightIfHor <> nil then FHeightIfHor.Free;
 
   inherited;
 end;
@@ -166,6 +173,8 @@ begin
   begin
     if FXIfHor <> Nil then FObject.x := FXIfHor.Value;
     if FYIfHor <> Nil then FObject.y := FYIfHor.Value;
+    if FWidthIfHor <> Nil then FObject.Scale := FWidthIfHor.Value / FObject.w;
+    if FHeightIfHor <> Nil then FObject.Scale := FHeightIfHor.Value / FObject.h;
     if FRotateIfHor <> Nil then FObject.Rotate := FRotateIfHor.Value;
   end;
 
@@ -346,6 +355,8 @@ begin
   if (vText = 'xifhor') or (vText = 'leftifhor') then Result := CreateIfNil(FXIfHor);
   if (vText = 'yifhor') or (vText = 'topifhor') then Result := CreateIfNil(FYIfHor);
   if (vText = 'rotateifhor') or (vText = 'angleifhor') then Result := CreateIfNil(FRotateIfHor);
+  if (vText = 'widthifhor') or (vText = 'wifhor') then Result := CreateIfNil(FWidthIfHor);
+  if (vText = 'heightifhor') or (vText = 'hifhor') then Result := CreateIfNil(FHeightIfHor);
 
 end;
 

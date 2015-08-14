@@ -159,15 +159,11 @@ end;
 procedure TDemoGame.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; x, y: single);
 var
-  i, vL: Integer;
-  vAni: TAnimation;
-  vAngle: Single;
+  i: Integer;
 begin
   fEngine.MouseDown(Sender, Button, Shift, x, y);
 
-  vL := Length(fEngine.Downed) - 1;
-
-  for i := 0 to vL do
+  for i := 0 to Length(fEngine.Downed) - 1 do
     fEngine.Sprites[fEngine.Downed[i]].OnMouseDown(fEngine.Sprites[fEngine.Downed[i]], Button, Shift, x, y);
 
   FShip.Destination := DestinationFromClick(x, y);

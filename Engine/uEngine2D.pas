@@ -366,7 +366,7 @@ begin
   if (lA > 0) or (FOptions.ToAnimateForever)  then
     with fImage do
     begin
-      if bitmap.Canvas.BeginScene() then
+      if Bitmap.Canvas.BeginScene() then
       try
         FInBeginPaintBehavior;
         FBackgroundBehavior;
@@ -390,7 +390,10 @@ begin
       finally
         FInEndPaintBehavior;
 
-        bitmap.Canvas.endScene();
+        Bitmap.Canvas.endScene();
+        {$IFDEF POSIX}
+          InvalidateRect(RectF(0, 0, Bitmap.Width , Bitmap.Height));
+        {$ENDIF}
       end;
   end;
 
@@ -515,6 +518,10 @@ var
   size: tPointF;
 begin
   fImage := newImage;
+ { if fImage.Canvas.Blending then
+    ShowMessage('blend=true');    }
+
+//  fImage.Canvas.
   // Необходимо задавать имдеджу какую-то процедуру на клик
   // fImage.OnMouseDown := someFunction
   size := getDisplaySizeInPx;
@@ -544,7 +551,7 @@ begin
         setLength(fMouseDowned, length(fMouseDowned) + 1);
         fMouseDowned[high(fMouseDowned)] := fSpriteOrder[i];
 
-      //ПЕРЕНЕСИ w и h в TEngine2DObject и сделайн определение положения клика в спрайте
+      //ПЕРЕНЕСИ w и h в TEngine2DObject и сделай определение положения клика в спрайте
 
       end;
   end;
@@ -574,9 +581,6 @@ begin
       end;
     end;
 
-{  for i := 0 to l - 1 do
-    fSprite[fMouseDown[i]].UnMouseDown;    }
-
   fClicked := IntArrInIntArr(fMouseDowned, fMouseUpped);
 end;
 
@@ -601,18 +605,10 @@ end;
 
 procedure tEngine2d.setBackGround(ABmp: tBitmap);
 begin
-//  wbmp := fBmp.width;
-//  hbmp := fBmp.height;
-
   if width > height then
   begin
     fBackGround.Assign(ABmp);
     fBackGround.rotate(90);
-    // fBackGround.Width:=fBMP.Width;
-    // fBackGround.Height:=fBMP.Width;
-    { fBackGround.Canvas.BeginScene();
-      fBackGround.Canvas.DrawBitmap(fBMP,rect(0,0,wBMP,hBMP),); }
-
   end
   else
     fBackGround.Assign(ABmp);
@@ -639,7 +635,6 @@ begin
   fCritical.Enter;
   fObjects[index] := NewSprite;
   fCritical.Leave;
-//  newSprite.copy(fSprites[index]);
 end;
 
 procedure tEngine2d.setStatus(newStatus: byte);
@@ -680,19 +675,15 @@ procedure tEngine2d.spriteToFront(const n: integer);
 var
   i, l, oldOrder: integer;
 begin
-
   l := length(fSpriteOrder);
   oldOrder := l - 1;
-  // oldOrder:=fSpriteOrder[n]; // Узнаём порядок отрисовки спрайта номер n
 
   for i := 0 to l - 1 do
     if fSpriteOrder[i] = n then
     begin
       oldOrder := i;
       break;
-    end; // fSpriteOrder[i]:=fSpriteOrder[i]-1; }
-
-  // oldorder:=n;
+    end;
 
   for i := oldOrder to l - 2 do
   begin
@@ -700,7 +691,6 @@ begin
   end;
 
   fSpriteOrder[l - 1] := n;
-
 end;
 
 procedure tEngine2d.start;

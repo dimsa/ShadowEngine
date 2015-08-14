@@ -238,10 +238,9 @@ procedure TShip.Repaint;
 var
   vAngle: Single;
   vDir: Single;
-  vKoef, vAnimKoef, vLeftKoef, vRightKoef, vAnimLeftKoef, vAnimRightKoef: Single;
+  vKoef, vLeftKoef, vRightKoef: Single;
   vNewX, vNewY: Single;
   vEngine: tEngine2d;
-  vDA: Single;
 begin
   vEngine := Parent;
   curRes := 0;
@@ -250,8 +249,6 @@ begin
 
   vLeftKoef := 1;
   vRightKoef := 1;
-  vAnimLeftKoef := vLeftKoef;
-  vAnimRightKoef := vRightKoef;
 
  { if FDestinations.Count > 0 then
     FDestination := FDestinations[0]; }
@@ -264,8 +261,6 @@ begin
   begin
     vKoef := 0.225 * SpeedModScale;
   end;
-
-  vAnimKoef := Min(1, vKoef * 2);
 
   if vKoef > 0.3 * (SpeedModScale) then
   begin
@@ -302,9 +297,6 @@ begin
       vLeftKoef := 1;
       vRightKoef := 1;
     end;
-
-    vAnimLeftKoef := Min(1, vLeftKoef * 2);
-    vAnimRightKoef := Min(1, vRightKoef * 2);
 
     vNewX := Self.x - (DX * Cos((Self.Rotate + 90) * pi180)) * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
 

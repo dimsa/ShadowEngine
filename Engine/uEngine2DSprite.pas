@@ -76,8 +76,6 @@ end;
 
 procedure tSprite.Repaint;
 begin
-  inherited;
-
   Image.Bitmap.Canvas.DrawBitmap(
     fResources[fCurRes].bmp,
     fResources[fCurRes].rect,
@@ -85,7 +83,7 @@ begin
               y + hHalf * CJustifyPoints[Justify].Top,
               x + wHalf * CJustifyPoints[Justify].Right,
               y + hHalf * CJustifyPoints[Justify].Bottom),
-              opacity{, False}
+              Opacity, False
             );
 
   if DrawSelect then

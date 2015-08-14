@@ -27,32 +27,16 @@ var
 implementation
 
 uses
-  uNewFigure, uIntersectorClasses{$IFDEF VER290}, System.Math.Vectors {$ENDIF};
+  uNewFigure, uIntersectorClasses;
 
 {$R *.fmx}
 
 procedure TmainForm.FormCreate(Sender: TObject);
-var
-  vFigure: TNewFigure;
-  vCircle: TCircle;
-  vPoly: TPolygon;
 begin
   Game := TDemoGame.Create;
   Game.Image := mainImage;
   DrawSelect := False;
   Game.Prepare;
-
-  SetLength(vPoly, 3);
-  vPoly[0] := PointF(25, 25);
-  vPoly[1] := PointF(37, 37);
-  vPoly[2] := PointF(-80, -80);
-
-  vCircle.X := 26;
-  vCircle.Y := -26;
-  vCircle.Radius := 99;
-
-  vFigure := TNewFigure.Create(TNewFigure.cfPoly);
-  vFigure.SetData(vPoly);
 end;
 
 procedure TmainForm.FormKeyDown(Sender: TObject; var Key: Word;
@@ -69,10 +53,10 @@ begin
   Game.Resize(vSize);
   mainImage.Position.X := 0;
   mainImage.Position.Y := 0;
-  mainImage.Width:=round(vSize.X + 0.4);
-  mainImage.Height:=round(vSize.Y + 0.4);
-  mainImage.Bitmap.Width:=round(vSize.X + 0.4);
-  mainImage.Bitmap.Height:=round(vSize.Y + 0.4);
+  mainImage.Width := Round(vSize.X + 0.4);
+  mainImage.Height := Round(vSize.Y + 0.4);
+  mainImage.Bitmap.Width := Round(vSize.X + 0.4);
+  mainImage.Bitmap.Height := Round(vSize.Y + 0.4);
 
 end;
 
