@@ -15,6 +15,8 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
     procedure FormResize(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -44,10 +46,24 @@ procedure TmainForm.FormKeyDown(Sender: TObject; var Key: Word;
   var KeyChar: Char; Shift: TShiftState);
 begin
 //  DrawSelect := Not DrawSelect;
+
   if ReturnPressed(Key) then
   begin
-
+    case Game.GameStatus of
+      gsMenu2: Game.GameStatus := gsMenu1;
+      gsMenu3: Game.GameStatus := gsMenu2;
+      gsStatics: Game.GameStatus := gsMenu1;
+      gsAbout: Game.GameStatus := gsMenu1;
+      gsStoryMode, gsRelaxMode, gsSurvivalMode: Game.GameStatus := gsMenu1;
+     end;
   end;
+end;
+
+procedure TmainForm.FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
+  Shift: TShiftState);
+begin
+  if ReturnPressed(Key) then
+    Key := 0;
 end;
 
 procedure TmainForm.FormResize(Sender: TObject);

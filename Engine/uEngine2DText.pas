@@ -29,6 +29,8 @@ type
 //    procedure RenewRec;
     procedure SetTextRect(const Value: TRectF);
     procedure SetWordWrap(const Value: Boolean);
+    function GetFontSize: Single;
+    procedure SetFontSize(const Value: Single);
   protected
     function GetW: single; override;
     function GetH: single; override;
@@ -38,6 +40,7 @@ type
     procedure SetJustify(const Value: TObjectJustify); override;
   public
     property Font: tFont write SetFont;
+    property FontSize: Single read GetFontSize write SetFontSize;
     property Text: string read FText write SetText;
     property TextRec: TRectF read FTextRect write SetTextRect;
     property Color: TAlphaColor read FColor write FColor;
@@ -84,12 +87,12 @@ begin
   FWordWrap := False;
   FTextRect := RectF(-50, -25, 50, 25);
   {$IFDEF VER290}
-    FFillTextFlags := [TFillTextFlag.RightToLeft]; // Свойство текста
+//    FFillTextFlags := [TFillTextFlag.RightToLeft]; // Свойство текста
     FVerAlign := TTextAlign.Center;
     FHorAlign := TTextAlign.Center;
   {$ENDIF}
   {$IFDEF VER260}
-    FFillTextFlags := [TFillTextFlag.ftRightToLeft]; // Свойство текста
+ //   FFillTextFlags := [TFillTextFlag.ftRightToLeft]; // Свойство текста
     FVerAlign := TTextAlign.taCenter;
     FHorAlign := TTextAlign.taCenter;
   {$ENDIF}
@@ -103,6 +106,11 @@ destructor TEngine2DText.Destroy;
 begin
 
   inherited;
+end;
+
+function TEngine2DText.GetFontSize: Single;
+begin
+  Result := FFont.Size;
 end;
 
 function TEngine2DText.getH: single;
@@ -155,6 +163,12 @@ procedure TEngine2DText.SetFont(const Value: tFont);
 begin
   FFont := Value;
   FStartFont.Assign(FFont);
+end;
+
+procedure TEngine2DText.SetFontSize(const Value: Single);
+begin
+  FFont.Size := Value;
+  FStartFont.Size := Value;
 end;
 
 procedure TEngine2DText.SetJustify(const Value: TObjectJustify);

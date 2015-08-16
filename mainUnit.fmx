@@ -9,6 +9,7 @@ object mainForm: TmainForm
   FormFactor.Devices = [Desktop, iPhone, iPad]
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  OnKeyUp = FormKeyUp
   OnResize = FormResize
   DesignerMasterStyle = 0
   object mainImage: TImage

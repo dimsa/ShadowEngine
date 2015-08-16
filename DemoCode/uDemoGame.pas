@@ -12,7 +12,7 @@ uses
   uEngineFormatter;
 
 type
-  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode);
+  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode);
 
   TDemoGame = class
   private
@@ -38,9 +38,12 @@ type
     procedure FindCollide;
     function GetSpeed: Single;
     procedure StartGame(ASender: TObject);
+    procedure SelectMode(ASender: TObject);
+    procedure StartRelax(ASender: TObject);
     procedure StatGame(ASender: TObject);
     procedure AboutGame(ASender: TObject);
     procedure ExitGame(ASender: TObject);
+    procedure RestartGame;
     function DestinationFromClick(const Ax, Ay: Single): TPosition;
     procedure SetGameStatus(const Value: TGameStatus);
   public
@@ -62,7 +65,7 @@ uses
 
 procedure TDemoGame.AboutGame(ASender: TObject);
 begin
-
+  GameStatus := gsAbout;
 end;
 
 procedure TDemoGame.BeforePaintBehavior;
@@ -125,7 +128,8 @@ end;
 
 procedure TDemoGame.ExitGame(ASender: TObject);
 begin
-  Halt;
+  StopApplication;
+  //Halt;
 end;
 
 procedure TDemoGame.FindCollide;
@@ -238,14 +242,14 @@ begin
   vFont.Style := [TFontStyle.fsBold];
   vFont.Size := 14;
   FCollisionsText := TEngine2DText.Create(FEngine);
-  FCollisionsText.Group := 'stat';
+  FCollisionsText.Group := 'relaxmodemenu';
   FCollisionsText.Font := vFont;
   FCollisionsText.TextRec := RectF(-100, -25, 100, 25);
   FCollisionsText.Color := TAlphaColorRec.Aqua;
   FSecondsText := TEngine2DText.Create(FEngine);
   FSecondsText.TextRec := RectF(-100, -25, 100, 25);
   FSecondsText.Font := vFont;
-  FSecondsText.Group := 'stat';
+  FSecondsText.Group := 'relaxmodemenu';
   FSecondsText.Color := TAlphaColorRec.Aqua;
 
   FEngine.AddObject(FCollisionsText);
@@ -264,11 +268,18 @@ begin
   FEngine.HideGroup('stat');
 
   FMenu := TGameMenu.Create(FEngine);
-  FMenu.StartGame := StartGame;
+  FMenu.StartGame := SelectMode;//StartGame;
   FMenu.AboutGame := AboutGame;
   FMenu.StatGame := StatGame;
   FMenu.ExitGame := ExitGame;
+  FMenu.RelaxMode := StartRelax;
+  FMenu.SurvivalMode := StartRelax;
+  FMenu.StoryMode := StartRelax;
+  FMenu.LevelSelect := SelectMode;
   FEngine.HideGroup('ship');
+  FEngine.HideGroup('menu2');
+  FEngine.HideGroup('menu3');
+  FEngine.HideGroup('relaxmodemenu');
 
   FEngine.InBeginPaintBehavior := BeforePaintBehavior;
   FEngine.Start;
@@ -297,16 +308,29 @@ begin
   end;
 end;
 
+procedure TDemoGame.RestartGame;
+begin
+  Self.FCollisions := 0;
+  Self.FSeconds := 0;
+end;
+
+procedure TDemoGame.SelectMode(ASender: TObject);
+begin
+  Self.GameStatus := gsMenu2;
+end;
+
 procedure TDemoGame.SetGameStatus(const Value: TGameStatus);
 begin
   FGameStatus := Value;
   case FGameStatus of
-    gsMenu1: begin FEngine.ShowGroup('menu1'); FEngine.HideGroup('menu2'); end;
+    gsMenu1: begin FEngine.ShowGroup('menu1'); FEngine.HideGroup('relaxmodemenu'); FEngine.ShowGroup('menu'); FEngine.HideGroup('ship'); FEngine.HideGroup('menu2'); FEngine.HideGroup('about'); FEngine.HideGroup('statistics'); end;
     gsMenu2: begin FEngine.ShowGroup('menu2'); FEngine.HideGroup('menu1'); end;
     gsMenu3: begin FEngine.ShowGroup('menu3'); FEngine.HideGroup('menu2'); end;
-    gsStatics: begin FEngine.ShowGroup('statitics'); FEngine.HideGroup('menu1') end;
+    gsStatics: begin FEngine.ShowGroup('statistics'); FEngine.HideGroup('menu1') end;
     gsAbout: begin FEngine.ShowGroup('about'); FEngine.HideGroup('menu1') end;
-    gsStoryMode: begin FEngine.ShowGroup('ship'); FEngine.HideGroup('menu3') end;
+    gsRelaxMode: begin RestartGame; FEngine.ShowGroup('ship'); FEngine.ShowGroup('relaxmodemenu'); FEngine.HideGroup('menu2'); FEngine.HideGroup('menu'); end;
+    gsSurvivalMode: begin RestartGame; FEngine.ShowGroup('ship'); FEngine.HideGroup('menu2'); FEngine.HideGroup('menu'); end;
+    gsStoryMode: begin RestartGame; FEngine.ShowGroup('ship'); FEngine.HideGroup('menu3'); FEngine.HideGroup('menu'); end;
   end;
 end;
 
@@ -338,12 +362,17 @@ begin
   FSeconds := 0;
   FCollisions := 0;
 
-  FEngine.ShowGroup('stat');
+  Self.GameStatus := gsStoryMode;
+end;
+
+procedure TDemoGame.StartRelax(ASender: TObject);
+begin
+  GameStatus := gsRelaxMode;
 end;
 
 procedure TDemoGame.StatGame(ASender: TObject);
 begin
-
+  GameStatus := gsStatics;
 end;
 
 end.

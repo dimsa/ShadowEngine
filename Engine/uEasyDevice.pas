@@ -15,26 +15,38 @@ uses
   function getDisplaySizeInDp: tPointF;
   function LoadImageFromFile(AFileName: String): TBitmap; // Открывает битмап по пути внезависимости от названия
   function UniPath(const AFileName: String): String; // Даёт универсальный путь вне зависимости от платформы
-  function ReturnPressed(const AKey: Word): Boolean;
+  function ReturnPressed(var AKey: Word): Boolean;
   procedure StrStartEnd(const AString: String; var AStart, AEnd: Integer);
+  procedure StopApplication;
 
 implementation
 
 uses
   mainUnit;
 
-function ReturnPressed(const AKey: Word): Boolean;
+procedure StopApplication;
+begin
+  Application.Terminate;
+end;
+
+function ReturnPressed(var AKey: Word): Boolean;
 var
   FService : IFMXVirtualKeyboardService;
 begin
-  if AKey = vkHardwareBack then
-  begin
+  {$IFDEF ANDROID}
+  if (AKey = vkHardwareBack) or (AKey = vkReturn) then
+ { begin
     TPlatformServices.Current.SupportsPlatformService(IFMXVirtualKeyboardService, IInterface(FService));
     if (FService <> nil) and
       (TVirtualKeyboardState.Visible in FService.VirtualKeyBoardState)
-    then
+    then }begin
       Exit(True);
-  end;
+    end;
+  {$ENDIF}
+  {$IFDEF WIN32}
+   if AKey = 27 then
+     Exit(True);
+  {$ENDIF}
   Result := False;
 end;
 

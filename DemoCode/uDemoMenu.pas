@@ -18,13 +18,16 @@ type
     FText: TEngine2DText;
     FName: String;
     FOnClick: TVCLProcedure;
+    FGroup: string;
     function GetText: String;
     procedure SetText(const Value: String);
     procedure SetOnClick(const Value: TVCLProcedure);
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure SetGroup(const Value: string);
   public
     property BackSprite: TSprite read FBack;
     property OnClick: TVCLProcedure read FOnClick write SetOnClick;
+    property Group: string read FGroup write SetGroup;
     constructor Create(const AName: string; const AParent: Pointer);
     destructor Destroy; override;
     procedure SendToFront;
@@ -41,15 +44,27 @@ type
     FAboutGame: TVCLProcedure;
     FStartGame: TVCLProcedure;
     FGameLogo: TSprite;
+    procedure CreateMenu1; // Первое меню из четырех кнопок
+    procedure CreateMenu2; // Выбор типа игры
+    procedure CreateMenu3; // Выбор уровня в сторимоде
+    procedure CreateAbout; // Создает Эбаут сооотвественно
     procedure SetAboutGame(const Value: TVCLProcedure);
     procedure SetExitGame(const Value: TVCLProcedure);
     procedure SetStartGame(const Value: TVCLProcedure);
     procedure SetStatGame(const Value: TVCLProcedure);
+    procedure SetRelaxMode(const Value: TVCLProcedure);
+    procedure SetStoryMode(const Value: TVCLProcedure);
+    procedure SetSurvivalMode(const Value: TVCLProcedure);
+    procedure SetLevelSelect(const Value: TVCLProcedure);
   public
     property StartGame: TVCLProcedure write SetStartGame;
     property AboutGame: TVCLProcedure write SetAboutGame;
     property StatGame: TVCLProcedure write SetStatGame;
     property ExitGame: TVCLProcedure write SetExitGame;
+    property RelaxMode: TVCLProcedure write SetRelaxMode;
+    property StoryMode: TVCLProcedure write SetStoryMode;
+    property LevelSelect: TVCLProcedure write SetLevelSelect;
+    property SurvivalMode: TVCLProcedure write SetSurvivalMode;
     procedure SendToFront;
     procedure Add(const AButton: TGameButton);
     constructor Create(const AParent: Pointer);
@@ -96,10 +111,8 @@ begin
   FBack.Parent := vEngine;
   FBack.Resources := vEngine.Resources;
   FBack.CurRes := vEngine.Resources.IndexOf('button');
-  FBack.Group := 'menu';
 
   FText := TEngine2DText.Create(vEngine);
-  FText.Group := 'menu';
   FText.Color := TAlphaColorRec.White;
 
   FText.Justify := Center;
@@ -166,6 +179,13 @@ begin
   FText.SendToFront;
 end;
 
+procedure TGameButton.SetGroup(const Value: string);
+begin
+  FGroup := Value;
+  FBack.Group := FGroup;
+  FText.Group := FGroup;
+end;
+
 procedure TGameButton.SetOnClick(const Value: TVCLProcedure);
 begin
   FOnClick := Value;
@@ -205,41 +225,114 @@ begin
   vEngine.FormatterList.Add(vFormatter);
 
   FList := TList<TGameButton>.Create;
-  vBut := TGameButton.Create('button1', vEngine);
-  vBut.Text := 'Start Game';
-  FList.Add(vBut);
-  vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.36 + engine.height * 0.14 * ' +
-    IntToStr(FList.Count) + '; width: engine.width * 0.8; max-height: engine.height * 0.12; max-width: 0 + gamelogo.width;' +
-    'xifhor: engine.width * 0.75; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.2 *' + IntToStr(FList.Count);
-  vEngine.FormatterList.Insert(0, vFormatter);
+  CreateMenu1;
+  CreateMenu2;
+  CreateAbout;
 
-  vBut := TGameButton.Create('button2', vEngine);
-  vBut.Text := 'Statistics';
-  FList.Add(vBut);
-  vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-  vFormatter.Text := 'left: engine.width * 0.5; top:engine.height * 0.36 + engine.height * 0.14 * ' +
-    IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.12; max-width: 0 + gamelogo.width;' +
-    'xifhor: engine.width * 0.75; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.2 *' + IntToStr(FList.Count);
-  vEngine.FormatterList.Insert(0, vFormatter);
+end;
 
-  vBut := TGameButton.Create('button3', vEngine);
-  vBut.Text := 'About';
-  FList.Add(vBut);
-  vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.36 + engine.height * 0.14 * ' +
-    IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.12; max-width: 0 + gamelogo.width;' +
-    'xifhor: engine.width * 0.75; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.2 *' + IntToStr(FList.Count);
-  vEngine.FormatterList.Insert(0, vFormatter);
+procedure TGameMenu.CreateAbout;
+var
+  vText: TEngine2DText;
+  vFormatter: TEngineFormatter;
+  vEngine: tEngine2d;
+begin
+  vEngine := FParent;
+  vText := TEngine2DText.Create(vEngine);
+  vText.TextRec := RectF(-250, -100, 250, 100);
+  vText.FontSize := 28;
+  vText.Group := 'about';
+  vText.Color :=  TAlphaColorRec.White;
+  vText.Text :=
+    'Asteroids vs You' + #13 +
+    'ver. 0.7 beta' + #13 + #13 +
+    'Game about confrontation of' + #13 + 'Humankind and Asteroids';
+  vText.Group := 'about';
+  vEngine.AddObject('aboutcaption', vText);
+  vFormatter := TEngineFormatter.Create(vText);
+  vFormatter.Text := 'left: engine.width * 0.5; top: gamelogo.bottomborder + engine.height * 0.15; width: engine.width * 0.8;';
+  vEngine.FormatterList.Add(vFormatter);
+  vFormatter.Format;
 
-  vBut := TGameButton.Create('button4', vEngine);
-  vBut.Text := 'Exit';
-  FList.Add(vBut);
-  vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.36 + engine.height * 0.14 * ' +
-    IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.12; max-width: 0 + gamelogo.width;' +
-    'xifhor: engine.width * 0.75; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.2 *' + IntToStr(FList.Count);
-  vEngine.FormatterList.Insert(0, vFormatter);
+  vText := TEngine2DText.Create(vEngine);
+  vText.TextRec := RectF(-250, -100, 250, 100);
+  vText.FontSize := 16;
+  vText.Color :=  TAlphaColorRec.Gray;
+  vText.Text :=
+  'It''s opensource project ' + #13 +
+  'Written with Delphi, using Firemonkey ' + #13 +
+  'Game uses ShadowEngine (SO Engine) by Dmitriy Sorokin' + #13 + #13 +
+  'Project on GitHub: ' + #13 +
+  'https://github.com/dimsa/ShadowEngine' +  #13 + #13 +
+  'Thanks to everyone who helped with Game and Engine!';
+  vText.Group := 'about';
+  vEngine.AddObject('aboutdescription', vText);
+
+  vFormatter := TEngineFormatter.Create(vText);
+  vFormatter.Text := 'left: engine.width * 0.5; top: aboutcaption.bottomborder + engine.height * 0.1; width: engine.width * 0.8;';
+  vEngine.FormatterList.Add(vFormatter);
+  vFormatter.Format;
+  vEngine.HideGroup('about');
+end;
+
+procedure TGameMenu.CreateMenu1;
+var
+  vFormatter: TEngineFormatter;
+  vEngine: tEngine2d;
+  vBut: TGameButton;
+  i: Integer;
+begin
+  vEngine := FParent;
+  for i := 1 to 4 do
+  begin
+    vBut := TGameButton.Create('button' + IntToStr(i), vEngine);
+    case i of
+      1: vBut.Text := 'Start Game';
+      2: vBut.Text := 'Statistics';
+      3: vBut.Text := 'About';
+      4: vBut.Text := 'Exit';
+    end;
+    vBut.Group := 'menu1';
+    FList.Add(vBut);
+
+    vFormatter := TEngineFormatter.Create(vBut.BackSprite);
+    vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.36 + engine.height * 0.14 * ' +
+      IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.12; max-width: 0 + gamelogo.width;' +
+      'xifhor: engine.width * 0.75; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.2 *' + IntToStr(FList.Count);
+    vEngine.FormatterList.Insert(0, vFormatter);
+  end;
+end;
+
+procedure TGameMenu.CreateMenu2;
+var
+  vFormatter: TEngineFormatter;
+  vEngine: tEngine2d;
+  vBut: TGameButton;
+  i: Integer;
+begin
+  vEngine := FParent;
+  for i := 1 to 3 do
+  begin
+    vBut := TGameButton.Create('button' + IntToStr(i + 4), vEngine);
+    case i of
+      1: vBut.Text := 'Story Mode';
+      2: vBut.Text := 'Survival Mode';
+      3: vBut.Text := 'Relax Mode';
+    end;
+    vBut.Group := 'menu2';
+    FList.Add(vBut);
+
+    vFormatter := TEngineFormatter.Create(vBut.BackSprite);
+    vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.36 + engine.height * 0.14 * ' +
+      IntToStr(i) +'; width: engine.width * 0.8; max-height: engine.height * 0.12; max-width: 0 + gamelogo.width;' +
+      'xifhor: engine.width * 0.75; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.2 *' + IntToStr(i);
+    vEngine.FormatterList.Insert(0, vFormatter);
+  end;
+end;
+
+procedure TGameMenu.CreateMenu3;
+begin
+
 end;
 
 destructor TGameMenu.Destroy;
@@ -264,12 +357,22 @@ end;
 
 procedure TGameMenu.SetAboutGame(const Value: TVCLProcedure);
 begin
-  FList[1].OnClick := Value;
+  FList[2].OnClick := Value;
 end;
 
 procedure TGameMenu.SetExitGame(const Value: TVCLProcedure);
 begin
   FList[3].OnClick := Value;
+end;
+
+procedure TGameMenu.SetLevelSelect(const Value: TVCLProcedure);
+begin
+//  FList[4].OnClick := Value;
+end;
+
+procedure TGameMenu.SetRelaxMode(const Value: TVCLProcedure);
+begin
+  FList[6].OnClick := Value;
 end;
 
 procedure TGameMenu.SetStartGame(const Value: TVCLProcedure);
@@ -279,7 +382,17 @@ end;
 
 procedure TGameMenu.SetStatGame(const Value: TVCLProcedure);
 begin
-  FList[2].OnClick := Value;
+  FList[1].OnClick := Value;
+end;
+
+procedure TGameMenu.SetStoryMode(const Value: TVCLProcedure);
+begin
+  FList[4].OnClick := Value;
+end;
+
+procedure TGameMenu.SetSurvivalMode(const Value: TVCLProcedure);
+begin
+  FList[5].OnClick := Value;
 end;
 
 { TMenuSpriteElement }
@@ -299,4 +412,5 @@ begin
 end; }
 
 end.
+
 
