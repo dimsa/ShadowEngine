@@ -169,6 +169,8 @@
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Android)'!=''">
+        <AUP_READ_PHONE_STATE>false</AUP_READ_PHONE_STATE>
+        <AUP_READ_EXTERNAL_STORAGE>false</AUP_READ_EXTERNAL_STORAGE>
         <AUP_WRITE_EXTERNAL_STORAGE>false</AUP_WRITE_EXTERNAL_STORAGE>
         <AUP_ACCESS_FINE_LOCATION>false</AUP_ACCESS_FINE_LOCATION>
         <AUP_READ_CALENDAR>false</AUP_READ_CALENDAR>
@@ -232,7 +234,6 @@
         <DCCReference Include="Intersector\uIntersectorMethods.pas"/>
         <DCCReference Include="Intersector\uIntersectorClasses.pas"/>
         <DCCReference Include="Engine\uEngine2DObjectShape.pas"/>
-        <DCCReference Include="Engine\uEngine2DShapedSprite.pas"/>
         <DCCReference Include="Intersector\uNewFigure.pas"/>
         <DCCReference Include="DemoCode\uDemoMenu.pas"/>
         <BuildConfiguration Include="Release">
@@ -1069,9 +1070,9 @@
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
             </Deployment>
             <Platforms>
                 <Platform value="Android">True</Platform>

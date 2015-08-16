@@ -1,4 +1,4 @@
-// В примере рассмотрен вариант с созданием наслденика TEngine
+// В примере рассмотрен вариант с созданием наследника TEngine
 
 unit uDemoEngine;
 
@@ -8,12 +8,16 @@ uses
   System.Types, uEngine2D;
 
 type
+  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode);
+
   TDemoEngine = class(TEngine2D)
   private
     FParalX, FParalY: Double;
+    FGameStatus: TGameStatus;
     procedure DoWork;
     procedure DoWorkGame;
     procedure ParallaxBackgroundBehavior;
+    procedure SetGameStatus(const Value: TGameStatus);
   public
     constructor Create; override;
   const
@@ -97,5 +101,11 @@ begin
   end;
 end;
 
+procedure TDemoEngine.SetGameStatus(const Value: TGameStatus);
+begin
+  FGameStatus := Value;
+end;
+
 end.
+
 

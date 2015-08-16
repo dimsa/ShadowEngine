@@ -12,6 +12,8 @@ uses
   uEngineFormatter;
 
 type
+  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode);
+
   TDemoGame = class
   private
     FEngine: TDemoEngine;
@@ -22,6 +24,7 @@ type
     FCollisionsText, FSecondsText: TEngine2DText;
     FMenu: TGameMenu;
     FAsteroids: TList<TAsteroid>;
+    FGameStatus: TGameStatus;
 
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
@@ -39,7 +42,9 @@ type
     procedure AboutGame(ASender: TObject);
     procedure ExitGame(ASender: TObject);
     function DestinationFromClick(const Ax, Ay: Single): TPosition;
+    procedure SetGameStatus(const Value: TGameStatus);
   public
+    property GameStatus: TGameStatus read FGameStatus write SetGameStatus;
     property Image: TImage read GetImage write SetImage;
     property Speed: Single read GetSpeed;
     procedure Prepare;
@@ -258,9 +263,6 @@ begin
 
   FEngine.HideGroup('stat');
 
-
-
-
   FMenu := TGameMenu.Create(FEngine);
   FMenu.StartGame := StartGame;
   FMenu.AboutGame := AboutGame;
@@ -271,10 +273,6 @@ begin
   FEngine.InBeginPaintBehavior := BeforePaintBehavior;
   FEngine.Start;
   vLoader.Free;
-
-  FEngine.Repaint;
-    //Self.Resize(getDisplaySizeInPx);
-//  FEngine.InBeginPaintBehavior :=
 end;
 
 procedure TDemoGame.Resize;
@@ -282,21 +280,33 @@ var
   i: Integer;
 begin
   FEngine.DoTheFullWindowResize;
- // FShip.Scale := MonitorScale;
+
   FShip.SetMonitorScale(MonitorScale);
   FShip.SetSpeedModScale(SpeedModScale);
+
   for i := 0 to FAsteroids.Count - 1 do
   begin
-  //  FAsteroids[i].Scale := MonitorScale * 1.5;
     FAsteroids[i].SetMonitorScale(MonitorScale);
     FAsteroids[i].SetSpeedModScale(SpeedModScale);
   end;
 
   for i := 0 to FBackObjects.Count - 1 do
   begin
-    //FBackObjects[i].Scale := MonitorScale*1.5;
     FBackObjects[i].SetMonitorScale(MonitorScale);
     FBackObjects[i].SetSpeedModScale(SpeedModScale);
+  end;
+end;
+
+procedure TDemoGame.SetGameStatus(const Value: TGameStatus);
+begin
+  FGameStatus := Value;
+  case FGameStatus of
+    gsMenu1: begin FEngine.ShowGroup('menu1'); FEngine.HideGroup('menu2'); end;
+    gsMenu2: begin FEngine.ShowGroup('menu2'); FEngine.HideGroup('menu1'); end;
+    gsMenu3: begin FEngine.ShowGroup('menu3'); FEngine.HideGroup('menu2'); end;
+    gsStatics: begin FEngine.ShowGroup('statitics'); FEngine.HideGroup('menu1') end;
+    gsAbout: begin FEngine.ShowGroup('about'); FEngine.HideGroup('menu1') end;
+    gsStoryMode: begin FEngine.ShowGroup('ship'); FEngine.HideGroup('menu3') end;
   end;
 end;
 
@@ -306,7 +316,6 @@ begin
   Value.OnMouseDown := Self.MouseDown;
   Value.OnMouseUp := Self.MouseUp;
   Value.OnMouseMove := Self.MouseMove;
-
 end;
 
 procedure TDemoGame.StartGame(ASender: TObject);
@@ -330,11 +339,6 @@ begin
   FCollisions := 0;
 
   FEngine.ShowGroup('stat');
-
-  {FEngine.AnimationList.Add(
-      vLoader.ScaleAnimation(vSpr, 1.6)
-    );}
-
 end;
 
 procedure TDemoGame.StatGame(ASender: TObject);

@@ -11,16 +11,6 @@ uses
 
 type
 
-  {TMenuSpriteElement = class(TSprite)
-  public
-    procedure Repaint; override;
-  end;
-
-  TMenuTextElement = class(TEngine2DText)
-  public
-    procedure Repaint; override;
-  end;    }
-
   TGameButton = class
   private
     FParent: Pointer; // Engine2d

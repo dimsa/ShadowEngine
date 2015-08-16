@@ -7,7 +7,7 @@ uses
   System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
   FMX.StdCtrls, FMX.Edit, FMX.Ani, FMX.Controls3D, FMX.Layers3D,
-  FMX.Effects, FMX.platform, System.IOUtils;
+  FMX.Effects, System.IOUtils, FMX.Platform, FMX.VirtualKeyboard;
 
   function getDisplaySizeInPx: tPointF;
   function getScreenScale: single;
@@ -15,12 +15,28 @@ uses
   function getDisplaySizeInDp: tPointF;
   function LoadImageFromFile(AFileName: String): TBitmap; // Открывает битмап по пути внезависимости от названия
   function UniPath(const AFileName: String): String; // Даёт универсальный путь вне зависимости от платформы
+  function ReturnPressed(const AKey: Word): Boolean;
   procedure StrStartEnd(const AString: String; var AStart, AEnd: Integer);
 
 implementation
 
 uses
   mainUnit;
+
+function ReturnPressed(const AKey: Word): Boolean;
+var
+  FService : IFMXVirtualKeyboardService;
+begin
+  if AKey = vkHardwareBack then
+  begin
+    TPlatformServices.Current.SupportsPlatformService(IFMXVirtualKeyboardService, IInterface(FService));
+    if (FService <> nil) and
+      (TVirtualKeyboardState.Visible in FService.VirtualKeyBoardState)
+    then
+      Exit(True);
+  end;
+  Result := False;
+end;
 
 // У фаерманки Стринги начинаются с 0, а не с 1 как у делфи
 procedure StrStartEnd(const AString: String; var AStart, AEnd: Integer);
@@ -59,13 +75,12 @@ begin
   end;
 
   {$IFDEF WIN32}
-  // Это неправильно, но исползуется только для отладки в Виндоус и демонстрации форматтеросов
+  // Это неправильно, но используется только для отладки в Виндоус и демонстрации форматтерсов
   res.X := mainForm.ClientWidth;
   res.Y := mainForm.ClientHeight;
   {$ENDIF}
 
   result := res;
-
 end;
 
 function UniPath(const AFileName: String): String;

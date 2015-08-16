@@ -15,7 +15,7 @@ object mainForm: TmainForm
     MultiResBitmap = <
       item
       end>
-    Align = Fit
+    Align = Client
     DisableInterpolation = True
     Size.Width = 563.000000000000000000
     Size.Height = 638.000000000000000000

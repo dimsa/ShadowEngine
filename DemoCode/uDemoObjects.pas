@@ -445,7 +445,6 @@ end;
 
 procedure TAsteroid.Repaint;
 begin
-  curRes := 1;
   inherited;
 
   Self.x := Self.x + FDx * Game.Speed * FSpeedModScale;
@@ -491,7 +490,6 @@ end;
 
 procedure TLittleAsteroid.Repaint;
 begin
-  curRes := FTip + 5;
   inherited;
 
   Self.Rotate := Self.Rotate + FDa * Game.Speed * FSpeedModScale;

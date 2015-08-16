@@ -5,6 +5,7 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
+  FMX.Platform, FMX.VirtualKeyboard,
   uEasyDevice, uDemoGame;
 
 type
@@ -42,7 +43,11 @@ end;
 procedure TmainForm.FormKeyDown(Sender: TObject; var Key: Word;
   var KeyChar: Char; Shift: TShiftState);
 begin
-  DrawSelect := Not DrawSelect;
+//  DrawSelect := Not DrawSelect;
+  if ReturnPressed(Key) then
+  begin
+
+  end;
 end;
 
 procedure TmainForm.FormResize(Sender: TObject);
@@ -50,13 +55,13 @@ var
   vSize: tPointF;
 begin
   vSize := getDisplaySizeInPx;
+  Game.Resize;
   mainImage.Position.X := 0;
   mainImage.Position.Y := 0;
   mainImage.Width := Round(vSize.X + 0.4);
   mainImage.Height := Round(vSize.Y + 0.4);
   mainImage.Bitmap.Width := Round(vSize.X + 0.4);
   mainImage.Bitmap.Height := Round(vSize.Y + 0.4);
-  Game.Resize;
 end;
 
 
