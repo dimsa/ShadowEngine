@@ -232,7 +232,7 @@ begin
   FEngine.FormatterList.Add(vFormatter);
 
   FAsteroids := TList<TAsteroid>.Create;
-  for i := 0 to 5 do
+  for i := 0 to 6 do
   begin
     vObj := vLoader.BigAsteroid;
     FAsteroids.Add(TAsteroid(vObj));

@@ -63,6 +63,8 @@ begin
   vCircle.Radius := 50;
   vFigure.SetData(vCircle);
   vSpr.Shape.AddFigure(vFigure);
+  vSpr.ScaleMod := RandomRange(60, 140) / 100;
+
 
   FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
 

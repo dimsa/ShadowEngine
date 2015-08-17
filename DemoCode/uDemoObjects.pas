@@ -65,8 +65,12 @@ type
   TAsteroid = class(TMovingUnit)
   private
     FNotChange: Integer; // Кол-во тиков, которое не будет изменяться направление при коллайдер
+    FScaleMod: Single;
+    procedure SetScaleMod(const Value: Single); // Модификатор размера
+    procedure SetScale(AValue: single); override;
   public
     procedure Repaint; override;
+    property ScaleMod: Single read FScaleMod write SetScaleMod;
     function Collide(const AObject: TEngine2DObject): Boolean;
     constructor Create(AParent: pointer); override;
   end;
@@ -436,6 +440,7 @@ begin
   FMaxDx := 10;
   FMaxDy := 10;
   FMaxDa := 6;
+  FScaleMod := 1;
 
   FDx := 3 * Random;
   FDy := 3 * Random;
@@ -468,6 +473,23 @@ begin
 
   if FNotChange > 0 then
     Dec(FNotChange);
+end;
+
+procedure TAsteroid.SetScale(AValue: single);
+var
+  vValue: Single;
+begin
+  vValue := AValue * FScaleMod;
+  inherited SetScale(vValue);
+end;
+
+procedure TAsteroid.SetScaleMod(const Value: Single);
+var
+  vOldMod: Single;
+begin
+  vOldMod := FScaleMod;
+  FScaleMod := Value;
+  Self.ScaleX := (Self.ScaleX / vOldMod) * FScaleMod;
 end;
 
 { TLittleAsteroid }
