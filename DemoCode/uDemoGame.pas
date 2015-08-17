@@ -39,6 +39,7 @@ type
     function GetSpeed: Single;
     procedure StartGame(ASender: TObject);
     procedure SelectMode(ASender: TObject);
+    procedure SelectLevel(ASender: TObject);
     procedure StartRelax(ASender: TObject);
     procedure StatGame(ASender: TObject);
     procedure AboutGame(ASender: TObject);
@@ -81,11 +82,14 @@ begin
   FSecondsText.Text := 'Секунд: ' + vS;
   FCollisionsText.Text := 'Столкновений: ' + IntToStr(FCollisions);
 
+
 {  if Assigned(FShip) then
     FShip.FireToBack; }
 end;
 
 constructor TDemoGame.Create;
+var
+  vS: String;
 begin
   FEngine := TDemoEngine.Create;
   FCollisions := 0;
@@ -274,7 +278,7 @@ begin
   FMenu.ExitGame := ExitGame;
   FMenu.RelaxMode := StartRelax;
   FMenu.SurvivalMode := StartRelax;
-  FMenu.StoryMode := StartRelax;
+  FMenu.StoryMode := SelectLevel;
   FMenu.LevelSelect := SelectMode;
   FEngine.HideGroup('ship');
   FEngine.HideGroup('menu2');
@@ -314,6 +318,11 @@ begin
   Self.FSeconds := 0;
 end;
 
+procedure TDemoGame.SelectLevel(ASender: TObject);
+begin
+  Self.GameStatus := gsMenu3;
+end;
+
 procedure TDemoGame.SelectMode(ASender: TObject);
 begin
   Self.GameStatus := gsMenu2;
@@ -323,8 +332,8 @@ procedure TDemoGame.SetGameStatus(const Value: TGameStatus);
 begin
   FGameStatus := Value;
   case FGameStatus of
-    gsMenu1: begin FEngine.ShowGroup('menu1'); FEngine.HideGroup('relaxmodemenu'); FEngine.ShowGroup('menu'); FEngine.HideGroup('ship'); FEngine.HideGroup('menu2'); FEngine.HideGroup('about'); FEngine.HideGroup('statistics'); end;
-    gsMenu2: begin FEngine.ShowGroup('menu2'); FEngine.HideGroup('menu1'); end;
+    gsMenu1: begin FEngine.ShowGroup('menu1'); FEngine.HideGroup('relaxmodemenu'); FEngine.ShowGroup('menu'); FEngine.HideGroup('ship'); FEngine.HideGroup('menu2'); FEngine.HideGroup('about'); FEngine.HideGroup('statistics'); FEngine.HideGroup('menu3'); end;
+    gsMenu2: begin FEngine.ShowGroup('menu2'); FEngine.HideGroup('menu1');  FEngine.HideGroup('menu3'); end;
     gsMenu3: begin FEngine.ShowGroup('menu3'); FEngine.HideGroup('menu2'); end;
     gsStatics: begin FEngine.ShowGroup('statistics'); FEngine.HideGroup('menu1') end;
     gsAbout: begin FEngine.ShowGroup('about'); FEngine.HideGroup('menu1') end;

@@ -18,3 +18,5 @@ res.png
 200 390 250 50 button
 380 213 35 47 lifeicon
 0 440 300 210 gamelogo
+300 440 75 50 ltlbutenabled
+375 440 75 50 ltlbutdisabled

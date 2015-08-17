@@ -24,11 +24,14 @@ type
     procedure SetOnClick(const Value: TVCLProcedure);
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure SetGroup(const Value: string);
+    function GetFontSize: Single;
+    procedure SetFontSize(const Value: Single);
   public
     property BackSprite: TSprite read FBack;
+    property FontSize: Single read GetFontSize write SetFontSize;
     property OnClick: TVCLProcedure read FOnClick write SetOnClick;
     property Group: string read FGroup write SetGroup;
-    constructor Create(const AName: string; const AParent: Pointer);
+    constructor Create(const AName: string; const AParent: Pointer; const ASpriteBackName: string = 'button');
     destructor Destroy; override;
     procedure SendToFront;
     property Text: String read GetText write SetText;
@@ -38,7 +41,9 @@ type
   TGameMenu = class
   private
     FParent: Pointer; // Engine2d
+    FLevelPage: Integer;
     FList: TList<TGameButton>;
+    FLevelMenu: TList<TGameButton>;
     FStatGame: TVCLProcedure;
     FExitGame: TVCLProcedure;
     FAboutGame: TVCLProcedure;
@@ -95,7 +100,7 @@ begin
   vEngine.FormatterList.Add(vFormatter);
 end;}
 
-constructor TGameButton.Create(const AName: string; const AParent: Pointer);
+constructor TGameButton.Create(const AName: string; const AParent: Pointer; const ASpriteBackName: string = 'button');
 var
   vEngine: tEngine2d;
   vFormatter: TEngineFormatter;
@@ -110,7 +115,7 @@ begin
   FBack := TSprite.Create(vEngine);
   FBack.Parent := vEngine;
   FBack.Resources := vEngine.Resources;
-  FBack.CurRes := vEngine.Resources.IndexOf('button');
+  FBack.CurRes := vEngine.Resources.IndexOf(ASpriteBackName);
 
   FText := TEngine2DText.Create(vEngine);
   FText.Color := TAlphaColorRec.White;
@@ -149,6 +154,11 @@ begin
   inherited;
 end;
 
+function TGameButton.GetFontSize: Single;
+begin
+  FText.FontSize;
+end;
+
 function TGameButton.GetText: String;
 begin
   Result := FText.Text;
@@ -177,6 +187,11 @@ procedure TGameButton.SendToFront;
 begin
   FBack.SendToFront;
   FText.SendToFront;
+end;
+
+procedure TGameButton.SetFontSize(const Value: Single);
+begin
+  FText.FontSize := Value;
 end;
 
 procedure TGameButton.SetGroup(const Value: string);
@@ -212,6 +227,7 @@ var
 begin
   FParent := AParent;
   vEngine := FParent;
+  FLevelPage := 1;
 
   FGameLogo := TSprite.Create(vEngine);
   FGameLogo.Resources := vEngine.Resources;
@@ -225,8 +241,10 @@ begin
   vEngine.FormatterList.Add(vFormatter);
 
   FList := TList<TGameButton>.Create;
+  FLevelMenu := TList<TGameButton>.Create;
   CreateMenu1;
   CreateMenu2;
+  CreateMenu3;
   CreateAbout;
 
 end;
@@ -331,8 +349,40 @@ begin
 end;
 
 procedure TGameMenu.CreateMenu3;
+var
+  vF: TextFile;
+  i, j, vN: Integer;
+  vBut: TGameButton;
+  vFormatter: TEngineFormatter;
+  vX, vY: Integer;
+  vEngine: tEngine2d;
 begin
+  vEngine := FParent;
+  vN := 16;
 
+//  for j := 0 to vN - 1 do
+    for i := 0 to vN - 1 do
+    begin
+      vBut := TGameButton.Create('levelbut' + IntToStr(i + 1), vEngine, 'ltlbutenabled');
+      vBut.Text := IntToStr((i + 1) * FLevelPage);
+      vBut.FontSize := 24;
+//      vBut.Group := 'levelpage' + IntToStr(j);
+      vBut.Group := 'menu3';
+      FLevelMenu.Add(vBut);
+      vX := i mod 4;
+      vY := Trunc(i / 4);
+      vFormatter := TEngineFormatter.Create(vBut.BackSprite);
+      vFormatter.Text :=
+        'left:  Engine.Width * 0.2     + ((Engine.Width * 0.8) / 4) * (0' + IntToStr(vX) + ');' +
+        'top:  gamelogo.bottomborder + engine.height * 0.1 + (engine.height * 0.5) / 5 * (' + IntToStr(vY) + ');' +
+        'width : ((Engine.Width * 0.8) / 5);' +
+//        'maxheight: width * 0.6;' +
+        'xifhor: engine.width * 0.6 + ((Engine.Width * 0.8) / 8) * (0' + IntToStr(vX) + ');' +
+        'yifhor: gamelogo.y + 0.8*height  * (0' + IntToStr(vY-2) + ' + 0.5);' +
+        'widthifhor: ((Engine.Width * 0.8) / 10)';
+      vEngine.FormatterList.Insert(0, vFormatter);
+      vFormatter.Format;
+    end;
 end;
 
 destructor TGameMenu.Destroy;
