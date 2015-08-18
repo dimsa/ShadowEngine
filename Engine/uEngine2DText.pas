@@ -132,7 +132,9 @@ end; }
 
 procedure TEngine2DText.Repaint;
 var
-  vTmp: TFont;
+  vFontName: string;
+  vFontSize: Single;
+  vFontStyle: TFontStyles;
 begin
   inherited;
 
@@ -147,15 +149,19 @@ begin
     Bitmap.Canvas.StrokeThickness := 1;
     Bitmap.Canvas.Fill.Color := FColor;
 
-    vTmp := TFont.Create;
-    vTmp.Assign( Bitmap.Canvas.Font);
+  {  vFontName := Bitmap.Canvas.Font.Family;
+    vFontSize := Bitmap.Canvas.Font.Size;
+    vFontStyle := Bitmap.Canvas.Font.Style;  }
+   { Bitmap.Canvas.Font.Family := FFont.Family;
+    Bitmap.Canvas.Font.Size := FFont.Size;
+    Bitmap.Canvas.Font.Style := FFont.Style;   }
     Bitmap.Canvas.Font.Assign(FFont);
-
-//    Bitmap.Canvas.FillRect(FTextRect, 0, 0, [], 0.5);
     Bitmap.Canvas.FillText(FTextRect, FText, FWordWrap, Opacity, FFillTextFlags,
     FHorAlign, FVerAlign);
-    Bitmap.Canvas.Font.Assign(vTmp);
-    vTmp.Free;
+
+ {  Bitmap.Canvas.Font.Family := vFontName;
+    Bitmap.Canvas.Font.Size := vFontSize;
+    Bitmap.Canvas.Font.Style:= vFontStyle; }
   end;
 end;
 

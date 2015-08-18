@@ -455,6 +455,9 @@ begin
   // bitmap.Canvas.Blending:=true;
         bitmap.Canvas.SetMatrix(tMatrix.Identity);
         bitmap.Canvas.Fill.Color := TAlphaColorRec.Brown;
+        Bitmap.Canvas.Font.Size := 12;
+        Bitmap.Canvas.Font.Style := [TFontStyle.fsBold];
+        Bitmap.Canvas.Font.Family := 'arial';
         {$IFDEF VER290}
         bitmap.Canvas.FillText(
           RectF(15, 15, 165, 125),
