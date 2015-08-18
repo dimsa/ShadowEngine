@@ -6,7 +6,7 @@ uses
   SysUtils, System.Types, System.Math,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2D, uEngine2DSprite, uEngine2DObject, uDemoObjects, uIntersectorClasses,
-  uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
+  uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses, uEngineFormatter,
   uNewFigure, uIntersectorMethods, uEasyDevice;
 
 type
@@ -21,6 +21,8 @@ type
     function ExplosionAnimation(ASubject: TSprite): TSpriteAnimation;
     function OpacityAnimation(ASubject: TSprite; const AEndOpacity: Double): TOpacityAnimation;
     function ButtonAnimation(ASubject: TEngine2dObject; const AEndScale: Double):  TMouseDownMigrationAnimation;
+    function Formatter(const ASubject: tEngine2DObject; const AText: String): TEngineFormatter;
+    function LevelFormatText(const AX, AY: Integer): String;
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
     constructor Create(AEngine: TEngine2D);
   end;
@@ -189,6 +191,25 @@ begin
   vRes.OnDestroy := vRes.DeleteSubject;
 
   Result := vRes;
+end;
+
+function TLoader.Formatter(const ASubject: tEngine2DObject;
+  const AText: String): TEngineFormatter;
+begin
+  Result := TEngineFormatter.Create(ASubject);
+  Result.Text := AText;
+  FEngine.FormatterList.Insert(0, Result);
+end;
+
+function TLoader.LevelFormatText(const AX, AY: Integer): String;
+begin
+  Result :=
+    'left:  Engine.Width * 0.2     + ((Engine.Width * 0.8) / 4) * (0' + IntToStr(AX) + ');' +
+    'top:  gamelogo.bottomborder + engine.height * 0.1 + (engine.height * 0.5) / 5 * (' + IntToStr(AY) + ');' +
+    'width : ((Engine.Width * 0.8) / 5);' +
+    'xifhor: engine.width * 0.6 + ((Engine.Width * 0.8) / 8) * (0' + IntToStr(AX) + ');' +
+    'yifhor: gamelogo.y + 0.8*height  * (0' + IntToStr(AY - 2) + ' + 0.5);' +
+    'widthifhor: ((Engine.Width * 0.8) / 10)'
 end;
 
 function TLoader.OpacityAnimation(ASubject: TSprite; const AEndOpacity: Double): TOpacityAnimation;

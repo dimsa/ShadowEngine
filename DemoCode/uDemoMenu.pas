@@ -41,14 +41,17 @@ type
   TGameMenu = class
   private
     FParent: Pointer; // Engine2d
-    FLevelPage: Integer;
-    FList: TList<TGameButton>;
-    FLevelMenu: TList<TGameButton>;
+    FMaxLevel: Integer; // Максимальный уровень до которого дошел игрок
+    FList: TList<TGameButton>; // Кнопки перехода по страницам меню
     FStatGame: TVCLProcedure;
     FExitGame: TVCLProcedure;
     FAboutGame: TVCLProcedure;
     FStartGame: TVCLProcedure;
     FGameLogo: TSprite;
+    // Меню выбора уровня
+    FLevelMenu: TList<TGameButton>; // Кнопки выбора уровня
+    FNextPage, FPrevPage: TGameButton; // Листалка страниц выбора уровня
+    FLevelPage: Integer; // Текущая страница выбора уровня
     procedure CreateMenu1; // Первое меню из четырех кнопок
     procedure CreateMenu2; // Выбор типа игры
     procedure CreateMenu3; // Выбор уровня в сторимоде
@@ -236,7 +239,7 @@ begin
   vEngine.AddObject('gamelogo', FGameLogo);
 
   vFormatter := TEngineFormatter.Create(FGameLogo);
-  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.23; width: engine.width * 0.8; max-height: engine.height * 0.40;' +
+  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.21; width: engine.width * 0.8; max-height: engine.height * 0.40;' +
   'xifhor: engine.width * 0.25; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.5;';
   vEngine.FormatterList.Add(vFormatter);
 
@@ -353,36 +356,54 @@ var
   vF: TextFile;
   i, j, vN: Integer;
   vBut: TGameButton;
-  vFormatter: TEngineFormatter;
   vX, vY: Integer;
   vEngine: tEngine2d;
+  vLoader: TLoader;
 begin
   vEngine := FParent;
+  vLoader := TLoader.Create(vEngine);
+
+  FMaxLevel := 1;
+
+  FLevelPage := Trunc((FMaxLevel + 1) / 16);
+
+  FNextPage := TGameButton.Create('nextpagebut', vEngine);
+  FNextPage.Text := 'Next';
+  FNextPage.Group := 'menu3';
+  FNextPage.FontSize := 36;
+
+  if FLevelPage <  Trunc((FMaxLevel + 1) / 16) then
+    FNextPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutenabled')
+  else
+    FNextPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled') ;
+
+  FPrevPage := TGameButton.Create('prevpagebut', vEngine);
+  FPrevPage.Text := 'Prev';
+  FPrevPage.Group := 'menu3';
+  FPrevPage.FontSize := 36;
+  if FLevelPage > 0 then
+    FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutenabled')
+  else
+    FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled');
+
+  vLoader.Formatter(FPrevPage.FBack, vLoader.LevelFormatText(0, 4)).Format;
+  vLoader.Formatter(FNextPage.FBack, vLoader.LevelFormatText(3, 4)).Format;
+
   vN := 16;
 
-//  for j := 0 to vN - 1 do
     for i := 0 to vN - 1 do
     begin
       vBut := TGameButton.Create('levelbut' + IntToStr(i + 1), vEngine, 'ltlbutenabled');
-      vBut.Text := IntToStr((i + 1) * FLevelPage);
-      vBut.FontSize := 24;
-//      vBut.Group := 'levelpage' + IntToStr(j);
+      vBut.Text := IntToStr((i + 1) + (vN * (FLevelPage)));
+      vBut.FontSize := 36;
       vBut.Group := 'menu3';
       FLevelMenu.Add(vBut);
       vX := i mod 4;
       vY := Trunc(i / 4);
-      vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-      vFormatter.Text :=
-        'left:  Engine.Width * 0.2     + ((Engine.Width * 0.8) / 4) * (0' + IntToStr(vX) + ');' +
-        'top:  gamelogo.bottomborder + engine.height * 0.1 + (engine.height * 0.5) / 5 * (' + IntToStr(vY) + ');' +
-        'width : ((Engine.Width * 0.8) / 5);' +
-//        'maxheight: width * 0.6;' +
-        'xifhor: engine.width * 0.6 + ((Engine.Width * 0.8) / 8) * (0' + IntToStr(vX) + ');' +
-        'yifhor: gamelogo.y + 0.8*height  * (0' + IntToStr(vY-2) + ' + 0.5);' +
-        'widthifhor: ((Engine.Width * 0.8) / 10)';
-      vEngine.FormatterList.Insert(0, vFormatter);
-      vFormatter.Format;
+      vLoader.Formatter(vBut.BackSprite, vLoader.LevelFormatText(vX, vY)).Format;
     end;
+
+  vLoader.Free;
 end;
 
 destructor TGameMenu.Destroy;
