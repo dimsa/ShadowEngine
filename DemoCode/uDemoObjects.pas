@@ -57,6 +57,8 @@ type
     procedure SetOpacity(const AOpacity: Integer);
     property Destination: TPosition read FDestination write FDestination;
     procedure Repaint; override;
+    procedure Hide;
+    procedure Show;
     procedure AddDestination(const APos: TPosition);
     constructor Create(AParent: pointer); override;
     destructor Destroy; override;
@@ -189,6 +191,14 @@ begin
   FDestinations.Free;
 
   inherited;
+end;
+
+procedure TShip.Hide;
+var
+  i: Integer;
+begin
+  for i := 1 to FParts.Count - 1 do
+    FParts[i].Visible := False;
 end;
 
 function TShip.MinMax(const AValue, AMax, AMin: Single): Single;
@@ -385,6 +395,12 @@ begin
   inherited;
   for i := 1 to FParts.Count - 1 do
     FParts[i].Scale := AValue;
+end;
+
+procedure TShip.Show;
+begin
+  Self.SetOpacity(1);
+  tEngine2d(Self.fParent).ShowGroup('ship');
 end;
 
 { TAsteroid }

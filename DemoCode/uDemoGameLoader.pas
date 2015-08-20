@@ -20,6 +20,8 @@ type
     function Explosion(const AX, AY, AAng: Double): TExplosion;
     function ExplosionAnimation(ASubject: TSprite): TSpriteAnimation;
     function OpacityAnimation(ASubject: TSprite; const AEndOpacity: Double): TOpacityAnimation;
+    function BreakLifeAnimation(ASubject: TSprite): TOpacityAnimation;
+    procedure ShipExplosionAnimation(ASubject: TShip);
     function ButtonAnimation(ASubject: TEngine2dObject; const AEndScale: Double):  TMouseDownMigrationAnimation;
     function Formatter(const ASubject: tEngine2DObject; const AText: String): TEngineFormatter;
     function LevelFormatText(const AX, AY: Integer): String;
@@ -84,7 +86,7 @@ var
   i: Integer;
   vSpr: TSprite;
 begin
-  for i := 1 to ACount do
+  for i := FLifes.Count to ACount - 1 do
   begin
     vSpr := TSprite.Create(FEngine);
     vSpr.Resources := FEngine.Resources;
@@ -95,7 +97,8 @@ begin
 
     Formatter(vSpr,
       'width: engine.width * 0.05; widthifhor: engine.height * 0.05; top: height * 0.8;' +
-      'left: 1.05 * width * ( 0.8 + ' +IntToStr(i - 1) +');').Format;
+      'left: 1.05 * width * ( 0.8 + ' +IntToStr(i) +');').Format;
+    FLifes.Add(vSpr)
   end;
 end;
 
@@ -244,6 +247,21 @@ begin
   Result := vSpr;
 end;
 
+function TLoader.BreakLifeAnimation(ASubject: TSprite): TOpacityAnimation;
+var
+  vRes: TOpacityAnimation;
+begin
+  vRes := TOpacityAnimation.Create;
+  vRes.Parent := fEngine;
+  vRes.EndOpaque := 0;
+  vRes.StartOpaque := ASubject.Opacity;
+  vRes.TimeTotal := 500;
+  vRes.Subject := ASubject;
+  vRes.OnDestroy := vRes.DeleteSubject;
+
+  Result := vRes;
+end;
+
 function TLoader.ButtonAnimation(ASubject: TEngine2dObject;
   const AEndScale: Double): TMouseDownMigrationAnimation;
 var
@@ -260,6 +278,25 @@ begin
   vRes.Subject := ASubject;
 
   Result := vRes;
+end;
+
+procedure TLoader.ShipExplosionAnimation(ASubject: TShip);
+var
+  vRes: TOpacityAnimation;
+  i: Integer;
+begin
+  for i := 1 to ASubject.Parts.Count - 1 do
+  begin
+    vRes := TOpacityAnimation.Create;
+    vRes.Parent := fEngine;
+    vRes.Subject := ASubject;
+    vRes.EndOpaque := 0;
+    vRes.StartOpaque := ASubject.Parts[i].Opacity;
+    vRes.TimeTotal := 500;
+    vRes.OnDestroy := ASubject.Hide;
+
+    FEngine.AnimationList.Add(vRes);
+  end;
 end;
 
 class function TLoader.ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;

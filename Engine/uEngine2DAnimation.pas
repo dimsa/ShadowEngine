@@ -49,6 +49,7 @@ type
     function AddNextAnimation(AAnimation: TAnimation): Integer; // ƒобавл€ет следующую анимацию, а если следующа€ анимаци€ уже есть, то добавл€ет следующую анимацию следующей анимации и т.д. ¬ыдает пор€дквый номер следующей анимации
     procedure Setup; virtual;// Ќужно дл€ отложенного сетапа. Ќа этот метод анимаци€ запоминает стартовые параметры, например начальное положение
     procedure DeleteSubject;
+    procedure HideSubject;
     constructor Create; virtual;
 //    constructor DelayedCreate; virtual; // —оздаетс€ без сетапа
     destructor Destroy; override;
@@ -153,6 +154,11 @@ begin
   FFinalized := True;
   if Assigned(FOnFinalize) then
     FOnFinalize;
+end;
+
+procedure TAnimation.HideSubject;
+begin
+  TEngine2DObject(FSubject).Visible := False;
 end;
 
 procedure tAnimation.RecoverStart;

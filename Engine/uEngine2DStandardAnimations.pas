@@ -50,11 +50,13 @@ end;
  TOpacityAnimation = class(TAnimation)
   strict private
     FEndOpaque: Single;
+    FStartOpaque: Single;
   public
     function Animate: Byte; override;
     procedure Finalize; override;
     procedure RecoverStart; override;
     property EndOpaque: Single read FEndOpaque write FEndOpaque;
+    property StartOpaque: Single read FStartOpaque write FStartOpaque;
     constructor Create; override;
 end;
 
@@ -158,7 +160,7 @@ begin
   vSprite := Subject;
   if vRes = CAnimationInProcess then
   begin
-    vSprite.Opacity := (TimePassed / TimeTotal) * FEndOpaque;
+    vSprite.Opacity := FStartOpaque + (TimePassed) * ((FEndOpaque - FStartOpaque) / TimeTotal);
   end;
 
   Result := vRes;

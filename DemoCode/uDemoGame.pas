@@ -12,7 +12,7 @@ uses
   uEngine2DSprite, uEngineFormatter;
 
 type
-  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode);
+  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode, gsGameOver);
 
   TDemoGame = class
   private
@@ -29,6 +29,7 @@ type
     FCollisions: Integer;
     FLifes: TList<TSprite>;
     FCollisionsText, FSecondsText: TEngine2DText;
+    FGameOverText: TEngine2DText;
     FSeconds: Single;
 
     function GetImage: TImage;
@@ -53,6 +54,7 @@ type
     procedure RestartGame;
     function DestinationFromClick(const Ax, Ay: Single): TPosition;
     procedure SetGameStatus(const Value: TGameStatus);
+    procedure BreakLife;
   public
     property GameStatus: TGameStatus read FGameStatus write SetGameStatus;
     property Image: TImage read GetImage write SetImage;
@@ -91,6 +93,21 @@ begin
 
 {  if Assigned(FShip) then
     FShip.FireToBack; }
+end;
+
+procedure TDemoGame.BreakLife;
+var
+  vSpr: TSprite;
+begin
+  if FLifes.Count > 0 then
+  begin
+    vSpr := FLifes.Last;
+    FEngine.AnimationList.Add(FLoader.BreakLifeAnimation(vSpr));
+    FLifes.Count := FLifes.Count - 1;
+  end;
+
+  if FLifes.Count <= 0 then
+    GameStatus := gsGameOver;
 end;
 
 constructor TDemoGame.Create;
@@ -158,7 +175,12 @@ begin
       for i := 0 to vN do
         if FShip.Shape.IsIntersectWith(FAsteroids[i].Shape) then
           if FAsteroids[i].Collide(FShip) then
-            Inc(FCollisions);
+          begin
+            case GameStatus of
+              gsStoryMode, gsSurvivalMode: BreakLife;
+              gsRelaxMode: Inc(FCollisions);
+            end;
+          end;
     end;
 
   for i := 0 to vN do
@@ -185,6 +207,11 @@ procedure TDemoGame.MouseDown(Sender: TObject; Button: TMouseButton;
 var
   i: Integer;
 begin
+
+  case GameStatus of
+    gsGameOver: GameStatus := gsMenu1;
+  end;
+
   fEngine.MouseDown(Sender, Button, Shift, x, y);
 
   for i := 0 to Length(fEngine.Downed) - 1 do
@@ -264,6 +291,17 @@ begin
   FLoader.Formatter(FCollisionsText, 'left: engine.width * 0.5; top: engine.height - height * 1.2');
   FLoader.Formatter(FSecondsText, 'left: engine.width * 0.5; top: engine.height - height * 0.6;');
 
+
+  FGameOverText := TEngine2DText.Create(FEngine);
+  FGameOverText.FontSize := 56;
+  FGameOverText.Group := 'gameover';
+  FGameOverText.Color :=  TAlphaColorRec.White;
+  FGameOverText.TextRec := RectF(-150, -35, 150, 35);
+  FGameOverText.Text := 'Game Over';
+  FEngine.AddObject(FGameOverText);
+  FLoader.Formatter(FGameOverText, 'left: engine.width * 0.5; top: engine.height * 0.5;').Format;
+
+  FEngine.HideGroup('gameover');
   FEngine.HideGroup('stat');
 
   FMenu := TGameMenu.Create(FEngine);
@@ -309,16 +347,17 @@ end;
 procedure TDemoGame.RestartGame;
 begin
   case GameStatus of
-    gsRelaxMode: Self.FCollisions := 0;
+    gsRelaxMode:
+      Self.FCollisions := 0;
     gsSurvivalMode: begin
-
       FLoader.CreateLifes(FLifes, 3);
-//    Self.FLives := 3;
+
     end;
     //  Self.FLives.
   end;
 
   Self.FSeconds := 0;
+  Self.FShip.Show;
 end;
 
 procedure TDemoGame.SelectLevel(ASender: TObject);
@@ -335,14 +374,15 @@ procedure TDemoGame.SetGameStatus(const Value: TGameStatus);
 begin
   FGameStatus := Value;
   case FGameStatus of
-    gsMenu1: begin FEngine.ShowGroup('menu1'); FEngine.HideGroup('relaxmodemenu'); FEngine.ShowGroup('menu'); FEngine.HideGroup('ship'); FEngine.HideGroup('menu2'); FEngine.HideGroup('about'); FEngine.HideGroup('statistics'); FEngine.HideGroup('menu3'); end;
+    gsMenu1: begin FEngine.ShowGroup('menu1'); FEngine.HideGroup('gameover'); FEngine.HideGroup('relaxmodemenu'); FEngine.ShowGroup('menu'); FEngine.HideGroup('ship'); FEngine.HideGroup('menu2'); FEngine.HideGroup('about'); FEngine.HideGroup('statistics'); FEngine.HideGroup('menu3'); end;
     gsMenu2: begin FEngine.ShowGroup('menu2'); FEngine.HideGroup('menu1');  FEngine.HideGroup('menu3'); end;
     gsMenu3: begin FEngine.ShowGroup('menu3'); FEngine.HideGroup('menu2'); end;
     gsStatics: begin FEngine.ShowGroup('statistics'); FEngine.HideGroup('menu1') end;
     gsAbout: begin FEngine.ShowGroup('about'); FEngine.HideGroup('menu1') end;
-    gsRelaxMode: begin RestartGame; FEngine.ShowGroup('ship'); FEngine.ShowGroup('relaxmodemenu'); FEngine.HideGroup('menu2'); FEngine.HideGroup('menu'); end;
-    gsSurvivalMode: begin RestartGame; FEngine.ShowGroup('ship'); FEngine.HideGroup('menu2'); FEngine.HideGroup('menu'); end;
-    gsStoryMode: begin RestartGame; FEngine.ShowGroup('ship'); FEngine.HideGroup('menu3'); FEngine.HideGroup('menu'); end;
+    gsRelaxMode: begin RestartGame; FEngine.ShowGroup('relaxmodemenu'); FEngine.HideGroup('menu2'); FEngine.HideGroup('menu'); end;
+    gsSurvivalMode: begin RestartGame; FEngine.HideGroup('menu2'); FEngine.HideGroup('menu'); end;
+    gsStoryMode: begin RestartGame; FEngine.HideGroup('menu3'); FEngine.HideGroup('menu'); end;
+    gsGameOver: begin FLoader.ShipExplosionAnimation(FShip); FEngine.ShowGroup('gameover'); end;
   end;
 end;
 

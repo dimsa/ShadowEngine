@@ -121,6 +121,8 @@ begin
   FBack.CurRes := vEngine.Resources.IndexOf(ASpriteBackName);
 
   FText := TEngine2DText.Create(vEngine);
+  FText.TextRec := RectF(-125, -35, 125, 35);
+  FText.FontSize := 32;
   FText.Color := TAlphaColorRec.White;
 
   FText.Justify := Center;
