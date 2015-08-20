@@ -3,61 +3,112 @@ unit uEngineFormatter;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.RegularExpressions,
+  System.SysUtils, System.Classes, System.RegularExpressions, System.Generics.Collections,
   uIntersectorClasses,
   uExpressionParser, uNamedList, uEngine2DClasses, uTextProc, uEngine2DObject,
   uEngine2DUnclickableObject, uFastFields, uConstantGroup, uParserValue;
 
 type
-  // Это по сути обёртка для TExpression, позволяющая задавать форматирование
-  // объектов таким образом
-  // Sprite.Format := 'Width:Engine.Width; Height:Sprite2.Height*0.5';
+
+  TFormatterDirective = class
+  protected
+    FObject: tEngine2DObject;
+    FExpression: TExpression;
+  public
+    procedure Format; virtual; abstract;
+    function Value: Double;
+    constructor Create(const AObject: tEngine2DObject; const AExpression: TExpression);
+  end;
+
+  TWidthDir = class(TFormatterDirective)
+  public
+    procedure Format; override;
+  end;
+
+  THeightDir = class(TFormatterDirective)
+  public
+    procedure Format; override;
+  end;
+
+  TMaxWidthDir = class(TFormatterDirective)
+  public
+    procedure Format; override;
+  end;
+
+  TMaxHeightDir = class(TFormatterDirective)
+  public
+    procedure Format; override;
+  end;
+
+  TMinWidthDir = class(TFormatterDirective)
+  public
+    procedure Format; override;
+  end;
+
+  TMinHeightDir = class(TFormatterDirective)
+  public
+    procedure Format; override;
+  end;
+
+  TRotateDir = class(TFormatterDirective)
+  public
+    procedure Format; override;
+  end;
+
+  TScaleDir = class(TFormatterDirective)
+  public
+    procedure Format; override;
+  end;
+
+  TScaleXDir = class(TFormatterDirective)
+  public
+    procedure Format; override;
+  end;
+
+  TScaleYDir = class(TFormatterDirective)
+  public
+    procedure Format; override;
+  end;
+
+  TXDir = class(TFormatterDirective)
+  public
+    procedure Format; override;
+  end;
+
+  TYDir = class(TFormatterDirective)
+  public
+    procedure Format; override;
+  end;
+
+  TConditionalDirective = class(TFormatterDirective)
+  protected
+    FDirective: TFormatterDirective;
+  public
+    function IsSatisfy: Boolean; virtual; abstract;
+    constructor Create(const ADirective: TFormatterDirective);
+    procedure Format; override;
+  end;
+
+  TIfHorCondition = class(TConditionalDirective)
+    function IsSatisfy: Boolean; override;
+  end;
+
   TEngineFormatter = class
   private
     FObject: tEngine2DObject;
+    FList: TList<TFormatterDirective>;
     FText: String;
     FParent: Pointer;
-    FWidth, FHeight: TExpression;
-    FMaxWidth, FMinWidth: TExpression;
-    FMaxHeight, FMinHeight: TExpression;
-    FX, FY: TExpression;
-    FRotate: TExpression;
-    FScale: TExpression;
-    FScaleX, FScaleY: TExpression;
-    FRotateIfHor: TExpression;
-    FXIfHor: TExpression;
-    FYIfHor: TExpression;
-    FWidthIfHor, FHeightIfHor: TExpression;
     function CreateIfNil(var vExp: TExpression): TExpression;
     procedure SetText(const Value: String);
-    function WhatExpression(const AText: String): TExpression;
-    function GetPosition: TPosition; // Выдает ссылку на нужный параметр
+    function CreateDirective(const AText: string;AExp: TExpression): TFormatterDirective;
     function DefineSelf(const AText: String): String;
     function IsFunction(const AText: String): Boolean;
     function IsDotProperty(const AText: String): Boolean;
   public
     property Parent: Pointer read FParent write FParent; // Ссылка на Engine2D
     property Text: String read FText write SetText;
-    property Width: TExpression read FWidth;
-    property Height: TExpression read FHeight;
-    property MaxWidth: TExpression read FMaxWidth;
-    property MaxHeight: TExpression read FMaxHeight;
-    property MinWidth: TExpression read FMinWidth;
-    property MinHeight: TExpression read FMinHeight;
-    property X: TExpression read FX;
-    property Y: TExpression read FY;
-    property Rotate: TExpression read FRotate;
-    property Scale: TExpression read FScale; // Присваивает сразу ScaleX и ScaleY
-    property ScaleX: TExpression read FScaleX;
-    property ScaleY: TExpression read FScaleY;
-   // Оказыается нужны координаты для вертикальной и горизонталньой версии
-    property XIfHor: TExpression read FXIfHor;
-    property YIfHor: TExpression read FYIfHor;
-    property WidthIfHor: TExpression read FWidthIfHor;
-    property HeightIfHor: TExpression read FHeightIfHor;
-    property RotateIfHor: TExpression read FRotateIfHor;
 
-    property Position: tPosition read GetPosition;
     property Subject: tEngine2DObject read FObject;
 
     procedure Format; virtual;
@@ -75,6 +126,7 @@ uses
 constructor TEngineFormatter.Create(AObject: tEngine2DObject);
 begin
   FObject := AObject;
+  FList := TList<TFormatterDirective>.Create;
   FParent := AObject.Parent;
 end;
 
@@ -122,89 +174,23 @@ begin
 end;
 
 destructor TEngineFormatter.Destroy;
+var
+  i: Integer;
 begin
-  if FX <> Nil then FX.Free;
-  if FY <> Nil then FY.Free;
-  if FWidth <> Nil then FWidth.Free;
-  if FHeight <> Nil then FHeight.Free;
-  if FMaxWidth <> Nil then FMaxWidth.Free;
-  if FMaxHeight <> Nil then FMaxHeight.Free;
-  if FMinWidth <> Nil then FMinWidth.Free;
-  if FMinHeight <> Nil then FMinHeight.Free;
-  if FScale <> Nil then FScale.Free;
-  if FScaleX <> Nil then FScaleX.Free;
-  if FScaleY <> Nil then FScaleY.Free;
-  if FRotate <> Nil then FRotate.Free;
-  if FXIfHor <> nil then FXIfHor.Free;
-  if FYIfHor <> nil then FYIfHor.Free;
-  if FWidthIfHor <> nil then FWidthIfHor.Free;
-  if FHeightIfHor <> nil then FHeightIfHor.Free;
+  for i := 0 to FList.Count - 1 do
+    FList[i].Free;
+  FList.Clear;
+  FList.Free;
 
   inherited;
 end;
 
 procedure TEngineFormatter.Format;
-begin
-  if FWidth <> Nil then FObject.Scale := FWidth.Value / FObject.w;
-  if FHeight <> Nil then FObject.Scale := FHeight.Value / FObject.h;
-  if FMaxWidth <> Nil then
-    if FObject.w * FObject.ScaleX > FMaxWidth.Value then
-      FObject.Scale := FMaxWidth.Value / FObject.w;
-  if FMaxHeight <> Nil then
-    if FObject.h * FObject.ScaleY  > FMaxHeight.Value then
-      FObject.Scale := FMaxHeight.Value / FObject.h;
-  if FMinWidth <> Nil then
-    if FObject.w * FObject.ScaleX  < FMinWidth.Value then
-      FObject.Scale := FMinWidth.Value / FObject.w;
-  if FMinHeight <> Nil then
-    if FObject.h * FObject.ScaleY  < FMinHeight.Value then
-      FObject.Scale := FMinHeight.Value / FObject.h;
-  if FRotate <> Nil then FObject.Rotate := FRotate.Value;
-  if FScale <> Nil then
-    FObject.Scale := FScale.Value;
-  if FScaleX <> Nil then
-    FObject.ScaleX := FScaleX.Value;
-  if FScaleY <> Nil then
-    FObject.ScaleY := FScaleY.Value;
-  if FX <> Nil then FObject.x := FX.Value;
-  if FY <> Nil then FObject.y := FY.Value;
-
-  if tEngine2d(FParent).IfHor then
-  begin
-    if FXIfHor <> Nil then FObject.x := FXIfHor.Value;
-    if FYIfHor <> Nil then FObject.y := FYIfHor.Value;
-    if FWidthIfHor <> Nil then FObject.Scale := FWidthIfHor.Value / FObject.w;
-    if FHeightIfHor <> Nil then FObject.Scale := FHeightIfHor.Value / FObject.h;
-    if FRotateIfHor <> Nil then FObject.Rotate := FRotateIfHor.Value;
-  end;
-
-
-end;
-
-function TEngineFormatter.GetPosition: tPosition;
 var
-  vRes: tPosition;
+  i: Integer;
 begin
-  vRes := ClearPosition;
-  if FX <> Nil then
-    vRes.x := FObject.x;//Self.X.Value;
-  if FY <> Nil then
-    vRes.y := FObject.y;//Self.Y.Value;
-  if FRotate <> Nil then
-    vRes.rotate := FObject.Rotate;//Self.Rotate.Value;
-  if FScale <> Nil then
-  begin
-    vRes.scaleX := FObject.ScaleX;// Self.Scale.Value;
-    vRes.scaleY := FObject.ScaleY;
-  end;
-  if FScaleX <> Nil then
-    vRes.scaleX := FObject.ScaleX;
-  if FScaleY <> Nil then
-    vRes.scaleY := FObject.ScaleY;
-
-
-
-  Result := vRes;
+  for i := 0 to FList.Count - 1 do
+    FList[i].Format;
 end;
 
 function TEngineFormatter.IsDotProperty(const AText: String): Boolean;
@@ -249,10 +235,14 @@ begin
     vArrName[1] := DefineSelf(vArrName[1]);
     if vArrName.Count{Length(vArrName)} = 2 then
     begin
-      vExp := WhatExpression(vArrName[0]);
+
       vEngine := TEngine2D(FParent);
+      vExp := TExpression.Create;
       vExp.ValueStack := vEngine.FastFields;
       vExp.Text := vArrName[1];
+      FList.Add(CreateDirective(vArrName[0], vExp));
+//      vExp := ;
+
 
 //      vNj := vExp.Values.Count - 1;
       vVarList := vExp.AllElements;
@@ -321,10 +311,7 @@ begin
             // Делаем что-то типа создания псевдооюъекта
           end; }
             if vArrFast <> Nil then vArrFast.Free;
-      end;
-
-
-
+        end;
       end;
     end;
     if vArrName <> Nil then vArrName.Free;
@@ -332,32 +319,154 @@ begin
   if vArr <> Nil then vArr.Free;
 end;
 
-function TEngineFormatter.WhatExpression(const AText: String): TExpression;
+function TEngineFormatter.CreateDirective(const AText: string; AExp: TExpression): TFormatterDirective;
 var
   vText: String;
+  vDir: TFormatterDirective;
 begin
   vText := LowerCase(AText);
   Result := Nil;
 
-  if (vText = 'width') or (vText = 'w') then Result := CreateIfNil(FWidth);
-  if (vText = 'height') or (vText = 'h') then Result := CreateIfNil(FHeight);
-  if (vText = 'max-width') or (vText = 'maxwidth') then Result := CreateIfNil(FMaxWidth);
-  if (vText = 'max-height') or (vText = 'maxheight') then Result := CreateIfNil(FMaxHeight);
-  if (vText = 'min-width') or (vText = 'minwidth') then Result := CreateIfNil(FMinWidth);
-  if (vText = 'min-height') or (vText = 'minheight') then Result := CreateIfNil(FMinHeight);
-  if (vText = 'x') or (vText = 'left') then Result := CreateIfNil(FX);
-  if (vText = 'y') or (vText = 'top') then Result := CreateIfNil(FY);
-  if (vText = 'rotate') or (vText = 'angle') then Result := CreateIfNil(FRotate);
-  if (vText = 'scale') or (vText = 'sc') then Result := CreateIfNil(FScale);
-  if (vText = 'scalex') or (vText = 'scx') then Result := CreateIfNil(FScaleX);
-  if (vText = 'scaley') or (vText = 'scy') then Result := CreateIfNil(FScaleY);
+  if (vText = 'width') or (vText = 'w') then Result := TWidthDir.Create(FObject, AExp);
+  if (vText = 'height') or (vText = 'h') then Result := THeightDir.Create(FObject, AExp);
+  if (vText = 'max-width') or (vText = 'maxwidth') then Result := TMaxWidthDir.Create(FObject, AExp);
+  if (vText = 'max-height') or (vText = 'maxheight') then Result := TMaxHeightDir.Create(FObject, AExp);
+  if (vText = 'min-width') or (vText = 'minwidth') then Result := TMinWidthDir.Create(FObject, AExp);
+  if (vText = 'min-height') or (vText = 'minheight') then Result := TMinHeightDir.Create(FObject, AExp);
+  if (vText = 'x') or (vText = 'left') then Result := TXDir.Create(FObject, AExp);
+  if (vText = 'y') or (vText = 'top') then Result := TYDir.Create(FObject, AExp);
+  if (vText = 'rotate') or (vText = 'angle') then Result := TRotateDir.Create(FObject, AExp);
+  if (vText = 'scale') or (vText = 'sc') then Result := TScaleDir.Create(FObject, AExp);
+  if (vText = 'scalex') or (vText = 'scx') then Result := TScaleXDir.Create(FObject, AExp);
+  if (vText = 'scaley') or (vText = 'scy') then Result := TScaleYDir.Create(FObject, AExp);
 
-  if (vText = 'xifhor') or (vText = 'leftifhor') then Result := CreateIfNil(FXIfHor);
-  if (vText = 'yifhor') or (vText = 'topifhor') then Result := CreateIfNil(FYIfHor);
-  if (vText = 'rotateifhor') or (vText = 'angleifhor') then Result := CreateIfNil(FRotateIfHor);
-  if (vText = 'widthifhor') or (vText = 'wifhor') then Result := CreateIfNil(FWidthIfHor);
-  if (vText = 'heightifhor') or (vText = 'hifhor') then Result := CreateIfNil(FHeightIfHor);
+  if (vText = 'xifhor') or (vText = 'leftifhor') then Result := TIfHorCondition.Create(TXDir.Create(FObject, AExp));
+  if (vText = 'yifhor') or (vText = 'topifhor') then Result := TIfHorCondition.Create(TYDir.Create(FObject, AExp));
+  if (vText = 'rotateifhor') or (vText = 'angleifhor') then  TIfHorCondition.Create(TRotateDir.Create(FObject, AExp));
+  if (vText = 'widthifhor') or (vText = 'wifhor') then Result := TIfHorCondition.Create(TWidthDir.Create(FObject, AExp));
+  if (vText = 'heightifhor') or (vText = 'hifhor') then Result := TIfHorCondition.Create(THeightDir.Create(FObject, AExp));
+end;
 
+{ TFormatterDirective }
+
+constructor TFormatterDirective.Create(const AObject: tEngine2DObject; const AExpression: TExpression);
+begin
+  FExpression := AExpression;
+  FObject := AObject;
+end;
+
+function TFormatterDirective.Value: Double;
+begin
+  Result := FExpression.Value;
+end;
+
+{ TWidthDir }
+
+procedure TWidthDir.Format;
+begin
+  FObject.Scale := Self.Value / FObject.w;
+end;
+
+{ THeightDir }
+
+procedure THeightDir.Format;
+begin
+  FObject.Scale := Self.Value / FObject.h;
+end;
+
+{ TMaxWidthDir }
+
+procedure TMaxWidthDir.Format;
+begin
+  if FObject.w * FObject.ScaleX > Value then
+    FObject.Scale := Value / FObject.w;
+end;
+
+{ TMaxHeightDir }
+
+procedure TMaxHeightDir.Format;
+begin
+  if FObject.h * FObject.ScaleY  > Value then
+    FObject.Scale := Value / FObject.h;
+end;
+
+{ TMinWidthDir }
+
+procedure TMinWidthDir.Format;
+begin
+  if FObject.w * FObject.ScaleX  < Value then
+    FObject.Scale := Value / FObject.w;
+end;
+
+{ TMinHeightDir }
+
+procedure TMinHeightDir.Format;
+begin
+  if FObject.h * FObject.ScaleY  < Value then
+    FObject.Scale := Value / FObject.h;
+end;
+
+{ TRotateDir }
+
+procedure TRotateDir.Format;
+begin
+  FObject.Rotate := Value;
+end;
+
+{ TScaleDir }
+
+procedure TScaleDir.Format;
+begin
+  FObject.Scale := Value;
+end;
+
+{ TScaleXDir }
+
+procedure TScaleXDir.Format;
+begin
+  FObject.ScaleX := Value;
+end;
+
+{ TScaleYDir }
+
+procedure TScaleYDir.Format;
+begin
+  FObject.ScaleY := Value;
+end;
+
+{ TXDir }
+
+procedure TXDir.Format;
+begin
+  FObject.x := Value;
+end;
+
+{ TYDir }
+
+procedure TYDir.Format;
+begin
+  FObject.y := Value;
+end;
+
+{ TConditionalDirective }
+
+constructor TConditionalDirective.Create(const ADirective: TFormatterDirective);
+begin
+  FObject := ADirective.FObject; // Сейчас это дружественные классы, но вообще надо следить за таким
+  FDirective := ADirective;
+end;
+
+procedure TConditionalDirective.Format;
+begin
+  if IsSatisfy then
+    FDirective.Format;
+end;
+
+{ TIfHorCondition }
+
+function TIfHorCondition.IsSatisfy: Boolean;
+begin
+  Result := TEngine2D(FObject.Parent).IfHor;
 end;
 
 end.

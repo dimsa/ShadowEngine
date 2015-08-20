@@ -95,8 +95,7 @@ begin
 
     Formatter(vSpr,
       'width: engine.width * 0.05; widthifhor: engine.height * 0.05; top: height * 0.8;' +
-      'left: 1.05 * width * ( 0.8 + ' +IntToStr(i - 1) +');' +
-      'leftifhor: 1.05 * width * ( 0.8 + ' +IntToStr(i - 1) +');' ).Format;
+      'left: 1.05 * width * ( 0.8 + ' +IntToStr(i - 1) +');').Format;
   end;
 end;
 
