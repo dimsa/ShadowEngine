@@ -23,7 +23,7 @@ type
     function ButtonAnimation(ASubject: TEngine2dObject; const AEndScale: Double):  TMouseDownMigrationAnimation;
     function Formatter(const ASubject: tEngine2DObject; const AText: String): TEngineFormatter;
     function LevelFormatText(const AX, AY: Integer): String;
-    procedure CreateLifes(var FLifes: TList<TSprite>; const ACount: Integer);
+    procedure CreateLifes(FLifes: TList<TSprite>; const ACount: Integer);
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
     constructor Create(AEngine: TEngine2D);
   end;
@@ -79,7 +79,7 @@ begin
   FEngine := AEngine;
 end;
 
-procedure TLoader.CreateLifes(var FLifes: TList<TSprite>; const ACount: Integer);
+procedure TLoader.CreateLifes(FLifes: TList<TSprite>; const ACount: Integer);
 var
   i: Integer;
   vSpr: TSprite;
@@ -90,8 +90,13 @@ begin
     vSpr.Resources := FEngine.Resources;
     vSpr.Group := 'survival';
     vSpr.CurRes := FEngine.Resources.IndexOf('lifeicon');
+    FEngine.AddObject(vSpr);
+    vSpr.Visible := True;
 
-    Formatter(vSpr, 'width: engine.width * 0.05; top: height; left: width * ( 0.5 + ' +IntToStr(i - 1) );
+    Formatter(vSpr,
+      'width: engine.width * 0.05; widthifhor: engine.height * 0.05; top: height * 0.8;' +
+      'left: 1.05 * width * ( 0.8 + ' +IntToStr(i - 1) +');' +
+      'leftifhor: 1.05 * width * ( 0.8 + ' +IntToStr(i - 1) +');' ).Format;
   end;
 end;
 

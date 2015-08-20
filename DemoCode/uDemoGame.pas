@@ -99,6 +99,7 @@ var
 begin
   FEngine := TDemoEngine.Create;
   FLoader := TLoader.Create(FEngine);
+  FLifes := TList<TSprite>.Create;
   FCollisions := 0;
   FSeconds := 0;
 end;
@@ -116,19 +117,21 @@ end;
 
 destructor TDemoGame.Destroy;
 var
-  i, vN: Integer;
+  i: Integer;
 begin
   FMenu.Free;
 
-  vN := FAsteroids.Count - 1;
-  for i := 0 to vN do
+  for i := 0 to FAsteroids.Count - 1 do
     FAsteroids[i].Free;
   FAsteroids.Free;
 
-  vN := FBackObjects.Count - 1;
-  for i := 0 to vN do
+  for i := 0 to FBackObjects.Count - 1 do
     FBackObjects[i].Free;
   FBackObjects.Free;
+
+  for i := 0 to FLifes.Count - 1 do
+    FLifes[i].Free;
+  FLifes.Free;
 
   FShip.Free;
   FLoader.Free;
@@ -221,7 +224,6 @@ begin
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
 
   FBackObjects := TList<TLittleAsteroid>.Create;
-  FLoader := TLoader.Create(FEngine);
   // Создаем астеройдное поле
   for i := 0 to 39 do
   begin
@@ -270,7 +272,7 @@ begin
   FMenu.StatGame := StatGame;
   FMenu.ExitGame := ExitGame;
   FMenu.RelaxMode := StartRelax;
-  FMenu.SurvivalMode := StartRelax;
+  FMenu.SurvivalMode := StartSurvival;
   FMenu.StoryMode := SelectLevel;
   FMenu.LevelSelect := SelectMode;
   FEngine.HideGroup('ship');
@@ -280,7 +282,6 @@ begin
 
   FEngine.InBeginPaintBehavior := BeforePaintBehavior;
   FEngine.Start;
-  FLoader.Free;
 end;
 
 procedure TDemoGame.Resize;
@@ -310,7 +311,8 @@ begin
   case GameStatus of
     gsRelaxMode: Self.FCollisions := 0;
     gsSurvivalMode: begin
-    FLoader.CreateLifes(FLifes, 3);
+
+      FLoader.CreateLifes(FLifes, 3);
 //    Self.FLives := 3;
     end;
     //  Self.FLives.
