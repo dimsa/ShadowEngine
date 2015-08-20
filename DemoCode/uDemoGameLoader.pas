@@ -3,7 +3,7 @@ unit uDemoGameLoader;
 interface
 
 uses
-  SysUtils, System.Types, System.Math,
+  SysUtils, System.Types, System.Math, System.Generics.Collections,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2D, uEngine2DSprite, uEngine2DObject, uDemoObjects, uIntersectorClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses, uEngineFormatter,
@@ -23,6 +23,7 @@ type
     function ButtonAnimation(ASubject: TEngine2dObject; const AEndScale: Double):  TMouseDownMigrationAnimation;
     function Formatter(const ASubject: tEngine2DObject; const AText: String): TEngineFormatter;
     function LevelFormatText(const AX, AY: Integer): String;
+    procedure CreateLifes(var FLifes: TList<TSprite>; const ACount: Integer);
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
     constructor Create(AEngine: TEngine2D);
   end;
@@ -78,6 +79,22 @@ begin
   FEngine := AEngine;
 end;
 
+procedure TLoader.CreateLifes(var FLifes: TList<TSprite>; const ACount: Integer);
+var
+  i: Integer;
+  vSpr: TSprite;
+begin
+  for i := 1 to ACount do
+  begin
+    vSpr := TSprite.Create(FEngine);
+    vSpr.Resources := FEngine.Resources;
+    vSpr.Group := 'survival';
+    vSpr.CurRes := FEngine.Resources.IndexOf('lifeicon');
+
+    Formatter(vSpr, 'width: engine.width * 0.05; top: height; left: width * ( 0.5 + ' +IntToStr(i - 1) );
+  end;
+end;
+
 function TLoader.CreateShip: TShip;
 var
   vSpr: TShip;
@@ -86,27 +103,7 @@ var
   vCircle: TCircle;
   vPoly1, vPoly2, vPoly3: TNewFigure;
 begin
-
- { vSpr := TAsteroid.Create(FEngine);
-  vSpr.Parent := FEngine;
-  vSpr.Resources := FEngine.Resources;
-  vSpr.Group := 'activeobject';
-  vSpr.x := Random(FEngine.Width);
-  vSpr.y := Random(FEngine.Height);
-
-  vFigure := TNewFigure.Create(TNewFigure.cfCircle);
-  vCircle.X := 0;
-  vCircle.Y := 0;
-  vCircle.Radius := 50;
-  vFigure.SetData(vCircle);
-  vSpr.Shape.AddFigure(vFigure);
-
-  FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
-
-  Result := vSpr;}
-
   vSpr := TShip.Create(FEngine);
-  vSpr.Parent := FEngine;
   vSpr.Resources := FEngine.Resources;
   vSpr.Group := 'ship';
   vSpr.x := 200;//Random(FEngine.Width);

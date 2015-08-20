@@ -9,7 +9,7 @@ uses
   FMX.Objects, System.Generics.Collections, System.Math, System.SysUtils,
   uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape,
   uEngine2DAnimation, uIntersectorClasses, uDemoMenu, uClasses, uEngine2DText,
-  uEngineFormatter;
+  uEngine2DSprite, uEngineFormatter;
 
 type
   TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode);
@@ -18,13 +18,18 @@ type
   private
     FEngine: TDemoEngine;
     FBackObjects: TList<TLittleAsteroid>; // Летящие бэки
-    FShip: TShip;
-    FCollisions: Integer;
-    FSeconds: Single;
-    FCollisionsText, FSecondsText: TEngine2DText;
-    FMenu: TGameMenu;
     FAsteroids: TList<TAsteroid>;
+    FShip: TShip;
+    FLoader: TLoader;
+
+
+    FMenu: TGameMenu;
     FGameStatus: TGameStatus;
+
+    FCollisions: Integer;
+    FLifes: TList<TSprite>;
+    FCollisionsText, FSecondsText: TEngine2DText;
+    FSeconds: Single;
 
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
@@ -41,6 +46,7 @@ type
     procedure SelectMode(ASender: TObject);
     procedure SelectLevel(ASender: TObject);
     procedure StartRelax(ASender: TObject);
+    procedure StartSurvival(ASender: TObject);
     procedure StatGame(ASender: TObject);
     procedure AboutGame(ASender: TObject);
     procedure ExitGame(ASender: TObject);
@@ -60,7 +66,7 @@ type
 implementation
 
 uses
-  FMX.Dialogs, uEngine2DSprite, uEngine2DObject;
+  FMX.Dialogs, uEngine2DObject;
 
 { TDemoGame }
 
@@ -92,6 +98,7 @@ var
   vS: String;
 begin
   FEngine := TDemoEngine.Create;
+  FLoader := TLoader.Create(FEngine);
   FCollisions := 0;
   FSeconds := 0;
 end;
@@ -124,6 +131,7 @@ begin
   FBackObjects.Free;
 
   FShip.Free;
+  FLoader.Free;
 
   FEngine.Free;
 
@@ -204,7 +212,6 @@ end;
 
 procedure TDemoGame.Prepare;
 var
-  vLoader: TLoader;
   i: Integer;
   vFormatter: TEngineFormatter;
   vFont: TFont;
@@ -214,32 +221,25 @@ begin
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
 
   FBackObjects := TList<TLittleAsteroid>.Create;
-  vLoader := TLoader.Create(FEngine);
+  FLoader := TLoader.Create(FEngine);
   // Создаем астеройдное поле
   for i := 0 to 39 do
   begin
-    vObj := vLoader.RandomAstroid;
+    vObj := FLoader.RandomAstroid;
     FBackObjects.Add(TLittleAsteroid(vObj));
-    vFormatter := TEngineFormatter.Create(vObj);
-    vFormatter.Text := 'width: sqrt(engine.width * engine.height) * 0.05; ';
-    FEngine.FormatterList.Add(vFormatter);
+    FLoader.Formatter(vObj, 'width: sqrt(engine.width * engine.height) * 0.05; ')
   end;
 
   // Создаем корабль
-  FShip := vLoader.CreateShip;
-  vFormatter := TEngineFormatter.Create(FShip);
-  vFormatter.Text := 'width: sqrt(engine.width * engine.height) * 0.125;';
-  FEngine.FormatterList.Add(vFormatter);
+  FShip := FLoader.CreateShip;
+  FLoader.Formatter(FShip, 'width: sqrt(engine.width * engine.height) * 0.125;');
 
   FAsteroids := TList<TAsteroid>.Create;
   for i := 0 to 5 do
   begin
-    vObj := vLoader.BigAsteroid;
+    vObj := FLoader.BigAsteroid;
     FAsteroids.Add(TAsteroid(vObj));
-
-    vFormatter := TEngineFormatter.Create(vObj);
-    vFormatter.Text := 'width: sqrt(engine.width * engine.height) * 0.2;';
-    FEngine.FormatterList.Add(vFormatter);
+    FLoader.Formatter(vObj, 'width: sqrt(engine.width * engine.height) * 0.2;')
   end;
 
   vFont := TFont.Create;
@@ -259,15 +259,8 @@ begin
   FEngine.AddObject(FCollisionsText);
   FEngine.AddObject(FSecondsText);
 
-  vFormatter := TEngineFormatter.Create(FCollisionsText);
-  vFormatter.Parent := FEngine;
-  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height - height * 1.2';
-  FEngine.FormatterList.Add(vFormatter);
-
-  vFormatter := TEngineFormatter.Create(FSecondsText);
-  vFormatter.Parent := FEngine;
-  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height - height * 0.6;';
-  FEngine.FormatterList.Add(vFormatter);
+  FLoader.Formatter(FCollisionsText, 'left: engine.width * 0.5; top: engine.height - height * 1.2');
+  FLoader.Formatter(FSecondsText, 'left: engine.width * 0.5; top: engine.height - height * 0.6;');
 
   FEngine.HideGroup('stat');
 
@@ -287,7 +280,7 @@ begin
 
   FEngine.InBeginPaintBehavior := BeforePaintBehavior;
   FEngine.Start;
-  vLoader.Free;
+  FLoader.Free;
 end;
 
 procedure TDemoGame.Resize;
@@ -314,7 +307,15 @@ end;
 
 procedure TDemoGame.RestartGame;
 begin
-  Self.FCollisions := 0;
+  case GameStatus of
+    gsRelaxMode: Self.FCollisions := 0;
+    gsSurvivalMode: begin
+    FLoader.CreateLifes(FLifes, 3);
+//    Self.FLives := 3;
+    end;
+    //  Self.FLives.
+  end;
+
   Self.FSeconds := 0;
 end;
 
@@ -354,17 +355,16 @@ end;
 procedure TDemoGame.StartGame(ASender: TObject);
 var
   vSpr: TSprite;
-  vLoader: TLoader;
 begin
   FEngine.HideGroup('menu');
   FEngine.ShowGroup('ship');
-  vLoader := TLoader.Create(FEngine);
+  FLoader := TLoader.Create(FEngine);
 
   for vSpr in FShip.Parts do
   begin
     vSpr.Opacity := 0;
     FEngine.AnimationList.Add(
-      vLoader.OpacityAnimation(vSpr, 1)
+      FLoader.OpacityAnimation(vSpr, 1)
     );
   end;
 
@@ -377,6 +377,11 @@ end;
 procedure TDemoGame.StartRelax(ASender: TObject);
 begin
   GameStatus := gsRelaxMode;
+end;
+
+procedure TDemoGame.StartSurvival(ASender: TObject);
+begin
+  GameStatus := gsSurvivalMode;
 end;
 
 procedure TDemoGame.StatGame(ASender: TObject);
