@@ -21,6 +21,7 @@ type
     FAsteroids: TList<TAsteroid>;
     FShip: TShip;
     FLoader: TLoader;
+    FValueableSeconds: Double; // Секунды, которые участвуют в подсчете очков
 
 
     FMenu: TGameMenu;
@@ -100,16 +101,31 @@ end;
 procedure TDemoGame.BeforePaintBehavior;
 var
   vS: String;
+  vDSec: Integer;
+  vTmp: Double;
 begin
   FindCollide;
   FShip.SendToFront;
   FMenu.SendToFront;
 
-  FSeconds := FSeconds + 1/FEngine.EngineThread.FPS;
+  vTmp := 1 / FEngine.EngineThread.FPS;
+  FSeconds := FSeconds + vTmp;
+
+  FValueableSeconds := FValueableSeconds + vTmp;
+  vDSec := Trunc(FValueableSeconds / 0.1);
+  if vDSec > 0 then
+    FValueableSeconds := FValueableSeconds - vDSec * 0.1;
+
+
 
   case GameStatus of
     gsStoryMode: ;
-    gsSurvivalMode: ;
+    gsSurvivalMode: begin
+     // Asteroids := FAsteroids.Count;
+      Time := FSeconds;
+      Score := Score + vDSec * FAsteroids.Count;
+
+    end;
     gsRelaxMode: begin
       Time := FSeconds;
       Collisions := FCollisions;
@@ -117,14 +133,6 @@ begin
     end;
 
   end;
- { Str(FSeconds:0:2, vS);
-
-  FSecondsText.Text := 'Секунд: ' + vS;
-  FCollisionsText.Text := 'Столкновений: ' + IntToStr(FCollisions);  }
-
-
-{  if Assigned(FShip) then
-    FShip.FireToBack; }
 end;
 
 procedure TDemoGame.BreakLife;
@@ -440,8 +448,10 @@ begin
     end;
   end;
 
+
   FEngine.DoTheFullWindowResize;
   Self.FSeconds := 0;
+  Self.FValueableSeconds := 0;
   Self.FShip.Show;
 end;
 

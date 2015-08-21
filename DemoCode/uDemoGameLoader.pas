@@ -132,7 +132,9 @@ var
   vLeft, vRight: String;
   vFormatter: TEngineFormatter;
   i: Integer;
+  vGroup: String;
 begin
+  vGroup := 'relax';
   ClearAndDestroyPanel(FPanel);
   vFont := TFont.Create;
   vFont.Style := [TFontStyle.fsBold];
@@ -146,29 +148,29 @@ begin
   vRight := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
            'left: engine.width - width * 0.05; top: 1.3 * height * ';
 
-  vText := FastText('time', vFont, vPrimaryColor, 'relax', CenterLeft);
+  vText := FastText('time', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Time:';
   FPanel.Add('time', vText);
   Formatter(vText, vLeft + IntToStr(1));
-  vText := FastText('timevalue', vFont, vPrimaryColor, 'relax', CenterRight);
+  vText := FastText('timevalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('timevalue', vText);
   Formatter(vText, vRight + IntToStr(1)).Format;
 
-  vText := FastText('collisions', vFont, vPrimaryColor, 'relax', CenterLeft);
+  vText := FastText('collisions', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Collisions:';
   FPanel.Add('collisions', vText);
   Formatter(vText, vLeft + IntToStr(2));
-  vText := FastText('collisionsvalue', vFont, vPrimaryColor, 'relax', CenterRight);
+  vText := FastText('collisionsvalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('collisionsvalue', vText);
   Formatter(vText, vRight + IntToStr(2)).Format;
 
-  vText := FastText('score', vFont, vPrimaryColor, 'relax', CenterLeft);
+  vText := FastText('score', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Score:';
   FPanel.Add('score', vText);
   Formatter(vText, vLeft + IntToStr(3));
-  vText := FastText('scoresvalue', vFont, vPrimaryColor, 'relax', CenterRight);
+  vText := FastText('scoresvalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('scorevalue', vText);
   Formatter(vText, vRight + IntToStr(3)).Format;
@@ -176,7 +178,70 @@ begin
   for i := 0 to FPanel.Count - 1 do
     FPanel[i].Opacity := 0.5;
 
-  FEngine.ShowGroup('relax');
+  FEngine.ShowGroup(vGroup);
+end;
+
+procedure TLoader.CreateStoryPanel(FPanel: TNamedList<tEngine2DText>);
+begin
+
+end;
+
+procedure TLoader.CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
+var
+  vText: TEngine2DText;
+  vFont: TFont;
+  vPrimaryColor, vSecondaryColor: TColor;
+  vLeft, vRight: String;
+  vFormatter: TEngineFormatter;
+  i: Integer;
+  vGroup: String;
+begin
+  vGroup := 'survive';
+  ClearAndDestroyPanel(FPanel);
+  vFont := TFont.Create;
+  vFont.Style := [TFontStyle.fsBold];
+  vFont.Size := 14;
+  vPrimaryColor := TAlphaColorRec.White;
+  vSecondaryColor := TAlphaColorRec.Lightgray;
+
+
+  vLeft := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
+           'left: engine.width - width * 1.15; top: 1.3 * height * ';
+  vRight := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
+           'left: engine.width - width * 0.05; top: 1.3 * height * ';
+
+
+ { vText := FastText('asteroids', vFont, vPrimaryColor, vGroup, CenterLeft);
+  vText.Text := 'Asteroids:';
+  FPanel.Add('collisions', vText);
+  Formatter(vText, vLeft + IntToStr(1));
+  vText := FastText('asteroidsvalue', vFont, vSecondaryColor, vGroup, CenterRight);
+  vText.Text := '0';
+  FPanel.Add('asteroidsvalue', vText);
+  Formatter(vText, vRight + IntToStr(1)).Format;   }
+
+  vText := FastText('time', vFont, vPrimaryColor, vGroup, CenterLeft);
+  vText.Text := 'Time:';
+  FPanel.Add('time', vText);
+  Formatter(vText, vLeft + IntToStr(1));
+  vText := FastText('timevalue', vFont, vPrimaryColor, vGroup, CenterRight);
+  vText.Text := '0';
+  FPanel.Add('timevalue', vText);
+  Formatter(vText, vRight + IntToStr(1)).Format;
+
+  vText := FastText('score', vFont, vPrimaryColor, vGroup, CenterLeft);
+  vText.Text := 'Score:';
+  FPanel.Add('score', vText);
+  Formatter(vText, vLeft + IntToStr(2));
+  vText := FastText('scoresvalue', vFont, vPrimaryColor, vGroup, CenterRight);
+  vText.Text := '0';
+  FPanel.Add('scorevalue', vText);
+  Formatter(vText, vRight + IntToStr(2)).Format;
+
+  for i := 0 to FPanel.Count - 1 do
+    FPanel[i].Opacity := 0.5;
+
+  FEngine.ShowGroup(vGroup);
 end;
 
 function TLoader.CreateShip: TShip;
@@ -234,16 +299,6 @@ begin
   FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
 
   Result := vSpr;
-end;
-
-procedure TLoader.CreateStoryPanel(FPanel: TNamedList<tEngine2DText>);
-begin
-
-end;
-
-procedure TLoader.CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
-begin
-
 end;
 
 function TLoader.Explosion(const AX, AY, AAng: Double): TExplosion;
