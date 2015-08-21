@@ -9,7 +9,7 @@ uses
   FMX.Objects, System.Generics.Collections, System.Math, System.SysUtils,
   uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape,
   uEngine2DAnimation, uIntersectorClasses, uDemoMenu, uClasses, uEngine2DText,
-  uEngine2DSprite, uEngineFormatter;
+  uEngine2DSprite, uEngineFormatter, uNamedList;
 
 type
   TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode, gsGameOver);
@@ -28,8 +28,8 @@ type
 
     FCollisions: Integer;
     FLifes: TList<TSprite>;
-    FPanels: TList<TEngine2DText>;
-    FCollisionsText, FSecondsText: TEngine2DText;
+    FPanels: TNamedList<TEngine2DText>;
+   // FCollisionsText, FSecondsText: TEngine2DText;
     FGameOverText: TEngine2DText;
     FSeconds: Single;
 
@@ -57,6 +57,24 @@ type
     function DestinationFromClick(const Ax, Ay: Single): TPosition;
     procedure SetGameStatus(const Value: TGameStatus);
     procedure BreakLife;
+
+    function GetAsteroids: Integer;
+    function GetCollisions: Integer;
+    function GetLevel: Integer;
+    function GetScore: Integer;
+    function GetTime: Double;
+    procedure SetAsteroids(const Value: Integer);
+    procedure SetCollisions(const Value: Integer);
+    procedure SetLevel(const Value: Integer);
+    procedure SetScore(const Value: Integer);
+    procedure SetTime(const Value: Double);
+
+    // Статитические данные игры
+    property Score: Integer read GetScore write SetScore;
+    property Time: Double read GetTime write SetTime;
+    property Level: Integer read GetLevel write SetLevel;
+    property Collisions: Integer read GetCollisions write SetCollisions;
+    property Asteroids: Integer read GetAsteroids write SetAsteroids;
   public
     property GameStatus: TGameStatus read FGameStatus write SetGameStatus;
     property Image: TImage read GetImage write SetImage;
@@ -87,10 +105,22 @@ begin
   FShip.SendToFront;
   FMenu.SendToFront;
 
-  Str(FSeconds:0:2, vS);
   FSeconds := FSeconds + 1/FEngine.EngineThread.FPS;
+
+  case GameStatus of
+    gsStoryMode: ;
+    gsSurvivalMode: ;
+    gsRelaxMode: begin
+      Time := FSeconds;
+      Collisions := FCollisions;
+      Score := Round((FSeconds / (FCollisions + 1)) * FAsteroids.Count);
+    end;
+
+  end;
+ { Str(FSeconds:0:2, vS);
+
   FSecondsText.Text := 'Секунд: ' + vS;
-  FCollisionsText.Text := 'Столкновений: ' + IntToStr(FCollisions);
+  FCollisionsText.Text := 'Столкновений: ' + IntToStr(FCollisions);  }
 
 
 {  if Assigned(FShip) then
@@ -119,7 +149,7 @@ begin
   FEngine := TDemoEngine.Create;
   FLoader := TLoader.Create(FEngine);
   FLifes := TList<TSprite>.Create;
-  FPanels := TList<TEngine2DText>.Create;
+  FPanels := TNamedList<TEngine2DText>.Create;
   FCollisions := 0;
   FSeconds := 0;
 end;
@@ -199,14 +229,56 @@ begin
       end;
 end;
 
+function TDemoGame.GetAsteroids: Integer;
+begin
+  Result := 0;
+  if FPanels.IsHere('asteroidsvalue') then
+    Result := StrToInt(FPanels['asteroidsvalue'].Text);
+end;
+
+function TDemoGame.GetCollisions: Integer;
+begin
+  Result := 0;
+  if FPanels.IsHere('collisionsvalue') then
+    Result := StrToInt(FPanels['collisionsvalue'].Text);
+end;
+
 function TDemoGame.GetImage: TImage;
 begin
   Result := FEngine.Image;
 end;
 
+function TDemoGame.GetLevel: Integer;
+begin
+  Result := 0;
+  if FPanels.IsHere('levelvalue') then
+    Result := StrToInt(FPanels['levelvalue'].Text);
+end;
+
+function TDemoGame.GetScore: Integer;
+begin
+  Result := 0;
+  if FPanels.IsHere('scorevalue') then
+    Result := StrToInt(FPanels['scorevalue'].Text);
+end;
+
 function TDemoGame.GetSpeed: Single;
 begin
   Result := FEngine.EngineThread.Speed;
+end;
+
+function TDemoGame.GetTime: Double;
+var
+  vErr: Integer;
+  vValue: Double;
+begin
+  Result := 0;
+  if FPanels.IsHere('timevalue') then
+  begin
+    val(FPanels['timevalue'].Text, vValue, vErr);
+    if vErr = 0 then
+      Result := vValue;
+  end;
 end;
 
 procedure TDemoGame.MouseDown(Sender: TObject; Button: TMouseButton;
@@ -251,7 +323,7 @@ procedure TDemoGame.Prepare;
 var
   i: Integer;
   vFormatter: TEngineFormatter;
-  vFont: TFont;
+ // vFont: TFont;
   vObj: TEngine2DObject;
 begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
@@ -278,7 +350,7 @@ begin
     FLoader.Formatter(vObj, 'width: sqrt(engine.width * engine.height) * 0.2;')
   end;
 
-  vFont := TFont.Create;
+ { vFont := TFont.Create;
   vFont.Style := [TFontStyle.fsBold];
   vFont.Size := 14;
   FCollisionsText := TEngine2DText.Create(FEngine);
@@ -296,7 +368,7 @@ begin
   FEngine.AddObject(FSecondsText);
 
   FLoader.Formatter(FCollisionsText, 'left: engine.width * 0.5; top: engine.height - height * 1.2');
-  FLoader.Formatter(FSecondsText, 'left: engine.width * 0.5; top: engine.height - height * 0.6;');
+  FLoader.Formatter(FSecondsText, 'left: engine.width * 0.5; top: engine.height - height * 0.6;');  }
 
 
   FGameOverText := TEngine2DText.Create(FEngine);
@@ -366,9 +438,9 @@ begin
       FLoader.CreateLifes(FLifes, 1);
       FLoader.CreateStoryPanel(FPanels);
     end;
-    //  Self.FLives.
   end;
 
+  FEngine.DoTheFullWindowResize;
   Self.FSeconds := 0;
   Self.FShip.Show;
 end;
@@ -381,6 +453,17 @@ end;
 procedure TDemoGame.SelectMode(ASender: TObject);
 begin
   Self.GameStatus := gsMenu2;
+end;
+
+procedure TDemoGame.SetAsteroids(const Value: Integer);
+begin
+
+end;
+
+procedure TDemoGame.SetCollisions(const Value: Integer);
+begin
+  if FPanels.IsHere('collisionsvalue') then
+    FPanels['collisionsvalue'].Text := IntToStr(Value);
 end;
 
 procedure TDemoGame.SetGameStatus(const Value: TGameStatus);
@@ -405,6 +488,29 @@ begin
   Value.OnMouseDown := Self.MouseDown;
   Value.OnMouseUp := Self.MouseUp;
   Value.OnMouseMove := Self.MouseMove;
+end;
+
+procedure TDemoGame.SetLevel(const Value: Integer);
+begin
+  if FPanels.IsHere('levelvalue') then
+    FPanels['levelvalue'].Text := IntToStr(Value);
+end;
+
+procedure TDemoGame.SetScore(const Value: Integer);
+begin
+  if FPanels.IsHere('scorevalue') then
+    FPanels['scorevalue'].Text := IntToStr(Value);
+end;
+
+procedure TDemoGame.SetTime(const Value: Double);
+var
+  vS: string;
+begin
+  if FPanels.IsHere('timevalue') then
+  begin
+    Str(Value:0:2, vS);
+    FPanels['timevalue'].Text := vS;
+  end;
 end;
 
 procedure TDemoGame.StartGame(ASender: TObject);

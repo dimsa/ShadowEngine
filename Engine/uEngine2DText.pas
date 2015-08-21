@@ -135,7 +135,7 @@ begin
     Bitmap.Canvas.Fill.Color := FColor;
 
     Bitmap.Canvas.Font.Assign(FFont);
-    Bitmap.Canvas.FillText(FTextRect, FText, FWordWrap, Opacity, FFillTextFlags,
+    Bitmap.Canvas.FillText(FTextRect, FText, FWordWrap, FOpacity, FFillTextFlags,
     FHorAlign, FVerAlign);
   end;
 end;

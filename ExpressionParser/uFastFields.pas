@@ -31,9 +31,6 @@ type
   TFastEngineField = class(TFastField)
   private
     fEngine: Pointer;
-  protected
-    function GetValue: Double; override;
-    procedure SetValue(const Value: Double); override;
   public
     constructor Create(const APointer: Pointer); reintroduce; virtual;
     destructor Destroy; override;
@@ -299,16 +296,6 @@ destructor TFastEngineField.Destroy;
 begin
   fEngine := Nil;
   inherited;
-end;
-
-function TFastEngineField.GetValue: Double;
-begin
-  raise Exception.Create('You can not change value of ' + Self.ClassName);
-end;
-
-procedure TFastEngineField.SetValue(const Value: Double);
-begin
-
 end;
 
 { TFastEngineWidth }

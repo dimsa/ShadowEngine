@@ -8,7 +8,7 @@ uses
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2D, uEngine2DSprite, uEngine2DObject, uDemoObjects, uIntersectorClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses, uEngineFormatter,
-  uEngine2DText,
+  uEngine2DText, uNamedList,
   uNewFigure, uIntersectorMethods, uEasyDevice;
 
 type
@@ -17,7 +17,7 @@ type
     FEngine: TEngine2D;
   protected
     function FastText(const AName: string; AFont: TFont; const AColor: TColor = TAlphaColorRec.White; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TEngine2DText;
-    procedure ClearAndDestroyPanel(FPanel: TList<tEngine2DText>);
+    procedure ClearAndDestroyPanel(FPanel: TNamedList<tEngine2DText>);
   public
     function RandomAstroid: TLittleAsteroid;
     function BigAsteroid: TAsteroid;
@@ -31,9 +31,9 @@ type
     function Formatter(const ASubject: tEngine2DObject; const AText: String): TEngineFormatter;
     function LevelFormatText(const AX, AY: Integer): String;
     procedure CreateLifes(FLifes: TList<TSprite>; const ACount: Integer);
-    procedure CreateSurvivalPanel(FPanel: TList<tEngine2DText>);
-    procedure CreateRelaxPanel(FPanel: TList<tEngine2DText>);
-    procedure CreateStoryPanel(FPanel: TList<tEngine2DText>);
+    procedure CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
+    procedure CreateRelaxPanel(FPanel: TNamedList<tEngine2DText>);
+    procedure CreateStoryPanel(FPanel: TNamedList<tEngine2DText>);
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
     constructor Create(AEngine: TEngine2D);
   end;
@@ -84,7 +84,7 @@ begin
   Result := vSpr;
 end;
 
-procedure TLoader.ClearAndDestroyPanel(FPanel: TList<tEngine2DText>);
+procedure TLoader.ClearAndDestroyPanel(FPanel: TNamedList<tEngine2DText>);
 var
   i: Integer;
   vObj: tEngine2DObject;
@@ -124,12 +124,14 @@ begin
   end;
 end;
 
-procedure TLoader.CreateRelaxPanel(FPanel: TList<tEngine2DText>);
+procedure TLoader.CreateRelaxPanel(FPanel: TNamedList<tEngine2DText>);
 var
   vText: TEngine2DText;
   vFont: TFont;
   vPrimaryColor, vSecondaryColor: TColor;
   vLeft, vRight: String;
+  vFormatter: TEngineFormatter;
+  i: Integer;
 begin
   ClearAndDestroyPanel(FPanel);
   vFont := TFont.Create;
@@ -140,33 +142,39 @@ begin
 
 
   vLeft := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
-           'left: engine.width - width * 1; top: 0.65 * height * ';
-  vRight := 'width: engine.width * 0.25; wifhor: engine.height * 0.1;' +
-           'left: engine.width - width * 0.5; top: 0.65 * height * ';
+           'left: engine.width - width * 1.15; top: 1.3 * height * ';
+  vRight := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
+           'left: engine.width - width * 0.05; top: 1.3 * height * ';
 
   vText := FastText('time', vFont, vPrimaryColor, 'relax', CenterLeft);
   vText.Text := 'Time:';
-  FPanel.Add(vText);
-  Formatter(vText, vLeft + IntToStr(FPanel.Count));
-  vText := FastText('timevalue', vFont, vPrimaryColor, 'relax', CenterLeft);
-  FPanel.Add(vText);
-  Formatter(vText, vRight + IntToStr(FPanel.Count)).Format;
+  FPanel.Add('time', vText);
+  Formatter(vText, vLeft + IntToStr(1));
+  vText := FastText('timevalue', vFont, vPrimaryColor, 'relax', CenterRight);
+  vText.Text := '0';
+  FPanel.Add('timevalue', vText);
+  Formatter(vText, vRight + IntToStr(1)).Format;
 
   vText := FastText('collisions', vFont, vPrimaryColor, 'relax', CenterLeft);
   vText.Text := 'Collisions:';
-  FPanel.Add(vText);
-  Formatter(vText, vLeft + IntToStr(FPanel.Count));
-  vText := FastText('collisionsvalue', vFont, vPrimaryColor, 'relax', Center);
-  FPanel.Add(vText);
-  Formatter(vText, vRight + IntToStr(FPanel.Count)).Format;
+  FPanel.Add('collisions', vText);
+  Formatter(vText, vLeft + IntToStr(2));
+  vText := FastText('collisionsvalue', vFont, vPrimaryColor, 'relax', CenterRight);
+  vText.Text := '0';
+  FPanel.Add('collisionsvalue', vText);
+  Formatter(vText, vRight + IntToStr(2)).Format;
 
   vText := FastText('score', vFont, vPrimaryColor, 'relax', CenterLeft);
   vText.Text := 'Score:';
-  FPanel.Add(vText);
-  Formatter(vText, vLeft + IntToStr(FPanel.Count));
-  vText := FastText('scoresvalue', vFont, vPrimaryColor, 'relax', CenterLeft);
-  FPanel.Add(vText);
-  Formatter(vText, vRight + IntToStr(FPanel.Count)).Format;
+  FPanel.Add('score', vText);
+  Formatter(vText, vLeft + IntToStr(3));
+  vText := FastText('scoresvalue', vFont, vPrimaryColor, 'relax', CenterRight);
+  vText.Text := '0';
+  FPanel.Add('scorevalue', vText);
+  Formatter(vText, vRight + IntToStr(3)).Format;
+
+  for i := 0 to FPanel.Count - 1 do
+    FPanel[i].Opacity := 0.5;
 
   FEngine.ShowGroup('relax');
 end;
@@ -228,12 +236,12 @@ begin
   Result := vSpr;
 end;
 
-procedure TLoader.CreateStoryPanel(FPanel: TList<tEngine2DText>);
+procedure TLoader.CreateStoryPanel(FPanel: TNamedList<tEngine2DText>);
 begin
 
 end;
 
-procedure TLoader.CreateSurvivalPanel(FPanel: TList<tEngine2DText>);
+procedure TLoader.CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
 begin
 
 end;
