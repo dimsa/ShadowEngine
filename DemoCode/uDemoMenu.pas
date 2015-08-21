@@ -121,7 +121,7 @@ begin
   FBack.CurRes := vEngine.Resources.IndexOf(ASpriteBackName);
 
   FText := TEngine2DText.Create(vEngine);
-  FText.TextRec := RectF(-125, -35, 125, 35);
+  FText.TextRect := RectF(-125, -35, 125, 35);
   FText.FontSize := 32;
   FText.Color := TAlphaColorRec.White;
 
@@ -262,7 +262,7 @@ var
 begin
   vEngine := FParent;
   vText := TEngine2DText.Create(vEngine);
-  vText.TextRec := RectF(-250, -100, 250, 100);
+  vText.TextRect := RectF(-250, -100, 250, 100);
   vText.FontSize := 28;
   vText.Group := 'about';
   vText.Color :=  TAlphaColorRec.White;
@@ -278,7 +278,7 @@ begin
   vFormatter.Format;
 
   vText := TEngine2DText.Create(vEngine);
-  vText.TextRec := RectF(-250, -100, 250, 100);
+  vText.TextRect := RectF(-250, -100, 250, 100);
   vText.FontSize := 16;
   vText.Color :=  TAlphaColorRec.Gray;
   vText.Text :=

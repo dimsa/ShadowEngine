@@ -263,7 +263,9 @@ begin
     vN := fObjects.Count - 1;
     fAnimationList.ClearForSubject(AObject);
     fFormatters.ClearForSubject(AObject);
+    fFastFields.ClearForSubject(AObject);
     fObjects.Delete(vNum{AObject});
+
    // AObject.Free;
 
     vPos := vN + 1;

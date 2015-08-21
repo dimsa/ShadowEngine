@@ -3,16 +3,21 @@ unit uDemoGameLoader;
 interface
 
 uses
-  SysUtils, System.Types, System.Math, System.Generics.Collections,
+  SysUtils, System.Types, System.Math, System.Generics.Collections,System.UITypes,
+  FMX.Graphics,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2D, uEngine2DSprite, uEngine2DObject, uDemoObjects, uIntersectorClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses, uEngineFormatter,
+  uEngine2DText,
   uNewFigure, uIntersectorMethods, uEasyDevice;
 
 type
   TLoader = class
   private
     FEngine: TEngine2D;
+  protected
+    function FastText(const AName: string; AFont: TFont; const AColor: TColor = TAlphaColorRec.White; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TEngine2DText;
+    procedure ClearAndDestroyPanel(FPanel: TList<tEngine2DText>);
   public
     function RandomAstroid: TLittleAsteroid;
     function BigAsteroid: TAsteroid;
@@ -26,6 +31,9 @@ type
     function Formatter(const ASubject: tEngine2DObject; const AText: String): TEngineFormatter;
     function LevelFormatText(const AX, AY: Integer): String;
     procedure CreateLifes(FLifes: TList<TSprite>; const ACount: Integer);
+    procedure CreateSurvivalPanel(FPanel: TList<tEngine2DText>);
+    procedure CreateRelaxPanel(FPanel: TList<tEngine2DText>);
+    procedure CreateStoryPanel(FPanel: TList<tEngine2DText>);
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
     constructor Create(AEngine: TEngine2D);
   end;
@@ -76,6 +84,20 @@ begin
   Result := vSpr;
 end;
 
+procedure TLoader.ClearAndDestroyPanel(FPanel: TList<tEngine2DText>);
+var
+  i: Integer;
+  vObj: tEngine2DObject;
+begin
+  for i := 0 to FPanel.Count - 1 do
+  begin
+    vObj := FPanel[i];
+    FEngine.DeleteObject(vObj);
+    vObj.Free;
+  end;
+  FPanel.Clear;
+end;
+
 constructor TLoader.Create(AEngine: TEngine2D);
 begin
   FEngine := AEngine;
@@ -100,6 +122,53 @@ begin
       'left: 1.05 * width * ( 0.8 + ' +IntToStr(i) +');').Format;
     FLifes.Add(vSpr)
   end;
+end;
+
+procedure TLoader.CreateRelaxPanel(FPanel: TList<tEngine2DText>);
+var
+  vText: TEngine2DText;
+  vFont: TFont;
+  vPrimaryColor, vSecondaryColor: TColor;
+  vLeft, vRight: String;
+begin
+  ClearAndDestroyPanel(FPanel);
+  vFont := TFont.Create;
+  vFont.Style := [TFontStyle.fsBold];
+  vFont.Size := 14;
+  vPrimaryColor := TAlphaColorRec.White;
+  vSecondaryColor := TAlphaColorRec.Lightgray;
+
+
+  vLeft := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
+           'left: engine.width - width * 1; top: 0.65 * height * ';
+  vRight := 'width: engine.width * 0.25; wifhor: engine.height * 0.1;' +
+           'left: engine.width - width * 0.5; top: 0.65 * height * ';
+
+  vText := FastText('time', vFont, vPrimaryColor, 'relax', CenterLeft);
+  vText.Text := 'Time:';
+  FPanel.Add(vText);
+  Formatter(vText, vLeft + IntToStr(FPanel.Count));
+  vText := FastText('timevalue', vFont, vPrimaryColor, 'relax', CenterLeft);
+  FPanel.Add(vText);
+  Formatter(vText, vRight + IntToStr(FPanel.Count)).Format;
+
+  vText := FastText('collisions', vFont, vPrimaryColor, 'relax', CenterLeft);
+  vText.Text := 'Collisions:';
+  FPanel.Add(vText);
+  Formatter(vText, vLeft + IntToStr(FPanel.Count));
+  vText := FastText('collisionsvalue', vFont, vPrimaryColor, 'relax', Center);
+  FPanel.Add(vText);
+  Formatter(vText, vRight + IntToStr(FPanel.Count)).Format;
+
+  vText := FastText('score', vFont, vPrimaryColor, 'relax', CenterLeft);
+  vText.Text := 'Score:';
+  FPanel.Add(vText);
+  Formatter(vText, vLeft + IntToStr(FPanel.Count));
+  vText := FastText('scoresvalue', vFont, vPrimaryColor, 'relax', CenterLeft);
+  FPanel.Add(vText);
+  Formatter(vText, vRight + IntToStr(FPanel.Count)).Format;
+
+  FEngine.ShowGroup('relax');
 end;
 
 function TLoader.CreateShip: TShip;
@@ -159,6 +228,16 @@ begin
   Result := vSpr;
 end;
 
+procedure TLoader.CreateStoryPanel(FPanel: TList<tEngine2DText>);
+begin
+
+end;
+
+procedure TLoader.CreateSurvivalPanel(FPanel: TList<tEngine2DText>);
+begin
+
+end;
+
 function TLoader.Explosion(const AX, AY, AAng: Double): TExplosion;
 var
   vSpr: TExplosion;
@@ -195,6 +274,18 @@ begin
   vRes.OnDestroy := vRes.DeleteSubject;
 
   Result := vRes;
+end;
+
+function TLoader.FastText(const AName: string; AFont: TFont;
+  const AColor: TColor; const AGroup: string; const AJustify: TObjectJustify): TEngine2DText;
+begin
+  Result := TEngine2DText.Create(FEngine);
+  Result.Group := AGroup;
+  Result.Font := AFont;
+  Result.Color := AColor;
+  Result.Justify := AJustify;
+  Result.TextRect := RectF(-50, -7, 50, 7);
+  FEngine.AddObject(AName, Result);
 end;
 
 function TLoader.Formatter(const ASubject: tEngine2DObject;

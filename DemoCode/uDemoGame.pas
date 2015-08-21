@@ -28,6 +28,7 @@ type
 
     FCollisions: Integer;
     FLifes: TList<TSprite>;
+    FPanels: TList<TEngine2DText>;
     FCollisionsText, FSecondsText: TEngine2DText;
     FGameOverText: TEngine2DText;
     FSeconds: Single;
@@ -51,6 +52,7 @@ type
     procedure StatGame(ASender: TObject);
     procedure AboutGame(ASender: TObject);
     procedure ExitGame(ASender: TObject);
+
     procedure RestartGame;
     function DestinationFromClick(const Ax, Ay: Single): TPosition;
     procedure SetGameStatus(const Value: TGameStatus);
@@ -117,6 +119,7 @@ begin
   FEngine := TDemoEngine.Create;
   FLoader := TLoader.Create(FEngine);
   FLifes := TList<TSprite>.Create;
+  FPanels := TList<TEngine2DText>.Create;
   FCollisions := 0;
   FSeconds := 0;
 end;
@@ -149,6 +152,10 @@ begin
   for i := 0 to FLifes.Count - 1 do
     FLifes[i].Free;
   FLifes.Free;
+
+  for i := 0 to FPanels.Count - 1 do
+    FPanels[i].Free;
+  FPanels.Free;
 
   FShip.Free;
   FLoader.Free;
@@ -277,10 +284,10 @@ begin
   FCollisionsText := TEngine2DText.Create(FEngine);
   FCollisionsText.Group := 'relaxmodemenu';
   FCollisionsText.Font := vFont;
-  FCollisionsText.TextRec := RectF(-100, -25, 100, 25);
+  FCollisionsText.TextRect := RectF(-100, -25, 100, 25);
   FCollisionsText.Color := TAlphaColorRec.Aqua;
   FSecondsText := TEngine2DText.Create(FEngine);
-  FSecondsText.TextRec := RectF(-100, -25, 100, 25);
+  FSecondsText.TextRect := RectF(-100, -25, 100, 25);
   FSecondsText.Font := vFont;
   FSecondsText.Group := 'relaxmodemenu';
   FSecondsText.Color := TAlphaColorRec.Aqua;
@@ -296,7 +303,7 @@ begin
   FGameOverText.FontSize := 56;
   FGameOverText.Group := 'gameover';
   FGameOverText.Color :=  TAlphaColorRec.White;
-  FGameOverText.TextRec := RectF(-150, -35, 150, 35);
+  FGameOverText.TextRect := RectF(-150, -35, 150, 35);
   FGameOverText.Text := 'Game Over';
   FEngine.AddObject(FGameOverText);
   FLoader.Formatter(FGameOverText, 'left: engine.width * 0.5; top: engine.height * 0.5;').Format;
@@ -347,11 +354,17 @@ end;
 procedure TDemoGame.RestartGame;
 begin
   case GameStatus of
-    gsRelaxMode:
+    gsRelaxMode: begin
       Self.FCollisions := 0;
+      FLoader.CreateRelaxPanel(FPanels);
+    end;
     gsSurvivalMode: begin
       FLoader.CreateLifes(FLifes, 3);
-
+      FLoader.CreateSurvivalPanel(FPanels);
+    end;
+    gsStoryMode: begin
+      FLoader.CreateLifes(FLifes, 1);
+      FLoader.CreateStoryPanel(FPanels);
     end;
     //  Self.FLives.
   end;

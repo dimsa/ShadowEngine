@@ -22,9 +22,8 @@ type
   end;
 
   TFastFields = class(TNamedList<TFastField>)
-  {private
-    procedure ClearForName(const AName: String);}
   public
+    procedure ClearForSubject(const AObject: tEngine2DUnclickableObject);
     procedure ClearBroken; // Удаляет все сломанные фастфильды
     destructor Destroy; override;
   end;
@@ -52,8 +51,9 @@ type
 
   TFastObjectField = class(TFastField)
   private
-    fObject: tEngine2DUnclickableObject;
+    FObject: tEngine2DUnclickableObject;
   public
+    property Subject: tEngine2DUnclickableObject read FObject;
     constructor Create(const AObject: tEngine2DUnclickableObject); reintroduce; virtual;
     function IsBroken: Boolean; override;
     destructor Destroy; override;
@@ -165,6 +165,22 @@ begin
       Self[i].Free;
     end;
 
+end;
+
+procedure TFastFields.ClearForSubject(
+  const AObject: tEngine2DUnclickableObject);
+var
+  i: Integer;
+  vFF: TFastField;
+begin
+  for i := Self.Count - 1 downto 0 do
+    if (Self[i] is TFastObjectField) then
+      if TFastObjectField(Self[i]).Subject = AObject then
+      begin
+        vFF := Self[i];
+        Self.Delete(vFF);
+        vFF.Free;
+      end;
 end;
 
 destructor TFastFields.Destroy;
