@@ -35,6 +35,9 @@ type
     procedure CreateRelaxPanel(FPanel: TNamedList<tEngine2DText>);
     procedure CreateStoryPanel(FPanel: TNamedList<tEngine2DText>);
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
+
+    property Parent: tEngine2d read FEngine;
+
     constructor Create(AEngine: TEngine2D);
   end;
 
