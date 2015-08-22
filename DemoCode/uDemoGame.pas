@@ -17,6 +17,7 @@ type
   TGameParam = class
   private
     FLoader: TLoader; // ССылка на Loader
+    FEngine: TDemoEngine; // Ссылка на движок. Получаем из FLoader
     FGameStatus: TGameStatus;
     FBackObjects: TList<TLittleAsteroid>; // Летящие бэки
     FAsteroids: TList<TAsteroid>;
@@ -38,8 +39,7 @@ type
     procedure SetLevel(const Value: Integer);
     procedure SetScore(const Value: Integer);
   public
-    procedure BreakLife;
-    procedure AddAsteroids(const ASize, ASpeed: Byte);
+
     // Статитические данные игры
     property Score: Integer read GetScore write SetScore;
     property Time: Double read GetTime;
@@ -53,6 +53,11 @@ type
     property Asteroids: TList<TAsteroid> read FAsteroids;
     property Lifes: TList<TSprite> read FLifes;
 
+    procedure BreakLife;
+    function AddAsteroid(ASize, ASpeed: Byte): TAsteroid;
+    procedure DeleteAsteroid(const ACount: Integer = 1);
+    procedure DefineAsteroidCount(const ACount: Integer);
+    procedure FixScore;
 
     procedure SetScaling(const AMonitorScale, ASpeedModScale: Double);
     procedure RenewPanels;
@@ -209,8 +214,11 @@ begin
               gsStoryMode, gsSurvivalMode: begin
                 BreakLife;
                 if FGP.Lifes.Count <= 0 then
+                begin
                   GameStatus := gsGameOver;
+                  FGP.FixScore;
                 end;
+              end;
               gsRelaxMode: FGP.AddCollision;
             end;
           end;
@@ -336,7 +344,7 @@ procedure TDemoGame.SetGameStatus(const Value: TGameStatus);
 begin
   FGameStatus := Value;
   case FGameStatus of
-    gsMenu1: begin FEngine.ShowGroup('menu1'); FEngine.HideGroup('gameover'); FEngine.HideGroup('relaxmodemenu'); FEngine.ShowGroup('menu'); FEngine.HideGroup('ship'); FEngine.HideGroup('menu2'); FEngine.HideGroup('about'); FEngine.HideGroup('statistics'); FEngine.HideGroup('menu3'); end;
+    gsMenu1: begin FEngine.ShowGroup('menu1'); FMenu.SendToFront; FEngine.HideGroup('gameover'); FEngine.HideGroup('relaxmodemenu'); FEngine.ShowGroup('menu'); FEngine.HideGroup('ship'); FEngine.HideGroup('menu2'); FEngine.HideGroup('about'); FEngine.HideGroup('statistics'); FEngine.HideGroup('menu3'); end;
     gsMenu2: begin FEngine.ShowGroup('menu2'); FEngine.HideGroup('menu1');  FEngine.HideGroup('menu3'); end;
     gsMenu3: begin FEngine.ShowGroup('menu3'); FEngine.HideGroup('menu2'); end;
     gsStatics: begin FEngine.ShowGroup('statistics'); FEngine.HideGroup('menu1') end;
@@ -344,7 +352,7 @@ begin
     gsRelaxMode: begin FGP.RestartGame(Value); FEngine.ShowGroup('relaxmodemenu'); FEngine.HideGroup('menu2'); FEngine.HideGroup('menu'); end;
     gsSurvivalMode: begin FGP.RestartGame(Value);  FEngine.HideGroup('menu2'); FEngine.HideGroup('menu'); end;
     gsStoryMode: begin FGP.RestartGame(Value);  FEngine.HideGroup('menu3'); FEngine.HideGroup('menu'); end;
-    gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); FEngine.ShowGroup('gameover'); end;
+    gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); FGP.Ship.Visible := False; FEngine.ShowGroup('gameover'); FGameOverText.SendToFront; end;
   end;
 end;
 
@@ -395,8 +403,41 @@ end;
 
 { TGameParam }
 
-procedure TGameParam.AddAsteroids(const ASize, ASpeed: Byte);
+function TGameParam.AddAsteroid(ASize, ASpeed: Byte): TAsteroid;
+var
+  vAsteroid: TAsteroid;
+  vSize, vSpeed: Double;
+  vX, vY: Double;
 begin
+
+  if ASize = prRandom then
+    ASize := Random(3) + 1;
+
+  if ASpeed = prRandom then
+    ASpeed := Random(3) + 1;
+
+  vSize := ASize * 0.3 + 0.4;
+  vSpeed := ASpeed * 1.2 + 3;
+
+  vAsteroid := FLoader.DefinedBigAsteroids(vSize, vSpeed);
+
+  FEngine.AddObject(vAsteroid);
+  FAsteroids.Add(vAsteroid);
+
+  // Астеройд появляется за гранью
+  case Random(4) of
+    0: begin  vX := - vAsteroid.wHalf; vY := Random(FEngine.Height) end;
+    1: begin  vX := FEngine.Width + vAsteroid.wHalf; vY := Random(FEngine.Height) end;
+    2: begin  vX := Random(FEngine.Width); vY := -vAsteroid.hHalf end;
+    3: begin  vX := Random(FEngine.Width); vY := FEngine.Height + vAsteroid.hHalf end;
+  end;
+
+  FLoader.Formatter(vAsteroid, 'width: sqrt(engine.width * engine.height) * 0.2;').Format;
+
+  vAsteroid.x := vX;
+  vAsteroid.y := vY;
+
+  SetScaling(MonitorScale, SpeedModScale);
 
 end;
 
@@ -408,10 +449,19 @@ end;
 procedure TGameParam.AddTime(const ADeltaTime: Double);
 var
   vS: string;
-  vDSec: Integer;
+  vDSec, vDSec2: Integer;
 begin
+  if FGameStatus = gsGameOver then
+    Exit;
   FSeconds := FSeconds + ADeltaTime;
   FValueableSeconds := FValueableSeconds + ADeltaTime;
+  FSecToNextLevel := FSecToNextLevel + ADeltaTime;
+  vDSec2 := Trunc(FSecToNextLevel / 15);
+  if vDSec2 > 0 then
+  begin
+    AddAsteroid(0, 0);
+    FSecToNextLevel := FSecToNextLevel - vDSec2 * 15;
+  end;
 
   vDSec := Trunc(FValueableSeconds / 0.1);
   if vDSec > 0 then
@@ -446,10 +496,11 @@ begin
   FLifes := TList<TSprite>.Create;
   FPanels := TNamedList<TEngine2DText>.Create;
   FLoader := ALoader;
+  FEngine := TDemoEngine(FLoader.Parent);
   FCollisions := 0;
   FSeconds := 0;
 
-FBackObjects := TList<TLittleAsteroid>.Create;
+  FBackObjects := TList<TLittleAsteroid>.Create;
   // Создаем астеройдное поле
   for i := 0 to 39 do
   begin
@@ -463,12 +514,36 @@ FBackObjects := TList<TLittleAsteroid>.Create;
   FLoader.Formatter(FShip, 'width: sqrt(engine.width * engine.height) * 0.125;');
 
   FAsteroids := TList<TAsteroid>.Create;
-  for i := 0 to 5 do
+  for i := 0 to 0 do
   begin
     vObj := FLoader.BigAsteroid;
     FAsteroids.Add(TAsteroid(vObj));
     FLoader.Formatter(vObj, 'width: sqrt(engine.width * engine.height) * 0.2;')
   end;
+end;
+
+procedure TGameParam.DefineAsteroidCount(const ACount: Integer);
+begin
+  if FAsteroids.Count > ACount then
+    DeleteAsteroid(FAsteroids.Count - ACount);
+
+  while FAsteroids.Count < ACount do
+    AddAsteroid(0, 0);
+end;
+
+procedure TGameParam.DeleteAsteroid(const ACount: Integer);
+var
+  i: Integer;
+  vSpr: TAsteroid;
+begin
+  for i := 0 to ACount - 1 do
+    if FAsteroids.Count > 0 then
+    begin
+      vSpr := FAsteroids.Last;
+      FAsteroids.Remove(vSpr);
+      FEngine.DeleteObject(vSpr);
+      vSpr.Free;
+    end;
 end;
 
 destructor TGameParam.Destroy;
@@ -492,6 +567,11 @@ begin
   FPanels.Free;
 
   FShip.Free;
+end;
+
+procedure TGameParam.FixScore;
+begin
+  FGameStatus := gsGameOver;
 end;
 
 function TGameParam.GetAsteroids: Integer;
@@ -563,6 +643,7 @@ begin
     gsSurvivalMode: begin
       FLoader.CreateLifes(FLifes, 3);
       FLoader.CreateSurvivalPanel(FPanels);
+      DefineAsteroidCount(3);
     end;
     gsStoryMode: begin
       FLoader.CreateLifes(FLifes, 1);

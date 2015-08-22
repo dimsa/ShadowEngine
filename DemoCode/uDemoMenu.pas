@@ -424,6 +424,8 @@ procedure TGameMenu.SendToFront;
 var
   vBut: TGameButton;
 begin
+
+  FGameLogo.SendToFront;
   for vBut in FList do
     vBut.SendToFront;
 end;

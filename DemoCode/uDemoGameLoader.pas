@@ -21,6 +21,7 @@ type
   public
     function RandomAstroid: TLittleAsteroid;
     function BigAsteroid: TAsteroid;
+    function DefinedBigAsteroids(const ASize, ASpeed: Double): TAsteroid;
     function CreateShip: TShip;
     function Explosion(const AX, AY, AAng: Double): TExplosion;
     function ExplosionAnimation(ASubject: TSprite): TSpriteAnimation;
@@ -145,7 +146,6 @@ begin
   vPrimaryColor := TAlphaColorRec.White;
   vSecondaryColor := TAlphaColorRec.Lightgray;
 
-
   vLeft := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
            'left: engine.width - width * 1.15; top: 1.3 * height * ';
   vRight := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
@@ -185,8 +185,50 @@ begin
 end;
 
 procedure TLoader.CreateStoryPanel(FPanel: TNamedList<tEngine2DText>);
+var
+  vText: TEngine2DText;
+  vFont: TFont;
+  vPrimaryColor, vSecondaryColor: TColor;
+  vLeft, vRight: String;
+  vFormatter: TEngineFormatter;
+  i: Integer;
+  vGroup: String;
 begin
+  vGroup := 'story';
+  ClearAndDestroyPanel(FPanel);
+  vFont := TFont.Create;
+  vFont.Style := [TFontStyle.fsBold];
+  vFont.Size := 14;
+  vPrimaryColor := TAlphaColorRec.White;
+  vSecondaryColor := TAlphaColorRec.Lightgray;
 
+  vLeft := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
+           'left: engine.width - width * 1.15; top: 1.3 * height * ';
+  vRight := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
+           'left: engine.width - width * 0.05; top: 1.3 * height * ';
+
+  vText := FastText('level', vFont, vSecondaryColor, vGroup, CenterLeft);
+  vText.Text := 'Level:';
+  FPanel.Add('level', vText);
+  Formatter(vText, vLeft + IntToStr(1));
+  vText := FastText('levelvalue', vFont, vSecondaryColor, vGroup, CenterRight);
+  vText.Text := '0';
+  FPanel.Add('levelvalue', vText);
+  Formatter(vText, vRight + IntToStr(1)).Format;
+
+  vText := FastText('time', vFont, vPrimaryColor, vGroup, CenterLeft);
+  vText.Text := 'Time left:';
+  FPanel.Add('time', vText);
+  Formatter(vText, vLeft + IntToStr(2));
+  vText := FastText('timevalue', vFont, vPrimaryColor, vGroup, CenterRight);
+  vText.Text := '0';
+  FPanel.Add('timevalue', vText);
+  Formatter(vText, vRight + IntToStr(2)).Format;
+
+  for i := 0 to FPanel.Count - 1 do
+    FPanel[i].Opacity := 0.5;
+
+  FEngine.ShowGroup(vGroup);
 end;
 
 procedure TLoader.CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
@@ -245,6 +287,36 @@ begin
     FPanel[i].Opacity := 0.5;
 
   FEngine.ShowGroup(vGroup);
+end;
+
+function TLoader.DefinedBigAsteroids(const ASize, ASpeed: Double): TAsteroid;
+var
+  vSpr: TAsteroid;
+  vFigure: TNewFigure;
+  vCircle: TCircle;
+  vAng: Double;
+begin
+  vSpr := TAsteroid.Create(FEngine);
+  vSpr.Parent := FEngine;
+  vSpr.Resources := FEngine.Resources;
+  vSpr.CurRes := 1;
+  vSpr.Group := 'activeobject';
+  vSpr.x := Random(FEngine.Width);
+  vSpr.y := Random(FEngine.Height);
+  vFigure := TNewFigure.Create(TNewFigure.cfCircle);
+  vCircle.X := 0;
+  vCircle.Y := 0;
+  vCircle.Radius := 50;
+  vFigure.SetData(vCircle);
+  vSpr.Shape.AddFigure(vFigure);
+  vSpr.ScaleMod := ASize; //RandomRange(60, 140) / 100;
+
+  vAng := Random(360) + random;
+
+  vSpr.DX := ASpeed * Cos(vAng * pi180);
+  vSpr.DY := ASpeed * Sin(vAng * pi180);
+
+  Result := vSpr;
 end;
 
 function TLoader.CreateShip: TShip;
