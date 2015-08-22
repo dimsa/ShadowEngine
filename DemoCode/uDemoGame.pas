@@ -344,14 +344,14 @@ procedure TDemoGame.SetGameStatus(const Value: TGameStatus);
 begin
   FGameStatus := Value;
   case FGameStatus of
-    gsMenu1: begin FEngine.ShowGroup('menu1'); FMenu.SendToFront; FEngine.HideGroup('gameover'); FEngine.HideGroup('relaxmodemenu'); FEngine.ShowGroup('menu'); FEngine.HideGroup('ship'); FEngine.HideGroup('menu2'); FEngine.HideGroup('about'); FEngine.HideGroup('statistics'); FEngine.HideGroup('menu3'); end;
-    gsMenu2: begin FEngine.ShowGroup('menu2'); FEngine.HideGroup('menu1');  FEngine.HideGroup('menu3'); end;
+    gsMenu1: begin FEngine.ShowGroup('menu1,menu'); FMenu.SendToFront; FEngine.HideGroup('gameover,relaxmodemenu,ship,menu2,about,statistics,menu3,relax,survival,story'); end;
+    gsMenu2: begin FEngine.ShowGroup('menu2'); FEngine.HideGroup('menu1,menu3'); end;
     gsMenu3: begin FEngine.ShowGroup('menu3'); FEngine.HideGroup('menu2'); end;
     gsStatics: begin FEngine.ShowGroup('statistics'); FEngine.HideGroup('menu1') end;
     gsAbout: begin FEngine.ShowGroup('about'); FEngine.HideGroup('menu1') end;
-    gsRelaxMode: begin FGP.RestartGame(Value); FEngine.ShowGroup('relaxmodemenu'); FEngine.HideGroup('menu2'); FEngine.HideGroup('menu'); end;
+    gsRelaxMode: begin FGP.RestartGame(Value); FEngine.ShowGroup('relaxmodemenu'); FEngine.HideGroup('menu2,menu'); end;
     gsSurvivalMode: begin FGP.RestartGame(Value);  FEngine.HideGroup('menu2'); FEngine.HideGroup('menu'); end;
-    gsStoryMode: begin FGP.RestartGame(Value);  FEngine.HideGroup('menu3'); FEngine.HideGroup('menu'); end;
+    gsStoryMode: begin FGP.RestartGame(Value);  FEngine.HideGroup('menu3,menu'); end;
     gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); FGP.Ship.Visible := False; FEngine.ShowGroup('gameover'); FGameOverText.SendToFront; end;
   end;
 end;

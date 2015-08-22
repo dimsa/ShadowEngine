@@ -148,6 +148,9 @@ const
 
 implementation
 
+uses
+  System.RegularExpressions;
+
 { tEngine2d }
 
 procedure tEngine2d.addObject(const AObject: tEngine2DObject);
@@ -435,14 +438,19 @@ end;
 
 procedure tEngine2d.HideGroup(const AGroup: String);
 var
-  i, l: Integer;
+  i, iG: Integer;
+  vReg: TRegEx;
+  vStrs: TArray<string>;
 begin
-  l := fObjects.Count - 1;
-
-  for i := 0 to l do
-    if fObjects[i].group = AGroup
-    then
-      fObjects[i].visible := False;
+  vReg := TRegEx.Create(',');
+  vStrs := vReg.Split(AGroup);
+  for iG := 0 to Length(vStrs) - 1 do
+  begin
+    vStrs[iG] := Trim(vStrs[iG]);
+    for i := 0 to fObjects.Count - 1 do
+      if fObjects[i].group = vStrs[iG] then
+        fObjects[i].visible := False;
+  end;
 end;
 
 procedure tEngine2d.InBeginPaintDefaultBehavior;
@@ -648,11 +656,19 @@ end;
 
 procedure tEngine2d.showGroup(const AGroup: String);
 var
-  i: Integer;
+  i, iG: Integer;
+  vReg: TRegEx;
+  vStrs: TArray<string>;
 begin
-  for i := 0 to fObjects.Count - 1 do
-    if fObjects[i].group = AGroup then
-      fObjects[i].visible := True
+  vReg := TRegEx.Create(',');
+  vStrs := vReg.Split(AGroup);
+  for iG := 0 to Length(vStrs) - 1 do
+  begin
+    vStrs[iG] := Trim(vStrs[iG]);
+    for i := 0 to fObjects.Count - 1 do
+      if fObjects[i].group = vStrs[iG] then
+        fObjects[i].visible := True;
+  end;
 end;
 
 procedure tEngine2d.spriteToBack(const n: integer);

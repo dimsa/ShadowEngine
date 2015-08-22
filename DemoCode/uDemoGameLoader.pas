@@ -241,7 +241,7 @@ var
   i: Integer;
   vGroup: String;
 begin
-  vGroup := 'survive';
+  vGroup := 'survival';
   ClearAndDestroyPanel(FPanel);
   vFont := TFont.Create;
   vFont.Style := [TFontStyle.fsBold];
@@ -249,12 +249,10 @@ begin
   vPrimaryColor := TAlphaColorRec.White;
   vSecondaryColor := TAlphaColorRec.Lightgray;
 
-
   vLeft := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
            'left: engine.width - width * 1.15; top: 1.3 * height * ';
   vRight := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
            'left: engine.width - width * 0.05; top: 1.3 * height * ';
-
 
  { vText := FastText('asteroids', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Asteroids:';

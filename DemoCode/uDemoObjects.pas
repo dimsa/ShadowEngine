@@ -442,7 +442,7 @@ begin
   vAni := vLoader.ExplosionAnimation(vExp);
 
   AObject.Rotate := AObject.Rotate + (vArcTan / pi180) * 0.02;
-  FNotChange := 10;
+  FNotChange := 3;
 
   vAni.Parent := fParent;
   tEngine2d(fParent).AnimationList.Add(vAni);
