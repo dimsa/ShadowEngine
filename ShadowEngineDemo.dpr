@@ -37,7 +37,8 @@ uses
   uIntersectorClasses in 'Intersector\uIntersectorClasses.pas',
   uEngine2DObjectShape in 'Engine\uEngine2DObjectShape.pas',
   uNewFigure in 'Intersector\uNewFigure.pas',
-  uDemoMenu in 'DemoCode\uDemoMenu.pas';
+  uDemoMenu in 'DemoCode\uDemoMenu.pas',
+  uEngine2DShape in 'Engine\uEngine2DShape.pas';
 
 {$R *.res}
 

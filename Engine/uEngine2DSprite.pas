@@ -28,7 +28,6 @@ type
     property scW: single read getScW; // Даёт ширину с учетом масштаба
     property scH: single read getScH; // Даёт высоту с учетом масштаба
 
-    function UnderTheMouse(const MouseX, MouseY: Double): boolean; override;
     procedure Repaint; override;
 
     constructor Create(AParent: pointer); override;
@@ -85,9 +84,6 @@ begin
               y + hHalf * CJustifyPoints[Justify].Bottom),
               Opacity, False
             );
-
-  if DrawSelect then
-    Shape.Draw;
 end;
 
 procedure tSprite.SetCurRes(const Value: Integer);
@@ -95,35 +91,6 @@ begin
   FCurRes := Value;
   Self.fWhalf := (W / 2){ * fPosition.scaleX};
   Self.fHhalf := (H / 2){ * fPosition.scaleY};
-end;
-
-function tSprite.UnderTheMouse(const MouseX, MouseY: Double): boolean;
-{var
-  vDist: Double;
-  vEX, vEY: Double; // абсцисса и ордианта точки на эллипсе
-  vFi: Double; // Угол точки эллипса
-  vR: Double; // Радиус эллипса в конкретной точке     }
-begin
-  Result := Self.Shape.UnderTheMouse(MouseX, MouseY);
-{  vEX := Self.x - MouseX;
-  vEY := Self.y - MouseY;
-  vDist := Sqrt(Sqr(vEX) + Sqr(vEY));
-
-  if  (vEX <> 0) then
-    vFi := ArcTan(vEY / vEX) else
-       if vEY > 0
-       then
-         vFi := pi / 2
-       else
-         vFi := - pi / 2;
-
-  vEx := Abs(Self.w * Self.ScaleX * 0.5);
-  vEy := Abs(Self.h * Self.ScaleY * 0.5);
-  vR := (vEX * vEY) /
-        sqrt( sqr(vEX * cos(vFi)) + sqr(vEY * sin(vFi)) );
-
-  Result := (vR >= vDist);
-  //Inherited;   }
 end;
 
 end.

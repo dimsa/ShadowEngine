@@ -30,6 +30,8 @@ type
     procedure BringToBack; // Ставит спрайт первым в списке отрисовки. Т.е. Переносит назад
     procedure SendToFront; // Ставит спрайт последним в списке отрисовки. Т.е. Переносит вперед
 
+    procedure Repaint; override;
+
     constructor Create(AParent: pointer); override;
     destructor Destroy; override;
   end;
@@ -80,6 +82,12 @@ procedure tEngine2DObject.EmptyMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
 
+end;
+
+procedure tEngine2DObject.Repaint;
+begin
+  if TEngine2D(FParent).DrawFigures then
+    Shape.Draw;
 end;
 
 procedure tEngine2DObject.SendToFront;

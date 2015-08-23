@@ -46,8 +46,8 @@ type
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
 
     procedure AutoResizeFont(const ARatio: Single = 0); experimental; // Автоматически подбирает размер шрифта
-
     procedure Repaint; override;
+
     constructor Create(AParent: pointer); override;
     destructor Destroy; override;
   end;

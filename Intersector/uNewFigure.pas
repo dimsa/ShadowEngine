@@ -50,8 +50,6 @@ type
     cfPoly = 2;
   end;
 
-
-
 implementation
 
 { TNewFigure }

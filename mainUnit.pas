@@ -40,6 +40,7 @@ begin
   Game.Image := mainImage;
   DrawSelect := False;
   Game.Prepare;
+// mainImage.Canvas.st
 end;
 
 procedure TmainForm.FormKeyDown(Sender: TObject; var Key: Word;

@@ -3,7 +3,7 @@ object mainForm: TmainForm
   Top = 0
   Caption = 'ShadowEngine Demo'
   ClientHeight = 638
-  ClientWidth = 563
+  ClientWidth = 527
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop, iPhone, iPad]
@@ -18,7 +18,7 @@ object mainForm: TmainForm
       end>
     Align = Client
     DisableInterpolation = True
-    Size.Width = 563.000000000000000000
+    Size.Width = 527.000000000000000000
     Size.Height = 638.000000000000000000
     Size.PlatformDefault = False
     WrapMode = Original

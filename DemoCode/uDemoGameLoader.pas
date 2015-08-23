@@ -18,6 +18,9 @@ type
   protected
     function FastText(const AName: string; AFont: TFont; const AColor: TColor = TAlphaColorRec.White; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TEngine2DText;
     procedure ClearAndDestroyPanel(FPanel: TNamedList<tEngine2DText>);
+    procedure Comix1Create;
+    procedure Comix2Create;
+    procedure Comix3Create;
   public
     function RandomAstroid: TLittleAsteroid;
     function BigAsteroid: TAsteroid;
@@ -30,6 +33,7 @@ type
     procedure ShipExplosionAnimation(ASubject: TShip);
     function ButtonAnimation(ASubject: TEngine2dObject; const AEndScale: Double):  TMouseDownMigrationAnimation;
     function Formatter(const ASubject: tEngine2DObject; const AText: String): TEngineFormatter;
+    function Sprite(const AResource: string = ''; const AGroup: string = ''; const AName: string = ''): TSprite;
     function LevelFormatText(const AX, AY: Integer): String;
     procedure CreateLifes(FLifes: TList<TSprite>; const ACount: Integer);
     procedure CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
@@ -50,13 +54,13 @@ implementation
 function MonitorScale: Single;
 begin
   Result := (
-    Sqrt(uEasyDevice.getDisplaySizeInPx.X * uEasyDevice.getDisplaySizeInPx.Y) * 0.1) * 0.005;
+    (uEasyDevice.getDisplaySizeInPx.X + uEasyDevice.getDisplaySizeInPx.Y) * 0.5) * 0.001;
 end;
 
 function SpeedModScale: Single;
 begin
   Result := (
-    Sqrt(uEasyDevice.getDisplaySizeInPx.X * uEasyDevice.getDisplaySizeInPx.Y) * 0.1) / 100;
+    (uEasyDevice.getDisplaySizeInPx.X + uEasyDevice.getDisplaySizeInPx.Y) * 0.5) * 0.001;
 end;
 
 { TLoader }
@@ -100,6 +104,26 @@ begin
     vObj.Free;
   end;
   FPanel.Clear;
+end;
+
+procedure TLoader.Comix1Create;
+var
+  vSpr: TSprite;
+  vGroup: string;
+begin
+  vGroup := 'comix1';
+  vSpr := Sprite('', vGroup, 'shipcomix');
+ //  Formatter(vSpr, 'width: ')
+end;
+
+procedure TLoader.Comix2Create;
+begin
+
+end;
+
+procedure TLoader.Comix3Create;
+begin
+
 end;
 
 constructor TLoader.Create(AEngine: TEngine2D);
@@ -537,6 +561,16 @@ begin
   vRes.OnSetup := ASubject.SendToFront;
 
   Result := vRes;
+end;
+
+function TLoader.Sprite(const AResource, AGroup, AName: string): TSprite;
+begin
+  Result := TSprite.Create(FEngine);
+  Result.Resources := FEngine.Resources;
+  if AResource <> '' then
+    Result.CurRes := FEngine.Resources.IndexOf(AResource);
+  Result.Group := AGroup;
+  FEngine.AddObject(AName, Result);
 end;
 
 end.
