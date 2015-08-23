@@ -106,10 +106,13 @@ type
 
     function DestinationFromClick(const Ax, Ay: Single): TPosition;
     procedure SetGameStatus(const Value: TGameStatus);
+    function GetDrawFigures: Boolean;
+    procedure SetDrawFigures(const Value: Boolean);
   public
     property GameStatus: TGameStatus read FGameStatus write SetGameStatus;
     property Image: TImage read GetImage write SetImage;
     property Speed: Single read GetSpeed;
+    property DrawFigures: Boolean read GetDrawFigures write SetDrawFigures;
 
     procedure Prepare;
     procedure Resize;
@@ -234,6 +237,11 @@ begin
   end;
 end;
 
+function TDemoGame.GetDrawFigures: Boolean;
+begin
+  Result := FEngine.DrawFigures;
+end;
+
 function TDemoGame.GetImage: TImage;
 begin
   Result := FEngine.Image;
@@ -322,6 +330,7 @@ begin
 
   FEngine.InBeginPaintBehavior := DoGameTick;
   FEngine.Start;
+  FLoader.CreateComix;
 end;
 
 procedure TDemoGame.Resize;
@@ -338,6 +347,11 @@ end;
 procedure TDemoGame.SelectMode(ASender: TObject);
 begin
   Self.GameStatus := gsMenu2;
+end;
+
+procedure TDemoGame.SetDrawFigures(const Value: Boolean);
+begin
+  FEngine.DrawFigures := Value;
 end;
 
 procedure TDemoGame.SetGameStatus(const Value: TGameStatus);

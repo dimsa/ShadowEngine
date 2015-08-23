@@ -8,7 +8,7 @@ uses
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2D, uEngine2DSprite, uEngine2DObject, uDemoObjects, uIntersectorClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses, uEngineFormatter,
-  uEngine2DText, uNamedList,
+  uEngine2DText, uNamedList, uEngine2DShape,
   uNewFigure, uIntersectorMethods, uEasyDevice;
 
 type
@@ -39,6 +39,7 @@ type
     procedure CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
     procedure CreateRelaxPanel(FPanel: TNamedList<tEngine2DText>);
     procedure CreateStoryPanel(FPanel: TNamedList<tEngine2DText>);
+    procedure CreateComix;
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
 
     property Parent: tEngine2d read FEngine;
@@ -108,11 +109,21 @@ end;
 
 procedure TLoader.Comix1Create;
 var
+  vFig: TEngine2DShape;
   vSpr: TSprite;
   vGroup: string;
 begin
   vGroup := 'comix1';
-  vSpr := Sprite('', vGroup, 'shipcomix');
+
+  vFig := TFillRect.Create(FEngine);
+  vFig.Brush.Color := TAlphaColorRec.Red;
+  FEngine.AddObject(vFig);
+  Formatter(vFig, 'scalex:engine.width/width; scaley: engine.height/(height*2);' +
+                  'height: engine.height / 2;left: engine.width/2; top: engine.height / 4;').format;
+  vFig.Visible := True;
+  vFig.Opacity := 0.5;
+
+  //vSpr := Sprite('', vGroup, 'shipcomix');
  //  Formatter(vSpr, 'width: ')
 end;
 
@@ -129,6 +140,13 @@ end;
 constructor TLoader.Create(AEngine: TEngine2D);
 begin
   FEngine := AEngine;
+end;
+
+procedure TLoader.CreateComix;
+begin
+  Comix1Create;
+  Comix2Create;
+  Comix3Create;
 end;
 
 procedure TLoader.CreateLifes(FLifes: TList<TSprite>; const ACount: Integer);

@@ -18,6 +18,8 @@ type
     fWhalf, fHHalf: single; // половина ширины и высоты
     function GetW: single; override;
     function GetH: single; override;
+    procedure SetScaleX(const Value: single); override;
+    procedure SetScaleY(const Value: single); override;
   public
     property Pen: TStrokeBrush read FPen write FPen;
     property Brush: TBrush read FBrush write FBrush;
@@ -44,7 +46,7 @@ implementation
 constructor TEngine2DShape.Create(AParent: pointer);
 begin
   inherited;
-  FFigureRect := RectF(-50, -50, 50, 50);
+  FigureRect := RectF(-50, -50, 50, 50);
 
   FPen := TStrokeBrush.Create(TBrushKind.Solid, TAlphaColorRec.Black);
   FPen.Thickness := 1;
@@ -78,6 +80,18 @@ begin
   fHhalf := Value.Height * 0.5;
 end;
 
+procedure TEngine2DShape.SetScaleX(const Value: single);
+begin
+  inherited;
+  Self.fWhalf := FFigureRect.Width * 0.5 * Value;
+end;
+
+procedure TEngine2DShape.SetScaleY(const Value: single);
+begin
+  inherited;
+  Self.fHhalf := FFigureRect.Height * 0.5 * Value;
+end;
+
 { TFillEllipse }
 
 procedure TFillEllipse.Repaint;
@@ -106,15 +120,15 @@ begin
 
   FImage.Bitmap.Canvas.FillRect(
     RectF(
-      FwHalf * CJustifyPoints[Justify].Left,
-      FhHalf * CJustifyPoints[Justify].Top,
-      FwHalf * CJustifyPoints[Justify].Right,
-      FhHalf * CJustifyPoints[Justify].Bottom),
+      x + FwHalf * CJustifyPoints[Justify].Left,
+      y + FhHalf * CJustifyPoints[Justify].Top,
+      x + FwHalf * CJustifyPoints[Justify].Right,
+      y + FhHalf * CJustifyPoints[Justify].Bottom),
     0,
     0,
     [],
     fOpacity,
-    FMX.Types.TCornerType.Round
+    FMX.Types.TCornerType.Bevel
   );
 
   inherited;

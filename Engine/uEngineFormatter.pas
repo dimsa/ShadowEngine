@@ -345,6 +345,8 @@ begin
   if (vText = 'rotateifhor') or (vText = 'angleifhor') then  TIfHorCondition.Create(TRotateDir.Create(FObject, AExp));
   if (vText = 'widthifhor') or (vText = 'wifhor') then Result := TIfHorCondition.Create(TWidthDir.Create(FObject, AExp));
   if (vText = 'heightifhor') or (vText = 'hifhor') then Result := TIfHorCondition.Create(THeightDir.Create(FObject, AExp));
+  if (vText = 'scalexifhor') or (vText = 'scalewifhor') or (vText = 'scwifhor') or (vText = 'scxifhor')   then Result := TIfHorCondition.Create(TScaleXDir.Create(FObject, AExp));
+  if (vText = 'scaleyifhor') or (vText = 'scalehifhor') or (vText = 'schifhor') or (vText = 'scyifhor')   then Result := TIfHorCondition.Create(TScaleYDir.Create(FObject, AExp));
 end;
 
 { TFormatterDirective }
