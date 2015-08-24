@@ -12,7 +12,7 @@ uses
   uEngine2DSprite, uEngineFormatter, uNamedList;
 
 type
-  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode, gsGameOver);
+  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode, gsGameOver, gsComix1, gsComix2, gsComix3);
 
   TGameParam = class
   private
@@ -97,6 +97,7 @@ type
     procedure SelectLevel(ASender: TObject);
     procedure StartRelax(ASender: TObject);
     procedure StartSurvival(ASender: TObject);
+    procedure StartStory(ASender: TObject);
     procedure StatGame(ASender: TObject);
     procedure AboutGame(ASender: TObject);
     procedure ExitGame(ASender: TObject);
@@ -260,6 +261,9 @@ begin
 
   case GameStatus of
     gsGameOver: GameStatus := gsMenu1;
+    gsComix1: GameStatus := gsComix2;
+    gsComix2: GameStatus := gsComix3;
+    gsComix3: GameStatus := gsStoryMode;
   end;
 
   fEngine.MouseDown(Sender, Button, Shift, x, y);
@@ -322,7 +326,8 @@ begin
   FMenu.RelaxMode := StartRelax;
   FMenu.SurvivalMode := StartSurvival;
   FMenu.StoryMode := SelectLevel;
-  FMenu.LevelSelect := SelectMode;
+  FMenu.LevelSelect := StartStory;
+
   FEngine.HideGroup('ship');
   FEngine.HideGroup('menu2');
   FEngine.HideGroup('menu3');
@@ -365,8 +370,11 @@ begin
     gsAbout: begin FEngine.ShowGroup('about'); FEngine.HideGroup('menu1') end;
     gsRelaxMode: begin FGP.RestartGame(Value); FEngine.ShowGroup('relaxmodemenu'); FEngine.HideGroup('menu2,menu'); end;
     gsSurvivalMode: begin FGP.RestartGame(Value);  FEngine.HideGroup('menu2'); FEngine.HideGroup('menu'); end;
-    gsStoryMode: begin FGP.RestartGame(Value);  FEngine.HideGroup('menu3,menu'); end;
+    gsStoryMode: begin FGP.RestartGame(Value);  FEngine.HideGroup('menu3,menu,comix1,comix2,comix3'); end;
     gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); FGP.Ship.Visible := False; FEngine.ShowGroup('gameover'); FGameOverText.SendToFront; end;
+    gsComix1: begin FEngine.ShowGroup('comix1'); FEngine.HideGroup('menu3,menu'); end;
+    gsComix2: begin FEngine.ShowGroup('comix2'); end;
+    gsComix3: begin FEngine.ShowGroup('comix3'); end;
   end;
 end;
 
@@ -403,6 +411,11 @@ end;
 procedure TDemoGame.StartRelax(ASender: TObject);
 begin
   GameStatus := gsRelaxMode;
+end;
+
+procedure TDemoGame.StartStory(ASender: TObject);
+begin
+  GameStatus := gsComix1;
 end;
 
 procedure TDemoGame.StartSurvival(ASender: TObject);

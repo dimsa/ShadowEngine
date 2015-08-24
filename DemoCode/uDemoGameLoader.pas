@@ -9,7 +9,7 @@ uses
   uEngine2D, uEngine2DSprite, uEngine2DObject, uDemoObjects, uIntersectorClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses, uEngineFormatter,
   uEngine2DText, uNamedList, uEngine2DShape,
-  uNewFigure, uIntersectorMethods, uEasyDevice;
+  uNewFigure, uIntersectorMethods, uEasyDevice, uClasses;
 
 type
   TLoader = class
@@ -111,23 +111,45 @@ procedure TLoader.Comix1Create;
 var
   vFig: TEngine2DShape;
   vSpr: TSprite;
+  vTxt: TEngine2DText;
   vGroup: string;
 begin
   vGroup := 'comix1';
 
   vFig := TFillRect.Create(FEngine);
-  vFig.Brush.Color := TAlphaColorRec.Red;
+  vFig.Group := vGroup;
+  vFig.FigureRect := RectF(-200, -200, 200, 200);
+  vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
+  vFig.Brush.Kind := TBrushKind.Bitmap;
+  vFig.Pen.Thickness := 4;
+  vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FEngine.AddObject(vFig);
   Formatter(vFig, 'scalex:engine.width/width; scaley: engine.height/(height*2);' +
-                  'height: engine.height / 2;left: engine.width/2; top: engine.height / 4;').format;
+                  'height: engine.height * (12/24);left: engine.width * (12/24); top: engine.height * (6/24);').format;
   vFig.Visible := True;
-  vFig.Opacity := 0.5;
+  vFig.Opacity := 1;
 
+ vSpr := Self.Sprite('planetcomix', vGroup);
+ Formatter(vSpr, 'width: engine.width * 0.5;' +
+                 'left: engine.width * (16/24); top: engine.height * (2/24);').format;
 
+ vSpr := Self.Sprite('shipcomix', vGroup);
+ Formatter(vSpr, 'width:engine.width * 0.3;' +
+                 'left: engine.width * (7/24); top: engine.height * (5/24);').format;
 
+  vSpr := Self.Sprite('captain1', vGroup);
+  Formatter(vSpr, 'width:engine.width * 0.3;max-height: engine.height*0.23;' +
+                 'left: engine.width * (5/24); top: engine.height * (9/24);').format;
 
+  vTxt := Self.FastText('monolog1', TFont.Create, TAlphaColorRec.White, vGroup);
+  vTxt.WordWrap := True;
+  vTxt.TextRect := RectF(-200, -100, 200, 100);
   //vSpr := Sprite('', vGroup, 'shipcomix');
- //  Formatter(vSpr, 'width: ')
+  vTxt.FontSize := 36;
+  vTxt.Justify := CenterRight;
+  vTxt.Text := 'Great! I so close to the destination planet! I need only 3 minutes to reach it.';
+  Formatter(vTxt, 'width:engine.width * 0.6;' +
+                 'left: engine.width * (5.5/8); top: engine.height * (9.2/24);').format;
 end;
 
 procedure TLoader.Comix2Create;
@@ -135,15 +157,62 @@ var
   vFig: TEngine2DShape;
   vSpr: TSprite;
   vGroup: string;
+  vTxt: TEngine2DText;
+  i, vN: Integer;
+  vS1, vS2: string;
 begin
   vGroup := 'comix2';
   vFig := TFillRect.Create(FEngine);
-  vFig.Brush.Color := TAlphaColorRec.Yellow;
+  vFig.Group := vGroup;
+  vFig.FigureRect := RectF(-200, -200, 200, 200);
+  vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
+  vFig.Brush.Kind := TBrushKind.Bitmap;
+  vFig.Pen.Thickness := 4;
+  vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FEngine.AddObject(vFig);
   Formatter(vFig, 'scalex:engine.width/width; scaley: engine.height/(height*2);' +
                   'height: engine.height / 2;left: engine.width/2; top: engine.height * (3/4);').format;
   vFig.Visible := True;
-  vFig.Opacity := 0.5;
+  vFig.Opacity := 1;
+
+vSpr := Self.Sprite('planetcomix', vGroup);
+ Formatter(vSpr, 'width: engine.width * 0.45;' +
+                 'left: engine.width * (20/24); top: engine.height * (16/24);').format;
+
+ vSpr := Self.Sprite('shipcomix', vGroup);
+ Formatter(vSpr, 'width:engine.width * 0.25;' +
+                 'left: engine.width * (7/24); top: engine.height * (14/24);').format;
+
+  vSpr := Self.Sprite('captain2', vGroup);
+  Formatter(vSpr, 'width:engine.width * 0.3; max-height: engine.height*0.23;' +
+                 'left: engine.width * (5/24); top: engine.height * (21/24);').format;
+
+
+vSpr := Self.Sprite('asteroidcomix', vGroup);
+  Formatter(vSpr, 'width:engine.width * 0.25; max-height: engine.height*0.23;' +
+                 'left: engine.width * (15/24); top: engine.height * (17/24);').format;
+
+  {
+  I wanted to generate it, but random is so ugly :-(
+
+  vN := 10;
+  for i := 0 to vN - 1 do
+  begin
+  vS1 := FloatToStr((RandomRange(-160, 160) ) / 80);
+  vS2 := FloatToStr((RandomRange(-160, 160) ) / 80);
+    vSpr := Self.Sprite('asteroid', vGroup);
+    Formatter(vSpr, 'width:engine.width * 0.5 * ' + FloatToStr(Random * 0.25) + '; ' +
+                 'left: engine.width * (16 + 0' + vS1  + ')/24; top: engine.height * (15 + 0' + vS2 + ')/24;').format;
+  end; }
+
+  vTxt := Self.FastText('monolog2', TFont.Create, TAlphaColorRec.White, vGroup);
+  vTxt.WordWrap := True;
+  vTxt.TextRect := RectF(-260, -150, 260, 150);
+  vTxt.FontSize := 36;
+  vTxt.Justify := CenterRight;
+  vTxt.Text := 'Usually asteroids are at a very long distance from each other. But here are 5 of them within easy reach! And they are moving towards me at the high speed!';
+  Formatter(vTxt, 'width:engine.width * 0.6;' +
+                 'left: engine.width * (5.5/8); top: engine.height * (21.2/24);').format;
 end;
 
 procedure TLoader.Comix3Create;
@@ -151,17 +220,51 @@ var
   vFig: TEngine2DShape;
   vSpr: TSprite;
   vGroup: string;
+  vTxt: TEngine2DText;
 begin
-  vGroup := 'comix2';
+  vGroup := 'comix3';
   vFig := TFillRect.Create(FEngine);
-  vFig.Brush.Color := TAlphaColorRec.Blue;
+  vFig.Group := vGroup;
+  vFig.FigureRect := RectF(-200, -200, 200, 200);
+  vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
+  vFig.Brush.Kind := TBrushKind.Bitmap;
+  vFig.Pen.Thickness := 4;
+  vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FEngine.AddObject(vFig);
   Formatter(vFig, 'scalex:0.85*(engine.width/width); scaley: engine.height/(height*2);' +
                   'height: (engine.height / 2);' +
                   'scyifhor: (engine.height/height) * 0.85; hifhor: engine.height * 0.4;'+
                   'left: engine.width/2; top: engine.height / 2').format;
   vFig.Visible := True;
-  vFig.Opacity := 0.5;
+  vFig.Opacity := 1;
+
+  vSpr := Self.Sprite('planetcomix', vGroup);
+  Formatter(vSpr, 'width: engine.width * 0.25;' +
+                 'left: engine.width * (18/24); top: engine.height * (8/24);').format;
+
+ vSpr := Self.Sprite('shipcomix', vGroup);
+ Formatter(vSpr, 'width:engine.width * 0.12;' +
+                 'left: engine.width * (6/24); top: engine.height * (15.1/24);').format;
+
+  vSpr := Self.Sprite('captain3', vGroup);
+  Formatter(vSpr, 'width:engine.width * 0.3; max-height: engine.height*0.23;' +
+                 'left: engine.width * (6/24); top: engine.height * (9.5/24);').format;
+
+  vSpr := Self.Sprite('asteroidcomix', vGroup);
+  Formatter(vSpr, 'width:engine.width * 0.3; max-height: engine.height*0.23;' +
+                 'left: engine.width * (6/24); top: engine.height * (15/24);').format;
+
+  vSpr := Self.Sprite('arrow', vGroup);
+  Formatter(vSpr, 'width: engine.width * 0.2;rotate: 270; max-height: engine.width * 0.1;' +
+                 'left: engine.width * (18/24); top: engine.height * (12/24);').format;
+
+  vTxt := Self.FastText('monolog3', TFont.Create, TAlphaColorRec.White, vGroup);
+  vTxt.WordWrap := True;
+  vTxt.TextRect := RectF(-250, -50, 250, 50);
+  vTxt.FontSize := 36;
+  vTxt.Text := 'Your destination';
+  Formatter(vTxt, 'width:engine.width * 0.6;' +
+                 'left: engine.width * (18/24); top: engine.height * (14/24);').format;
 end;
 
 constructor TLoader.Create(AEngine: TEngine2D);
@@ -174,6 +277,7 @@ begin
   Comix1Create;
   Comix2Create;
   Comix3Create;
+  FEngine.HideGroup('comix1, comix2, comix3');
 end;
 
 procedure TLoader.CreateLifes(FLifes: TList<TSprite>; const ACount: Integer);
@@ -438,7 +542,7 @@ begin
   vSpr.Shape.AddFigure(vPoly3);
   vSpr.Shape.AddFigure(vShape);
   vSpr.Visible := False;
-  FEngine.AddObject('ship', vSpr); // Добавлять можно только так спрайты
+  FEngine.AddObject(vSpr, 'ship'); // Добавлять можно только так спрайты
 
   Result := vSpr;
 end;
@@ -490,7 +594,7 @@ begin
   Result.Color := AColor;
   Result.Justify := AJustify;
   Result.TextRect := RectF(-50, -7, 50, 7);
-  FEngine.AddObject(AName, Result);
+  FEngine.AddObject(Result, AName);
 end;
 
 function TLoader.Formatter(const ASubject: tEngine2DObject;
@@ -615,7 +719,7 @@ begin
   if AResource <> '' then
     Result.CurRes := FEngine.Resources.IndexOf(AResource);
   Result.Group := AGroup;
-  FEngine.AddObject(AName, Result);
+  FEngine.AddObject(Result, AName);
 end;
 
 end.

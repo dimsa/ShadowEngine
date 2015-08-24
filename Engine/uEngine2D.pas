@@ -117,8 +117,8 @@ type
       Shift: TShiftState; x, y: single); virtual;
 
     procedure DeleteObject(const AObject: tEngine2DObject); overload; // Убирает спрайт из отрисовки
-    procedure AddObject(const AObject: tEngine2DObject); overload;// Добавляет спрайт на отрисовку
-    procedure AddObject(const AName: String; const AObject: tEngine2DObject); overload;// Добавляет спрайт на отрисовку
+//    procedure AddObject(const AObject: tEngine2DObject); overload;// Добавляет спрайт на отрисовку
+    procedure AddObject(const AObject: tEngine2DObject; const AName: String = ''); // Добавляет спрайт на отрисовку
 
     procedure AssignShadowObject(ASpr: tEngine2DObject); // Ассигнет спрайт в ShadowObject
     property ShadowObject: tEngine2DObject read FShadowObject;  // Указатель на Теневой объект.
@@ -155,24 +155,30 @@ uses
 
 { tEngine2d }
 
-procedure tEngine2d.addObject(const AObject: tEngine2DObject);
+{procedure tEngine2d.addObject(const AObject: tEngine2DObject);
 begin
   Inc(FAddedSprite);
-  addObject('genname'+IntToStr(FAddedSprite)+'x'+IntToStr(Random(65536)), AObject);
-end;
 
-procedure tEngine2d.addObject(const AName: String;
-  const AObject: tEngine2DObject);
+end;}
+
+procedure tEngine2d.addObject(const AObject: tEngine2DObject; const AName: String);
 var
   l: integer;
+  vName: String;
 begin
+  Inc(FAddedSprite);
+  if AName = '' then
+    vName := 'genname'+IntToStr(FAddedSprite)+'x'+IntToStr(Random(65536))
+  else
+    vName := AName;
+
   if fObjects.IsHere(AObject) then
     raise Exception.Create('You are trying to add Object to Engine that already Exist')
   else
   begin
     fCritical.Enter;
     l := spriteCount;
-    fObjects.Add(AName, AObject);
+    fObjects.Add(vName, AObject);
     setLength(fSpriteOrder, l + 1);
     fObjects[l].Image := fImage;
     fSpriteOrder[l] := l;
@@ -609,7 +615,7 @@ procedure tEngine2d.prepareShadowObject;
 begin
   FShadowObject := tSprite.Create(Self);
   FShadowObject.Parent := Self;
-  Self.AddObject('shadow', FShadowObject);
+  Self.AddObject(FShadowObject, 'shadow');
 end;
 
 procedure tEngine2d.setBackGround(ABmp: tBitmap);

@@ -131,6 +131,21 @@ begin
     FMX.Types.TCornerType.Bevel
   );
 
+  if FPen.Thickness > 0 then
+    FImage.Bitmap.Canvas.DrawRect(
+      RectF(
+        x + FwHalf * CJustifyPoints[Justify].Left,
+        y + FhHalf * CJustifyPoints[Justify].Top,
+        x + FwHalf * CJustifyPoints[Justify].Right,
+        y + FhHalf * CJustifyPoints[Justify].Bottom),
+      0,
+      0,
+      [],
+      fOpacity,
+      FMX.Types.TCornerType.Bevel
+    );
+
+
   inherited;
 end;
 

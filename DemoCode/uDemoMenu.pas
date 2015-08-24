@@ -129,7 +129,7 @@ begin
 
   FBack.OnMouseDown := MouseDown;
 
-  vEngine.AddObject(FName, FBack);
+  vEngine.AddObject(FBack, FName);
   vEngine.AddObject(FText);
 
   vFormatter := TEngineFormatter.Create(FText);
@@ -238,7 +238,7 @@ begin
   FGameLogo.Resources := vEngine.Resources;
   FGameLogo.Group := 'menu';
   FGameLogo.CurRes := vEngine.Resources.IndexOf('gamelogo');
-  vEngine.AddObject('gamelogo', FGameLogo);
+  vEngine.AddObject(FGameLogo, 'gamelogo');
 
   vFormatter := TEngineFormatter.Create(FGameLogo);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.21; width: engine.width * 0.8; max-height: engine.height * 0.40;' +
@@ -271,7 +271,7 @@ begin
     'ver. 0.7 beta' + #13 + #13 +
     'Game about confrontation of' + #13 + 'Humankind and Asteroids';
   vText.Group := 'about';
-  vEngine.AddObject('aboutcaption', vText);
+  vEngine.AddObject(vText, 'aboutcaption');
   vFormatter := TEngineFormatter.Create(vText);
   vFormatter.Text := 'left: engine.width * 0.5; top: gamelogo.bottomborder + engine.height * 0.15; width: engine.width * 0.8;';
   vEngine.FormatterList.Add(vFormatter);
@@ -289,7 +289,7 @@ begin
   'https://github.com/dimsa/ShadowEngine' +  #13 + #13 +
   'Thanks to everyone who helped with Game and Engine!';
   vText.Group := 'about';
-  vEngine.AddObject('aboutdescription', vText);
+  vEngine.AddObject(vText, 'aboutdescription');
 
   vFormatter := TEngineFormatter.Create(vText);
   vFormatter.Text := 'left: engine.width * 0.5; top: aboutcaption.bottomborder + engine.height * 0.1; width: engine.width * 0.8;';
@@ -441,8 +441,12 @@ begin
 end;
 
 procedure TGameMenu.SetLevelSelect(const Value: TVCLProcedure);
+var
+  i: Integer;
 begin
-//  FList[4].OnClick := Value;
+  for i := 0 to FLevelMenu.Count -1 do
+    Self.FLevelMenu[i].OnClick := Value;
+  //FList[4].OnClick := Value;
 end;
 
 procedure TGameMenu.SetRelaxMode(const Value: TVCLProcedure);

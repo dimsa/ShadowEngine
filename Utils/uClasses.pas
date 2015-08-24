@@ -3,7 +3,7 @@ unit uClasses;
 interface
 
 uses
-  System.SysUtils, System.Types;
+  System.SysUtils, System.Types, System.UITypes;
 
 type
   TProcedure = procedure of Object;
@@ -11,8 +11,17 @@ type
 
   function Random64: Int64;
   procedure NormalizeAngle(var AAngle: Single);
+  function RGBColor(const AR, AG, AB, AA: Byte): TAlphaColorRec;
 
 implementation
+
+function RGBColor(const AR, AG, AB, AA: Byte): TAlphaColorRec;
+begin
+  Result.R := AR;
+  Result.G := AG;
+  Result.B := AB;
+  Result.A := AA;
+end;
 
 procedure NormalizeAngle(var AAngle: Single);
 begin
@@ -37,6 +46,8 @@ begin
    Int64Rec(result).Words[2] := Random(Word.MaxValue);
    Int64Rec(result).Words[3] := Random(Word.MaxValue);
 end;
+
+
 
 end.
 
