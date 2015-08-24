@@ -123,18 +123,45 @@ begin
   vFig.Visible := True;
   vFig.Opacity := 0.5;
 
+
+
+
   //vSpr := Sprite('', vGroup, 'shipcomix');
  //  Formatter(vSpr, 'width: ')
 end;
 
 procedure TLoader.Comix2Create;
+var
+  vFig: TEngine2DShape;
+  vSpr: TSprite;
+  vGroup: string;
 begin
-
+  vGroup := 'comix2';
+  vFig := TFillRect.Create(FEngine);
+  vFig.Brush.Color := TAlphaColorRec.Yellow;
+  FEngine.AddObject(vFig);
+  Formatter(vFig, 'scalex:engine.width/width; scaley: engine.height/(height*2);' +
+                  'height: engine.height / 2;left: engine.width/2; top: engine.height * (3/4);').format;
+  vFig.Visible := True;
+  vFig.Opacity := 0.5;
 end;
 
 procedure TLoader.Comix3Create;
+var
+  vFig: TEngine2DShape;
+  vSpr: TSprite;
+  vGroup: string;
 begin
-
+  vGroup := 'comix2';
+  vFig := TFillRect.Create(FEngine);
+  vFig.Brush.Color := TAlphaColorRec.Blue;
+  FEngine.AddObject(vFig);
+  Formatter(vFig, 'scalex:0.85*(engine.width/width); scaley: engine.height/(height*2);' +
+                  'height: (engine.height / 2);' +
+                  'scyifhor: (engine.height/height) * 0.85; hifhor: engine.height * 0.4;'+
+                  'left: engine.width/2; top: engine.height / 2').format;
+  vFig.Visible := True;
+  vFig.Opacity := 0.5;
 end;
 
 constructor TLoader.Create(AEngine: TEngine2D);
