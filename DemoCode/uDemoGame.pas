@@ -13,7 +13,7 @@ uses
   uEngine2DSprite, uEngineFormatter, uNamedList;
 
 type
-  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode, gsGameOver, gsComix1, gsComix2, gsComix3);
+  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatistics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode, gsGameOver, gsComix1, gsComix2, gsComix3);
 
   TStatistics = class
   private
@@ -34,6 +34,7 @@ type
     property MaxRelaxScore: Integer read FMaxRelaxScore write SetMaxRelaxScore;
     property MaxSurvivalTime: Double read FMaxSurvivalTime write SetMaxSurvivalTime;
     property MaxRelaxTime: Double read FMaxRelaxTime write SetMaxRelaxTime;
+    function Text: string; // Выдает текст для статистики
     constructor Create;
   end;
 
@@ -76,6 +77,7 @@ type
     property Ship: TShip read FShip;
     property Asteroids: TList<TAsteroid> read FAsteroids;
     property Lifes: TList<TSprite> read FLifes;
+    property Statistics: TStatistics read FStatistics;
 
     procedure AddTime(const ADeltaTime: Double); // Добавляет дельту времени
     procedure AddCollision; // Добавляет одно столкновение
@@ -85,6 +87,8 @@ type
     procedure DeleteAsteroid(const ACount: Integer = 1);
     procedure DefineAsteroidCount(const ACount: Integer);
     procedure FixScore;
+
+    function StatisticsText: string;
 
     procedure SetScaling(const AMonitorScale, ASpeedModScale: Double);
     procedure RenewPanels;
@@ -363,21 +367,22 @@ end;
 
 procedure TDemoGame.SetGameStatus(const Value: TGameStatus);
 begin
-  FGameStatus := Value;
-  case FGameStatus of
-    gsMenu1: begin FEngine.ShowGroup('menu1,menu'); FMenu.SendToFront; FEngine.HideGroup('gameover,relaxmodemenu,ship,menu2,about,statistics,menu3,relax,survival,story'); end;
-    gsMenu2: begin FEngine.ShowGroup('menu2'); FEngine.HideGroup('menu1,menu3'); end;
-    gsMenu3: begin FEngine.ShowGroup('menu3'); FEngine.HideGroup('menu2'); end;
-    gsStatics: begin FEngine.ShowGroup('statistics'); FEngine.HideGroup('menu1') end;
-    gsAbout: begin FEngine.ShowGroup('about'); FEngine.HideGroup('menu1') end;
-    gsRelaxMode: begin FGP.RestartGame(Value); FEngine.ShowGroup('relaxmodemenu'); FEngine.HideGroup('menu2,menu'); end;
-    gsSurvivalMode: begin FGP.RestartGame(Value);  FEngine.HideGroup('menu2'); FEngine.HideGroup('menu'); end;
-    gsStoryMode: begin FGP.RestartGame(Value);  FEngine.HideGroup('menu3,menu,comix1,comix2,comix3'); end;
-    gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); FGP.Ship.Visible := False; FEngine.ShowGroup('gameover'); FGameOverText.SendToFront; end;
-    gsComix1: begin FEngine.ShowGroup('comix1'); FEngine.HideGroup('menu3,menu'); end;
-    gsComix2: begin FEngine.ShowGroup('comix2'); end;
-    gsComix3: begin FEngine.ShowGroup('comix3'); end;
+  with FEngine do
+    case Value of
+      gsMenu1: begin if (FGameStatus = gsRelaxMode) or (FGameStatus = gsStoryMode) then Self.FGP.FixScore;  ShowGroup('menu1,menu'); FMenu.SendToFront; HideGroup('gameover,relaxmodemenu,ship,menu2,about,statistics,menu3,relax,survival,story'); end;
+      gsMenu2: begin ShowGroup('menu2'); HideGroup('menu1,menu3'); end;
+      gsMenu3: begin FMenu.ShowLevels(FGP.Statistics.MaxLevel); ShowGroup('menu3'); HideGroup('menu2'); end;
+      gsStatistics: begin TEngine2DText(SpriteList['statisticscaption']).Text := FGP.StatisticsText; ShowGroup('statistics'); HideGroup('menu1') end;
+      gsAbout: begin ShowGroup('about'); HideGroup('menu1') end;
+      gsRelaxMode: begin FGP.RestartGame(Value); ShowGroup('relaxmodemenu'); HideGroup('menu2,menu'); end;
+      gsSurvivalMode: begin FGP.RestartGame(Value);  HideGroup('menu2'); HideGroup('menu'); end;
+      gsStoryMode: begin FGP.RestartGame(Value);  HideGroup('menu3,menu,comix1,comix2,comix3'); end;
+      gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); FGP.Ship.Visible := False; ShowGroup('gameover'); FGameOverText.SendToFront; end;
+      gsComix1: begin ShowGroup('comix1'); HideGroup('menu3,menu'); end;
+      gsComix2: begin ShowGroup('comix2'); end;
+      gsComix3: begin ShowGroup('comix3'); end;
   end;
+  FGameStatus := Value;
 end;
 
 procedure TDemoGame.SetImage(const Value: TImage);
@@ -427,7 +432,7 @@ end;
 
 procedure TDemoGame.StatGame(ASender: TObject);
 begin
-  GameStatus := gsStatics;
+  GameStatus := gsStatistics;
 end;
 
 { TGameParam }
@@ -490,11 +495,13 @@ begin
   FValueableSeconds := FValueableSeconds + ADeltaTime;
   FSecToNextLevel := FSecToNextLevel + ADeltaTime;
   vDSec2 := Trunc(FSecToNextLevel / 15);
-  if vDSec2 > 0 then
-  begin
-    AddAsteroid(0, 0);
-    FSecToNextLevel := FSecToNextLevel - vDSec2 * 15;
-  end;
+
+  if GameStatus = gsSurvivalMode then
+    if vDSec2 > 0 then
+    begin
+      AddAsteroid(0, 0);
+      FSecToNextLevel := FSecToNextLevel - vDSec2 * 15;
+    end;
 
   vDSec := Trunc(FValueableSeconds / 0.1);
   if vDSec > 0 then
@@ -732,6 +739,11 @@ begin
     FPanels['scorevalue'].Text := IntToStr(Value);
 end;
 
+function TGameParam.StatisticsText: string;
+begin
+  Result := FStatistics.Text;
+end;
+
 { TStatistics }
 
 constructor TStatistics.Create;
@@ -787,6 +799,22 @@ begin
     FMaxSurvivalTime := Value;
     FIniFile.WriteFloat('statistics', 'maxsurvivaltime', Value);
   end;
+end;
+
+function TStatistics.Text: string;
+var
+  vS: string;
+  vTmpS: string;
+begin
+  vS := '';
+  vS := vS + 'Max Level in Story Mode: ' + IntToStr(FMaxLevel) + #13 + #13;
+  vS := vS + 'Max Score in Survival Mode: ' + IntToStr(FMaxSurvivalScore) + #13;
+  Str(FMaxSurvivalTime:0:3, vTmpS);
+  vS := vS + 'Max Time in Survival Mode: ' + vTmpS + #13 + #13;
+  vS := vS + 'Max Score in Relax Mode: ' + IntToStr(FMaxRelaxScore) + #13;
+  Str(FMaxRelaxTime:0:3, vTmpS);
+  vS := vS + 'Max Score in Relax Mode: ' + vTmpS;
+  Result := vS;
 end;
 
 end.

@@ -49,7 +49,7 @@ begin
     case Game.GameStatus of
       gsMenu2: Game.GameStatus := gsMenu1;
       gsMenu3: Game.GameStatus := gsMenu2;
-      gsStatics: Game.GameStatus := gsMenu1;
+      gsStatistics: Game.GameStatus := gsMenu1;
       gsAbout: Game.GameStatus := gsMenu1;
       gsStoryMode, gsRelaxMode, gsSurvivalMode, gsGameOver, gsComix1, gsComix2, gsComix3: Game.GameStatus := gsMenu1;
      end;

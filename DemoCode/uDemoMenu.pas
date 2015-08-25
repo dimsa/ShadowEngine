@@ -47,11 +47,13 @@ type
     // Меню выбора уровня
     FLevelMenu: TList<TGameButton>; // Кнопки выбора уровня
     FNextPage, FPrevPage: TGameButton; // Листалка страниц выбора уровня
-    FLevelPage: Integer; // Текущая страница выбора уровня
+    FCurPage: Integer; // Текущая страница выбора уровня
+    FLevelSelect: TVCLProcedure;
     procedure CreateMenu1; // Первое меню из четырех кнопок
     procedure CreateMenu2; // Выбор типа игры
     procedure CreateMenu3; // Выбор уровня в сторимоде
     procedure CreateAbout; // Создает Эбаут сооотвественно
+    procedure DoNothing(ASender: TObject);
     procedure CreateStatistics; // Создаёт статистику
     procedure SetAboutGame(const Value: TVCLProcedure);
     procedure SetExitGame(const Value: TVCLProcedure);
@@ -70,6 +72,7 @@ type
     property StoryMode: TVCLProcedure write SetStoryMode;
     property LevelSelect: TVCLProcedure write SetLevelSelect;
     property SurvivalMode: TVCLProcedure write SetSurvivalMode;
+    procedure ShowLevels(const AMaxLevel: Integer);
     procedure SendToFront;
     procedure Add(const AButton: TGameButton);
     constructor Create(const AParent: Pointer);
@@ -228,7 +231,7 @@ var
 begin
   FParent := AParent;
   vEngine := FParent;
-  FLevelPage := 1;
+  FCurPage := 0;
 
   FGameLogo := TSprite.Create(vEngine);
   FGameLogo.Resources := vEngine.Resources;
@@ -247,6 +250,7 @@ begin
   CreateMenu2;
   CreateMenu3;
   CreateAbout;
+  CreateStatistics;
 
 end;
 
@@ -369,14 +373,14 @@ begin
 
   FMaxLevel := 1;
 
-  FLevelPage := Trunc((FMaxLevel + 1) / 16);
+  //FLevelPage := Trunc((FMaxLevel + 1) / 16);
 
   FNextPage := TGameButton.Create('nextpagebut', vEngine);
   FNextPage.Text := 'Next';
   FNextPage.Group := 'menu3';
   FNextPage.FontSize := 80;
 
-  if FLevelPage <  Trunc((FMaxLevel + 1) / 16) then
+  if FCurPage <  Trunc((FMaxLevel + 1) / 16) then
     FNextPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutenabled')
   else
     FNextPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled') ;
@@ -385,7 +389,8 @@ begin
   FPrevPage.Text := 'Prev';
   FPrevPage.Group := 'menu3';
   FPrevPage.FontSize := 80;
-  if FLevelPage > 0 then
+
+ if FCurPage > 0 then
     FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutenabled')
   else
     FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled');
@@ -398,7 +403,7 @@ begin
     for i := 0 to vN - 1 do
     begin
       vBut := TGameButton.Create('levelbut' + IntToStr(i + 1), vEngine, 'ltlbutenabled');
-      vBut.Text := IntToStr((i + 1) + (vN * (FLevelPage)));
+      vBut.Text := IntToStr((i + 1) + (vN * (FCurPage)));
       vBut.FontSize := 80;
       vBut.Group := 'menu3';
       FLevelMenu.Add(vBut);
@@ -411,8 +416,26 @@ begin
 end;
 
 procedure TGameMenu.CreateStatistics;
+var
+  vText: TEngine2DText;
+  vFormatter: TEngineFormatter;
+  vEngine: tEngine2d;
 begin
-
+  vEngine := FParent;
+  vText := TEngine2DText.Create(vEngine);
+  vText.TextRect := RectF(-200, -200, 200, 200);
+  vText.FontSize := 26;
+  vText.Group := 'statistics';
+  vText.Color :=  TAlphaColorRec.White;
+  vText.Text := 'Statistics in progress';
+  vEngine.AddObject(vText, 'statisticscaption');
+  vFormatter := TEngineFormatter.Create(vText);
+  vFormatter.Text := 'left: engine.width * 0.5; top: gamelogo.bottomborder + engine.height * 0.15; width: engine.width * 0.8;' +
+  'max-height: engine.height * 0.40;' +
+  'topifhor: gamelogo.top; leftifhor: engine.width*0.75; wifhor: engine.width*0.4; maxheightifhor: engine.height * 0.4';
+  vEngine.FormatterList.Add(vFormatter);
+  vFormatter.Format;
+  vEngine.HideGroup('statistics');
 end;
 
 destructor TGameMenu.Destroy;
@@ -425,6 +448,11 @@ begin
   FList.Free;
 
   inherited;
+end;
+
+procedure TGameMenu.DoNothing(ASender: TObject);
+begin
+
 end;
 
 procedure TGameMenu.SendToFront;
@@ -453,6 +481,8 @@ var
 begin
   for i := 0 to FLevelMenu.Count -1 do
     Self.FLevelMenu[i].OnClick := Value;
+
+  FLevelSelect := Value;
   //FList[4].OnClick := Value;
 end;
 
@@ -479,6 +509,49 @@ end;
 procedure TGameMenu.SetSurvivalMode(const Value: TVCLProcedure);
 begin
   FList[5].OnClick := Value;
+end;
+
+procedure TGameMenu.ShowLevels(const AMaxLevel: Integer);
+var
+  vEngine: tEngine2d;
+  i: Integer;
+begin
+  vEngine := FParent;
+
+  FMaxLevel := AMaxLevel;
+  FCurPage := Trunc(AMaxLevel / 16);
+
+
+  if FCurPage <  Trunc((FMaxLevel + 1) / 16) then
+    FNextPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutenabled')
+  else
+  begin
+    FNextPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled') ;
+    FNextPage.OnClick := DoNothing;
+  end;
+
+  if FCurPage > 0 then
+    FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutenabled')
+  else
+  begin
+    FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled');
+    FPrevPage.OnClick := DoNothing;
+  end;
+
+    for i := 0 to 16 - 1 do
+    begin
+      FLevelMenu[i].Text := IntToStr((i + 1) + (16 * (FCurPage)));
+      if (i + FCurPage * 16) < AMaxLevel+1 then
+      begin
+        FLevelMenu[i].BackSprite.CurRes := vEngine.Resources.IndexOf('ltlbutenabled');
+        FLevelMenu[i].BackSprite.OnClick := FLevelSelect;
+      end
+      else
+      begin
+        FLevelMenu[i].BackSprite.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled');
+        FLevelMenu[i].BackSprite.OnClick := DoNothing;
+      end;
+    end;
 end;
 
 { TMenuSpriteElement }
