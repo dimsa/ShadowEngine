@@ -322,9 +322,17 @@ end;
 function TEngineFormatter.CreateDirective(const AText: string; AExp: TExpression): TFormatterDirective;
 var
   vText: String;
+  vHor: Boolean;
 begin
   vText := LowerCase(AText);
   Result := Nil;
+
+  vHor := False;
+  if Pos('ifhor', vText) > 0 then
+  begin
+    vText := StringReplace(vText, 'ifhor', '', [rfReplaceAll]);
+    vHor := True;
+  end;
 
   if (vText = 'width') or (vText = 'w') then Result := TWidthDir.Create(FObject, AExp);
   if (vText = 'height') or (vText = 'h') then Result := THeightDir.Create(FObject, AExp);
@@ -339,13 +347,18 @@ begin
   if (vText = 'scalex') or (vText = 'scx') then Result := TScaleXDir.Create(FObject, AExp);
   if (vText = 'scaley') or (vText = 'scy') then Result := TScaleYDir.Create(FObject, AExp);
 
-  if (vText = 'xifhor') or (vText = 'leftifhor') then Result := TIfHorCondition.Create(TXDir.Create(FObject, AExp));
+  if vHor then
+    Result := TIfHorCondition.Create(Result);
+
+{  if (vText = 'xifhor') or (vText = 'leftifhor') then Result := TIfHorCondition.Create(TXDir.Create(FObject, AExp));
   if (vText = 'yifhor') or (vText = 'topifhor') then Result := TIfHorCondition.Create(TYDir.Create(FObject, AExp));
   if (vText = 'rotateifhor') or (vText = 'angleifhor') then  TIfHorCondition.Create(TRotateDir.Create(FObject, AExp));
   if (vText = 'widthifhor') or (vText = 'wifhor') then Result := TIfHorCondition.Create(TWidthDir.Create(FObject, AExp));
   if (vText = 'heightifhor') or (vText = 'hifhor') then Result := TIfHorCondition.Create(THeightDir.Create(FObject, AExp));
   if (vText = 'scalexifhor') or (vText = 'scalewifhor') or (vText = 'scwifhor') or (vText = 'scxifhor')   then Result := TIfHorCondition.Create(TScaleXDir.Create(FObject, AExp));
   if (vText = 'scaleyifhor') or (vText = 'scalehifhor') or (vText = 'schifhor') or (vText = 'scyifhor')   then Result := TIfHorCondition.Create(TScaleYDir.Create(FObject, AExp));
+  if (vText = 'max-widthifhor') or (vText = 'maxwidthifhor') then Result := TIfHorCondition.Create(TMaxWidthDir.Create(FObject, AExp));
+  if (vText = 'max-heightifhor') or (vText = 'maxheighthifhor') then Result := TIfHorCondition.Create(TMaxHeightDir.Create(FObject, AExp));}
 end;
 
 { TFormatterDirective }

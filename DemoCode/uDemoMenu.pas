@@ -52,6 +52,7 @@ type
     procedure CreateMenu2; // Выбор типа игры
     procedure CreateMenu3; // Выбор уровня в сторимоде
     procedure CreateAbout; // Создает Эбаут сооотвественно
+    procedure CreateStatistics; // Создаёт статистику
     procedure SetAboutGame(const Value: TVCLProcedure);
     procedure SetExitGame(const Value: TVCLProcedure);
     procedure SetStartGame(const Value: TVCLProcedure);
@@ -236,7 +237,7 @@ begin
   vEngine.AddObject(FGameLogo, 'gamelogo');
 
   vFormatter := TEngineFormatter.Create(FGameLogo);
-  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.21; width: engine.width * 0.8; max-height: engine.height * 0.40;' +
+  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.21; width: engine.width * 0.8; max-height: engine.height * 0.30;' +
   'xifhor: engine.width * 0.25; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.5;';
   vEngine.FormatterList.Add(vFormatter);
 
@@ -268,26 +269,33 @@ begin
   vText.Group := 'about';
   vEngine.AddObject(vText, 'aboutcaption');
   vFormatter := TEngineFormatter.Create(vText);
-  vFormatter.Text := 'left: engine.width * 0.5; top: gamelogo.bottomborder + engine.height * 0.15; width: engine.width * 0.8;';
+  vFormatter.Text := 'left: engine.width * 0.5; top: gamelogo.bottomborder + engine.height * 0.15; width: engine.width * 0.8;' +
+  'max-height: engine.height * 0.30;' +
+  'topifhor: gamelogo.topborder; leftifhor: engine.width*0.75; wifhor: engine.width*0.4; maxheightifhor: engine.height * 0.4';
   vEngine.FormatterList.Add(vFormatter);
   vFormatter.Format;
 
   vText := TEngine2DText.Create(vEngine);
-  vText.TextRect := RectF(-250, -100, 250, 100);
+  vText.TextRect := RectF(-250, -150, 250, 150);
   vText.FontSize := 16;
   vText.Color :=  TAlphaColorRec.Gray;
   vText.Text :=
-  'It''s opensource project ' + #13 +
+  'It''s opensource project' + #13 +
   'Written with Delphi, using Firemonkey ' + #13 +
   'Game uses ShadowEngine (SO Engine) by Dmitriy Sorokin' + #13 + #13 +
   'Project on GitHub: ' + #13 +
   'https://github.com/dimsa/ShadowEngine' +  #13 + #13 +
+  'Game uses FMX.IniFile by HOSOKAWA' + #13 +
+  'Project on GitHub:' + #13 +
+  'https://github.com/freeonterminate/delphi/tree/master/FMX.IniFile' + #13 + #13 +
+  'Some illustrations made by Yunna Sorokina' + #13 + #13 +
   'Thanks to everyone who helped with Game and Engine!';
   vText.Group := 'about';
   vEngine.AddObject(vText, 'aboutdescription');
 
   vFormatter := TEngineFormatter.Create(vText);
-  vFormatter.Text := 'left: engine.width * 0.5; top: aboutcaption.bottomborder + engine.height * 0.1; width: engine.width * 0.8;';
+  vFormatter.Text := 'left: engine.width * 0.5; top: aboutcaption.bottomborder + engine.height * 0.15; width: engine.width * 0.8;' +
+  'leftifhor: engine.width*0.75; wifhor: engine.width*0.4; maxheightifhor: engine.height * 0.4; ';
   vEngine.FormatterList.Add(vFormatter);
   vFormatter.Format;
   vEngine.HideGroup('about');
@@ -366,7 +374,7 @@ begin
   FNextPage := TGameButton.Create('nextpagebut', vEngine);
   FNextPage.Text := 'Next';
   FNextPage.Group := 'menu3';
-  FNextPage.FontSize := 36;
+  FNextPage.FontSize := 80;
 
   if FLevelPage <  Trunc((FMaxLevel + 1) / 16) then
     FNextPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutenabled')
@@ -376,7 +384,7 @@ begin
   FPrevPage := TGameButton.Create('prevpagebut', vEngine);
   FPrevPage.Text := 'Prev';
   FPrevPage.Group := 'menu3';
-  FPrevPage.FontSize := 36;
+  FPrevPage.FontSize := 80;
   if FLevelPage > 0 then
     FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutenabled')
   else
@@ -391,7 +399,7 @@ begin
     begin
       vBut := TGameButton.Create('levelbut' + IntToStr(i + 1), vEngine, 'ltlbutenabled');
       vBut.Text := IntToStr((i + 1) + (vN * (FLevelPage)));
-      vBut.FontSize := 36;
+      vBut.FontSize := 80;
       vBut.Group := 'menu3';
       FLevelMenu.Add(vBut);
       vX := i mod 4;
@@ -400,6 +408,11 @@ begin
     end;
 
   vLoader.Free;
+end;
+
+procedure TGameMenu.CreateStatistics;
+begin
+
 end;
 
 destructor TGameMenu.Destroy;
