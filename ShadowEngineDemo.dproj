@@ -237,6 +237,9 @@
         <DCCReference Include="Intersector\uNewFigure.pas"/>
         <DCCReference Include="DemoCode\uDemoMenu.pas"/>
         <DCCReference Include="Engine\uEngine2DShape.pas"/>
+        <DCCReference Include="Utils\inifile\FMX.IniFile.Android.pas"/>
+        <DCCReference Include="Utils\inifile\FMX.IniFile.Apple.pas"/>
+        <DCCReference Include="Utils\inifile\FMX.IniFile.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -371,7 +374,7 @@
                         <RemoteName>back.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
-                    <Platform Name="OSX32">
+                    <Platform Name="Win64">
                         <RemoteName>back.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
@@ -379,7 +382,7 @@
                         <RemoteDir>assets\internal\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
-                    <Platform Name="Win64">
+                    <Platform Name="OSX32">
                         <RemoteName>back.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
@@ -1067,13 +1070,13 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
             </Deployment>
             <Platforms>
                 <Platform value="Android">True</Platform>

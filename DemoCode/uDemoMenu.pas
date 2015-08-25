@@ -43,10 +43,6 @@ type
     FParent: Pointer; // Engine2d
     FMaxLevel: Integer; // Максимальный уровень до которого дошел игрок
     FList: TList<TGameButton>; // Кнопки перехода по страницам меню
-    FStatGame: TVCLProcedure;
-    FExitGame: TVCLProcedure;
-    FAboutGame: TVCLProcedure;
-    FStartGame: TVCLProcedure;
     FGameLogo: TSprite;
     // Меню выбора уровня
     FLevelMenu: TList<TGameButton>; // Кнопки выбора уровня
@@ -161,7 +157,7 @@ end;
 
 function TGameButton.GetFontSize: Single;
 begin
-  FText.FontSize;
+  Result := FText.FontSize;
 end;
 
 function TGameButton.GetText: String;
@@ -226,7 +222,6 @@ end;
 
 constructor TGameMenu.Create(const AParent: Pointer);
 var
-  vBut: TGameButton;
   vEngine: tEngine2d;
   vFormatter: TEngineFormatter;
 begin
@@ -355,8 +350,7 @@ end;
 
 procedure TGameMenu.CreateMenu3;
 var
-  vF: TextFile;
-  i, j, vN: Integer;
+  i, vN: Integer;
   vBut: TGameButton;
   vX, vY: Integer;
   vEngine: tEngine2d;

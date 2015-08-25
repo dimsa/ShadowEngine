@@ -7,6 +7,7 @@ interface
 uses
   FMX.Types, System.UITypes, System.Classes, System.Types, FMX.Graphics,
   FMX.Objects, System.Generics.Collections, System.Math, System.SysUtils,
+  FMX.IniFile,
   uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape,
   uEngine2DAnimation, uIntersectorClasses, uDemoMenu, uClasses, uEngine2DText,
   uEngine2DSprite, uEngineFormatter, uNamedList;
@@ -14,10 +15,33 @@ uses
 type
   TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode, gsGameOver, gsComix1, gsComix2, gsComix3);
 
+  TStatistics = class
+  private
+    FIniFile: TXplatIniFile;
+    FMaxLevel: Integer;
+    FMaxRelaxScore: Integer;
+    FMaxSurvivalScore: Integer;
+    FMaxSurvivalTime: Double;
+    FMaxRelaxTime: Double;
+    procedure SetMaxLevel(const Value: Integer);
+    procedure SetMaxRelaxScore(const Value: Integer);
+    procedure SetMaxSurvivalScore(const Value: Integer);
+    procedure SetMaxRelaxTime(const Value: Double);
+    procedure SetMaxSurvivalTime(const Value: Double);
+  public
+    property MaxLevel: Integer read FMaxLevel write SetMaxLevel;
+    property MaxSurvivalScore: Integer read FMaxSurvivalScore write SetMaxSurvivalScore;
+    property MaxRelaxScore: Integer read FMaxRelaxScore write SetMaxRelaxScore;
+    property MaxSurvivalTime: Double read FMaxSurvivalTime write SetMaxSurvivalTime;
+    property MaxRelaxTime: Double read FMaxRelaxTime write SetMaxRelaxTime;
+    constructor Create;
+  end;
+
   TGameParam = class
   private
     FLoader: TLoader; // ССылка на Loader
     FEngine: TDemoEngine; // Ссылка на движок. Получаем из FLoader
+    FStatistics: TStatistics;
     FGameStatus: TGameStatus;
     FBackObjects: TList<TLittleAsteroid>; // Летящие бэки
     FAsteroids: TList<TAsteroid>;
@@ -30,6 +54,7 @@ type
     FSecToNextLevel: Double; // Секунды до перехода наследующий уровень
     FCollisions: Integer; // Столкновения с начала игры
     FSeconds: Single; // Секунды с начала игры
+    FCurrentLevel: Integer; // Текущий выбранный уровень игры
 
     function GetAsteroids: Integer;
     function GetCollisions: Integer;
@@ -43,8 +68,7 @@ type
     // Статитические данные игры
     property Score: Integer read GetScore write SetScore;
     property Time: Double read GetTime;
-    procedure AddTime(const ADeltaTime: Double); // Добавляет дельту времени
-    procedure AddCollision; // Добавляет одно столкновение
+    property GameStatus: TGameStatus read FGameStatus;
 
     property Level: Integer read GetLevel write SetLevel;
     property Collisions: Integer read GetCollisions;
@@ -52,6 +76,9 @@ type
     property Ship: TShip read FShip;
     property Asteroids: TList<TAsteroid> read FAsteroids;
     property Lifes: TList<TSprite> read FLifes;
+
+    procedure AddTime(const ADeltaTime: Double); // Добавляет дельту времени
+    procedure AddCollision; // Добавляет одно столкновение
 
     procedure BreakLife;
     function AddAsteroid(ASize, ASpeed: Byte): TAsteroid;
@@ -63,7 +90,7 @@ type
     procedure RenewPanels;
     procedure RestartGame(const AGameMode: TGameStatus);
     constructor Create(ALoader: TLoader);
-    destructor Destroy;
+    destructor Destroy; override;
   const
     // Величина параметров, скорости, размера и т.д.
     prSmall = 1;
@@ -135,8 +162,6 @@ end;
 
 procedure TDemoGame.DoGameTick;
 var
-  vS: String;
-  vDSec: Integer;
   vTmp: Double;
 begin
   FindCollide;
@@ -145,27 +170,11 @@ begin
 
   vTmp := 1 / FEngine.EngineThread.FPS;
   FGP.AddTime(vTmp);
-//  FGP.Time := FGP.Time + vTmp;
-
-{  case GameStatus of
-    gsStoryMode: ;
-    gsSurvivalMode: begin
-     // Asteroids := FAsteroids.Count;
-      FGP.Score := Score + vDSec * FAsteroids.Count;
-
-    end;
-    gsRelaxMode: begin
-      Score := Round((FSeconds / (FCollisions + 1)) * FAsteroids.Count);
-    end;
-
-  end; }
 
   FGP.RenewPanels;
 end;
 
 constructor TDemoGame.Create;
-var
-  vS: String;
 begin
   FEngine := TDemoEngine.Create;
   FLoader := TLoader.Create(FEngine);
@@ -183,8 +192,6 @@ begin
 end;
 
 destructor TDemoGame.Destroy;
-var
-  i: Integer;
 begin
   FMenu.Free;
   FLoader.Free;
@@ -219,7 +226,7 @@ begin
                 BreakLife;
                 if FGP.Lifes.Count <= 0 then
                 begin
-                  GameStatus := gsGameOver;
+                  Self.GameStatus := gsGameOver;
                   FGP.FixScore;
                 end;
               end;
@@ -295,11 +302,6 @@ begin
 end;
 
 procedure TDemoGame.Prepare;
-var
-  i: Integer;
-  vFormatter: TEngineFormatter;
- // vFont: TFont;
-  vObj: TEngine2DObject;
 begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
@@ -452,11 +454,16 @@ begin
   FAsteroids.Add(vAsteroid);
 
   // Астеройд появляется за гранью
+
   case Random(4) of
     0: begin  vX := - vAsteroid.wHalf; vY := Random(FEngine.Height) end;
     1: begin  vX := FEngine.Width + vAsteroid.wHalf; vY := Random(FEngine.Height) end;
     2: begin  vX := Random(FEngine.Width); vY := -vAsteroid.hHalf end;
     3: begin  vX := Random(FEngine.Width); vY := FEngine.Height + vAsteroid.hHalf end;
+    else begin
+      vX := Random(FEngine.Width);
+      vY := Random(FEngine.Height);
+    end;
   end;
 
   FLoader.Formatter(vAsteroid, 'width: sqrt(engine.width * engine.height) * 0.2;').Format;
@@ -465,7 +472,7 @@ begin
   vAsteroid.y := vY;
 
   SetScaling(MonitorScale, SpeedModScale);
-
+  Result := vAsteroid;
 end;
 
 procedure TGameParam.AddCollision;
@@ -475,7 +482,6 @@ end;
 
 procedure TGameParam.AddTime(const ADeltaTime: Double);
 var
-  vS: string;
   vDSec, vDSec2: Integer;
 begin
   if FGameStatus = gsGameOver then
@@ -524,6 +530,7 @@ begin
   FPanels := TNamedList<TEngine2DText>.Create;
   FLoader := ALoader;
   FEngine := TDemoEngine(FLoader.Parent);
+  FStatistics := TStatistics.Create;
   FCollisions := 0;
   FSeconds := 0;
 
@@ -594,10 +601,17 @@ begin
   FPanels.Free;
 
   FShip.Free;
+
+  FStatistics.Free;
 end;
 
 procedure TGameParam.FixScore;
 begin
+  case FGameStatus of
+    gsStoryMode: FStatistics.MaxLevel := FCurrentLevel;
+    gsSurvivalMode: begin FStatistics.MaxSurvivalScore := FScorePoints; FStatistics.MaxSurvivalTime := FSeconds; end;
+    gsRelaxMode: begin FStatistics.MaxRelaxScore := FScorePoints; FStatistics.MaxRelaxTime := FSeconds; end;
+  end;
   FGameStatus := gsGameOver;
 end;
 
@@ -716,6 +730,63 @@ procedure TGameParam.SetScore(const Value: Integer);
 begin
   if FPanels.IsHere('scorevalue') then
     FPanels['scorevalue'].Text := IntToStr(Value);
+end;
+
+{ TStatistics }
+
+constructor TStatistics.Create;
+begin
+   FIniFile := CreateIniFile('asteroidsvsyou');
+   FMaxLevel := FIniFile.ReadInteger('statistics', 'maxlevel', 0);
+   FMaxRelaxScore := FIniFile.ReadInteger('statistics', 'maxrelaxscore', 0);
+   FMaxSurvivalScore := FIniFile.ReadInteger('statistics', 'maxsurvivalscore', 0);
+   FMaxSurvivalTime := FIniFile.ReadInteger('statistics', 'maxsurvivaltime', 0);
+   FMaxRelaxTime := FIniFile.ReadInteger('statistics', 'maxrelaxtime', 0);
+end;
+
+procedure TStatistics.SetMaxLevel(const Value: Integer);
+begin
+  if Value > FMaxLevel then
+  begin
+    FMaxLevel := Value;
+    FIniFile.WriteInteger('statistics', 'maxlevel', Value);
+  end;
+end;
+
+procedure TStatistics.SetMaxRelaxScore(const Value: Integer);
+begin
+  if Value > FMaxRelaxScore then
+  begin
+    FMaxRelaxScore := Value;
+    FIniFile.WriteInteger('statistics', 'maxrelaxscore', Value);
+  end;
+end;
+
+procedure TStatistics.SetMaxRelaxTime(const Value: Double);
+begin
+  if Value > FMaxRelaxTime then
+  begin
+    FMaxRelaxTime := Value;
+    FIniFile.WriteFloat('statistics', 'maxrelaxtime', Value);
+  end;
+end;
+
+procedure TStatistics.SetMaxSurvivalScore(const Value: Integer);
+begin
+  if Value > FMaxSurvivalScore then
+  begin
+    FMaxSurvivalScore := Value;
+    FIniFile.WriteInteger('statistics', 'maxsurvivalscore', Value);
+  end;
+end;
+
+procedure TStatistics.SetMaxSurvivalTime(const Value: Double);
+begin
+  if Value > FMaxSurvivalTime then
+  begin
+    FMaxSurvivalTime := Value;
+    FIniFile.WriteFloat('statistics', 'maxsurvivaltime', Value);
+  end;
 end;
 
 end.

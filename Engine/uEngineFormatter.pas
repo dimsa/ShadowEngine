@@ -322,7 +322,6 @@ end;
 function TEngineFormatter.CreateDirective(const AText: string; AExp: TExpression): TFormatterDirective;
 var
   vText: String;
-  vDir: TFormatterDirective;
 begin
   vText := LowerCase(AText);
   Result := Nil;

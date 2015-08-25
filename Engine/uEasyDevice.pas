@@ -30,8 +30,6 @@ begin
 end;
 
 function ReturnPressed(var AKey: Word): Boolean;
-var
-  FService : IFMXVirtualKeyboardService;
 begin
   {$IFDEF ANDROID}
   if (AKey = vkHardwareBack) or (AKey = vkReturn) then

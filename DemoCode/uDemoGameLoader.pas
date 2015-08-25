@@ -3,7 +3,7 @@ unit uDemoGameLoader;
 interface
 
 uses
-  SysUtils, System.Types, System.Math, System.Generics.Collections,System.UITypes,
+  SysUtils, System.Types, System.Math, System.Generics.Collections, System.UITypes,
   FMX.Graphics,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uEngine2D, uEngine2DSprite, uEngine2DObject, uDemoObjects, uIntersectorClasses,
@@ -16,7 +16,7 @@ type
   private
     FEngine: TEngine2D;
   protected
-    function FastText(const AName: string; AFont: TFont; const AColor: TColor = TAlphaColorRec.White; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TEngine2DText;
+    function FastText(const AName: string; AFont: TFont; const AColor: TAlphaColor = TAlphaColorRec.White; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TEngine2DText;
     procedure ClearAndDestroyPanel(FPanel: TNamedList<tEngine2DText>);
     procedure Comix1Create;
     procedure Comix2Create;
@@ -61,7 +61,7 @@ end;
 function SpeedModScale: Single;
 begin
   Result := (
-    (uEasyDevice.getDisplaySizeInPx.X + uEasyDevice.getDisplaySizeInPx.Y) * 0.5) * 0.001;
+   (uEasyDevice.getDisplaySizeInPx.X + uEasyDevice.getDisplaySizeInPx.Y) * 0.5) * 0.0008;
 end;
 
 { TLoader }
@@ -145,11 +145,9 @@ begin
   Formatter(vSpr, 'width:engine.width * 0.3;max-height: engine.height*0.23;' +
                  'left: engine.width * (5/24); top: engine.height * (9/24);' +
                  'leftifhor:engine.width * (3/24); topifhor: engine.height * (3.5/24);').format;
-               //'wifhor:engine.height * 0.3;leftifhor: engine.width *(8/24)
   vTxt := Self.FastText('monolog1', TFont.Create, TAlphaColorRec.White, vGroup);
   vTxt.WordWrap := True;
   vTxt.TextRect := RectF(-200, -100, 200, 100);
-  //vSpr := Sprite('', vGroup, 'shipcomix');
   vTxt.FontSize := 36;
   vTxt.Justify := CenterRight;
   vTxt.Text := 'Great! I so close to the destination planet! I need only 3 minutes to reach it.';
@@ -165,8 +163,6 @@ var
   vSpr: TSprite;
   vGroup: string;
   vTxt: TEngine2DText;
-  i, vN: Integer;
-  vS1, vS2: string;
 begin
   vGroup := 'comix2';
   vFig := TFillRect.Create(FEngine);
@@ -322,9 +318,8 @@ procedure TLoader.CreateRelaxPanel(FPanel: TNamedList<tEngine2DText>);
 var
   vText: TEngine2DText;
   vFont: TFont;
-  vPrimaryColor, vSecondaryColor: TColor;
+  vPrimaryColor, vSecondaryColor: TAlphaColor;
   vLeft, vRight: String;
-  vFormatter: TEngineFormatter;
   i: Integer;
   vGroup: String;
 begin
@@ -378,9 +373,8 @@ procedure TLoader.CreateStoryPanel(FPanel: TNamedList<tEngine2DText>);
 var
   vText: TEngine2DText;
   vFont: TFont;
-  vPrimaryColor, vSecondaryColor: TColor;
+  vPrimaryColor, vSecondaryColor: TAlphaColor;
   vLeft, vRight: String;
-  vFormatter: TEngineFormatter;
   i: Integer;
   vGroup: String;
 begin
@@ -425,9 +419,8 @@ procedure TLoader.CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
 var
   vText: TEngine2DText;
   vFont: TFont;
-  vPrimaryColor, vSecondaryColor: TColor;
+  vPrimaryColor, vSecondaryColor: TAlphaColor;
   vLeft, vRight: String;
-  vFormatter: TEngineFormatter;
   i: Integer;
   vGroup: String;
 begin
@@ -603,7 +596,7 @@ begin
 end;
 
 function TLoader.FastText(const AName: string; AFont: TFont;
-  const AColor: TColor; const AGroup: string; const AJustify: TObjectJustify): TEngine2DText;
+  const AColor: TAlphaColor; const AGroup: string; const AJustify: TObjectJustify): TEngine2DText;
 begin
   Result := TEngine2DText.Create(FEngine);
   Result.Group := AGroup;

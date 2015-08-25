@@ -3,9 +3,8 @@ unit mainUnit;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
-  FMX.Platform, FMX.VirtualKeyboard,
+  System.Types, System.UITypes, FMX.Forms, FMX.Objects, FMX.Controls,
+  System.Classes, FMX.Types,
   uEasyDevice, uDemoGame;
 
 type
@@ -28,9 +27,6 @@ var
   Game: TDemoGame;
   DrawSelect: Boolean;
 implementation
-
-uses
-  uNewFigure, uIntersectorClasses;
 
 {$R *.fmx}
 

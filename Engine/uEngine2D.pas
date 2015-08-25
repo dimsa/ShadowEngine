@@ -529,8 +529,6 @@ begin
 end;
 
 procedure tEngine2d.init(newImage: tImage);
-var
-  size: tPointF;
 begin
   fImage := newImage;
  { if fImage.Canvas.Blending then

@@ -17,7 +17,6 @@ type
     procedure DoWork;
     procedure DoWorkGame;
     procedure ParallaxBackgroundBehavior;
-    procedure SetGameStatus(const Value: TGameStatus);
   public
     constructor Create; override;
   const
@@ -99,11 +98,6 @@ begin
     if FParalY < 0 then
       FParalY := Background.Height;
   end;
-end;
-
-procedure TDemoEngine.SetGameStatus(const Value: TGameStatus);
-begin
-  FGameStatus := Value;
 end;
 
 end.

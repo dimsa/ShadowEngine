@@ -38,7 +38,10 @@ uses
   uEngine2DObjectShape in 'Engine\uEngine2DObjectShape.pas',
   uNewFigure in 'Intersector\uNewFigure.pas',
   uDemoMenu in 'DemoCode\uDemoMenu.pas',
-  uEngine2DShape in 'Engine\uEngine2DShape.pas';
+  uEngine2DShape in 'Engine\uEngine2DShape.pas',
+  FMX.IniFile.Android in 'Utils\inifile\FMX.IniFile.Android.pas',
+  FMX.IniFile.Apple in 'Utils\inifile\FMX.IniFile.Apple.pas',
+  FMX.IniFile in 'Utils\inifile\FMX.IniFile.pas';
 
 {$R *.res}
 

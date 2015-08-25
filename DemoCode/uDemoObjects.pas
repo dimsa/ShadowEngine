@@ -49,7 +49,6 @@ type
     FDestination: TPosition;
     FDestinations: TList<TPosition>;
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-    function MinMax(const AValue: Single; const AMax: Single; const AMin: Single = 0): Single;
   protected
     procedure SetScale(AValue: single); override;
   public
@@ -69,6 +68,7 @@ type
     FNotChange: Integer; // Кол-во тиков, которое не будет изменяться направление при коллайдер
     FScaleMod: Single;
     procedure SetScaleMod(const Value: Single); // Модификатор размера
+  protected
     procedure SetScale(AValue: single); override;
   public
     procedure Repaint; override;
@@ -199,16 +199,6 @@ var
 begin
   for i := 1 to FParts.Count - 1 do
     FParts[i].Visible := False;
-end;
-
-function TShip.MinMax(const AValue, AMax, AMin: Single): Single;
-begin
-  Result := AValue;
-  if AValue > AMax then
-    Result := AMax;
-
-  if AValue < 0 then
-    Result := 0;
 end;
 
 procedure TShip.MouseDown(Sender: TObject; Button: TMouseButton;
