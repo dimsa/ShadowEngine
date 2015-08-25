@@ -131,16 +131,21 @@ begin
 
  vSpr := Self.Sprite('planetcomix', vGroup);
  Formatter(vSpr, 'width: engine.width * 0.5;' +
-                 'left: engine.width * (16/24); top: engine.height * (2/24);').format;
+                 'left: engine.width * (16/24); top: engine.height * (2/24);' +
+                 'wifhor: engine.height * 0.5;' +
+                 'leftifhor: engine.width * (8/24);').format;
 
  vSpr := Self.Sprite('shipcomix', vGroup);
  Formatter(vSpr, 'width:engine.width * 0.3;' +
-                 'left: engine.width * (7/24); top: engine.height * (5/24);').format;
+                 'left: engine.width * (7/24); top: engine.height * (5/24);' +
+                 'wifhor:engine.height * 0.3;' +
+                 'leftifhor: engine.width * (3/24); topifhor:engine.height * (9/24);').format;
 
   vSpr := Self.Sprite('captain1', vGroup);
   Formatter(vSpr, 'width:engine.width * 0.3;max-height: engine.height*0.23;' +
-                 'left: engine.width * (5/24); top: engine.height * (9/24);').format;
-
+                 'left: engine.width * (5/24); top: engine.height * (9/24);' +
+                 'leftifhor:engine.width * (3/24); topifhor: engine.height * (3.5/24);').format;
+               //'wifhor:engine.height * 0.3;leftifhor: engine.width *(8/24)
   vTxt := Self.FastText('monolog1', TFont.Create, TAlphaColorRec.White, vGroup);
   vTxt.WordWrap := True;
   vTxt.TextRect := RectF(-200, -100, 200, 100);
@@ -148,8 +153,10 @@ begin
   vTxt.FontSize := 36;
   vTxt.Justify := CenterRight;
   vTxt.Text := 'Great! I so close to the destination planet! I need only 3 minutes to reach it.';
-  Formatter(vTxt, 'width:engine.width * 0.6;' +
-                 'left: engine.width * (5.5/8); top: engine.height * (9.2/24);').format;
+  Formatter(vTxt, 'width:engine.width * 0.575;' +
+                 'left: engine.width * (16.5/24); top: engine.height * (9.2/24);' +
+                 'wifhor:engine.width * 0.4;' +
+                 'leftifhor: engine.width * (18/24); topifhor: engine.height * (6/24)').format;
 end;
 
 procedure TLoader.Comix2Create;
@@ -177,20 +184,27 @@ begin
 
 vSpr := Self.Sprite('planetcomix', vGroup);
  Formatter(vSpr, 'width: engine.width * 0.45;' +
-                 'left: engine.width * (20/24); top: engine.height * (16/24);').format;
+                 'left: engine.width * (20/24); top: engine.height * (16/24);' +
+                 'wifhor: engine.height * 0.3;' +
+                 'leftifhor: engine.width * (8/24);').format;
 
  vSpr := Self.Sprite('shipcomix', vGroup);
  Formatter(vSpr, 'width:engine.width * 0.25;' +
-                 'left: engine.width * (7/24); top: engine.height * (14/24);').format;
+                 'left: engine.width * (7/24); top: engine.height * (14/24);' +
+                 'wifhor:engine.height * 0.2;' +
+                 'leftifhor: engine.width * (3/24); topifhor:engine.height * (21/24);').format;
 
   vSpr := Self.Sprite('captain2', vGroup);
   Formatter(vSpr, 'width:engine.width * 0.3; max-height: engine.height*0.23;' +
-                 'left: engine.width * (5/24); top: engine.height * (21/24);').format;
+                 'left: engine.width * (5/24); top: engine.height * (21/24);' +
+                 'leftifhor:engine.width * (3/24); topifhor: engine.height * (15.5/24);').format;
 
 
 vSpr := Self.Sprite('asteroidcomix', vGroup);
   Formatter(vSpr, 'width:engine.width * 0.25; max-height: engine.height*0.23;' +
-                 'left: engine.width * (15/24); top: engine.height * (17/24);').format;
+                 'left: engine.width * (15/24); top: engine.height * (17/24);' +
+                 'wifhor: 0.1*engine.width;' +
+                 'leftifhor: engine.width * (9/24); topifhor: engine.height * (19/24); ').format;
 
   {
   I wanted to generate it, but random is so ugly :-(
@@ -211,8 +225,10 @@ vSpr := Self.Sprite('asteroidcomix', vGroup);
   vTxt.FontSize := 36;
   vTxt.Justify := CenterRight;
   vTxt.Text := 'Usually asteroids are at a very long distance from each other. But here are 5 of them within easy reach! And they are moving towards me at the high speed!';
-  Formatter(vTxt, 'width:engine.width * 0.6;' +
-                 'left: engine.width * (5.5/8); top: engine.height * (21.2/24);').format;
+  Formatter(vTxt, 'width:engine.width * 0.575;' +
+                 'left: engine.width * (5.5/8); top: engine.height * (21.2/24);' +
+                 'wifhor:engine.width * 0.4;' +
+                 'leftifhor: engine.width * (18/24); topifhor: engine.height * (18/24)').format;
 end;
 
 procedure TLoader.Comix3Create;
@@ -240,7 +256,8 @@ begin
 
   vSpr := Self.Sprite('planetcomix', vGroup);
   Formatter(vSpr, 'width: engine.width * 0.25;' +
-                 'left: engine.width * (18/24); top: engine.height * (8/24);').format;
+                 'left: engine.width * (18/24); top: engine.height * (8/24);' +
+                 'wifhor: engine.height * 0.25').format;
 
  vSpr := Self.Sprite('shipcomix', vGroup);
  Formatter(vSpr, 'width:engine.width * 0.12;' +
@@ -254,8 +271,8 @@ begin
   Formatter(vSpr, 'width:engine.width * 0.3; max-height: engine.height*0.23;' +
                  'left: engine.width * (6/24); top: engine.height * (15/24);').format;
 
-  vSpr := Self.Sprite('arrow', vGroup);
-  Formatter(vSpr, 'width: engine.width * 0.2;rotate: 270; max-height: engine.width * 0.1;' +
+  vSpr := Self.Sprite('arrow', vGroup, 'arrow');
+  Formatter(vSpr, 'width: engine.width * 0.2; wifhor: engine.height*0.2; rotate: 270; max-height: engine.width * 0.1;' +
                  'left: engine.width * (18/24); top: engine.height * (12/24);').format;
 
   vTxt := Self.FastText('monolog3', TFont.Create, TAlphaColorRec.White, vGroup);
@@ -264,7 +281,7 @@ begin
   vTxt.FontSize := 36;
   vTxt.Text := 'Your destination';
   Formatter(vTxt, 'width:engine.width * 0.6;' +
-                 'left: engine.width * (18/24); top: engine.height * (14/24);').format;
+                 'left: engine.width * (18/24); top: arrow.bottomborder + height*0.5;').format;
 end;
 
 constructor TLoader.Create(AEngine: TEngine2D);
