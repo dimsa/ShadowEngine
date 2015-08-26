@@ -84,6 +84,7 @@ begin
               y + hHalf * CJustifyPoints[Justify].Bottom),
               Opacity, False
             );
+  inherited;
 end;
 
 procedure tSprite.SetCurRes(const Value: Integer);

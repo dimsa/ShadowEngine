@@ -60,6 +60,12 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Android' and '$(Cfg_2)'=='true') or '$(Cfg_2_Android)'!=''">
+        <Cfg_2_Android>true</Cfg_2_Android>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <AUP_READ_CALENDAR>true</AUP_READ_CALENDAR>
         <AUP_ACCESS_FINE_LOCATION>true</AUP_ACCESS_FINE_LOCATION>
@@ -193,6 +199,16 @@
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_DebugInformation>0</DCC_DebugInformation>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Android)'!=''">
+        <Android_LauncherIcon72>C:\Users\dimsa\Desktop\icons\72.png</Android_LauncherIcon72>
+        <Android_LauncherIcon144>C:\Users\dimsa\Desktop\icons\144.png</Android_LauncherIcon144>
+        <Android_LauncherIcon48>C:\Users\dimsa\Desktop\icons\48.png</Android_LauncherIcon48>
+        <Android_SplashTileMode>disabled</Android_SplashTileMode>
+        <Android_LauncherIcon96>C:\Users\dimsa\Desktop\icons\96.png</Android_LauncherIcon96>
+        <Android_LauncherIcon36>C:\Users\dimsa\Desktop\icons\36.png</Android_LauncherIcon36>
+        <Android_SplashGravity>center</Android_SplashGravity>
+        <VerInfo_Build>1</VerInfo_Build>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -374,7 +390,7 @@
                         <RemoteName>back.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
-                    <Platform Name="Win64">
+                    <Platform Name="OSX32">
                         <RemoteName>back.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
@@ -382,7 +398,7 @@
                         <RemoteDir>assets\internal\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
-                    <Platform Name="OSX32">
+                    <Platform Name="Win64">
                         <RemoteName>back.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
@@ -1070,13 +1086,13 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
             </Deployment>
             <Platforms>
                 <Platform value="Android">True</Platform>

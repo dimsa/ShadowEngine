@@ -68,13 +68,13 @@ var
   vSize: tPointF;
 begin
   vSize := getDisplaySizeInPx;
-  Game.Resize;
   mainImage.Position.X := 0;
   mainImage.Position.Y := 0;
   mainImage.Width := Round(vSize.X + 0.4);
   mainImage.Height := Round(vSize.Y + 0.4);
   mainImage.Bitmap.Width := Round(vSize.X + 0.4);
   mainImage.Bitmap.Height := Round(vSize.Y + 0.4);
+  Game.Resize;
 end;
 
 

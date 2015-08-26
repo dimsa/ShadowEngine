@@ -56,6 +56,7 @@ type
     FCollisions: Integer; // Столкновения с начала игры
     FSeconds: Single; // Секунды с начала игры
     FCurrentLevel: Integer; // Текущий выбранный уровень игры
+    FSecondToEndLevel: Integer; // Время сколько нужно продержаться в StoryMode
 
     function GetAsteroids: Integer;
     function GetCollisions: Integer;
@@ -92,6 +93,7 @@ type
 
     procedure SetScaling(const AMonitorScale, ASpeedModScale: Double);
     procedure RenewPanels;
+    procedure PrepareAsteroidForLevel(const ALevel: Integer);
     procedure RestartGame(const AGameMode: TGameStatus);
     constructor Create(ALoader: TLoader);
     destructor Destroy; override;
@@ -492,20 +494,23 @@ begin
   if FGameStatus = gsGameOver then
     Exit;
   FSeconds := FSeconds + ADeltaTime;
-  FValueableSeconds := FValueableSeconds + ADeltaTime;
-  FSecToNextLevel := FSecToNextLevel + ADeltaTime;
-  vDSec2 := Trunc(FSecToNextLevel / 15);
 
   if GameStatus = gsSurvivalMode then
+  begin
+    FValueableSeconds := FValueableSeconds + ADeltaTime;
+    FSecToNextLevel := FSecToNextLevel + ADeltaTime;
+    vDSec2 := Trunc(FSecToNextLevel / 15);
+
     if vDSec2 > 0 then
     begin
       AddAsteroid(0, 0);
       FSecToNextLevel := FSecToNextLevel - vDSec2 * 15;
     end;
 
-  vDSec := Trunc(FValueableSeconds / 0.1);
-  if vDSec > 0 then
-    FValueableSeconds := FValueableSeconds - vDSec * 0.1;
+    vDSec := Trunc(FValueableSeconds / 0.1);
+    if vDSec > 0 then
+      FValueableSeconds := FValueableSeconds - vDSec * 0.1;
+  end;
 
    case FGameStatus of
     gsStoryMode: ;
@@ -664,6 +669,64 @@ begin
   end;
 end;
 
+procedure TGameParam.PrepareAsteroidForLevel(const ALevel: Integer);
+var
+  iLevel: Integer;
+  iAster, vNAster: Integer;
+  iUpgrade: Integer;
+  vSize, vSpeed: Integer;
+begin
+  vNAster := 3;
+  FSecondToEndLevel := 30;
+  Self.DefineAsteroidCount(3);
+  iLevel := ALevel;
+
+  while iLevel > 1 do
+  begin
+    for iAster := 0 to vNAster - 1 do
+      FAsteroids[iAster].DefineProperty(prSmall, prSmall);
+
+    for iUpgrade := 0 to 2 do
+    begin
+      for iAster := 0 to vNAster - 1 do
+      begin
+        vSize := FAsteroids[iAster].Size;
+        vSpeed := FAsteroids[iAster].Speed;
+
+        // На каждую четную итерацию прибавляем размер, а если не можем, то скорость.
+        if (iLevel mod 2) = 0 then
+        begin
+          if vSize < 3 then
+            vSize := vSize + 1
+          else
+            vSpeed := vSpeed + 1;
+        end else
+        begin
+          // Иначе прибавляем скорость
+          if vSpeed < 3 then
+            vSpeed := vSpeed + 1
+          else
+            vSize := vSize + 1;
+        end;
+
+        FAsteroids[iAster].DefineProperty(vSize, vSpeed);
+
+        Dec(iLevel);
+        if iLevel <= 1 then
+          Exit;
+
+
+      end;
+    end;
+    // Если каждый астеройд получил по 3 апгрейда, приблавяем один астеройд и 10 секунд
+    Inc(FSecondToEndLevel, 10);
+    Inc(vNAster);
+    Dec(iLevel);
+
+  end;
+
+end;
+
 procedure TGameParam.RenewPanels;
 var
   vS: string ;
@@ -682,6 +745,10 @@ end;
 procedure TGameParam.RestartGame(const AGameMode: TGameStatus);
 begin
 
+  Self.FSeconds := 0;
+  Self.FScorePoints := 0;
+  Self.FValueableSeconds := 0;
+
   FGameStatus := AGameMode;
   case AGameMode of
     gsRelaxMode: begin
@@ -695,15 +762,12 @@ begin
     end;
     gsStoryMode: begin
       FLoader.CreateLifes(FLifes, 1);
+      PrepareAsteroidForLevel(FCurrentLevel);
       FLoader.CreateStoryPanel(FPanels);
     end;
   end;
 
-
   FLoader.Parent.DoTheFullWindowResize;
-  Self.FSeconds := 0;
-  Self.FScorePoints := 0;
-  Self.FValueableSeconds := 0;
   Self.FShip.Show;
 end;
 
@@ -752,8 +816,8 @@ begin
    FMaxLevel := FIniFile.ReadInteger('statistics', 'maxlevel', 0);
    FMaxRelaxScore := FIniFile.ReadInteger('statistics', 'maxrelaxscore', 0);
    FMaxSurvivalScore := FIniFile.ReadInteger('statistics', 'maxsurvivalscore', 0);
-   FMaxSurvivalTime := FIniFile.ReadInteger('statistics', 'maxsurvivaltime', 0);
-   FMaxRelaxTime := FIniFile.ReadInteger('statistics', 'maxrelaxtime', 0);
+   FMaxSurvivalTime := FIniFile.ReadFloat('statistics', 'maxsurvivaltime', 0);
+   FMaxRelaxTime := FIniFile.ReadFloat('statistics', 'maxrelaxtime', 0);
 end;
 
 procedure TStatistics.SetMaxLevel(const Value: Integer);

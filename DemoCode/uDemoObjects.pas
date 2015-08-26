@@ -67,11 +67,19 @@ type
   private
     FNotChange: Integer; // Кол-во тиков, которое не будет изменяться направление при коллайдер
     FScaleMod: Single;
+    FSize: Byte;
+    FSpeed: Byte;
     procedure SetScaleMod(const Value: Single); // Модификатор размера
   protected
+    property DX;
+    property DY;
+    property DA;
     procedure SetScale(AValue: single); override;
   public
+    procedure DefineProperty(const ASize, ASpeed: Byte);
     procedure Repaint; override;
+    property Speed: Byte read FSpeed; // prSmall = 1; prMedium = 2; prBig = 3;
+    property Size: Byte read FSize; // prSmall = 1; prMedium = 2; prBig = 3;
     property ScaleMod: Single read FScaleMod write SetScaleMod;
     function Collide(const AObject: TEngine2DObject): Boolean;
     constructor Create(AParent: pointer); override;
@@ -448,10 +456,28 @@ begin
   FMaxDa := 6;
   FScaleMod := 1;
 
+  FSpeed := 1;
+  FSize := 1;
+
   FDx := 3 * Random;
   FDy := 3 * Random;
   FDA := 10 * Random - 5;
   FNotChange := 0;
+end;
+
+procedure TAsteroid.DefineProperty(const ASize, ASpeed: Byte);
+var
+  vSpeed, vAng: Double;
+begin
+  FSpeed := ASpeed;
+  FSize := ASize;
+  ScaleMod := ASize * 0.3 + 0.4;
+  vSpeed := ASpeed * 1.2 + 3;
+
+  vAng := Random(360) + random;
+
+  FDX := vSpeed * Cos(vAng * pi180);
+  FDY := vSpeed * Sin(vAng * pi180);
 end;
 
 procedure TAsteroid.Repaint;
