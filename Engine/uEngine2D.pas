@@ -109,7 +109,7 @@ type
     procedure SpriteToFront(const n: integer);// Передвигает в массиве отрисовки спрайт
 
     procedure DoTheFullWindowResize;
-    procedure Clear; // Удаляет все спрайты и после этого удаляет все ресурсы
+//    procedure Clear; // Удаляет все спрайты и после этого удаляет все ресурсы
 
     procedure MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; x, y: single); virtual;
@@ -133,6 +133,8 @@ type
     // Прячем или показывает группы
     procedure ShowGroup(const AGroup: String);
     procedure HideGroup(const AGroup: String);
+    procedure SendToFrontGroup(const AGroup: String); // Ставит группу на передний план
+    procedure BringToBackGroup(const AGroup: String); // Отодвигает группу на задний план
 
     procedure Start; virtual; // Включает движок
     procedure Stop; virtual;// Выключает движок
@@ -209,12 +211,33 @@ begin
       true);
 end;
 
-procedure tEngine2d.clear;
+procedure tEngine2d.BringToBackGroup(const AGroup: String);
+var
+  i, iObject, iG: Integer;
+  vReg: TRegEx;
+  vStrs: TArray<string>;
+  vN: Integer;
 begin
-  clearSprites;
-//  clearResources;
+  vReg := TRegEx.Create(',');
+  vStrs := vReg.Split(AGroup);
+  vN := fObjects.Count - 1;
+  for iG := 0 to Length(vStrs) - 1 do
+  begin
+    i := vN;
+    iObject := vN;
+    vStrs[iG] := Trim(vStrs[iG]);
+    while iObject > 1 do
+    begin
+      if fObjects[fSpriteOrder[i]].Group = vStrs[iG] then
+      begin
+        fObjects[fSpriteOrder[i]].BringToBack;
+        Inc(i);
+      end;
+      Dec(i);
+      Dec(iObject);
+    end;
+  end;
 end;
-
 
 procedure tEngine2d.clearSprites;
 var
@@ -380,8 +403,8 @@ begin
 
         l := (fObjects.Count - 1);
         for i := 1 to l do
-          if fSpriteOrder[i] <= l then
-            if fObjects[fSpriteOrder[i]] <> Nil then
+        {  if fSpriteOrder[i] <= l then
+            if fObjects[fSpriteOrder[i]] <> Nil then   }
           
           if fObjects[fSpriteOrder[i]].visible then
           begin
@@ -405,6 +428,34 @@ begin
   end;
 
   fCritical.Leave;
+end;
+
+procedure tEngine2d.SendToFrontGroup(const AGroup: String);
+var
+  i, iObject, iG: Integer;
+  vReg: TRegEx;
+  vStrs: TArray<string>;
+  vN: Integer;
+begin
+  vReg := TRegEx.Create(',');
+  vStrs := vReg.Split(AGroup);
+  vN := fObjects.Count - 1;
+  for iG := 0 to Length(vStrs) - 1 do
+  begin
+    i := 1;
+    iObject := 1;
+    vStrs[iG] := Trim(vStrs[iG]);
+    while iObject < vN do
+    begin
+      if fObjects[fSpriteOrder[i]].Group = vStrs[iG] then
+      begin
+        fObjects[fSpriteOrder[i]].SendToFront;
+        Dec(i);
+      end;
+      Inc(i);
+      Inc(iObject);
+    end;
+  end;
 end;
 
 {function tEngine2d.ResToSF(const AId: Integer): TSpriteFrame;
@@ -685,11 +736,11 @@ begin
 
   oldOrder := fSpriteOrder[n]; // Узнаём порядок отрисовки спрайта номер n
 
-  for i := 0 to l - 1 do
+  for i := 1 to l - 1 do
     if fSpriteOrder[i] < oldOrder then
       fSpriteOrder[i] := fSpriteOrder[i] + 1;
 
-  fSpriteOrder[n] := 0;
+  fSpriteOrder[n] := 1;
 end;
 
 procedure tEngine2d.spriteToFront(const n: integer);
@@ -699,7 +750,7 @@ begin
   l := length(fSpriteOrder);
   oldOrder := l - 1;
 
-  for i := 0 to l - 1 do
+  for i := 1 to l - 1 do
     if fSpriteOrder[i] = n then
     begin
       oldOrder := i;

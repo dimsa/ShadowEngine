@@ -472,7 +472,7 @@ begin
   FSpeed := ASpeed;
   FSize := ASize;
   ScaleMod := ASize * 0.3 + 0.4;
-  vSpeed := ASpeed * 1.2 + 3;
+  vSpeed := ASpeed * 1.5 + 3;
 
   vAng := Random(360) + random;
 

@@ -42,7 +42,7 @@ end;
 procedure TmainForm.FormKeyDown(Sender: TObject; var Key: Word;
   var KeyChar: Char; Shift: TShiftState);
 begin
-  Game.DrawFigures := not Game.DrawFigures;
+//  Game.DrawFigures := not Game.DrawFigures;
 
   if ReturnPressed(Key) then
   begin
@@ -51,7 +51,7 @@ begin
       gsMenu3: Game.GameStatus := gsMenu2;
       gsStatistics: Game.GameStatus := gsMenu1;
       gsAbout: Game.GameStatus := gsMenu1;
-      gsStoryMode, gsRelaxMode, gsSurvivalMode, gsGameOver, gsComix1, gsComix2, gsComix3: Game.GameStatus := gsMenu1;
+      gsStoryMode, gsRelaxMode, gsSurvivalMode, gsGameOver, gsComix1, gsComix2, gsComix3, gsNextLevel: Game.GameStatus := gsMenu1;
      end;
   end;
 end;

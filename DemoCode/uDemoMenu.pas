@@ -6,15 +6,22 @@ uses
   System.Types, System.UITypes, System.Math,  System.Generics.Collections,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.SysUtils, System.Classes,
   FMX.Dialogs,
-  uEngine2DObject, uEngine2DText, uEngine2DSprite, uEngineFormatter,
+  uEngine2DObject, uEngine2DText, uEngine2DSprite, uEngineFormatter, uEngine2DShape,
   uIntersectorMethods, uClasses, uEngine2DClasses;
 
 type
 
+  TButtonBack = class(TSprite)
+  private
+    FLink: TEngine2DText;
+  public
+    property Link: TEngine2DText read FLink write FLink;
+  end;
+
   TGameButton = class
   private
     FParent: Pointer; // Engine2d
-    FBack: TSprite;
+    FBack: TButtonBack;
     FText: TEngine2DText;
     FName: String;
     FOnClick: TVCLProcedure;
@@ -27,7 +34,7 @@ type
     function GetFontSize: Single;
     procedure SetFontSize(const Value: Single);
   public
-    property BackSprite: TSprite read FBack;
+    property BackSprite: TButtonBack read FBack;
     property FontSize: Single read GetFontSize write SetFontSize;
     property OnClick: TVCLProcedure read FOnClick write SetOnClick;
     property Group: string read FGroup write SetGroup;
@@ -38,12 +45,34 @@ type
     property Name: String read FName write FName;
   end;
 
+  TYesNoMenu = class
+  private
+    FEngine: Pointer;
+    FYes, FNo: TGameButton;
+    FText: TEngine2DText;
+    FBack: TEngine2DShape;
+    function GetText: string;
+    procedure SetText(const Value: string);
+    function GetOnNo: TVCLProcedure;
+    function GetOnYes: TVCLProcedure;
+    procedure SetOnNo(const Value: TVCLProcedure);
+    procedure SetOnYes(const Value: TVCLProcedure);
+  public
+    property OnYes: TVCLProcedure read GetOnYes write SetOnYes;
+    property OnNo: TVCLProcedure read GetOnNo write SetOnNo;
+    property Text: string read GetText write SetText;
+    constructor Create(const AParent: Pointer);
+    destructor Destroy; override;
+  end;
+
   TGameMenu = class
   private
     FParent: Pointer; // Engine2d
     FMaxLevel: Integer; // Максимальный уровень до которого дошел игрок
     FList: TList<TGameButton>; // Кнопки перехода по страницам меню
+    FNextLevelMenu: TList<TGameButton>;
     FGameLogo: TSprite;
+    FYesNoMenu: TYesNoMenu;
     // Меню выбора уровня
     FLevelMenu: TList<TGameButton>; // Кнопки выбора уровня
     FNextPage, FPrevPage: TGameButton; // Листалка страниц выбора уровня
@@ -63,6 +92,8 @@ type
     procedure SetStoryMode(const Value: TVCLProcedure);
     procedure SetSurvivalMode(const Value: TVCLProcedure);
     procedure SetLevelSelect(const Value: TVCLProcedure);
+    procedure SetNextLevelNo(const Value: TVCLProcedure);
+    procedure SetNextLevelYes(const Value: TVCLProcedure);
   public
     property StartGame: TVCLProcedure write SetStartGame;
     property AboutGame: TVCLProcedure write SetAboutGame;
@@ -72,6 +103,8 @@ type
     property StoryMode: TVCLProcedure write SetStoryMode;
     property LevelSelect: TVCLProcedure write SetLevelSelect;
     property SurvivalMode: TVCLProcedure write SetSurvivalMode;
+    property OnNextLevelYes: TVCLProcedure write SetNextLevelYes;
+    property OnNextLevelNo: TVCLProcedure write SetNextLevelNo;
     procedure ShowLevels(const AMaxLevel: Integer);
     procedure SendToFront;
     procedure Add(const AButton: TGameButton);
@@ -115,7 +148,7 @@ begin
   FName := AName;
 
   vEngine := AParent;
-  FBack := TSprite.Create(vEngine);
+  FBack := TButtonBack.Create(vEngine);
   FBack.Parent := vEngine;
   FBack.Resources := vEngine.Resources;
   FBack.CurRes := vEngine.Resources.IndexOf(ASpriteBackName);
@@ -131,6 +164,7 @@ begin
 
   vEngine.AddObject(FBack, FName);
   vEngine.AddObject(FText);
+  FBack.Link := FText;
 
   vFormatter := TEngineFormatter.Create(FText);
   vFormatter.Parent := vEngine;
@@ -241,9 +275,10 @@ begin
 
   vFormatter := TEngineFormatter.Create(FGameLogo);
   vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.21; width: engine.width * 0.8; max-height: engine.height * 0.30;' +
-  'xifhor: engine.width * 0.25; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.5;';
+    'xifhor: engine.width * 0.25; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.5;';
   vEngine.FormatterList.Add(vFormatter);
 
+  FYesNoMenu := TYesNoMenu.Create(FParent);
   FList := TList<TGameButton>.Create;
   FLevelMenu := TList<TGameButton>.Create;
   CreateMenu1;
@@ -251,6 +286,7 @@ begin
   CreateMenu3;
   CreateAbout;
   CreateStatistics;
+
 
 end;
 
@@ -274,8 +310,8 @@ begin
   vEngine.AddObject(vText, 'aboutcaption');
   vFormatter := TEngineFormatter.Create(vText);
   vFormatter.Text := 'left: engine.width * 0.5; top: gamelogo.bottomborder + engine.height * 0.15; width: engine.width * 0.8;' +
-  'max-height: engine.height * 0.30;' +
-  'topifhor: gamelogo.topborder; leftifhor: engine.width*0.75; wifhor: engine.width*0.4; maxheightifhor: engine.height * 0.4';
+    'max-height: engine.height * 0.30;' +
+    'topifhor: gamelogo.topborder; leftifhor: engine.width*0.75; wifhor: engine.width*0.4; maxheightifhor: engine.height * 0.4';
   vEngine.FormatterList.Add(vFormatter);
   vFormatter.Format;
 
@@ -459,7 +495,6 @@ procedure TGameMenu.SendToFront;
 var
   vBut: TGameButton;
 begin
-
   FGameLogo.SendToFront;
   for vBut in FList do
     vBut.SendToFront;
@@ -484,6 +519,16 @@ begin
 
   FLevelSelect := Value;
   //FList[4].OnClick := Value;
+end;
+
+procedure TGameMenu.SetNextLevelNo(const Value: TVCLProcedure);
+begin
+  FYesNoMenu.OnNo := Value;
+end;
+
+procedure TGameMenu.SetNextLevelYes(const Value: TVCLProcedure);
+begin
+  FYesNoMenu.OnYes := Value;
 end;
 
 procedure TGameMenu.SetRelaxMode(const Value: TVCLProcedure);
@@ -569,6 +614,137 @@ begin
   Self.SendToFront;
   inherited;
 end; }
+
+{ TYesNoMenu }
+
+constructor TYesNoMenu.Create(const AParent: Pointer);
+var
+  vEngine: tEngine2d;
+  vLoader: TLoader;
+  vBut: TGameButton;
+  vFormatter: TEngineFormatter;
+  vGroup: string;
+begin
+  FEngine := AParent;
+  vEngine := FEngine;
+  vGroup := 'nextlevel';
+
+  FBack := TFillRect.Create(vEngine);
+  FBack.Group := vGroup;
+  FBack.FigureRect := RectF(-150, -100, 150, 100);
+  FBack.Pen.Thickness := 4;
+  FBack.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
+  FBack.Brush.Color := TAlphaColorRec.White;
+  vEngine.AddObject(FBack, 'nextlevelback');
+
+  vFormatter := TEngineFormatter.Create(FBack);
+  vFormatter.Text := 'width: engine.width * 0.6;  left: engine.width * 0.5; top: engine.height * 0.5;';
+  vEngine.FormatterList.Insert(0, vFormatter);
+  vFormatter.Format;
+
+  vBut := TGameButton.Create('yesnextlevel', vEngine);
+  vBut.Text := 'Yes';
+  vBut.FontSize := 64;
+  vBut.BackSprite.CurRes := vEngine.Resources.IndexOf('ltlbutenabled');
+  vBut.Group := vGroup;
+  FYes := vBut;
+
+  vFormatter := TEngineFormatter.Create(vBut.BackSprite);
+  vFormatter.Text := 'width: engine.width * 0.2;  left: engine.width * 0.5 + width*0.75;' +
+    'top: engine.height * 0.5 + nextlevelback.height * 0.35; max-height: nextlevelback.height * 0.225;';
+  vEngine.FormatterList.Insert(0, vFormatter);
+  vFormatter.Format;
+
+  vBut := TGameButton.Create('nonextlevel', vEngine);
+  vBut.Text := 'No';
+  vBut.FontSize := 64;
+  vBut.BackSprite.CurRes := vEngine.Resources.IndexOf('ltlbutenabled');
+  vBut.Group := vGroup;
+  FNo := vBut;
+
+  vFormatter := TEngineFormatter.Create(vBut.BackSprite);
+  vFormatter.Text := 'width: engine.width * 0.2;  left: engine.width * 0.5 - width*0.75;' +
+    'top: engine.height * 0.5 + nextlevelback.height * 0.35; max-height: nextlevelback.height * 0.225;';
+  vEngine.FormatterList.Insert(0, vFormatter);
+  vFormatter.Format;
+
+  FText := TEngine2DText.Create(vEngine);
+  FText.Group := vGroup;
+  FText.WordWrap := True;
+  FText.TextRect :=  RectF(-90, -50, 90, 50);
+  FText.FontSize := 14;
+  FText.Color := RGBColor(62 , 6, 30, 255).Color;
+  FText.Text :=
+  'Congratulations!' + #13 +
+  'You have completed level!' + #13 + #13 +
+  'Play Next Level?';
+  vEngine.AddObject(FText);
+
+  vFormatter := TEngineFormatter.Create(FText);
+  vFormatter.Text := 'width: nextlevelback.width * 0.8; left: nextlevelback.left;' +
+    'top: nextlevelback.top - nextlevelback.height * 0.20;';
+
+  vEngine.FormatterList.Insert(0, vFormatter);
+  vFormatter.Format;
+
+  vEngine.HideGroup('nextlevel');
+end;
+
+
+//  vLoader := TLoader.Create(vEngine);
+
+//  vLoader.sp
+
+
+
+
+destructor TYesNoMenu.Destroy;
+var
+  vEngine: tEngine2d;
+begin
+  vEngine := FEngine;
+
+  FYes.Free;
+  FNo.Free;
+
+  vEngine.DeleteObject(FBack);
+  FBack.Free;
+
+  vEngine.DeleteObject(FText);
+  FText.Free;
+
+  inherited;
+end;
+
+function TYesNoMenu.GetOnNo: TVCLProcedure;
+begin
+  Result := FNo.OnClick;
+end;
+
+function TYesNoMenu.GetOnYes: TVCLProcedure;
+begin
+  Result := FYes.OnClick;
+end;
+
+function TYesNoMenu.GetText: string;
+begin
+  Result := FText.Text;
+end;
+
+procedure TYesNoMenu.SetOnNo(const Value: TVCLProcedure);
+begin
+  FNo.OnClick := Value;
+end;
+
+procedure TYesNoMenu.SetOnYes(const Value: TVCLProcedure);
+begin
+  FYes.OnClick := Value;
+end;
+
+procedure TYesNoMenu.SetText(const Value: string);
+begin
+  FText.Text := Value;
+end;
 
 end.
 

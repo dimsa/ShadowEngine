@@ -13,7 +13,7 @@ uses
   uEngine2DSprite, uEngineFormatter, uNamedList;
 
 type
-  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatistics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode, gsGameOver, gsComix1, gsComix2, gsComix3);
+  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatistics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode, gsGameOver, gsComix1, gsComix2, gsComix3, gsNextLevel);
 
   TStatistics = class
   private
@@ -134,6 +134,8 @@ type
     procedure StatGame(ASender: TObject);
     procedure AboutGame(ASender: TObject);
     procedure ExitGame(ASender: TObject);
+    procedure ToMainMenu(ASender: TObject);
+    procedure ToNextLevel(ASender: TObject);
 
     procedure DoGameTick;
     procedure FindCollide;
@@ -176,6 +178,10 @@ begin
 
   vTmp := 1 / FEngine.EngineThread.FPS;
   FGP.AddTime(vTmp);
+
+  if GameStatus = gsStoryMode then
+    if FGP.Time <= 0 then
+      GameStatus := gsNextLevel;
 
   FGP.RenewPanels;
 end;
@@ -228,13 +234,20 @@ begin
           if Asteroids[i].Collide(Ship) then
           begin
             case GameStatus of
-              gsStoryMode, gsSurvivalMode: begin
+              gsSurvivalMode:
+              begin
                 BreakLife;
                 if FGP.Lifes.Count <= 0 then
                 begin
                   Self.GameStatus := gsGameOver;
                   FGP.FixScore;
                 end;
+              end;
+              gsStoryMode:
+              begin
+                BreakLife;
+                if FGP.Lifes.Count <= 0 then
+                  Self.GameStatus := gsGameOver;
               end;
               gsRelaxMode: FGP.AddCollision;
             end;
@@ -335,6 +348,8 @@ begin
   FMenu.SurvivalMode := StartSurvival;
   FMenu.StoryMode := SelectLevel;
   FMenu.LevelSelect := StartStory;
+  FMenu.OnNextLevelYes := ToNextLevel;
+  FMenu.OnNextLevelNo := ToMainMenu;
 
   FEngine.HideGroup('ship');
   FEngine.HideGroup('menu2');
@@ -371,18 +386,19 @@ procedure TDemoGame.SetGameStatus(const Value: TGameStatus);
 begin
   with FEngine do
     case Value of
-      gsMenu1: begin if (FGameStatus = gsRelaxMode) or (FGameStatus = gsStoryMode) then Self.FGP.FixScore;  ShowGroup('menu1,menu'); FMenu.SendToFront; HideGroup('gameover,relaxmodemenu,ship,menu2,about,statistics,menu3,relax,survival,story'); end;
+      gsMenu1: begin if (FGameStatus = gsRelaxMode) then Self.FGP.FixScore;  ShowGroup('menu1,menu'); FMenu.SendToFront; HideGroup('gameover,relaxmodemenu,ship,menu2,about,statistics,menu3,relax,survival,story,nextlevel,comix1,comix2,comix3'); end;
       gsMenu2: begin ShowGroup('menu2'); HideGroup('menu1,menu3'); end;
       gsMenu3: begin FMenu.ShowLevels(FGP.Statistics.MaxLevel); ShowGroup('menu3'); HideGroup('menu2'); end;
       gsStatistics: begin TEngine2DText(SpriteList['statisticscaption']).Text := FGP.StatisticsText; ShowGroup('statistics'); HideGroup('menu1') end;
       gsAbout: begin ShowGroup('about'); HideGroup('menu1') end;
       gsRelaxMode: begin FGP.RestartGame(Value); ShowGroup('relaxmodemenu'); HideGroup('menu2,menu'); end;
       gsSurvivalMode: begin FGP.RestartGame(Value);  HideGroup('menu2'); HideGroup('menu'); end;
-      gsStoryMode: begin FGP.RestartGame(Value);  HideGroup('menu3,menu,comix1,comix2,comix3'); end;
+      gsStoryMode: begin FGP.RestartGame(Value); HideGroup('menu3,menu,comix1,comix2,comix3'); end;
       gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); FGP.Ship.Visible := False; ShowGroup('gameover'); FGameOverText.SendToFront; end;
-      gsComix1: begin ShowGroup('comix1'); HideGroup('menu3,menu'); end;
-      gsComix2: begin ShowGroup('comix2'); end;
-      gsComix3: begin ShowGroup('comix3'); end;
+      gsComix1: begin ShowGroup('comix1'); HideGroup('menu3,menu,nextlevel,ship'); SendToFrontGroup('comix1'); end;
+      gsComix2: begin ShowGroup('comix2'); SendToFrontGroup('comix2'); end;
+      gsComix3: begin ShowGroup('comix3'); SendToFrontGroup('comix3'); end;
+      gsNextLevel: begin ShowGroup('nextlevel'); HideGroup('ship'); SendToFrontGroup('nextlevel'); end;
   end;
   FGameStatus := Value;
 end;
@@ -425,6 +441,7 @@ end;
 procedure TDemoGame.StartStory(ASender: TObject);
 begin
   GameStatus := gsComix1;
+  FGP.Level := StrToInt(TButtonBack(ASender).Link.Text);
 end;
 
 procedure TDemoGame.StartSurvival(ASender: TObject);
@@ -435,6 +452,18 @@ end;
 procedure TDemoGame.StatGame(ASender: TObject);
 begin
   GameStatus := gsStatistics;
+end;
+
+procedure TDemoGame.ToMainMenu(ASender: TObject);
+begin
+  GameStatus := gsMenu1;
+end;
+
+procedure TDemoGame.ToNextLevel(ASender: TObject);
+begin
+  FGP.Level := FGP.Level + 1;
+  GameStatus := gsComix1;
+//  FGP.RestartGame(gsStoryMode);
 end;
 
 { TGameParam }
@@ -493,7 +522,12 @@ var
 begin
   if FGameStatus = gsGameOver then
     Exit;
-  FSeconds := FSeconds + ADeltaTime;
+
+  if GameStatus <> gsStoryMode then
+    FSeconds := FSeconds + ADeltaTime
+  else
+    FSeconds := FSeconds - ADeltaTime;
+
 
   if GameStatus = gsSurvivalMode then
   begin
@@ -513,7 +547,9 @@ begin
   end;
 
    case FGameStatus of
-    gsStoryMode: ;
+    gsStoryMode:
+      if FSeconds <= 0 then
+        FixScore;
     gsSurvivalMode:
       FScorePoints := FScorePoints + vDSec * FAsteroids.Count;
     gsRelaxMode:
@@ -643,9 +679,9 @@ end;
 
 function TGameParam.GetLevel: Integer;
 begin
-  Result := 0;
-  if FPanels.IsHere('levelvalue') then
-    Result := StrToInt(FPanels['levelvalue'].Text);
+  Result := FCurrentLevel;
+ { if FPanels.IsHere('levelvalue') then
+    Result := StrToInt(FPanels['levelvalue'].Text);  }
 end;
 
 function TGameParam.GetScore: Integer;
@@ -656,17 +692,15 @@ begin
 end;
 
 function TGameParam.GetTime: Double;
-var
-  vErr: Integer;
-  vValue: Double;
 begin
-  Result := 0;
+  Result := FSeconds;
+ { Result := 0;
   if FPanels.IsHere('timevalue') then
   begin
     val(FPanels['timevalue'].Text, vValue, vErr);
     if vErr = 0 then
       Result := vValue;
-  end;
+  end;   }
 end;
 
 procedure TGameParam.PrepareAsteroidForLevel(const ALevel: Integer);
@@ -678,14 +712,17 @@ var
 begin
   vNAster := 3;
   FSecondToEndLevel := 30;
-  Self.DefineAsteroidCount(3);
+  Self.DefineAsteroidCount(vNAster);
   iLevel := ALevel;
+
+  for iAster := 0 to vNAster - 1 do
+    FAsteroids[iAster].DefineProperty(prSmall, prSmall);
 
   while iLevel > 1 do
   begin
+    Self.DefineAsteroidCount(vNAster);
     for iAster := 0 to vNAster - 1 do
       FAsteroids[iAster].DefineProperty(prSmall, prSmall);
-
     for iUpgrade := 0 to 2 do
     begin
       for iAster := 0 to vNAster - 1 do
@@ -734,8 +771,15 @@ begin
   Self.Score := FScorePoints;
   if FPanels.IsHere('timevalue') then
   begin
+    if FSeconds < 0 then
+      FSeconds := 0;
     Str(FSeconds:0:2, vS);
     FPanels['timevalue'].Text := vS;
+  end;
+
+  if FPanels.IsHere('levelvalue') then
+  begin
+    FPanels['levelvalue'].Text := IntToStr(FCurrentLevel);
   end;
 
   if FPanels.IsHere('collisionsvalue') then
@@ -763,6 +807,7 @@ begin
     gsStoryMode: begin
       FLoader.CreateLifes(FLifes, 1);
       PrepareAsteroidForLevel(FCurrentLevel);
+      FSeconds := FSecondToEndLevel;
       FLoader.CreateStoryPanel(FPanels);
     end;
   end;
@@ -773,8 +818,9 @@ end;
 
 procedure TGameParam.SetLevel(const Value: Integer);
 begin
-  if FPanels.IsHere('levelvalue') then
-    FPanels['levelvalue'].Text := IntToStr(Value);
+ { if FPanels.IsHere('levelvalue') then
+    FPanels['levelvalue'].Text := IntToStr(Value);   }
+  Self.FCurrentLevel := Value;
 end;
 
 procedure TGameParam.SetScaling(const AMonitorScale, ASpeedModScale: Double);
@@ -882,6 +928,3 @@ begin
 end;
 
 end.
-
-
-
