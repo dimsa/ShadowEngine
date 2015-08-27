@@ -84,6 +84,8 @@ type
     procedure CreateAbout; // Создает Эбаут сооотвественно
     procedure DoNothing(ASender: TObject);
     procedure CreateStatistics; // Создаёт статистику
+    procedure NextLevelPage(ASender: TObject);
+    procedure PrevLevelPage(ASender: TObject);
     procedure SetAboutGame(const Value: TVCLProcedure);
     procedure SetExitGame(const Value: TVCLProcedure);
     procedure SetStartGame(const Value: TVCLProcedure);
@@ -105,7 +107,7 @@ type
     property SurvivalMode: TVCLProcedure write SetSurvivalMode;
     property OnNextLevelYes: TVCLProcedure write SetNextLevelYes;
     property OnNextLevelNo: TVCLProcedure write SetNextLevelNo;
-    procedure ShowLevels(const AMaxLevel: Integer);
+    procedure ShowLevels(const AMaxLevel: Integer; const APage: Integer = -1);
     procedure SendToFront;
     procedure Add(const AButton: TGameButton);
     constructor Create(const AParent: Pointer);
@@ -281,9 +283,12 @@ begin
   FYesNoMenu := TYesNoMenu.Create(FParent);
   FList := TList<TGameButton>.Create;
   FLevelMenu := TList<TGameButton>.Create;
+
   CreateMenu1;
   CreateMenu2;
   CreateMenu3;
+  FNextPage.OnClick := NextLevelPage;
+  FPrevPage.OnClick := PrevLevelPage;
   CreateAbout;
   CreateStatistics;
 
@@ -491,6 +496,30 @@ begin
 
 end;
 
+procedure TGameMenu.NextLevelPage(ASender: TObject);
+var
+  vEngine: tEngine2d;
+begin
+  vEngine := FParent;
+  if TButtonBack(ASender).CurRes = vEngine.Resources.IndexOf('ltlbutenabled') then
+    if FCurPage < Trunc(FMaxLevel / 16) then
+      Inc(FCurPage);
+
+   ShowLevels(FMaxLevel, FCurPage);
+end;
+
+procedure TGameMenu.PrevLevelPage(ASender: TObject);
+var
+  vEngine: tEngine2d;
+begin
+  vEngine := FParent;
+  if TButtonBack(ASender).CurRes = vEngine.Resources.IndexOf('ltlbutenabled') then
+    if FCurPage > 0 then
+      Dec(FCurPage);
+
+   ShowLevels(FMaxLevel, FCurPage);
+end;
+
 procedure TGameMenu.SendToFront;
 var
   vBut: TGameButton;
@@ -556,7 +585,7 @@ begin
   FList[5].OnClick := Value;
 end;
 
-procedure TGameMenu.ShowLevels(const AMaxLevel: Integer);
+procedure TGameMenu.ShowLevels(const AMaxLevel, APage: Integer);
 var
   vEngine: tEngine2d;
   i: Integer;
@@ -564,7 +593,8 @@ begin
   vEngine := FParent;
 
   FMaxLevel := AMaxLevel;
-  FCurPage := Trunc(AMaxLevel / 16);
+  if APage = -1 then
+    FCurPage := Trunc(AMaxLevel / 16);
 
 
   if FCurPage <  Trunc((FMaxLevel + 1) / 16) then
@@ -572,7 +602,7 @@ begin
   else
   begin
     FNextPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled') ;
-    FNextPage.OnClick := DoNothing;
+ //   FNextPage.OnClick := DoNothing;
   end;
 
   if FCurPage > 0 then
@@ -580,7 +610,7 @@ begin
   else
   begin
     FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled');
-    FPrevPage.OnClick := DoNothing;
+  //  FPrevPage.OnClick := DoNothing;
   end;
 
     for i := 0 to 16 - 1 do
@@ -689,14 +719,6 @@ begin
 
   vEngine.HideGroup('nextlevel');
 end;
-
-
-//  vLoader := TLoader.Create(vEngine);
-
-//  vLoader.sp
-
-
-
 
 destructor TYesNoMenu.Destroy;
 var
