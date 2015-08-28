@@ -120,12 +120,13 @@ begin
   vFig.Group := vGroup;
   vFig.FigureRect := RectF(-200, -200, 200, 200);
   vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
-  vFig.Brush.Kind := TBrushKind.Bitmap;
+  vFig.Brush.Kind := TBrushKind.bkBitmap;
   vFig.Pen.Thickness := 4;
   vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FEngine.AddObject(vFig);
-  Formatter(vFig, 'scalex:engine.width/width; scaley: engine.height/(height*2);' +
-                  'height: engine.height * (12/24);left: engine.width * (12/24); top: engine.height * (6/24);').format;
+
+  Formatter(vFig, 'scalex:engine.width; scaley: engine.height*0.5;' +
+                  'width: engine.width;left: engine.width * (12/24); top: engine.height * (6/24);').Format;
   vFig.Visible := True;
   vFig.Opacity := 1;
 
@@ -169,12 +170,12 @@ begin
   vFig.Group := vGroup;
   vFig.FigureRect := RectF(-200, -200, 200, 200);
   vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
-  vFig.Brush.Kind := TBrushKind.Bitmap;
+  vFig.Brush.Kind := TBrushKind.bkBitmap;
   vFig.Pen.Thickness := 4;
   vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FEngine.AddObject(vFig);
-  Formatter(vFig, 'scalex:engine.width/width; scaley: engine.height/(height*2);' +
-                  'height: engine.height / 2;left: engine.width/2; top: engine.height * (3/4);').format;
+  Formatter(vFig, 'scalex:engine.width/50; scaley: engine.height/(50*2);' +
+                  'width: engine.width;left: engine.width/2; top: engine.height * (3/4);').format;
   vFig.Visible := True;
   vFig.Opacity := 1;
 
@@ -239,13 +240,14 @@ begin
   vFig.Group := vGroup;
   vFig.FigureRect := RectF(-200, -200, 200, 200);
   vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
-  vFig.Brush.Kind := TBrushKind.Bitmap;
+  vFig.Brush.Kind := TBrushKind.bkBitmap;
   vFig.Pen.Thickness := 4;
   vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FEngine.AddObject(vFig);
-  Formatter(vFig, 'scalex:0.85*(engine.width/width); scaley: engine.height/(height*2);' +
-                  'height: (engine.height / 2);' +
-                  'scyifhor: (engine.height/height) * 0.85; hifhor: engine.height * 0.4;'+
+  Formatter(vFig, 'scalex:0.85*(engine.width); scaley: engine.height*0.5;' +
+                  'scyifhor: engine.height * 0.85;'+
+                  'width: engine.width * 0.8;' +
+
                   'left: engine.width/2; top: engine.height / 2').format;
   vFig.Visible := True;
   vFig.Opacity := 1;

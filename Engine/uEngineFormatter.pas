@@ -378,14 +378,14 @@ end;
 
 procedure TWidthDir.Format;
 begin
-  FObject.Scale := Self.Value / FObject.w;
+  FObject.Scale := Self.Value / (FObject.w) ;
 end;
 
 { THeightDir }
 
 procedure THeightDir.Format;
 begin
-  FObject.Scale := Self.Value / FObject.h;
+  FObject.Scale := Self.Value / (FObject.h);
 end;
 
 { TMaxWidthDir }

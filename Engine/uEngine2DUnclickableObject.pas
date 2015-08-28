@@ -153,9 +153,19 @@ begin
 end;
 
 procedure tEngine2DUnclickableObject.setScale(AValue: single);
+var
+  vSoot: Single;
 begin
+  if (fPosition.ScaleX) <> 0 then
+  begin
+    vSoot := fPosition.ScaleY / fPosition.scaleX;
+  end
+  else begin
+    vSoot := 1;
+  end;
+
   fPosition.scaleX := AValue;
-  fPosition.scaleY := AValue;
+  fPosition.scaleY := vSoot * AValue;
 end;
 
 procedure tEngine2DUnclickableObject.SetScalePoint(const Value: TPointF);
@@ -165,6 +175,8 @@ begin
 end;
 
 procedure tEngine2DUnclickableObject.setScaleX(const Value: single);
+var
+  vSoot: Single;
 begin
   fPosition.ScaleX := Value;
 end;

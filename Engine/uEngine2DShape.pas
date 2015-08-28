@@ -20,6 +20,7 @@ type
     function GetH: single; override;
     procedure SetScaleX(const Value: single); override;
     procedure SetScaleY(const Value: single); override;
+    procedure SetScale(AValue: single); override;
   public
     property Pen: TStrokeBrush read FPen write FPen;
     property Brush: TBrush read FBrush write FBrush;
@@ -48,11 +49,11 @@ begin
   inherited;
   FigureRect := RectF(-50, -50, 50, 50);
 
-  FPen := TStrokeBrush.Create(TBrushKind.Solid, TAlphaColorRec.Black);
+  FPen := TStrokeBrush.Create(TBrushKind.bkSolid, TAlphaColorRec.Black);
   FPen.Thickness := 1;
   FPen.Color := TAlphaColorRec.Black;
 
-  FBrush := TBrush.Create(TBrushKind.Solid, TAlphaColorRec.White);
+  FBrush := TBrush.Create(TBrushKind.bkSolid, TAlphaColorRec.White);
   FBrush.Color := TAlphaColorRec.White;
 end;
 
@@ -80,16 +81,23 @@ begin
   fHhalf := Value.Height * 0.5;
 end;
 
+procedure TEngine2DShape.SetScale(AValue: single);
+begin
+  inherited;
+  Self.fWhalf := FFigureRect.Width * 0.5 ;//* Self.ScaleX;// * Value;
+  Self.fHhalf := FFigureRect.Height * 0.5 ;//* Self.ScaleY;
+end;
+
 procedure TEngine2DShape.SetScaleX(const Value: single);
 begin
   inherited;
-  Self.fWhalf := FFigureRect.Width * 0.5 * Value;
+  Self.fWhalf := FFigureRect.Width * 0.5 ;//* Self.ScaleX;// * Value;
 end;
 
 procedure TEngine2DShape.SetScaleY(const Value: single);
 begin
   inherited;
-  Self.fHhalf := FFigureRect.Height * 0.5 * Value;
+  Self.fHhalf := FFigureRect.Height * 0.5;// * Self.ScaleY;
 end;
 
 { TFillEllipse }
@@ -128,7 +136,7 @@ begin
     0,
     [],
     fOpacity,
-    FMX.Types.TCornerType.Bevel
+    FMX.Types.TCornerType.ctBevel
   );
 
   if FPen.Thickness > 0 then
@@ -142,7 +150,7 @@ begin
       0,
       [],
       fOpacity,
-      FMX.Types.TCornerType.Bevel
+      FMX.Types.TCornerType.ctBevel
     );
 
 

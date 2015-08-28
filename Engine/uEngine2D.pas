@@ -61,8 +61,8 @@ type
     procedure setObject(index: integer; newSprite: tEngine2DObject);
     function getObject(index: integer): tEngine2DObject;
     function getSpriteCount: integer; // Длина массив fSprites
-    procedure setWidth(newWidth: integer); // Установка размера поля отрисовки движка
-    procedure setHeight(newHeight: integer); // Установка размера поля отрисовки движка
+    procedure setWidth(AWidth: integer); // Установка размера поля отрисовки движка
+    procedure setHeight(AHeight: integer); // Установка размера поля отрисовки движка
     procedure setBackGround(ABmp: tBitmap);
 
     procedure BackgroundDefaultBehavior;
@@ -108,7 +108,7 @@ type
     procedure SpriteToBack(const n: integer); // Передвигает в массиве отрисовки спрайт
     procedure SpriteToFront(const n: integer);// Передвигает в массиве отрисовки спрайт
 
-    procedure DoTheFullWindowResize;
+    procedure Resize;
 //    procedure Clear; // Удаляет все спрайты и после этого удаляет все ресурсы
 
     procedure MouseDown(Sender: TObject; Button: TMouseButton;
@@ -340,12 +340,14 @@ begin
   fBackGround.free;
 end;
 
-procedure tEngine2d.DoTheFullWindowResize;
+procedure tEngine2d.Resize;
 var
   vSize: tPointF;
+ // vScale: Single;
   i: Integer;
 begin
   vSize := getDisplaySizeInPx;
+  //vScale := getScreenScale;
 
 {  fFormatters.InitAll(size.X, size.Y);
   fFormatters.ApplyAll;  }
@@ -359,7 +361,7 @@ end;
 
 function tEngine2d.GetHeight: integer;
 begin
-  Result := Round(Self.fImage.Height);
+  Result := fHeight;//Round(Self.fImage.Bitmap.Height);
 end;
 
 function tEngine2d.GetIfHor: Boolean;
@@ -492,7 +494,7 @@ end;
 
 function tEngine2d.GetWidth: integer;
 begin
-  Result := Round(Self.fImage.Width);
+  Result := fWidth;//Round(Self.fImage.Bitmap.Width);
 end;
 
 procedure tEngine2d.HideGroup(const AGroup: String);
@@ -689,9 +691,10 @@ begin
   fResources[index].rect := RectF(0, 0, newBitmap.width, newBitmap.height);
 end; }
 
-procedure tEngine2d.setHeight(newHeight: integer);
+procedure tEngine2d.setHeight(AHeight: integer);
 begin
-  fHeight := newHeight;
+  fHeight := AHeight;
+  fImage.Bitmap.Height:= AHeight;
 end;
 
 procedure tEngine2d.setObject(index: integer; newSprite: tEngine2DObject);
@@ -706,9 +709,10 @@ begin
   fStatus := newStatus;
 end;
 
-procedure tEngine2d.setWidth(newWidth: integer);
+procedure tEngine2d.setWidth(AWidth: integer);
 begin
-  fWidth := newWidth;
+  fWidth := AWidth;
+  fImage.Bitmap.Width := AWidth;
 end;
 
 procedure tEngine2d.showGroup(const AGroup: String);

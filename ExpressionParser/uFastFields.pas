@@ -200,7 +200,7 @@ end;
 
 procedure TFastWidth.SetValue(const Value: Double);
 begin
-  fObject.Scale := Value / fObject.w;
+  fObject.Scale := Value / (fObject.w * fObject.ScaleX);
 end;
 
 { TFastHeight }
@@ -212,7 +212,7 @@ end;
 
 procedure TFastHeight.SetValue(const Value: Double);
 begin
-  fObject.Scale := Value / fObject.h;
+  fObject.Scale := Value / (fObject.h * fObject.ScaleX);
 //  fObject.h := Value;
 end;
 

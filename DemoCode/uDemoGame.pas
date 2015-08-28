@@ -363,7 +363,7 @@ end;
 
 procedure TDemoGame.Resize;
 begin
-  FEngine.DoTheFullWindowResize;
+  FEngine.Resize;
   FGP.SetScaling(MonitorScale, SpeedModScale);
 end;
 
@@ -812,7 +812,7 @@ begin
     end;
   end;
 
-  FLoader.Parent.DoTheFullWindowResize;
+  FLoader.Parent.Resize;
   Self.FShip.Show;
 end;
 

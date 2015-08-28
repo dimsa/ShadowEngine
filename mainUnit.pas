@@ -36,7 +36,6 @@ begin
   Game.Image := mainImage;
   DrawSelect := False;
   Game.Prepare;
-// mainImage.Canvas.st
 end;
 
 procedure TmainForm.FormKeyDown(Sender: TObject; var Key: Word;
@@ -64,16 +63,7 @@ begin
 end;
 
 procedure TmainForm.FormResize(Sender: TObject);
-var
-  vSize: tPointF;
 begin
-  vSize := getDisplaySizeInPx;
-  mainImage.Position.X := 0;
-  mainImage.Position.Y := 0;
-  mainImage.Width := Round(vSize.X + 0.4);
-  mainImage.Height := Round(vSize.Y + 0.4);
-  mainImage.Bitmap.Width := Round(vSize.X + 0.4);
-  mainImage.Bitmap.Height := Round(vSize.Y + 0.4);
   Game.Resize;
 end;
 

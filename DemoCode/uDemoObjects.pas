@@ -521,7 +521,7 @@ var
 begin
   vOldMod := FScaleMod;
   FScaleMod := Value;
-  Self.ScaleX := (Self.ScaleX / vOldMod) * FScaleMod;
+  Self.Scale := (Self.ScaleX / vOldMod) * FScaleMod;
 end;
 
 { TLittleAsteroid }
