@@ -4,7 +4,7 @@ interface
 
 uses
   System.Types, System.UITypes, FMX.Forms, FMX.Objects, FMX.Controls,
-  System.Classes, FMX.Types,
+  System.Classes, FMX.Types, FMX.Dialogs, System.SysUtils,
   uEasyDevice, uDemoGame;
 
 type
@@ -26,6 +26,7 @@ var
   mainForm: TmainForm;
   Game: TDemoGame;
   DrawSelect: Boolean;
+  vAlign: Integer;
 implementation
 
 {$R *.fmx}
@@ -36,13 +37,35 @@ begin
   Game.Image := mainImage;
   DrawSelect := False;
   Game.Prepare;
+
+
+  {$IFDEF ANDROID}
+    BorderStyle := TFmxFormBorderStyle.None;
+  {$ENDIF}
 // mainImage.Canvas.st
+  vAlign := 0;
 end;
 
 procedure TmainForm.FormKeyDown(Sender: TObject; var Key: Word;
   var KeyChar: Char; Shift: TShiftState);
+var
+  vSize: tPointF;
 begin
+  vSize := getDisplaySizeInPx;
 //  Game.DrawFigures := not Game.DrawFigures;
+  ShowMessage(FloatToStr(vSize.x) + ' -display_size-' + FloatToStr(vSize.y));
+  ShowMessage(FloatToStr(Game.Image.Width) + ' -image.width-' + FloatToStr(Game.Image.Height));
+  ShowMessage(FloatToStr(mainForm.Width) + ' -mainform.size-' + FloatToStr(mainForm.Height));
+    ShowMessage(FloatToStr(mainForm.ClientWidth) + ' -mainform. client size-' + FloatToStr(mainForm.ClientHeight));
+  ShowMessage(FloatToStr(Game.Image.Bitmap.Width) + ' -image.bitmap.size-' + FloatToStr(Game.Image.Bitmap.Height));
+    ShowMessage(FloatToStr(Game.Image.Bitmap.Canvas.Width) + ' -image.bitmap.canvas.size-' + FloatToStr(Game.Image.Bitmap.Canvas.Height));
+    ShowMessage(FloatToStr(Game.Image.Size.Width) + ' - image.SIZE.width -' + FloatToStr(Game.Image.Size.Height));
+     ShowMessage(FloatToStr(Game.Image.Scale.X) + ' - image.scale -' + FloatToStr(Game.Image.Scale.Y));
+
+  inc(vAlign);
+  mainImage.Align := TAlignLayout(vAlign);
+
+  ShowMessage(IntToStr(vAlign) );
 
   if ReturnPressed(Key) then
   begin
@@ -64,20 +87,20 @@ begin
 end;
 
 procedure TmainForm.FormResize(Sender: TObject);
-var
-  vSize: tPointF;
+//var
+//  vSize: tPointF;
 begin
-  vSize := getDisplaySizeInPx;
-  mainImage.Position.X := 0;
-  mainImage.Position.Y := 0;
-  mainImage.Width := Round(vSize.X + 0.4);
-  mainImage.Height := Round(vSize.Y + 0.4);
-  mainImage.Bitmap.Width := Round(vSize.X + 0.4);
-  mainImage.Bitmap.Height := Round(vSize.Y + 0.4);
+ { vSize := getDisplaySizeInPx; }
+//  mainImage.Position.X := 0;
+ // mainImage.Position.Y := 0;
+{  mainImage.Width := mainForm.ClientWidth;
+  mainImage.Height:= mainForm.ClientHeight;   }
+//  ShowMessage(FloatToStr(Game.Image.Width) + ' -image.size-' + FloatToStr(Game.Image.Height));
   Game.Resize;
 end;
 
 
 end.
+
 
 

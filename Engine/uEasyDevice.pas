@@ -10,7 +10,7 @@ uses
   FMX.Effects, System.IOUtils, FMX.Platform, FMX.VirtualKeyboard;
 
   function getDisplaySizeInPx: tPointF;
-  function getScreenScale: single;
+  function getDisplayScale: single;
   function getMinLength: single;
   function getDisplaySizeInDp: tPointF;
   function LoadImageFromFile(AFileName: String): TBitmap; // Открывает битмап по пути внезависимости от названия
@@ -76,6 +76,10 @@ var
   screenSizeInDp: tPointF;
   ScreenSvc: IFMXScreenService;
 begin
+
+ { res.X := mainForm.ClientWidth;
+  res.Y := mainForm.ClientHeight;  }
+
   if TPlatformServices.Current.SupportsPlatformService(IFMXScreenService,
     IInterface(ScreenSvc)) then
   begin
@@ -127,7 +131,7 @@ begin
   Result := vBMP;
 end;
 
-function getScreenScale: single;
+function getDisplayScale: single;
 var
 //  screenSizeInDp: tPointF;
   ScreenSvc: IFMXScreenService;

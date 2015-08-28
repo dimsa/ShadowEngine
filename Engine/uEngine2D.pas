@@ -76,7 +76,7 @@ type
   public
     // Ключевые свойства движка
     property EngineThread: TEngineThread read fEngineThread;
-    property Image: TImage read FImage write FImage;
+    property Image: TImage read FImage;// write FImage;
     property BackgroundBehavior: TProcedure read FBackgroundBehavior write SetBackgroundBehavior;
     property InBeginPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
     property InEndPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
@@ -89,8 +89,8 @@ type
 
     property IsMouseDowned: Boolean read FIsMouseDowned;
     property Status: byte read fStatus write setStatus;
-    property Width: integer read GetWidth{ fWidth} write setWidth;
-    property Height: integer read GetHeight{fHeight} write setHeight;
+    property Width: integer read {GetWidth;//} fWidth;// write setWidth;
+    property Height: integer read {GetHeight;//}fHeight;// write setHeight;
 
     property Clicked: tIntArray read fClicked;
     property Downed: TIntArray read fMouseDowned;
@@ -108,7 +108,7 @@ type
     procedure SpriteToBack(const n: integer); // Передвигает в массиве отрисовки спрайт
     procedure SpriteToFront(const n: integer);// Передвигает в массиве отрисовки спрайт
 
-    procedure DoTheFullWindowResize;
+    procedure Resize;
 //    procedure Clear; // Удаляет все спрайты и после этого удаляет все ресурсы
 
     procedure MouseDown(Sender: TObject; Button: TMouseButton;
@@ -127,7 +127,7 @@ type
 //    procedure clearResources; // Очищает массив ресурсов, т.е. является подготовкой к завершению
     procedure ClearTemp; // Очищает массивы выбора и т.д. короче делает кучу полезных вещей.
 
-    procedure Init(newImage: tImage); // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
+    procedure Init(AImage: TImage); // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
     procedure Repaint; virtual;
 
     // Прячем или показывает группы
@@ -340,17 +340,28 @@ begin
   fBackGround.free;
 end;
 
-procedure tEngine2d.DoTheFullWindowResize;
+procedure tEngine2d.Resize;
 var
   vSize: tPointF;
+  vScale: Single;
   i: Integer;
 begin
   vSize := getDisplaySizeInPx;
+  vScale := getDisplayScale;
+  ShowMessage(FLoatToStr(vScale) + ' SCREEN SCALE ');
+  fWidth := Round(vSize.X{ fImage.Width} / vScale); //Round(vSize.X + 0.4);
+  fHeight := Round(vSize.Y{fImage.Height} / vScale); //Round(vSize.Y + 0.4);
 
-{  fFormatters.InitAll(size.X, size.Y);
-  fFormatters.ApplyAll;  }
-  self.width := round(vSize.x);
-  self.height := round(vSize.y);
+  ShowMessage(FLoatToStr(fImage.Width) + ' resize image width height ' + FLoatToStr(fImage.Height));
+  ShowMessage(FLoatToStr(vSize.X) + ' resize vSize easydevice ' + FLoatToStr(vSize.Y));
+//  vScale := getDisplayScale;
+
+//  fImage.Width := fWidth;
+//  fImage.Height := fHeight;
+  fImage.Bitmap.Width := Round({fImage.Width}vSize.X + 0.4);
+  fImage.Bitmap.Height := Round({fImage.Height}vSize.Y + 0.4);
+ { fImage.Scale.X := 1 / vScale;
+  fImage.Scale.Y := 1 / vScale;   }
 
   // Форматирвание
   for i := 0 to fFormatters.Count - 1 do
@@ -359,7 +370,7 @@ end;
 
 function tEngine2d.GetHeight: integer;
 begin
-  Result := Round(Self.fImage.Height);
+  Result := fHeight;//}Round(Self.fImage.Height);
 end;
 
 function tEngine2d.GetIfHor: Boolean;
@@ -492,7 +503,7 @@ end;
 
 function tEngine2d.GetWidth: integer;
 begin
-  Result := Round(Self.fImage.Width);
+  Result := fWidth;// }Round(Self.fImage.Width);
 end;
 
 procedure tEngine2d.HideGroup(const AGroup: String);
@@ -535,6 +546,26 @@ begin
           TTextAlign.Leading
         );
 
+{  FImage.Bitmap.Canvas.FillRect(
+    RectF(100,100,200,200),
+    0,
+    0,
+    [],
+    0.5,
+    FMX.Types.TCornerType.Bevel
+  );
+
+    FImage.Bitmap.Canvas.FillRect(
+    RectF(10,10,630,350),
+    0,
+    0,
+    [],
+    0.25,
+    FMX.Types.TCornerType.Bevel
+  ); }
+
+
+       // Bitmap.Canvas.FillRect(RectF(0,0,100,100), 0,0));
         {  bitmap.Canvas.FillText(
           RectF(15, 85, 165, 125),
           'scale=' + floattostr(getScreenScale),
@@ -579,9 +610,10 @@ begin
   end;
 end;
 
-procedure tEngine2d.init(newImage: tImage);
+procedure tEngine2d.Init(AImage: TImage);
 begin
-  fImage := newImage;
+  fImage := AImage;
+  Resize;
  { if fImage.Canvas.Blending then
     ShowMessage('blend=true');    }
 
@@ -589,8 +621,8 @@ begin
   // Необходимо задавать имдеджу какую-то процедуру на клик
   // fImage.OnMouseDown := someFunction
  // size := getDisplaySizeInPx;
-  self.width := round(newImage.Width {size.x});
-  self.height := round(newImage.Height{ size.y});
+//  self.width := round(newImage.Width {size.x});
+ // self.height := round(newImage.Height{ size.y});
 end;
 
 procedure tEngine2d.MouseDown(Sender: TObject; Button: TMouseButton;
@@ -776,4 +808,5 @@ begin
 end;
 
 end.
+
 

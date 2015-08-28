@@ -149,6 +149,7 @@ type
     property Image: TImage read GetImage write SetImage;
     property Speed: Single read GetSpeed;
     property DrawFigures: Boolean read GetDrawFigures write SetDrawFigures;
+    property Engine: TDemoEngine read FEngine;
 
     procedure Prepare;
     procedure Resize;
@@ -363,7 +364,7 @@ end;
 
 procedure TDemoGame.Resize;
 begin
-  FEngine.DoTheFullWindowResize;
+  FEngine.Resize;
   FGP.SetScaling(MonitorScale, SpeedModScale);
 end;
 
@@ -812,7 +813,7 @@ begin
     end;
   end;
 
-  FLoader.Parent.DoTheFullWindowResize;
+  FLoader.Parent.Resize;
   Self.FShip.Show;
 end;
 

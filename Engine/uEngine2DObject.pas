@@ -27,6 +27,7 @@ type
     property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
     property OnClick: TVCLProcedure read FOnClick write FOnClick;
     function UnderTheMouse(const MouseX, MouseY: double): boolean; virtual; // Говорит, попала ли мышь в круг спрайта. Круг с диаметром - диагональю прямоугольника спрайта
+    //procedure NullValue;
     procedure BringToBack; // Ставит спрайт первым в списке отрисовки. Т.е. Переносит назад
     procedure SendToFront; // Ставит спрайт последним в списке отрисовки. Т.е. Переносит вперед
 
@@ -84,6 +85,12 @@ begin
 
 end;
 
+{procedure tEngine2DObject.NullValue;
+begin
+  Self.fPosition.X := 0;
+  Self.fPosition.Y := 0;
+end;              }
+
 procedure tEngine2DObject.Repaint;
 begin
   if TEngine2D(FParent).DrawFigures then
@@ -129,3 +136,4 @@ begin
 end;
 
 end.
+

@@ -7,7 +7,7 @@ interface
 
 uses
   System.Generics.Collections, System.SysUtils,
-  uParserValue, uEngine2DUnclickableObject, uNamedList;
+  uParserValue, uEngine2DUnclickableObject, uNamedList, FMX.Dialogs;
 
 type
 
@@ -303,6 +303,9 @@ end;
 function TFastEngineWidth.GetValue: Double;
 begin
   Result := TEngine2D(fEngine).width;
+  if Random(75) = 0 then
+    ShowMessage('fastenginewidth='+ FloatToStr(Result));
+
 end;
 
 { TFastEngineHeight }
@@ -310,6 +313,8 @@ end;
 function TFastEngineHeight.GetValue: Double;
 begin
   Result := TEngine2D(fEngine).height;
+  if Random(75) = 0 then
+    ShowMessage('fastengineheight='+ FloatToStr(Result));
 end;
 
 { TFastField }
