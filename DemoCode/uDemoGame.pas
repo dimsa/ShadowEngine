@@ -362,7 +362,12 @@ begin
 end;
 
 procedure TDemoGame.Resize;
+var
+  vSize: tPointF;
 begin
+  vSize := getDisplaySizeInPx;
+  FEngine.Width := Round(vSize.X + 0.4);
+  FEngine.Height := Round(vSize.Y + 0.4);
   FEngine.Resize;
   FGP.SetScaling(MonitorScale, SpeedModScale);
 end;

@@ -61,8 +61,8 @@ type
     procedure setObject(index: integer; newSprite: tEngine2DObject);
     function getObject(index: integer): tEngine2DObject;
     function getSpriteCount: integer; // Длина массив fSprites
-    procedure setWidth(AWidth: integer); // Установка размера поля отрисовки движка
-    procedure setHeight(AHeight: integer); // Установка размера поля отрисовки движка
+    procedure SetWidth(AWidth: integer); // Установка размера поля отрисовки движка
+    procedure SetHeight(AHeight: integer); // Установка размера поля отрисовки движка
     procedure setBackGround(ABmp: tBitmap);
 
     procedure BackgroundDefaultBehavior;
@@ -89,8 +89,8 @@ type
 
     property IsMouseDowned: Boolean read FIsMouseDowned;
     property Status: byte read fStatus write setStatus;
-    property Width: integer read GetWidth{ fWidth} write setWidth;
-    property Height: integer read GetHeight{fHeight} write setHeight;
+    property Width: integer read {GetWidth} fWidth write setWidth;
+    property Height: integer read {GetHeight}fHeight write setHeight;
 
     property Clicked: tIntArray read fClicked;
     property Downed: TIntArray read fMouseDowned;
@@ -343,17 +343,17 @@ end;
 procedure tEngine2d.Resize;
 var
   vSize: tPointF;
- // vScale: Single;
   i: Integer;
 begin
-  vSize := getDisplaySizeInPx;
-  //vScale := getScreenScale;
+  //vSize := getDisplaySizeInPx;
 
-{  fFormatters.InitAll(size.X, size.Y);
-  fFormatters.ApplyAll;  }
-  self.width := round(vSize.x);
-  self.height := round(vSize.y);
-
+  //fImage.Width := v
+ { fImage.Width := vSize.X;
+  fImage.Height := vSize.Y;
+  fImage.Bitmap.Width := Round(vSize.X);//Round(vSize.X + 0.4);
+  fImage.Bitmap.Height := Round(vSize.Y);//Round(vSize.Y + 0.4);
+  fWidth := fImage.Bitmap.Width;
+  fHeight := fImage.Bitmap.Height;}
   // Форматирвание
   for i := 0 to fFormatters.Count - 1 do
     fFormatters[i].Format;// then
@@ -582,6 +582,8 @@ begin
 end;
 
 procedure tEngine2d.init(newImage: tImage);
+var
+  vSize: TPointF;
 begin
   fImage := newImage;
  { if fImage.Canvas.Blending then
@@ -590,9 +592,9 @@ begin
 //  fImage.Canvas.
   // Необходимо задавать имдеджу какую-то процедуру на клик
   // fImage.OnMouseDown := someFunction
- // size := getDisplaySizeInPx;
-  self.width := round(newImage.Width {size.x});
-  self.height := round(newImage.Height{ size.y});
+  vSize := getDisplaySizeInPx;
+  fImage.Bitmap.width := round(vSize.x);
+  fImage.Bitmap.height := round(vSize.y);
 end;
 
 procedure tEngine2d.MouseDown(Sender: TObject; Button: TMouseButton;
@@ -693,8 +695,9 @@ end; }
 
 procedure tEngine2d.setHeight(AHeight: integer);
 begin
-  fHeight := AHeight;
-  fImage.Bitmap.Height:= AHeight;
+  fImage.Height := AHeight;
+  fImage.Bitmap.Height := Round(fImage.Height + 0.4);
+  fHeight :=  fImage.Bitmap.Height;
 end;
 
 procedure tEngine2d.setObject(index: integer; newSprite: tEngine2DObject);
@@ -711,8 +714,9 @@ end;
 
 procedure tEngine2d.setWidth(AWidth: integer);
 begin
-  fWidth := AWidth;
-  fImage.Bitmap.Width := AWidth;
+  fImage.Width := AWidth;
+  fImage.Bitmap.Width := Round(fImage.Width + 0.4);
+  fWidth := fImage.Bitmap.Width;
 end;
 
 procedure tEngine2d.showGroup(const AGroup: String);

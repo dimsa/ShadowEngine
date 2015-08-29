@@ -35,6 +35,11 @@ begin
   Game := TDemoGame.Create;
   Game.Image := mainImage;
   DrawSelect := False;
+
+  {$IFDEF ANDROID}
+  BorderStyle := TFmxFormBorderStyle.None;
+  {$ENDIF}
+
   Game.Prepare;
 end;
 
