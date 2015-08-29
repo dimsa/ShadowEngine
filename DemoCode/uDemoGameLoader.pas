@@ -61,7 +61,7 @@ end;
 function SpeedModScale: Single;
 begin
   Result := (
-   (uEasyDevice.getDisplaySizeInPx.X + uEasyDevice.getDisplaySizeInPx.Y) * 0.5) * 0.0008;
+   ((uEasyDevice.getDisplaySizeInPx.X + uEasyDevice.getDisplaySizeInPx.Y) * 0.5) * 0.001) / getScreenScale;
 end;
 
 { TLoader }

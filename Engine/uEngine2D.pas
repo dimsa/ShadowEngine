@@ -117,7 +117,6 @@ type
       Shift: TShiftState; x, y: single); virtual;
 
     procedure DeleteObject(const AObject: tEngine2DObject); overload; // Убирает спрайт из отрисовки
-//    procedure AddObject(const AObject: tEngine2DObject); overload;// Добавляет спрайт на отрисовку
     procedure AddObject(const AObject: tEngine2DObject; const AName: String = ''); // Добавляет спрайт на отрисовку
 
     procedure AssignShadowObject(ASpr: tEngine2DObject); // Ассигнет спрайт в ShadowObject
@@ -127,7 +126,7 @@ type
 //    procedure clearResources; // Очищает массив ресурсов, т.е. является подготовкой к завершению
     procedure ClearTemp; // Очищает массивы выбора и т.д. короче делает кучу полезных вещей.
 
-    procedure Init(newImage: tImage); // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
+    procedure Init(AImage: tImage); // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
     procedure Repaint; virtual;
 
     // Прячем или показывает группы
@@ -422,7 +421,7 @@ begin
       finally
         FInEndPaintBehavior;
 
-        Bitmap.Canvas.endScene();
+        Bitmap.Canvas.EndScene();
         {$IFDEF POSIX}
           InvalidateRect(RectF(0, 0, Bitmap.Width , Bitmap.Height));
         {$ENDIF}
@@ -581,20 +580,15 @@ begin
   end;
 end;
 
-procedure tEngine2d.init(newImage: tImage);
+procedure tEngine2d.Init(AImage: tImage);
 var
   vSize: TPointF;
 begin
-  fImage := newImage;
- { if fImage.Canvas.Blending then
-    ShowMessage('blend=true');    }
-
-//  fImage.Canvas.
-  // Необходимо задавать имдеджу какую-то процедуру на клик
-  // fImage.OnMouseDown := someFunction
-  vSize := getDisplaySizeInPx;
-  fImage.Bitmap.width := round(vSize.x);
-  fImage.Bitmap.height := round(vSize.y);
+  fImage := AImage;
+  fWidth := Round(AImage.Width);
+  fHeight := Round(AImage.Height);
+  fImage.Bitmap.Width := Round(AImage.Width * getScreenScale);
+  fImage.Bitmap.Height := ROund(AImage.Height * getScreenScale);
 end;
 
 procedure tEngine2d.MouseDown(Sender: TObject; Button: TMouseButton;
@@ -695,9 +689,8 @@ end; }
 
 procedure tEngine2d.setHeight(AHeight: integer);
 begin
-  fImage.Height := AHeight;
-  fImage.Bitmap.Height := Round(fImage.Height + 0.4);
-  fHeight :=  fImage.Bitmap.Height;
+  fImage.Bitmap.Height := Round(AHeight * getScreenScale + 0.4);
+  fHeight := AHeight;
 end;
 
 procedure tEngine2d.setObject(index: integer; newSprite: tEngine2DObject);
@@ -714,9 +707,8 @@ end;
 
 procedure tEngine2d.setWidth(AWidth: integer);
 begin
-  fImage.Width := AWidth;
-  fImage.Bitmap.Width := Round(fImage.Width + 0.4);
-  fWidth := fImage.Bitmap.Width;
+  fImage.Bitmap.Width := Round(AWidth * getScreenScale + 0.4);
+  fWidth := AWidth;
 end;
 
 procedure tEngine2d.showGroup(const AGroup: String);

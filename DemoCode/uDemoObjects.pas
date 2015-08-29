@@ -398,6 +398,8 @@ end;
 procedure TShip.Show;
 begin
   Self.SetOpacity(1);
+  Self.x := tEngine2d(Parent).Width * 0.5;
+  Self.y := tEngine2d(Parent).Height * 0.5;
   tEngine2d(Self.fParent).ShowGroup('ship');
 end;
 

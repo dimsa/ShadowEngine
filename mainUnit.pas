@@ -69,7 +69,7 @@ end;
 
 procedure TmainForm.FormResize(Sender: TObject);
 begin
-  Game.Resize;
+  Game.Resize(Round(mainImage.Width), Round(mainImage.Height));
 end;
 
 

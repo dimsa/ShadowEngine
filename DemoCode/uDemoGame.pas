@@ -95,6 +95,7 @@ type
     procedure RenewPanels;
     procedure PrepareAsteroidForLevel(const ALevel: Integer);
     procedure RestartGame(const AGameMode: TGameStatus);
+    procedure GameOver;
     constructor Create(ALoader: TLoader);
     destructor Destroy; override;
   const
@@ -151,7 +152,7 @@ type
     property DrawFigures: Boolean read GetDrawFigures write SetDrawFigures;
 
     procedure Prepare;
-    procedure Resize;
+    procedure Resize(const AWidth, AHeight: Integer);
     constructor Create;
     destructor Destroy; override;
   end;
@@ -241,13 +242,17 @@ begin
                 begin
                   Self.GameStatus := gsGameOver;
                   FGP.FixScore;
+                  FGP.GameOver;
                 end;
               end;
               gsStoryMode:
               begin
                 BreakLife;
                 if FGP.Lifes.Count <= 0 then
+                begin
                   Self.GameStatus := gsGameOver;
+                  FGP.GameOver;
+                end;
               end;
               gsRelaxMode: FGP.AddCollision;
             end;
@@ -334,7 +339,7 @@ begin
   FGameOverText.TextRect := RectF(-150, -35, 150, 35);
   FGameOverText.Text := 'Game Over';
   FEngine.AddObject(FGameOverText);
-  FLoader.Formatter(FGameOverText, 'left: engine.width * 0.5; top: engine.height * 0.5;').Format;
+  FLoader.Formatter(FGameOverText, 'left: engine.width * 0.5; top: engine.height * 0.5; width: width: 0.8 * engine.width;').Format;
 
   FEngine.HideGroup('gameover');
   FEngine.HideGroup('stat');
@@ -361,13 +366,13 @@ begin
   FLoader.CreateComix;
 end;
 
-procedure TDemoGame.Resize;
+procedure TDemoGame.Resize(const AWidth, AHeight: Integer);
 var
   vSize: tPointF;
 begin
-  vSize := getDisplaySizeInPx;
-  FEngine.Width := Round(vSize.X + 0.4);
-  FEngine.Height := Round(vSize.Y + 0.4);
+//  vSize := getDisplaySizeInPx;
+  FEngine.Width := AWidth;//Round(vSize.X + 0.4);
+  FEngine.Height := AHeight;//Round(vSize.Y + 0.4);
   FEngine.Resize;
   FGP.SetScaling(MonitorScale, SpeedModScale);
 end;
@@ -668,6 +673,11 @@ begin
   FGameStatus := gsGameOver;
 end;
 
+procedure TGameParam.GameOver;
+begin
+  FGameStatus := gsGameOver;
+end;
+
 function TGameParam.GetAsteroids: Integer;
 begin
   Result := 0;
@@ -717,7 +727,8 @@ var
 begin
   vNAster := 3;
   FSecondToEndLevel := 30;
-  Self.DefineAsteroidCount(vNAster);
+  DefineAsteroidCount(0);
+  DefineAsteroidCount(vNAster);
   iLevel := ALevel;
 
   for iAster := 0 to vNAster - 1 do
