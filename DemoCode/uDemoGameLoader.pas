@@ -280,7 +280,7 @@ begin
   vTxt.FontSize := 36;
   vTxt.Text := 'Your destination';
   Formatter(vTxt, 'width:engine.width * 0.6; max-width: planetcomix3.width;' +
-                 'left: engine.width * (18/24); top: arrow.bottomborder + height*0.5;').format;
+                 'left: engine.width * (18/24); top: arrow.top + height*1.2;').format;
 end;
 
 constructor TLoader.Create(AEngine: TEngine2D);
