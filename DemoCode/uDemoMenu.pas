@@ -51,6 +51,7 @@ type
     FYes, FNo: TGameButton;
     FText: TEngine2DText;
     FBack: TEngine2DShape;
+    FId: string; // Если используется несколько меню, то это идентификатор
     function GetText: string;
     procedure SetText(const Value: string);
     function GetOnNo: TVCLProcedure;
@@ -61,7 +62,7 @@ type
     property OnYes: TVCLProcedure read GetOnYes write SetOnYes;
     property OnNo: TVCLProcedure read GetOnNo write SetOnNo;
     property Text: string read GetText write SetText;
-    constructor Create(const AParent: Pointer);
+    constructor Create(const AId, AGroup: string; AParent: Pointer);
     destructor Destroy; override;
   end;
 
@@ -70,14 +71,14 @@ type
     FParent: Pointer; // Engine2d
     FMaxLevel: Integer; // Максимальный уровень до которого дошел игрок
     FList: TList<TGameButton>; // Кнопки перехода по страницам меню
-    FNextLevelMenu: TList<TGameButton>;
+    FSelectLevel: TList<TGameButton>;
     FGameLogo: TSprite;
-    FYesNoMenu: TYesNoMenu;
+    FNextLevelMenu, FRetryLevelMenu: TYesNoMenu;
     // Меню выбора уровня
     FLevelMenu: TList<TGameButton>; // Кнопки выбора уровня
     FNextPage, FPrevPage: TGameButton; // Листалка страниц выбора уровня
     FCurPage: Integer; // Текущая страница выбора уровня
-    FLevelSelect: TVCLProcedure;
+    FDoLevelSelect: TVCLProcedure;
     procedure CreateMenu1; // Первое меню из четырех кнопок
     procedure CreateMenu2; // Выбор типа игры
     procedure CreateMenu3; // Выбор уровня в сторимоде
@@ -96,6 +97,7 @@ type
     procedure SetLevelSelect(const Value: TVCLProcedure);
     procedure SetNextLevelNo(const Value: TVCLProcedure);
     procedure SetNextLevelYes(const Value: TVCLProcedure);
+    procedure SetRetryLevelYes(const Value: TVCLProcedure);
   public
     property StartGame: TVCLProcedure write SetStartGame;
     property AboutGame: TVCLProcedure write SetAboutGame;
@@ -106,6 +108,7 @@ type
     property LevelSelect: TVCLProcedure write SetLevelSelect;
     property SurvivalMode: TVCLProcedure write SetSurvivalMode;
     property OnNextLevelYes: TVCLProcedure write SetNextLevelYes;
+    property OnRetryLevelYes: TVCLProcedure write SetRetryLevelYes;
     property OnNextLevelNo: TVCLProcedure write SetNextLevelNo;
     procedure ShowLevels(const AMaxLevel: Integer; const APage: Integer = -1);
     procedure SendToFront;
@@ -280,7 +283,17 @@ begin
     'xifhor: engine.width * 0.25; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.5;';
   vEngine.FormatterList.Add(vFormatter);
 
-  FYesNoMenu := TYesNoMenu.Create(FParent);
+  FNextLevelMenu := TYesNoMenu.Create('nextlevel', 'nextlevel', FParent);
+  FNextLevelMenu.Text :=
+    'Congratulations!' + #13 +
+    'You have completed level!' + #13 + #13 +
+    'Play Next Level?';
+  FRetryLevelMenu := TYesNoMenu.Create('retrylevel', 'retrylevel', FParent);
+  FRetryLevelMenu.Text :=
+    'Regretulations! :-(' + #13 +
+    'Your ship is destroyed!' + #13 + #13 +
+    'Retry This Level?';
+
   FList := TList<TGameButton>.Create;
   FLevelMenu := TList<TGameButton>.Create;
 
@@ -546,23 +559,29 @@ begin
   for i := 0 to FLevelMenu.Count -1 do
     Self.FLevelMenu[i].OnClick := Value;
 
-  FLevelSelect := Value;
+  FDoLevelSelect := Value;
   //FList[4].OnClick := Value;
 end;
 
 procedure TGameMenu.SetNextLevelNo(const Value: TVCLProcedure);
 begin
-  FYesNoMenu.OnNo := Value;
+  FNextLevelMenu.OnNo := Value;
+  FRetryLevelMenu.OnNo := Value;
 end;
 
 procedure TGameMenu.SetNextLevelYes(const Value: TVCLProcedure);
 begin
-  FYesNoMenu.OnYes := Value;
+  FNextLevelMenu.OnYes := Value;
 end;
 
 procedure TGameMenu.SetRelaxMode(const Value: TVCLProcedure);
 begin
   FList[6].OnClick := Value;
+end;
+
+procedure TGameMenu.SetRetryLevelYes(const Value: TVCLProcedure);
+begin
+  FRetryLevelMenu.OnYes := Value;
 end;
 
 procedure TGameMenu.SetStartGame(const Value: TVCLProcedure);
@@ -619,7 +638,7 @@ begin
       if (i + FCurPage * 16) < AMaxLevel+1 then
       begin
         FLevelMenu[i].BackSprite.CurRes := vEngine.Resources.IndexOf('ltlbutenabled');
-        FLevelMenu[i].BackSprite.OnClick := FLevelSelect;
+        FLevelMenu[i].BackSprite.OnClick := FDoLevelSelect;
       end
       else
       begin
@@ -647,7 +666,7 @@ end; }
 
 { TYesNoMenu }
 
-constructor TYesNoMenu.Create(const AParent: Pointer);
+constructor TYesNoMenu.Create(const AId, AGroup: string; AParent: Pointer);
 var
   vEngine: tEngine2d;
   vLoader: TLoader;
@@ -657,7 +676,8 @@ var
 begin
   FEngine := AParent;
   vEngine := FEngine;
-  vGroup := 'nextlevel';
+  FId := AId;
+  vGroup := AGroup;//'nextlevel';
 
   FBack := TFillRect.Create(vEngine);
   FBack.Group := vGroup;
@@ -665,14 +685,14 @@ begin
   FBack.Pen.Thickness := 4;
   FBack.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FBack.Brush.Color := TAlphaColorRec.White;
-  vEngine.AddObject(FBack, 'nextlevelback');
+  vEngine.AddObject(FBack, FId + 'back');
 
   vFormatter := TEngineFormatter.Create(FBack);
   vFormatter.Text := 'width: engine.width * 0.6;  left: engine.width * 0.5; top: engine.height * 0.5;';
   vEngine.FormatterList.Insert(0, vFormatter);
   vFormatter.Format;
 
-  vBut := TGameButton.Create('yesnextlevel', vEngine);
+  vBut := TGameButton.Create(FId + 'yes', vEngine);
   vBut.Text := 'Yes';
   vBut.FontSize := 64;
   vBut.BackSprite.CurRes := vEngine.Resources.IndexOf('ltlbutenabled');
@@ -681,11 +701,11 @@ begin
 
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'width: engine.width * 0.2;  left: engine.width * 0.5 + width*0.75;' +
-    'top: engine.height * 0.5 + nextlevelback.height * 0.35; max-height: nextlevelback.height * 0.225;';
+    'top: engine.height * 0.5 + ' + FId + 'back.height * 0.35; max-height: ' + FId + 'back.height * 0.225;';
   vEngine.FormatterList.Insert(0, vFormatter);
   vFormatter.Format;
 
-  vBut := TGameButton.Create('nonextlevel', vEngine);
+  vBut := TGameButton.Create(FId + 'no', vEngine);
   vBut.Text := 'No';
   vBut.FontSize := 64;
   vBut.BackSprite.CurRes := vEngine.Resources.IndexOf('ltlbutenabled');
@@ -694,7 +714,7 @@ begin
 
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'width: engine.width * 0.2;  left: engine.width * 0.5 - width*0.75;' +
-    'top: engine.height * 0.5 + nextlevelback.height * 0.35; max-height: nextlevelback.height * 0.225;';
+    'top: engine.height * 0.5 + ' + FId + 'back.height * 0.35; max-height: ' + FId + 'back.height * 0.225;';
   vEngine.FormatterList.Insert(0, vFormatter);
   vFormatter.Format;
 
@@ -704,20 +724,17 @@ begin
   FText.TextRect :=  RectF(-90, -50, 90, 50);
   FText.FontSize := 14;
   FText.Color := RGBColor(62 , 6, 30, 255).Color;
-  FText.Text :=
-  'Congratulations!' + #13 +
-  'You have completed level!' + #13 + #13 +
-  'Play Next Level?';
+  FText.Text := '';
   vEngine.AddObject(FText);
 
   vFormatter := TEngineFormatter.Create(FText);
-  vFormatter.Text := 'width: nextlevelback.width * 0.8; left: nextlevelback.left;' +
-    'top: nextlevelback.top - nextlevelback.height * 0.20;';
+  vFormatter.Text := 'width: ' + FId + 'back.width * 0.8; left: ' + FId + 'back.left;' +
+    'top: ' + FId + 'back.top - ' + FId + 'back.height * 0.20;';
 
   vEngine.FormatterList.Insert(0, vFormatter);
   vFormatter.Format;
 
-  vEngine.HideGroup('nextlevel');
+  vEngine.HideGroup(vGroup);
 end;
 
 destructor TYesNoMenu.Destroy;

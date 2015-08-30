@@ -252,7 +252,7 @@ begin
   vFig.Visible := True;
   vFig.Opacity := 1;
 
-  vSpr := Self.Sprite('planetcomix', vGroup);
+  vSpr := Self.Sprite('planetcomix', vGroup, 'planetcomix3');
   Formatter(vSpr, 'width: engine.width * 0.25;' +
                  'left: engine.width * (18/24); top: engine.height * (8/24);' +
                  'wifhor: engine.height * 0.25').format;
@@ -275,10 +275,10 @@ begin
 
   vTxt := Self.FastText('monolog3', TFont.Create, TAlphaColorRec.White, vGroup);
   vTxt.WordWrap := True;
-  vTxt.TextRect := RectF(-250, -50, 250, 50);
+  vTxt.TextRect := RectF(-150, -50, 150, 50);
   vTxt.FontSize := 36;
   vTxt.Text := 'Your destination';
-  Formatter(vTxt, 'width:engine.width * 0.6;' +
+  Formatter(vTxt, 'width:engine.width * 0.6; max-width: planetcomix3.width;' +
                  'left: engine.width * (18/24); top: arrow.bottomborder + height*0.5;').format;
 end;
 

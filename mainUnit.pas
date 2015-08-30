@@ -55,7 +55,7 @@ begin
       gsMenu3: Game.GameStatus := gsMenu2;
       gsStatistics: Game.GameStatus := gsMenu1;
       gsAbout: Game.GameStatus := gsMenu1;
-      gsStoryMode, gsRelaxMode, gsSurvivalMode, gsGameOver, gsComix1, gsComix2, gsComix3, gsNextLevel: Game.GameStatus := gsMenu1;
+      gsStoryMode, gsRelaxMode, gsSurvivalMode, gsGameOver, gsComix1, gsComix2, gsComix3, gsNextLevel, gsRetryLevel: Game.GameStatus := gsMenu1;
      end;
   end;
 end;

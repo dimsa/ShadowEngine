@@ -13,7 +13,10 @@ uses
   uEngine2DSprite, uEngineFormatter, uNamedList;
 
 type
-  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatistics, gsAbout, gsStoryMode, gsSurvivalMode, gsRelaxMode, gsGameOver, gsComix1, gsComix2, gsComix3, gsNextLevel);
+  TGameStatus = (gsMenu1, gsMenu2, gsMenu3,
+                 gsStatistics, gsAbout,
+                 gsStoryMode, gsSurvivalMode, gsRelaxMode,
+                 gsGameOver, gsComix1, gsComix2, gsComix3, gsNextLevel, gsRetryLevel);
 
   TStatistics = class
   private
@@ -137,6 +140,7 @@ type
     procedure ExitGame(ASender: TObject);
     procedure ToMainMenu(ASender: TObject);
     procedure ToNextLevel(ASender: TObject);
+    procedure ToRetryLevel(ASender: TObject);
 
     procedure DoGameTick;
     procedure FindCollide;
@@ -250,7 +254,7 @@ begin
                 BreakLife;
                 if FGP.Lifes.Count <= 0 then
                 begin
-                  Self.GameStatus := gsGameOver;
+                  Self.GameStatus := gsRetryLevel;
                   FGP.GameOver;
                 end;
               end;
@@ -355,6 +359,7 @@ begin
   FMenu.LevelSelect := StartStory;
   FMenu.OnNextLevelYes := ToNextLevel;
   FMenu.OnNextLevelNo := ToMainMenu;
+  FMenu.OnRetryLevelYes := ToNextLevel;
 
   FEngine.HideGroup('ship');
   FEngine.HideGroup('menu2');
@@ -396,7 +401,7 @@ procedure TDemoGame.SetGameStatus(const Value: TGameStatus);
 begin
   with FEngine do
     case Value of
-      gsMenu1: begin if (FGameStatus = gsRelaxMode) then Self.FGP.FixScore;  ShowGroup('menu1,menu'); FMenu.SendToFront; HideGroup('gameover,relaxmodemenu,ship,menu2,about,statistics,menu3,relax,survival,story,nextlevel,comix1,comix2,comix3'); end;
+      gsMenu1: begin if (FGameStatus = gsRelaxMode) then Self.FGP.FixScore;  ShowGroup('menu1,menu'); FMenu.SendToFront; HideGroup('gameover,relaxmodemenu,ship,menu2,about,statistics,menu3,relax,survival,story,nextlevel,retrylevel,comix1,comix2,comix3'); end;
       gsMenu2: begin ShowGroup('menu2'); HideGroup('menu1,menu3'); end;
       gsMenu3: begin FMenu.ShowLevels(FGP.Statistics.MaxLevel); ShowGroup('menu3'); HideGroup('menu2'); end;
       gsStatistics: begin TEngine2DText(SpriteList['statisticscaption']).Text := FGP.StatisticsText; ShowGroup('statistics'); HideGroup('menu1') end;
@@ -405,10 +410,11 @@ begin
       gsSurvivalMode: begin FGP.RestartGame(Value);  HideGroup('menu2'); HideGroup('menu'); end;
       gsStoryMode: begin FGP.RestartGame(Value); HideGroup('menu3,menu,comix1,comix2,comix3'); end;
       gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); FGP.Ship.Visible := False; ShowGroup('gameover'); FGameOverText.SendToFront; end;
-      gsComix1: begin ShowGroup('comix1'); HideGroup('menu3,menu,nextlevel,ship'); SendToFrontGroup('comix1'); end;
+      gsComix1: begin ShowGroup('comix1'); HideGroup('menu3,menu,nextlevel,retrylevel,ship'); SendToFrontGroup('comix1'); end;
       gsComix2: begin ShowGroup('comix2'); SendToFrontGroup('comix2'); end;
       gsComix3: begin ShowGroup('comix3'); SendToFrontGroup('comix3'); end;
       gsNextLevel: begin ShowGroup('nextlevel'); HideGroup('ship'); SendToFrontGroup('nextlevel'); end;
+      gsRetryLevel: begin ShowGroup('retrylevel'); HideGroup('ship'); SendToFrontGroup('retrylevel'); end;
   end;
   FGameStatus := Value;
 end;
@@ -474,6 +480,11 @@ begin
   FGP.Level := FGP.Level + 1;
   GameStatus := gsComix1;
 //  FGP.RestartGame(gsStoryMode);
+end;
+
+procedure TDemoGame.ToRetryLevel(ASender: TObject);
+begin
+  GameStatus := gsComix1;
 end;
 
 { TGameParam }
