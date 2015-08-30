@@ -85,14 +85,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>gdbserver</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Source\icons\144.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>

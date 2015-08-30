@@ -73,6 +73,7 @@ type
     FList: TList<TGameButton>; // Кнопки перехода по страницам меню
     FSelectLevel: TList<TGameButton>;
     FGameLogo: TSprite;
+    FComixText1, FComixText2: TEngine2DText;
     FNextLevelMenu, FRetryLevelMenu: TYesNoMenu;
     // Меню выбора уровня
     FLevelMenu: TList<TGameButton>; // Кнопки выбора уровня
@@ -98,6 +99,8 @@ type
     procedure SetNextLevelNo(const Value: TVCLProcedure);
     procedure SetNextLevelYes(const Value: TVCLProcedure);
     procedure SetRetryLevelYes(const Value: TVCLProcedure);
+    procedure SetAstroidCount(const Value: Integer);
+    procedure SetSecondsToFly(const Value: Integer);
   public
     property StartGame: TVCLProcedure write SetStartGame;
     property AboutGame: TVCLProcedure write SetAboutGame;
@@ -110,13 +113,16 @@ type
     property OnNextLevelYes: TVCLProcedure write SetNextLevelYes;
     property OnRetryLevelYes: TVCLProcedure write SetRetryLevelYes;
     property OnNextLevelNo: TVCLProcedure write SetNextLevelNo;
+    property ComixText1: TEngine2DText read FComixText1 write FComixText1; // Текст комиксов
+    property ComixText2: TEngine2DText read FComixText2 write FComixText2;
+    property AsteroidCount: Integer write SetAstroidCount;
+    property SecondsToFly: Integer write SetSecondsToFly;
     procedure ShowLevels(const AMaxLevel: Integer; const APage: Integer = -1);
     procedure SendToFront;
     procedure Add(const AButton: TGameButton);
     constructor Create(const AParent: Pointer);
     destructor Destroy; override;
   end;
-
 
 implementation
 
@@ -322,7 +328,7 @@ begin
   vText.Color :=  TAlphaColorRec.White;
   vText.Text :=
     'Asteroids vs You' + #13 +
-    'ver. 0.7 beta' + #13 + #13 +
+    'ver. 0.7.6' + #13 + #13 +
     'Game about confrontation of' + #13 + 'Humankind and Asteroids';
   vText.Group := 'about';
   vEngine.AddObject(vText, 'aboutcaption');
@@ -547,6 +553,11 @@ begin
   FList[2].OnClick := Value;
 end;
 
+procedure TGameMenu.SetAstroidCount(const Value: Integer);
+begin
+  FComixText2.Text := 'Usually asteroids are at a very long distance from each other. But here are ' + IntToStr(Value) + ' of them within easy reach! And they are moving towards me at the different speed!'
+end;
+
 procedure TGameMenu.SetExitGame(const Value: TVCLProcedure);
 begin
   FList[3].OnClick := Value;
@@ -582,6 +593,11 @@ end;
 procedure TGameMenu.SetRetryLevelYes(const Value: TVCLProcedure);
 begin
   FRetryLevelMenu.OnYes := Value;
+end;
+
+procedure TGameMenu.SetSecondsToFly(const Value: Integer);
+begin
+  FComixText1.Text := 'Great! I so close to the destination planet! I need only ' + IntToStr(Value) +  ' seconds to reach it.';
 end;
 
 procedure TGameMenu.SetStartGame(const Value: TVCLProcedure);
@@ -688,7 +704,7 @@ begin
   vEngine.AddObject(FBack, FId + 'back');
 
   vFormatter := TEngineFormatter.Create(FBack);
-  vFormatter.Text := 'width: engine.width * 0.6;  left: engine.width * 0.5; top: engine.height * 0.5;';
+  vFormatter.Text := 'width: engine.width * 0.6; left: engine.width * 0.5; top: engine.height * 0.5;';
   vEngine.FormatterList.Insert(0, vFormatter);
   vFormatter.Format;
 
@@ -702,7 +718,7 @@ begin
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'width: engine.width * 0.2;  left: engine.width * 0.5 + width*0.75;' +
     'top: engine.height * 0.5 + ' + FId + 'back.height * 0.35; max-height: ' + FId + 'back.height * 0.225;';
-  vEngine.FormatterList.Insert(0, vFormatter);
+  vEngine.FormatterList.Insert(1, vFormatter);
   vFormatter.Format;
 
   vBut := TGameButton.Create(FId + 'no', vEngine);
@@ -715,7 +731,7 @@ begin
   vFormatter := TEngineFormatter.Create(vBut.BackSprite);
   vFormatter.Text := 'width: engine.width * 0.2;  left: engine.width * 0.5 - width*0.75;' +
     'top: engine.height * 0.5 + ' + FId + 'back.height * 0.35; max-height: ' + FId + 'back.height * 0.225;';
-  vEngine.FormatterList.Insert(0, vFormatter);
+  vEngine.FormatterList.Insert(1, vFormatter);
   vFormatter.Format;
 
   FText := TEngine2DText.Create(vEngine);
@@ -731,7 +747,7 @@ begin
   vFormatter.Text := 'width: ' + FId + 'back.width * 0.8; left: ' + FId + 'back.left;' +
     'top: ' + FId + 'back.top - ' + FId + 'back.height * 0.20;';
 
-  vEngine.FormatterList.Insert(0, vFormatter);
+  vEngine.FormatterList.Add(vFormatter);//.Insert(0, vFormatter);
   vFormatter.Format;
 
   vEngine.HideGroup(vGroup);

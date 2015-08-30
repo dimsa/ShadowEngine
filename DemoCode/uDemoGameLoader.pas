@@ -18,8 +18,8 @@ type
   protected
     function FastText(const AName: string; AFont: TFont; const AColor: TAlphaColor = TAlphaColorRec.White; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TEngine2DText;
     procedure ClearAndDestroyPanel(FPanel: TNamedList<tEngine2DText>);
-    procedure Comix1Create;
-    procedure Comix2Create;
+    procedure Comix1Create(var AComixText: TEngine2DText);
+    procedure Comix2Create(var AComixText: TEngine2DText);
     procedure Comix3Create;
   public
     function RandomAstroid: TLittleAsteroid;
@@ -40,7 +40,7 @@ type
     procedure CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
     procedure CreateRelaxPanel(FPanel: TNamedList<tEngine2DText>);
     procedure CreateStoryPanel(FPanel: TNamedList<tEngine2DText>);
-    procedure CreateComix;
+    procedure CreateComix(var AText1, AText2: TEngine2dText); // Во входных параметрах тексты с комиксов, чтобы изменять их
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
 
     property Parent: tEngine2d read FEngine;
@@ -108,7 +108,7 @@ begin
   FPanel.Clear;
 end;
 
-procedure TLoader.Comix1Create;
+procedure TLoader.Comix1Create(var AComixText: TEngine2DText);
 var
   vFig: TEngine2DShape;
   vSpr: TSprite;
@@ -157,9 +157,10 @@ begin
                  'left: engine.width * (16.5/24); top: engine.height * (9.2/24);' +
                  'wifhor:engine.width * 0.4;' +
                  'leftifhor: engine.width * (18/24); topifhor: engine.height * (6/24)').format;
+   AComixText := vTxt;
 end;
 
-procedure TLoader.Comix2Create;
+procedure TLoader.Comix2Create(var AComixText: TEngine2DText);
 var
   vFig: TEngine2DShape;
   vSpr: TSprite;
@@ -198,7 +199,7 @@ vSpr := Self.Sprite('planetcomix', vGroup);
                  'leftifhor:engine.width * (3/24); topifhor: engine.height * (15.5/24);').format;
 
 
-vSpr := Self.Sprite('asteroidcomix', vGroup);
+  vSpr := Self.Sprite('asteroidcomix', vGroup);
   Formatter(vSpr, 'width:engine.width * 0.25; max-height: engine.height*0.23;' +
                  'left: engine.width * (15/24); top: engine.height * (17/24);' +
                  'wifhor: 0.1*engine.width;' +
@@ -227,6 +228,7 @@ vSpr := Self.Sprite('asteroidcomix', vGroup);
                  'left: engine.width * (5.5/8); top: engine.height * (21.2/24);' +
                  'wifhor:engine.width * 0.4;' +
                  'leftifhor: engine.width * (18/24); topifhor: engine.height * (18/24)').format;
+  AComixText := vTxt;
 end;
 
 procedure TLoader.Comix3Create;
@@ -288,10 +290,10 @@ begin
   FEngine := AEngine;
 end;
 
-procedure TLoader.CreateComix;
+procedure TLoader.CreateComix(var AText1, AText2: TEngine2dText);
 begin
-  Comix1Create;
-  Comix2Create;
+  Comix1Create(AText1);
+  Comix2Create(AText2);
   Comix3Create;
   FEngine.HideGroup('comix1, comix2, comix3');
 end;

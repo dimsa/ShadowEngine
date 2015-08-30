@@ -75,8 +75,6 @@
         <AUP_READ_EXTERNAL_STORAGE>true</AUP_READ_EXTERNAL_STORAGE>
         <AUP_READ_PHONE_STATE>true</AUP_READ_PHONE_STATE>
         <AUP_WRITE_CALENDAR>true</AUP_WRITE_CALENDAR>
-        <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
-        <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
         <AUP_CAMERA>true</AUP_CAMERA>
         <AUP_ACCESS_COARSE_LOCATION>true</AUP_ACCESS_COARSE_LOCATION>
         <SanitizedProjectName>ShadowEngineDemo</SanitizedProjectName>
@@ -91,11 +89,24 @@
         <DCC_K>false</DCC_K>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
+        <AUP_READ_PHONE_STATE>false</AUP_READ_PHONE_STATE>
+        <AUP_WRITE_EXTERNAL_STORAGE>false</AUP_WRITE_EXTERNAL_STORAGE>
+        <AUP_ACCESS_COARSE_LOCATION>false</AUP_ACCESS_COARSE_LOCATION>
+        <AUP_WRITE_CALENDAR>false</AUP_WRITE_CALENDAR>
+        <AUP_ACCESS_FINE_LOCATION>false</AUP_ACCESS_FINE_LOCATION>
+        <AUP_CAMERA>false</AUP_CAMERA>
+        <AUP_CALL_PHONE>false</AUP_CALL_PHONE>
+        <AUP_READ_EXTERNAL_STORAGE>false</AUP_READ_EXTERNAL_STORAGE>
+        <AUP_READ_CALENDAR>false</AUP_READ_CALENDAR>
+        <PF_AliasKey>dsorokin</PF_AliasKey>
+        <PF_KeyStorePass>857A47915F9607D2CF21E567A4527BF2E44208197EE3ECF89F507732D85CA8ECA5E8A3D4E3461C7AC1CC5726FA95C375BABB361604372280162A45D6E5EA228CC90BF304D51EFAE2BFD6AF4307031D1B92423E061DE8090BE3F016FF446E788F659D6448BECB831900BB77A8629D5753388467FD57B19CB1298827E63AECF237</PF_KeyStorePass>
+        <PF_KeyStore>C:\Users\dimsa\AppData\Roaming\Embarcadero\BDS\16.0\release.keystore</PF_KeyStore>
+        <PF_AliasKeyPass>851947D05F9B07B8CF5FE518A4467B8BE44408457E9FECFC9F150FFA8E613CC1DB2AA38CE3111C2FC1E2573AFACFC36BBAE83658042922D216784587E5FC22A2C924F30FD545FA8FBFBBAF5307131D6A921D3E581DAE0939E3EC6E61122EECC61B4A6448BE998378</PF_AliasKeyPass>
         <Android_SplashGravity>center</Android_SplashGravity>
         <Android_SplashTileMode>disabled</Android_SplashTileMode>
-        <VerInfo_Build>1</VerInfo_Build>
+        <VerInfo_Build>76</VerInfo_Build>
         <Android_LauncherIcon36>Source\icons\36.png</Android_LauncherIcon36>
-        <VerInfo_Keys>package=com.embarcadero.$(MSBuildProjectName);label=$(MSBuildProjectName);versionCode=1;versionName=1.0.0;persistent=False;restoreAnyVersion=False;installLocation=preferExternal;largeHeap=False;theme=TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
+        <VerInfo_Keys>package=com.ShadowEngine.AsteroidsVsYou;label=Asteroids vs You;versionCode=76;versionName=0.7.6;persistent=False;restoreAnyVersion=False;installLocation=preferExternal;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
         <BT_BuildType>Debug</BT_BuildType>
         <DCC_UsePackage>FireDACSqliteDriver;FireDACDSDriver;DBXSqliteDriver;fmx;IndySystem;tethering;DBXInterBaseDriver;DataSnapClient;DataSnapCommon;DataSnapProviderClient;DbxCommonDriver;dbxcds;fmxFireDAC;CustomIPTransport;dsnap;IndyIPServer;IndyCore;IndyIPCommon;CloudService;FmxTeeUI;FireDACIBDriver;DataSnapFireDAC;FireDACDBXDriver;soapserver;dsnapxml;bindcompfmx;RESTBackendComponents;emsclientfiredac;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;ibmonitor;xmlrtl;DataSnapNativeClient;ibxpress;IndyProtocols;FireDACCommonDriver;bindcompdbx;soaprtl;bindengine;FMXTee;emsclient;FireDAC;inet;soapmidas;RESTComponents;dbexpress;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
         <Android_SplashImage640>Source\splashes\splash640x480.png</Android_SplashImage640>
@@ -179,6 +190,8 @@
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Android)'!=''">
+        <PF_AliasKeyPass>851947D05F9B07B8CF5FE518A4467B8BE4440845A007979E97FF0FD68E643CD0DB48A3D6E35F1C31C1B0572FFA95C375BABB3651043C2288165745F0E5F4228DC949F31ED506FADDBFCAAF0D071E1D0F92013E44C3637204EB1F6E61122EECC61B4A6448BE998378</PF_AliasKeyPass>
+        <PF_KeyStorePass>857A47915F9607D2CF21E567A4527BF2E44208197EE3ECF89F507732D85CA8ECA5E85D1AE31B1C3CC1FB5752FAC7C331BAF7365004232280162B458DE5AE22C0C90AF35CD51DFA96BFD6AF3F07501D5992423E071DBB0928E3DE16FF442578D8659D9A84BECB831900BB77A8629D5753388467FD57B19CB1298827E63AECF237</PF_KeyStorePass>
         <BT_BuildType>AppStore</BT_BuildType>
         <AUP_READ_PHONE_STATE>false</AUP_READ_PHONE_STATE>
         <AUP_READ_EXTERNAL_STORAGE>false</AUP_READ_EXTERNAL_STORAGE>
@@ -204,7 +217,6 @@
         <DCC_DebugInformation>0</DCC_DebugInformation>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Android)'!=''">
-        <VerInfo_Keys>package=com.embarcadero.$(MSBuildProjectName);label=$(MSBuildProjectName);versionCode=75;versionName=0.7.5;persistent=False;restoreAnyVersion=False;installLocation=preferExternal;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
         <AUP_READ_CALENDAR>false</AUP_READ_CALENDAR>
         <AUP_WRITE_CALENDAR>false</AUP_WRITE_CALENDAR>
         <AUP_READ_EXTERNAL_STORAGE>false</AUP_READ_EXTERNAL_STORAGE>
@@ -214,11 +226,8 @@
         <AUP_READ_PHONE_STATE>false</AUP_READ_PHONE_STATE>
         <AUP_CAMERA>false</AUP_CAMERA>
         <AUP_CALL_PHONE>false</AUP_CALL_PHONE>
-        <PF_KeyStorePass>857A47915F9607D2CF21E567A4527BF2E44208197EE3ECF89F507732D85CA8ECA5E85D1A7F23E2288729C8F70A5767931423B81E8DD97E2E8CA5A093E5A422D3C913F373D51EFAC4BFB4AF1107441D0A92533E171DF10975E3EC16E2446078D565B39AAA22A37D534633E8609215F3E8962EE9AFDE11C01AB354C2AB3AECF237</PF_KeyStorePass>
-        <PF_KeyStore>C:\Users\dimsa\AppData\Roaming\Embarcadero\BDS\16.0\release.keystore</PF_KeyStore>
-        <PF_AliasKeyPass>54E50DFE644355A9A301713BD13FE36081DA0549A057979297EE0FB48E3E3CD9DB5DA38CE3371C4DC1B0577DFADEC37ABAF93641045722CE16654589E5A6228C18F4B92CEE85A8F3D3FC3B3A723785B3F7D9331AC3637204EB1F6E61122EECC61B4A6448BE998378</PF_AliasKeyPass>
-        <PF_AliasKey>dsorokin</PF_AliasKey>
-        <BT_BuildType>AppStore</BT_BuildType>
+        <PF_KeyStorePass>857A47915F9607D2CF21E567A4527BF2E44208197EE3ECF89F507732D85CA8ECA5E85D1AE31B1C3CC1FB5752FAC7C331BAF7365004232280162B458DE5AE22C0C90AF35CD51DFA96BFD6AF3F07501D5992423E071DBB0928E3DE16FF442578D8659D9A84BECB831900BB77A8629D5753388467FD57B19CB1298827E63AECF237</PF_KeyStorePass>
+        <PF_AliasKeyPass>851947D05F9B5585A304712AD15DE33A81940557A005978797B40FAA8E6D3CD0DB48A3D6E3181C3AC1B85752FAB3C36BBABA361304262290166845ECE5BA2290C95DF35DD544A8F3D3FC3B3A723785B3F7D9331AC3637204EB1F6E61122EECC61B4A6448BE998378</PF_AliasKeyPass>
         <VerInfo_Build>75</VerInfo_Build>
     </PropertyGroup>
     <ItemGroup>
@@ -1133,7 +1142,7 @@
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
             </Deployment>
             <Platforms>
-                <Platform value="Android" ActiveMobileDevice="0123456789ABCDEF">True</Platform>
+                <Platform value="Android">True</Platform>
                 <Platform value="iOSSimulator" ActiveMobileDevice="iPad">True</Platform>
                 <Platform value="OSX32">True</Platform>
                 <Platform value="Win32">True</Platform>

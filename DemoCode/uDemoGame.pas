@@ -97,6 +97,7 @@ type
     procedure SetScaling(const AMonitorScale, ASpeedModScale: Double);
     procedure RenewPanels;
     procedure PrepareAsteroidForLevel(const ALevel: Integer);
+    function AsteroidsForLevel(const ALevel: Integer): Integer;
     procedure RestartGame(const AGameMode: TGameStatus);
     procedure GameOver;
     constructor Create(ALoader: TLoader);
@@ -117,7 +118,6 @@ type
     FGameOverText: TEngine2DText;
     FGameStatus: TGameStatus;
     FGP: TGameParam;
-
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
     function GetSpeed: Single; // Ѕеретс€ из Engine2D чтобы на всех устройствах была одна скорость
@@ -330,6 +330,8 @@ begin
 end;
 
 procedure TDemoGame.Prepare;
+var
+  vTxt1, vTxt2: TEngine2DText;
 begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
@@ -359,7 +361,7 @@ begin
   FMenu.LevelSelect := StartStory;
   FMenu.OnNextLevelYes := ToNextLevel;
   FMenu.OnNextLevelNo := ToMainMenu;
-  FMenu.OnRetryLevelYes := ToNextLevel;
+  FMenu.OnRetryLevelYes := ToRetryLevel;
 
   FEngine.HideGroup('ship');
   FEngine.HideGroup('menu2');
@@ -368,7 +370,9 @@ begin
 
   FEngine.InBeginPaintBehavior := DoGameTick;
   FEngine.Start;
-  FLoader.CreateComix;
+  FLoader.CreateComix(vTxt1, vTxt2);
+  FMenu.ComixText1 := vTxt1;
+  FMenu.ComixText2 := vTxt2
 end;
 
 procedure TDemoGame.Resize(const AWidth, AHeight: Integer);
@@ -410,7 +414,7 @@ begin
       gsSurvivalMode: begin FGP.RestartGame(Value);  HideGroup('menu2'); HideGroup('menu'); end;
       gsStoryMode: begin FGP.RestartGame(Value); HideGroup('menu3,menu,comix1,comix2,comix3'); end;
       gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); {FGP.Ship.Visible := False;} ShowGroup('gameover'); FGameOverText.SendToFront; end;
-      gsComix1: begin ShowGroup('comix1'); HideGroup('menu3,menu,nextlevel,retrylevel,ship'); SendToFrontGroup('comix1'); end;
+      gsComix1: begin FMenu.AsteroidCount := FGP.AsteroidsForLevel(FGP.Level); FMenu.SecondsToFly := FGP.AsteroidsForLevel(FGP.Level) * 10; ShowGroup('comix1');  HideGroup('menu3,menu,nextlevel,retrylevel,ship'); SendToFrontGroup('comix1'); end;
       gsComix2: begin ShowGroup('comix2'); SendToFrontGroup('comix2'); end;
       gsComix3: begin ShowGroup('comix3'); SendToFrontGroup('comix3'); end;
       gsNextLevel: begin ShowGroup('nextlevel'); {HideGroup('ship');} SendToFrontGroup('nextlevel'); end;
@@ -456,8 +460,8 @@ end;
 
 procedure TDemoGame.StartStory(ASender: TObject);
 begin
-  GameStatus := gsComix1;
   FGP.Level := StrToInt(TButtonBack(ASender).Link.Text);
+  GameStatus := gsComix1;
 end;
 
 procedure TDemoGame.StartSurvival(ASender: TObject);
@@ -576,6 +580,35 @@ begin
     gsRelaxMode:
       FScorePoints := Round((FSeconds / (FCollisions + 1)) * FAsteroids.Count);
   end;
+end;
+
+function TGameParam.AsteroidsForLevel(const ALevel: Integer): Integer;
+var
+  iLevel: Integer;
+  iAster, vNAster: Integer;
+  iUpgrade: Integer;
+begin
+  vNAster := 3;
+  Result := vNAster;
+  iLevel := ALevel;
+
+  while iLevel > 1 do
+  begin
+    for iUpgrade := 0 to 2 do
+    begin
+      for iAster := 0 to vNAster - 1 do
+      begin
+        Dec(iLevel);
+        if iLevel <= 1 then
+          Exit;
+      end;
+    end;
+    // ≈сли каждый астеройд получил по 3 апгрейда, приблав€ем один астеройд и 10 секунд
+    Inc(vNAster);
+    Result := vNAster;
+    Dec(iLevel);
+  end;
+
 end;
 
 procedure TGameParam.BreakLife;

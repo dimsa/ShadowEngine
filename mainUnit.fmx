@@ -1,7 +1,7 @@
 object mainForm: TmainForm
   Left = 0
   Top = 0
-  Caption = 'ShadowEngine Demo'
+  Caption = 'Asteroids vs You'
   ClientHeight = 683
   ClientWidth = 507
   FormFactor.Width = 320
