@@ -14,7 +14,7 @@ type
     procedure ClearForSubject(const ASubject: Pointer);
     procedure RecoverStartForSubject(const ASubject: Pointer);
 //    procedure ClearAndRecoverStartForSubject(const ASubject: Pointer); experimental;
-    procedure ClealAndRecoverForSubject(const ASubject: Pointer); experimental; // ClearAndRecoverStartForSubject;
+    procedure ClearAndRecoverForSubject(const ASubject: Pointer); experimental; // ClearAndRecoverStartForSubject;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -34,7 +34,7 @@ begin
   vAni := TAnimation.Create;
 end;}
 
-procedure TEngine2DAnimationList.ClealAndRecoverForSubject(
+procedure TEngine2DAnimationList.ClearAndRecoverForSubject(
   const ASubject: Pointer);
 var
   i, vN: Integer;

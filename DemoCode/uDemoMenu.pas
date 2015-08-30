@@ -215,7 +215,7 @@ var
 
 begin
   vLoader := TLoader.Create(FParent);
-  tEngine2d(FParent).AnimationList.ClearForSubject(FBack);
+  tEngine2d(FParent).AnimationList.ClearAndRecoverForSubject(FBack);
   tEngine2d(FParent).AnimationList.Add(
     vLoader.ButtonAnimation(FBack, FBack.ScaleX * 0.8)
   );

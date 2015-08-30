@@ -14,7 +14,7 @@
     <application android:persistent="False" 
         android:restoreAnyVersion="False" 
         android:label="ShadowEngineDemo" 
-        android:debuggable="False" 
+        android:debuggable="True" 
         android:largeHeap="False"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme"

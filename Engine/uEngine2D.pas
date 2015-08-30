@@ -368,7 +368,7 @@ begin
   Result := fWidth > fHeight;
 end;
 
-procedure tEngine2d.repaint;
+procedure tEngine2d.Repaint;
 var
   i, l: integer;
   iA, lA: Integer; // Счетчики анимации и форматирования
@@ -520,6 +520,7 @@ end;
 
 procedure tEngine2d.InEndPaintDefaultBehavior;
 begin
+  Exit;
   with FImage do
   begin
   // bitmap.Canvas.Blending:=true;

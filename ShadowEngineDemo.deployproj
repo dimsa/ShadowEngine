@@ -85,6 +85,14 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\library\lib\armeabi-v7a\</RemoteDir>
+            <RemoteName>gdbserver</RemoteName>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Source\icons\144.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
@@ -214,18 +222,18 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
-            <RemoteName>back.jpg</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Android\Release\AndroidManifest.xml" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>AndroidManifest.xml</RemoteName>
             <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>back.jpg</RemoteName>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -578,18 +586,18 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
-            <RemoteName>back.jpg</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="$(BDS)\Redist\iossim32\libcgunwind.1.0.dylib">
             <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
             <RemoteName>libcgunwind.1.0.dylib</RemoteName>
             <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>back.jpg</RemoteName>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
