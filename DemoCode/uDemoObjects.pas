@@ -48,6 +48,7 @@ type
     FShipLight: TShipLight;
     FDestination: TPosition;
     FDestinations: TList<TPosition>;
+    FIsPaint: Boolean;
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   protected
     procedure SetScale(AValue: single); override;
@@ -55,6 +56,7 @@ type
     property Parts: TList<TSprite> read FParts;
     procedure SetOpacity(const AOpacity: Integer);
     property Destination: TPosition read FDestination write FDestination;
+    property IsPaint: Boolean read FIsPaint write FIsPaint;
     procedure Repaint; override;
     procedure Hide;
     procedure Show;
@@ -183,6 +185,8 @@ begin
   FMaxDx := 20;
   FMaxDy := 20;
 
+  FIsPaint := True;
+
   FDestinations := TList<TPosition>.Create;
 end;
 
@@ -205,7 +209,7 @@ procedure TShip.Hide;
 var
   i: Integer;
 begin
-  for i := 1 to FParts.Count - 1 do
+  for i := 0 to FParts.Count - 1 do
     FParts[i].Visible := False;
 end;
 
@@ -350,6 +354,9 @@ begin
  // Self.X := Self.x + (random - 0.5) * 0.5;
   //Self.Y := Self.y + (random - 0.5) * 0.5;
 
+  if not FIsPaint then
+    Exit;
+
   FLeftFire.Rotate := Self.Rotate;
   FLeftFire.ScalePoint := Self.ScalePoint * 2 * vKoef * vLeftKoef;
   FLeftFire.x := Self.x + (scW*0.15 - 0) * cos((Self.Rotate / 180) * pi) - (scH*0.4 - 0) * sin((Self.Rotate / 180) * pi);
@@ -400,6 +407,7 @@ begin
   Self.SetOpacity(1);
   Self.x := tEngine2d(Parent).Width * 0.5;
   Self.y := tEngine2d(Parent).Height * 0.5;
+  FIsPaint := True;
   tEngine2d(Self.fParent).ShowGroup('ship');
 end;
 

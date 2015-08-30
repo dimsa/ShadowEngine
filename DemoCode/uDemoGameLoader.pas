@@ -29,6 +29,7 @@ type
     function Explosion(const AX, AY, AAng: Double): TExplosion;
     function ExplosionAnimation(ASubject: TSprite): TSpriteAnimation;
     function OpacityAnimation(ASubject: TSprite; const AEndOpacity: Double): TOpacityAnimation;
+    function ScaleAnimation(ASubject: TSprite; const AEndScale: Double): TMigrationAnimation;
     function BreakLifeAnimation(ASubject: TSprite): TOpacityAnimation;
     procedure ShipExplosionAnimation(ASubject: TShip);
     function ButtonAnimation(ASubject: TEngine2dObject; const AEndScale: Double):  TMouseDownMigrationAnimation;
@@ -692,14 +693,45 @@ begin
   Result := vRes;
 end;
 
+function TLoader.ScaleAnimation(ASubject: TSprite;
+  const AEndScale: Double): TMigrationAnimation;
+var
+  vRes: TMigrationAnimation;
+  vPos: TPosition;
+begin
+  vRes := TMigrationAnimation.Create;
+  vRes.Parent := fEngine;
+  vPos := ASubject.Position;
+  vPos.ScaleX := AEndScale;
+  vPos.ScaleY := AEndScale;
+  vPos.Rotate := vPos.Rotate - 360;
+  vRes.EndPos := vPos;
+  vRes.TimeTotal := 250;
+  vRes.Subject := ASubject;
+
+  Result := vRes;
+end;
+
 procedure TLoader.ShipExplosionAnimation(ASubject: TShip);
 var
-  vRes: TOpacityAnimation;
+  vRes: TMigrationAnimation;
   i: Integer;
 begin
-  for i := 1 to ASubject.Parts.Count - 1 do
+  vRes := ScaleAnimation(ASubject, 0.01);
+  vRes.OnDestroy := ASubject.Hide;
+  FEngine.AnimationList.Add(vRes);
+  (*for i := 0 to ASubject.Parts.Count - 1 do
   begin
-    vRes := TOpacityAnimation.Create;
+  {  vRes := TOpacityAnimation.Create;
+    vRes.Parent := fEngine;
+    vRes.Subject := ASubject;
+    vRes.EndOpaque := 0;
+    vRes.StartOpaque := ASubject.Parts[i].Opacity;
+    vRes.TimeTotal := 500;
+    vRes.OnDestroy := ASubject.Hide;   }
+
+   { ScaleAnimation(ASubject.Parts[i], )
+    vRes := TSAnimation.Create;
     vRes.Parent := fEngine;
     vRes.Subject := ASubject;
     vRes.EndOpaque := 0;
@@ -707,8 +739,8 @@ begin
     vRes.TimeTotal := 500;
     vRes.OnDestroy := ASubject.Hide;
 
-    FEngine.AnimationList.Add(vRes);
-  end;
+    FEngine.AnimationList.Add(vRes); }
+  end;*)
 end;
 
 class function TLoader.ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;

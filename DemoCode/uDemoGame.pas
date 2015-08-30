@@ -409,12 +409,12 @@ begin
       gsRelaxMode: begin FGP.RestartGame(Value); ShowGroup('relaxmodemenu'); HideGroup('menu2,menu'); end;
       gsSurvivalMode: begin FGP.RestartGame(Value);  HideGroup('menu2'); HideGroup('menu'); end;
       gsStoryMode: begin FGP.RestartGame(Value); HideGroup('menu3,menu,comix1,comix2,comix3'); end;
-      gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); FGP.Ship.Visible := False; ShowGroup('gameover'); FGameOverText.SendToFront; end;
+      gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); {FGP.Ship.Visible := False;} ShowGroup('gameover'); FGameOverText.SendToFront; end;
       gsComix1: begin ShowGroup('comix1'); HideGroup('menu3,menu,nextlevel,retrylevel,ship'); SendToFrontGroup('comix1'); end;
       gsComix2: begin ShowGroup('comix2'); SendToFrontGroup('comix2'); end;
       gsComix3: begin ShowGroup('comix3'); SendToFrontGroup('comix3'); end;
-      gsNextLevel: begin ShowGroup('nextlevel'); HideGroup('ship'); SendToFrontGroup('nextlevel'); end;
-      gsRetryLevel: begin ShowGroup('retrylevel'); HideGroup('ship'); SendToFrontGroup('retrylevel'); end;
+      gsNextLevel: begin ShowGroup('nextlevel'); {HideGroup('ship');} SendToFrontGroup('nextlevel'); end;
+      gsRetryLevel: begin FLoader.ShipExplosionAnimation(FGP.Ship); ShowGroup('retrylevel'); {HideGroup('ship');} SendToFrontGroup('retrylevel'); end;
   end;
   FGameStatus := Value;
 end;
@@ -829,6 +829,7 @@ begin
     gsSurvivalMode: begin
       FLoader.CreateLifes(FLifes, 3);
       FLoader.CreateSurvivalPanel(FPanels);
+      DefineAsteroidCount(0);
       DefineAsteroidCount(3);
     end;
     gsStoryMode: begin
