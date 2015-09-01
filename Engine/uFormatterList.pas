@@ -89,34 +89,33 @@ end;
 
 procedure TFormatterList.LoadSECSS(const AFileName: string);
 var
-  vReg, vReg2: TRegEx;
-  vF: TextFile;
+  vReg: TRegEx;
   vFile: TStringList;
-  vStrs, vStrs2: TArray<string>;
+  vStrs, vDirective: TArray<string>;
   i: Integer;
   vS: string;
   vMatches: TMatchCollection;
 begin
-  //vReg := TRegEx.Create('\{.*\}');
-  vReg := TRegEx.Create('\r\n');
-
-  vReg2 := TRegEx.Create('.*\s{');
-
   vFile := TStringList.Create;
   vFile.LoadFromFile(AFileName);
-  vS := vFile.Text;
-  vS := vReg.Replace(vS, '');
-  vReg := TRegEx.Create('.*\{.*\}');
 
-  vMatches := vReg.Matches(vS);
-//  vStrs := vReg.Split(vFile.Text);
+  // Убираем переносы строк
+  vReg := TRegEx.Create('[\r\n\s\t]*');
+  vFile.Text := vReg.Replace(vFile.Text, '');
 
-  for i := 0 to vMatches.Count - 1 do
+  // Делим по стилям
+  vReg := TRegEx.Create('}');
+  vStrs := vReg.Split(vFile.Text);
+
+  // Делим на название стиля и его текст
+  vReg := TRegEx.Create('{');
+  for i := 0 to Length(vStrs) - 1 do
   begin
-    vStrs2 := vReg2.Split(vMatches[i].Value);
+    vDirective := vReg.Split(vStrs[i]);
     if Length(vStrs) >= 2 then
-      FLoadedStyles.Add(vStrs2[0], vStrs2[1]);
+      FLoadedStyles.Add(vDirective[0], vDirective[1]);
   end;
+  vFile.Free;
 end;
 
 function TFormatterList.PseudoFormatter(
