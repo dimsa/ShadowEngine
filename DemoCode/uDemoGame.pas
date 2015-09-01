@@ -335,7 +335,7 @@ var
 begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
-//  FEngine.FormatterList.LoadSECSS(UniPath('formatters.secss'));
+  FEngine.FormatterList.LoadSECSS(UniPath('formatters.secss'));
 
   FGP := TGameParam.Create(FLoader);
 
