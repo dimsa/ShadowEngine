@@ -205,19 +205,6 @@ vSpr := Self.Sprite('planetcomix', vGroup);
                  'wifhor: 0.1*engine.width;' +
                  'leftifhor: engine.width * (9/24); topifhor: engine.height * (19/24); ').format;
 
-  {
-  I wanted to generate it, but random is so ugly :-(
-
-  vN := 10;
-  for i := 0 to vN - 1 do
-  begin
-  vS1 := FloatToStr((RandomRange(-160, 160) ) / 80);
-  vS2 := FloatToStr((RandomRange(-160, 160) ) / 80);
-    vSpr := Self.Sprite('asteroid', vGroup);
-    Formatter(vSpr, 'width:engine.width * 0.5 * ' + FloatToStr(Random * 0.25) + '; ' +
-                 'left: engine.width * (16 + 0' + vS1  + ')/24; top: engine.height * (15 + 0' + vS2 + ')/24;').format;
-  end; }
-
   vTxt := Self.FastText('monolog2', TFont.Create, TAlphaColorRec.White, vGroup);
   vTxt.WordWrap := True;
   vTxt.TextRect := RectF(-260, -150, 260, 150);

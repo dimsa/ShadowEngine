@@ -46,7 +46,8 @@ end;
 procedure TmainForm.FormKeyDown(Sender: TObject; var Key: Word;
   var KeyChar: Char; Shift: TShiftState);
 begin
-//  Game.DrawFigures := not Game.DrawFigures;
+  if KeyChar = #32 then
+    Game.DrawFigures := not Game.DrawFigures;
 
   if ReturnPressed(Key) then
   begin

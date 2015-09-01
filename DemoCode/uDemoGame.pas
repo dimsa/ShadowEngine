@@ -335,6 +335,7 @@ var
 begin
   FEngine.Resources.addResFromLoadFileRes('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
+//  FEngine.FormatterList.LoadSECSS(UniPath('formatters.secss'));
 
   FGP := TGameParam.Create(FLoader);
 
@@ -344,8 +345,8 @@ begin
   FGameOverText.Color :=  TAlphaColorRec.White;
   FGameOverText.TextRect := RectF(-150, -35, 150, 35);
   FGameOverText.Text := 'Game Over';
-  FEngine.AddObject(FGameOverText);
-  FLoader.Formatter(FGameOverText, 'left: engine.width * 0.5; top: engine.height * 0.5; width: width: 0.8 * engine.width;').Format;
+  FEngine.AddObject(FGameOverText, 'gameovertext');
+  FLoader.Formatter(FGameOverText, 'left: engine.width * 0.5; top: engine.height * 0.5; width: 0.8 * engine.width;').Format;
 
   FEngine.HideGroup('gameover');
   FEngine.HideGroup('stat');

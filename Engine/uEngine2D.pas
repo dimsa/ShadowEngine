@@ -520,7 +520,6 @@ end;
 
 procedure tEngine2d.InEndPaintDefaultBehavior;
 begin
-  Exit;
   with FImage do
   begin
   // bitmap.Canvas.Blending:=true;

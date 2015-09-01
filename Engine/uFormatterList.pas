@@ -7,17 +7,21 @@ unit uFormatterList;
 interface
 
 uses
-  System.SyncObjs,
-  uEngineFormatter, uEngine2DObject, uEngine2DSprite, uEngine2DClasses, uIntersectorClasses;
+  System.SyncObjs, System.Classes, System.RegularExpressions,
+  uEngineFormatter, uEngine2DObject, uEngine2DSprite, uEngine2DClasses,
+  uNamedList, uIntersectorClasses;
 
 type
   TFormatterList = class(TEngine2DNamedList<TEngineFormatter>)
+  private
+    FLoadedStyles: TNamedList<string>;
   public
-    procedure Add(AObject: tEngine2DObject; const AText: String); overload;
+    procedure Add(AObject: tEngine2DObject; const AText: string); overload;
+    procedure LoadSECSS(const AFileName: string);
     procedure ClearForSubject(AObject: tEngine2DObject);
     procedure ApplyForSubject(AObject: tEngine2DObject);
-    function PseudoFormatter(const ASpriteForClone: tSprite; const AText: String): tEngine2DObject;
-    function PseudoFormatterPosition(const ASpriteForClone: tSprite; const AText: String): TPosition;
+    function PseudoFormatter(const ASpriteForClone: TSprite; const AText: string): tEngine2DObject;
+    function PseudoFormatterPosition(const ASpriteForClone: TSprite; const AText: string): TPosition;
     constructor Create{(const AParent: Pointer)}; override;
     destructor Destroy; override;
   end;
@@ -74,13 +78,45 @@ end;
 constructor TFormatterList.Create{(const AParent: Pointer)};
 begin
   inherited;
-
+  FLoadedStyles := TNamedList<string>.Create;
 end;
 
 destructor TFormatterList.Destroy;
 begin
-
+  FLoadedStyles.Free;
   inherited;
+end;
+
+procedure TFormatterList.LoadSECSS(const AFileName: string);
+var
+  vReg, vReg2: TRegEx;
+  vF: TextFile;
+  vFile: TStringList;
+  vStrs, vStrs2: TArray<string>;
+  i: Integer;
+  vS: string;
+  vMatches: TMatchCollection;
+begin
+  //vReg := TRegEx.Create('\{.*\}');
+  vReg := TRegEx.Create('\r\n');
+
+  vReg2 := TRegEx.Create('.*\s{');
+
+  vFile := TStringList.Create;
+  vFile.LoadFromFile(AFileName);
+  vS := vFile.Text;
+  vS := vReg.Replace(vS, '');
+  vReg := TRegEx.Create('.*\{.*\}');
+
+  vMatches := vReg.Matches(vS);
+//  vStrs := vReg.Split(vFile.Text);
+
+  for i := 0 to vMatches.Count - 1 do
+  begin
+    vStrs2 := vReg2.Split(vMatches[i].Value);
+    if Length(vStrs) >= 2 then
+      FLoadedStyles.Add(vStrs2[0], vStrs2[1]);
+  end;
 end;
 
 function TFormatterList.PseudoFormatter(
