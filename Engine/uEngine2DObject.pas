@@ -86,7 +86,7 @@ end;
 
 procedure tEngine2DObject.Repaint;
 begin
-  if TEngine2D(FParent).DrawFigures then
+  if TEngine2D(FParent).Options.ToDrawFigures then
     Shape.Draw;
 end;
 

@@ -44,14 +44,27 @@ const
 
 
 type
+  tEngine2DOptionsEnum = (EClickOnlyTop, EAnimateForever, EDrawFigures, EAutoloadFormatter);
+
+  tEngine2DOptions = record
+  private
+    FToClickOnlyTop: Boolean; // События кликов передаются только верхнему объекту в клике
+    FToAnimateForever: Boolean; // Сообщает, что надо перерисовывать сцену, даже если нет анимаций
+    FToDrawFigures: Boolean; // Рисовать ли форму объектов
+    FToAutoloadFormatter: Boolean; // Подключать ли форматтерсы сразу же при добавлении объекта
+  public
+    property ToClickOnlyTop: Boolean read FToClickOnlyTop; //write FToClickOnlyTop;
+    property ToDrawFigures: Boolean read FToDrawFigures;// write FToDrawFigures;
+    property ToAnimateForever: Boolean read FToAnimateForever;// write FToAnimateForever;
+    property ToAutoloadFormatter: Boolean read FToAutoloadFormatter;// write FToAutoloadFormatter;
+    procedure Swap(const AOptions: array of tEngine2DOptionsEnum);
+    procedure Up(const AOptions: array of tEngine2DOptionsEnum);
+    procedure Down(const AOptions: array of tEngine2DOptionsEnum);
+  end;
+
   tSpriteResource = record
     rect: tRectF;
     bmp: tBitmap;
-  end;
-
-  TEngine2DOptions = record
-    ToClickOnlyTop: Boolean; // События кликов передаются только верхнему объекту в клике
-    ToAnimateForever: Boolean; // Сообщает, что надо перерисовывать сцену, даже если нет анимаций
   end;
 
   // Потокобезопасный класс именованных листов для енджайна. Обязательно должен быть указан Парент!
@@ -214,6 +227,47 @@ begin
   vEngine.Critical.Enter;
   Result := inherited Insert(AIndex, AValue);
   vEngine.Critical.Leave;
+end;
+
+{ tEngine2DOptions }
+
+procedure tEngine2DOptions.Down(const AOptions: array of tEngine2DOptionsEnum);
+var
+  i: Integer;
+begin
+  for i := 0 to Length(AOptions)-1 do
+    case AOptions[i] of
+      EClickOnlyTop: FToClickOnlyTop := False;
+      EAnimateForever: FToAnimateForever := False;
+      EDrawFigures: FToDrawFigures := False;
+      EAutoloadFormatter: FToAutoloadFormatter := False;
+    end;
+end;
+
+procedure tEngine2DOptions.Swap(const AOptions: array of tEngine2DOptionsEnum);
+var
+  i: Integer;
+begin
+  for i := 0 to Length(AOptions)-1 do
+    case AOptions[i] of
+      EClickOnlyTop: FToClickOnlyTop := not FToClickOnlyTop;
+      EAnimateForever: FToAnimateForever := not FToAnimateForever;
+      EDrawFigures: FToDrawFigures := not FToDrawFigures;
+      EAutoloadFormatter: FToAutoloadFormatter := not FToAutoloadFormatter;
+    end;
+end;
+
+procedure tEngine2DOptions.Up(const AOptions: array of tEngine2DOptionsEnum);
+var
+  i: Integer;
+begin
+  for i := 0 to Length(AOptions)-1 do
+    case AOptions[i] of
+      EClickOnlyTop: FToClickOnlyTop := True;
+      EAnimateForever: FToAnimateForever := True;
+      EDrawFigures: FToDrawFigures := True;
+      EAutoloadFormatter: FToAutoloadFormatter := True;
+    end;
 end;
 
 end.

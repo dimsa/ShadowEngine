@@ -10,7 +10,7 @@ uses
   FMX.IniFile,
   uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape,
   uEngine2DAnimation, uIntersectorClasses, uDemoMenu, uClasses, uEngine2DText,
-  uEngine2DSprite, uEngineFormatter, uNamedList;
+  uEngine2DSprite, uEngineFormatter, uNamedList, uEngine2DClasses;
 
 type
   TGameStatus = (gsMenu1, gsMenu2, gsMenu3,
@@ -275,7 +275,7 @@ end;
 
 function TDemoGame.GetDrawFigures: Boolean;
 begin
-  Result := FEngine.DrawFigures;
+  Result := FEngine.Options.ToDrawFigures;
 end;
 
 function TDemoGame.GetImage: TImage;
@@ -399,7 +399,10 @@ end;
 
 procedure TDemoGame.SetDrawFigures(const Value: Boolean);
 begin
-  FEngine.DrawFigures := Value;
+  if Value then
+    FEngine.Options.Up([EDrawFigures])
+  else
+    FEngine.Options.Down([EDrawFigures]);
 end;
 
 procedure TDemoGame.SetGameStatus(const Value: TGameStatus);

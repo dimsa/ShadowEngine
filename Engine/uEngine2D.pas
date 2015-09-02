@@ -15,7 +15,8 @@ uses
   FMX.Objects, Math, System.SyncObjs,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uClasses, uEngine2DThread, uEngine2DObject, uEngine2DUnclickableObject,
-  uEngine2DSprite, uEngine2DText, uEngine2DClasses, uFormatterList, uSpriteList,
+  uEngine2DSprite, uEngine2DText, uEngine2DClasses, uFormatterList, uEngineFormatter,
+   uSpriteList,
   uEngine2DResources, uEngine2DAnimation, uNamedList, uEngine2DAnimationList,
   uFastFields, uEasyDevice;
 
@@ -48,7 +49,7 @@ type
     FInBeginPaintBehavior: TProcedure;
     FInEndPaintBehavior: TProcedure;
     FAddedSprite: Integer; // Считает сколько спрайтов добавлено всего. Без учета удалений
-    FDrawFigures: Boolean; // Требуется обычно для отладки. Рисует области фигур интерсектора
+//    FDrawFigures: Boolean; // Требуется обычно для отладки. Рисует области фигур интерсектора
 
     // Механизм теневого объекты необычен. Но кроме всего прочего TEngine2DObject не имеет способов определения
     {FShadowSprite: tSprite; //
@@ -96,12 +97,15 @@ type
     property Downed: TIntArray read fMouseDowned;
     property Upped: TIntArray read fMouseUpped;
     property Critical: TCriticalSection read FCritical;
-    property DrawFigures: Boolean read FDrawFigures write FDrawFigures;
+
+//    property IsDrawFigures: Boolean read fOptions.IsDrawFigures write fOptions.IsDrawFigures;
+//    property IsAtFigures: Boolean read fOptions.IsDrawFigures write fOptions.IsDrawFigures;
 
     property SpriteCount: integer read getSpriteCount;
     property Sprites[index: integer]: tEngine2DObject read getObject write setObject;
 
-    property Background: tBitmap read fBackGround write setBackGround;
+    property Background: TBitmap read fBackGround write setBackGround;
+    property Options: TEngine2dOptions read FOptions write FOptions;
 
     property IfHor: Boolean read GetIfHor; // Сообщает True, если Width > Height
 
@@ -179,6 +183,7 @@ begin
   begin
     fCritical.Enter;
     l := spriteCount;
+    AObject.Parent := Self;
     fObjects.Add(vName, AObject);
     setLength(fSpriteOrder, l + 1);
     fObjects[l].Image := fImage;
@@ -270,8 +275,8 @@ begin
   fFormatters.Parent := Self;
   fObjects := TObjectsList.Create;
   fObjects.Parent := Self;
-  fOptions.ToAnimateForever := True;
-  fOptions.ToClickOnlyTop := False;
+  fOptions.Up([EAnimateForever]);
+  fOptions.Down([EClickOnlyTop]);
   fCritical := TCriticalSection.Create;
   FBackgroundBehavior := BackgroundDefaultBehavior;
   FInBeginPaintBehavior := InBeginPaintDefaultBehavior;
@@ -341,18 +346,8 @@ end;
 
 procedure tEngine2d.Resize;
 var
-  vSize: tPointF;
   i: Integer;
 begin
-  //vSize := getDisplaySizeInPx;
-
-  //fImage.Width := v
- { fImage.Width := vSize.X;
-  fImage.Height := vSize.Y;
-  fImage.Bitmap.Width := Round(vSize.X);//Round(vSize.X + 0.4);
-  fImage.Bitmap.Height := Round(vSize.Y);//Round(vSize.Y + 0.4);
-  fWidth := fImage.Bitmap.Width;
-  fHeight := fImage.Bitmap.Height;}
   // Форматирвание
   for i := 0 to fFormatters.Count - 1 do
     fFormatters[i].Format;// then
