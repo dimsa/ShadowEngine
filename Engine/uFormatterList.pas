@@ -101,8 +101,6 @@ var
   vFile: TStringList;
   vStrs, vDirective: TArray<string>;
   i: Integer;
-  vS: string;
-  vMatches: TMatchCollection;
 begin
   vFile := TStringList.Create;
   vFile.LoadFromFile(AFileName);

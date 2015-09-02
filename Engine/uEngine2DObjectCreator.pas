@@ -26,8 +26,8 @@ type
       const AAnimationsList: TEngine2DAnimationList;
       const AFormattersList: TFormatterList);
     destructor Destroy; override;
-    function Formatter(const ASubject: tEngine2DObject; const AText: String; const AIndex: Integer = -1): TEngineFormatter;
-    function SeCSSFormatter(const ASubject: tEngine2DObject; const AName: String; const AParam: array of const; const AIndex: Integer = -1): TEngineFormatter;
+    function Formatter(const ASubject: tEngine2DObject; const AText: String; const AIndex: Integer = -1): TEngineFormatter; overload;
+    function Formatter(const ASubject: tEngine2DObject; const AName: String; const AParam: array of const; const AIndex: Integer = -1): TEngineFormatter; overload;
     function Text(const AText: string = ''; const AColor: TAlphaColor = TAlphaColorRec.White; const AName: string = ''; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TEngine2DText;
     function Sprite(const AResource: string; const AName: string = ''; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TSprite; overload;
     function Sprite(const AResource: Integer; const AName: string = ''; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TSprite; overload;
@@ -73,10 +73,13 @@ begin
     tEngine2d(FEngine).FormatterList.Insert(AIndex, Result);
 end;
 
-function TEngine2DObjectCreator.SeCSSFormatter(const ASubject: tEngine2DObject;
+function TEngine2DObjectCreator.Formatter(const ASubject: tEngine2DObject;
   const AName: String; const AParam: array of const; const AIndex: Integer): TEngineFormatter;
+var
+  vS: string;
 begin
-  Formatter(ASubject, Format(fFormatters.StyleByName[AName], AParam), AIndex);
+  vS := Format(fFormatters.StyleByName[AName], AParam);
+  Result := Formatter(ASubject, vS, AIndex);
 end;
 
 function TEngine2DObjectCreator.Sprite(const AResource: Integer; const AName,

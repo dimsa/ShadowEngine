@@ -377,8 +377,6 @@ begin
 end;
 
 procedure TDemoGame.Resize(const AWidth, AHeight: Integer);
-var
-  vSize: tPointF;
 begin
 //  vSize := getDisplaySizeInPx;
   FEngine.Width := AWidth;//Round(vSize.X + 0.4);

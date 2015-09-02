@@ -150,7 +150,6 @@ end;}
 constructor TGameButton.Create(const AName: string; const AParent: Pointer; const ASpriteBackName: string = 'button');
 var
   vEngine: tEngine2d;
-  vFormatter: TEngineFormatter;
   vFText: string;
   vPoly: TPolygon;
   vFigure: TNewFigure;
@@ -177,11 +176,13 @@ begin
   vEngine.AddObject(FText);
   FBack.Link := FText;
 
-  vFormatter := TEngineFormatter.Create(FText);
-  vFormatter.Parent := vEngine;
   vFText := 'left: ' + Self.FName + '.left; top: ' + Self.FName + '.top; min-width:'  + Self.FName + '.width * 0.8; width: ' + Self.FName + '.width; max-width: ' + Self.FName + '.width;';
+  vEngine.New.Formatter(FText, vFText).Format;
+{  vFormatter := TEngineFormatter.Create(FText);
+  vFormatter.Parent := vEngine;
+
   vFormatter.Text := vFText;
-  vEngine.FormatterList.Add(vFormatter);
+  vEngine.FormatterList.Add(vFormatter); }
 
   vPoly := PolyFromRect(RectF(0, 0, FBack.w, FBack.h));
   Translate(vPoly, -PointF(FBack.wHalf, FBack.hHalf));
@@ -189,7 +190,7 @@ begin
   vFigure.SetData(vPoly);
   FBack.Shape.AddFigure(vFigure);
 
-  vFormatter.Format;
+ // vFormatter.Format;
 end;
 
 destructor TGameButton.Destroy;
@@ -272,7 +273,6 @@ end;
 constructor TGameMenu.Create(const AParent: Pointer);
 var
   vEngine: tEngine2d;
-  vFormatter: TEngineFormatter;
 begin
   FParent := AParent;
   vEngine := FParent;
@@ -284,10 +284,7 @@ begin
   FGameLogo.CurRes := vEngine.Resources.IndexOf('gamelogo');
   vEngine.AddObject(FGameLogo, 'gamelogo');
 
-  vFormatter := TEngineFormatter.Create(FGameLogo);
-  vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.21; width: engine.width * 0.8; max-height: engine.height * 0.30;' +
-    'xifhor: engine.width * 0.25; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.5;';
-  vEngine.FormatterList.Add(vFormatter);
+  vEngine.New.Formatter(FGameLogo, 'gamelogo', []).Format;
 
   FNextLevelMenu := TYesNoMenu.Create('nextlevel', 'nextlevel', FParent);
   FNextLevelMenu.Text :=
@@ -310,14 +307,11 @@ begin
   FPrevPage.OnClick := PrevLevelPage;
   CreateAbout;
   CreateStatistics;
-
-
 end;
 
 procedure TGameMenu.CreateAbout;
 var
   vText: TEngine2DText;
-  vFormatter: TEngineFormatter;
   vEngine: tEngine2d;
 begin
   vEngine := FParent;
@@ -332,12 +326,7 @@ begin
     'Game about confrontation of' + #13 + 'Humankind and Asteroids';
   vText.Group := 'about';
   vEngine.AddObject(vText, 'aboutcaption');
-  vFormatter := TEngineFormatter.Create(vText);
-  vFormatter.Text := 'left: engine.width * 0.5; top: gamelogo.bottomborder + engine.height * 0.15; width: engine.width * 0.8;' +
-    'max-height: engine.height * 0.30;' +
-    'topifhor: gamelogo.topborder; leftifhor: engine.width*0.75; wifhor: engine.width*0.4; maxheightifhor: engine.height * 0.4';
-  vEngine.FormatterList.Add(vFormatter);
-  vFormatter.Format;
+  vEngine.New.Formatter(vText, 'about1', []).Format;
 
   vText := TEngine2DText.Create(vEngine);
   vText.TextRect := RectF(-250, -150, 250, 150);
@@ -357,17 +346,12 @@ begin
   vText.Group := 'about';
   vEngine.AddObject(vText, 'aboutdescription');
 
-  vFormatter := TEngineFormatter.Create(vText);
-  vFormatter.Text := 'left: engine.width * 0.5; top: aboutcaption.bottomborder + engine.height * 0.15; width: engine.width * 0.8;' +
-  'leftifhor: engine.width*0.75; wifhor: engine.width*0.4; maxheightifhor: engine.height * 0.4; ';
-  vEngine.FormatterList.Add(vFormatter);
-  vFormatter.Format;
+  vEngine.New.Formatter(vText, 'about2', []).Format;
   vEngine.HideGroup('about');
 end;
 
 procedure TGameMenu.CreateMenu1;
 var
-  vFormatter: TEngineFormatter;
   vEngine: tEngine2d;
   vBut: TGameButton;
   i: Integer;
@@ -385,17 +369,12 @@ begin
     vBut.Group := 'menu1';
     FList.Add(vBut);
 
-    vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-    vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.36 + engine.height * 0.14 * ' +
-      IntToStr(FList.Count) +'; width: engine.width * 0.8; max-height: engine.height * 0.12; max-width: 0 + gamelogo.width;' +
-      'xifhor: engine.width * 0.75; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.2 *' + IntToStr(FList.Count);
-    vEngine.FormatterList.Insert(0, vFormatter);
+    vEngine.New.Formatter(vBut.BackSprite, 'menubuttons', [i], 0)
   end;
 end;
 
 procedure TGameMenu.CreateMenu2;
 var
-  vFormatter: TEngineFormatter;
   vEngine: tEngine2d;
   vBut: TGameButton;
   i: Integer;
@@ -412,11 +391,7 @@ begin
     vBut.Group := 'menu2';
     FList.Add(vBut);
 
-    vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-    vFormatter.Text := 'left: engine.width * 0.5; top: engine.height * 0.36 + engine.height * 0.14 * ' +
-      IntToStr(i) +'; width: engine.width * 0.8; max-height: engine.height * 0.12; max-width: 0 + gamelogo.width;' +
-      'xifhor: engine.width * 0.75; widthifhor: engine.width * 0.4; yifhor: engine.height * 0.2 *' + IntToStr(i);
-    vEngine.FormatterList.Insert(0, vFormatter);
+    vEngine.New.Formatter(vBut.BackSprite, 'menubuttons', [i], 0)
   end;
 end;
 
@@ -455,8 +430,8 @@ begin
   else
     FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled');
 
-  vLoader.Formatter(FPrevPage.FBack, vLoader.LevelFormatText(0, 4)).Format;
-  vLoader.Formatter(FNextPage.FBack, vLoader.LevelFormatText(3, 4)).Format;
+  vEngine.New.Formatter(FPrevPage.FBack, 'levelmenu', [0,4], 0).Format;
+  vEngine.New.Formatter(FNextPage.FBack, 'levelmenu', [3,4], 0).Format;
 
   vN := 16;
 
@@ -469,7 +444,7 @@ begin
       FLevelMenu.Add(vBut);
       vX := i mod 4;
       vY := Trunc(i / 4);
-      vLoader.Formatter(vBut.BackSprite, vLoader.LevelFormatText(vX, vY)).Format;
+      vEngine.New.Formatter(vBut.BackSprite, 'levelmenu', [vX,vY], 0).Format;
     end;
 
   vLoader.Free;
@@ -478,7 +453,6 @@ end;
 procedure TGameMenu.CreateStatistics;
 var
   vText: TEngine2DText;
-  vFormatter: TEngineFormatter;
   vEngine: tEngine2d;
 begin
   vEngine := FParent;
@@ -489,12 +463,8 @@ begin
   vText.Color :=  TAlphaColorRec.White;
   vText.Text := 'Statistics in progress';
   vEngine.AddObject(vText, 'statisticscaption');
-  vFormatter := TEngineFormatter.Create(vText);
-  vFormatter.Text := 'left: engine.width * 0.5; top: gamelogo.bottomborder + engine.height * 0.15; width: engine.width * 0.8;' +
-  'max-height: engine.height * 0.40;' +
-  'topifhor: gamelogo.top; leftifhor: engine.width*0.75; wifhor: engine.width*0.4; maxheightifhor: engine.height * 0.4';
-  vEngine.FormatterList.Add(vFormatter);
-  vFormatter.Format;
+  vEngine.New.Formatter(vText, 'statistics', []).Format;
+
   vEngine.HideGroup('statistics');
 end;
 
@@ -685,9 +655,7 @@ end; }
 constructor TYesNoMenu.Create(const AId, AGroup: string; AParent: Pointer);
 var
   vEngine: tEngine2d;
-  vLoader: TLoader;
   vBut: TGameButton;
-  vFormatter: TEngineFormatter;
   vGroup: string;
 begin
   FEngine := AParent;
@@ -703,10 +671,7 @@ begin
   FBack.Brush.Color := TAlphaColorRec.White;
   vEngine.AddObject(FBack, FId + 'back');
 
-  vFormatter := TEngineFormatter.Create(FBack);
-  vFormatter.Text := 'width: engine.width * 0.6; left: engine.width * 0.5; top: engine.height * 0.5;';
-  vEngine.FormatterList.Insert(0, vFormatter);
-  vFormatter.Format;
+  vEngine.New.Formatter(FBack, 'yesnoback', [], 0).Format;
 
   vBut := TGameButton.Create(FId + 'yes', vEngine);
   vBut.Text := 'Yes';
@@ -715,11 +680,7 @@ begin
   vBut.Group := vGroup;
   FYes := vBut;
 
-  vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-  vFormatter.Text := 'width: engine.width * 0.2;  left: engine.width * 0.5 + width*0.75;' +
-    'top: engine.height * 0.5 + ' + FId + 'back.height * 0.35; max-height: ' + FId + 'back.height * 0.225;';
-  vEngine.FormatterList.Insert(1, vFormatter);
-  vFormatter.Format;
+  vEngine.New.Formatter(vBut.BackSprite, 'yesnoyes', [FId], 1).Format;
 
   vBut := TGameButton.Create(FId + 'no', vEngine);
   vBut.Text := 'No';
@@ -728,11 +689,7 @@ begin
   vBut.Group := vGroup;
   FNo := vBut;
 
-  vFormatter := TEngineFormatter.Create(vBut.BackSprite);
-  vFormatter.Text := 'width: engine.width * 0.2;  left: engine.width * 0.5 - width*0.75;' +
-    'top: engine.height * 0.5 + ' + FId + 'back.height * 0.35; max-height: ' + FId + 'back.height * 0.225;';
-  vEngine.FormatterList.Insert(1, vFormatter);
-  vFormatter.Format;
+  vEngine.New.Formatter(vBut.BackSprite, 'yesnono', [FId], 1).Format;
 
   FText := TEngine2DText.Create(vEngine);
   FText.Group := vGroup;
@@ -743,12 +700,7 @@ begin
   FText.Text := '';
   vEngine.AddObject(FText);
 
-  vFormatter := TEngineFormatter.Create(FText);
-  vFormatter.Text := 'width: ' + FId + 'back.width * 0.8; left: ' + FId + 'back.left;' +
-    'top: ' + FId + 'back.top - ' + FId + 'back.height * 0.20;';
-
-  vEngine.FormatterList.Add(vFormatter);//.Insert(0, vFormatter);
-  vFormatter.Format;
+  vEngine.New.Formatter(FText, 'yesnotext', [FID]).Format;
 
   vEngine.HideGroup(vGroup);
 end;
