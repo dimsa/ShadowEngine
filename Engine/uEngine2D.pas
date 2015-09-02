@@ -16,7 +16,7 @@ uses
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
   uClasses, uEngine2DThread, uEngine2DObject, uEngine2DUnclickableObject,
   uEngine2DSprite, uEngine2DText, uEngine2DClasses, uFormatterList, uEngineFormatter,
-   uSpriteList,
+  uSpriteList, uEngine2DObjectCreator,
   uEngine2DResources, uEngine2DAnimation, uNamedList, uEngine2DAnimationList,
   uFastFields, uEasyDevice;
 
@@ -34,6 +34,7 @@ type
     fResources: TEngine2DResources;//tResourceArray; // Массив битмапов
     fFormatters: TFormatterList; // Массив Форматтеров спрайтов
     fAnimationList: TEngine2DAnimationList; // Массив анимаций
+    fObjectCreator: TEngine2DObjectCreator;
     fMouseDowned: TIntArray; // Массив спрайтов движка, которые находились под мышкой в момент нажатия
     fMouseUpped: TIntArray; // Массив спрайтов движка, которые находились под мышкой в момент отжатия
     fClicked: TIntArray; // Массив спрайтов движка, которые попали под мышь
@@ -97,6 +98,7 @@ type
     property Downed: TIntArray read fMouseDowned;
     property Upped: TIntArray read fMouseUpped;
     property Critical: TCriticalSection read FCritical;
+    property New: TEngine2DObjectCreator read FObjectCreator; // Позволяет быстрее и проще создавать объекты
 
 //    property IsDrawFigures: Boolean read fOptions.IsDrawFigures write fOptions.IsDrawFigures;
 //    property IsAtFigures: Boolean read fOptions.IsDrawFigures write fOptions.IsDrawFigures;
@@ -278,6 +280,7 @@ begin
   fOptions.Up([EAnimateForever]);
   fOptions.Down([EClickOnlyTop]);
   fCritical := TCriticalSection.Create;
+  fObjectCreator := TEngine2DObjectCreator.Create(Self, fResources, fObjects, fAnimationList, fFormatters);
   FBackgroundBehavior := BackgroundDefaultBehavior;
   FInBeginPaintBehavior := InBeginPaintDefaultBehavior;
   FInEndPaintBehavior := InEndPaintDefaultBehavior;
@@ -334,14 +337,15 @@ end;
 
 destructor tEngine2d.Destroy;
 begin
-  inherited;
+  fObjectCreator.Free;
   clearSprites;
-//  clearResources;
   fImage.free;
   fAnimationList.Free;
   fFormatters.Free;
   fFastFields.Free;
   fBackGround.free;
+
+  inherited;
 end;
 
 procedure tEngine2d.Resize;

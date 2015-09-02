@@ -15,8 +15,9 @@ type
   TFormatterList = class(TEngine2DNamedList<TEngineFormatter>)
   private
     FLoadedStyles: TNamedList<string>;
+    function GetStyleByName(AName: string): string;
   public
-    procedure Add(AObject: tEngine2DObject; const AText: string); overload;
+    property StyleByName[AName: string]: string read GetStyleByName;
     procedure LoadSECSS(const AFileName: string);
     procedure ClearForSubject(AObject: tEngine2DObject);
     procedure ApplyForSubject(AObject: tEngine2DObject);
@@ -33,7 +34,7 @@ uses
 
 { TFormatterList }
 
-procedure TFormatterList.Add(AObject: tEngine2DObject; const AText: String);
+{procedure TFormatterList.Add(AObject: tEngine2DObject; const AText: String);
 var
   vTmp: TEngineFormatter;
 begin
@@ -43,7 +44,7 @@ begin
   vTmp.Text := AText;
   Self.Add(vTmp);
   tEngine2d(Parent).Critical.Leave;
-end;
+end; }
 
 procedure TFormatterList.ApplyForSubject(AObject: tEngine2DObject);
 var
@@ -85,6 +86,13 @@ destructor TFormatterList.Destroy;
 begin
   FLoadedStyles.Free;
   inherited;
+end;
+
+function TFormatterList.GetStyleByName(AName: string): string;
+begin
+  if FLoadedStyles.IsHere(AName) then
+    Exit(FLoadedStyles[AName]);
+  Result := '';
 end;
 
 procedure TFormatterList.LoadSECSS(const AFileName: string);

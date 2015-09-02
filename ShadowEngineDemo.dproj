@@ -277,6 +277,7 @@
         <DCCReference Include="Utils\inifile\FMX.IniFile.Android.pas"/>
         <DCCReference Include="Utils\inifile\FMX.IniFile.Apple.pas"/>
         <DCCReference Include="Utils\inifile\FMX.IniFile.pas"/>
+        <DCCReference Include="Engine\uEngine2DObjectCreator.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
