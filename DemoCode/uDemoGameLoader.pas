@@ -129,14 +129,9 @@ begin
   vFig.Visible := True;
   vFig.Opacity := 1;
 
-  vSpr := FEngine.New.Sprite('planetcomix', 'comix1planet', vGroup);
-  FEngine.New.Formatter(vSpr, 'comix1planet', [], 0).Format;
-
-  vSpr := FEngine.New.Sprite('shipcomix', 'comix1ship', vGroup);
-  FEngine.New.Formatter(vSpr, 'comix1ship', []).Format;
-
-  vSpr := FEngine.New.Sprite('captain1', 'comix1captain', vGroup);
-  FEngine.New.Formatter(vSpr, 'comix1captain', [],0).Format;
+  FEngine.New.AutoSprite('planetcomix', 'comix1planet', [], vGroup);
+  FEngine.New.AutoSprite('shipcomix', 'comix1ship', [], vGroup);
+  FEngine.New.AutoSprite('captain1', 'comix1captain', [], vGroup);
 
   vTxt := FEngine.New.Text(
     'Great! I so close to the destination planet! I need only 3 minutes to reach it.',
@@ -173,18 +168,10 @@ begin
   vFig.Visible := True;
   vFig.Opacity := 1;
 
-  vSpr := FEngine.New.Sprite('planetcomix', 'comix2planet', vGroup);
-  FEngine.New.Formatter(vSpr, 'comix2planet', [], 0).Format;
-
-  vSpr := FEngine.New.Sprite('shipcomix', 'comix2ship', vGroup);
-  FEngine.New.Formatter(vSpr, 'comix2ship', []).Format;
-
-  vSpr := FEngine.New.Sprite('captain2', 'comix2captain', vGroup);
-  FEngine.New.Formatter(vSpr, 'comix2captain', [],0).Format;
-
-  vSpr := FEngine.New.Sprite('asteroidcomix', 'comix2asteroids', vGroup);
-  FEngine.New.Formatter(vSpr, 'comix2asteroids', [], 0).Format;
-
+  FEngine.New.AutoSprite('planetcomix', 'comix2planet', [], vGroup);
+  FEngine.New.AutoSprite('shipcomix', 'comix2ship', [], vGroup);
+  FEngine.New.AutoSprite('captain2', 'comix2captain', [], vGroup);
+  FEngine.New.AutoSprite('asteroidcomix', 'comix2asteroids', [], vGroup);
 
   vTxt := FEngine.New.Text(
     'Usually asteroids are at a very long distance from each other. But here are 5 of them within easy reach! And they are moving towards me at the high speed!',
@@ -203,7 +190,6 @@ end;
 procedure TLoader.Comix3Create;
 var
   vFig: TEngine2DShape;
-  vSpr: TSprite;
   vGroup: string;
   vTxt: TEngine2DText;
 begin
@@ -221,21 +207,11 @@ begin
   vFig.Visible := True;
   vFig.Opacity := 1;
 
-  vSpr := FEngine.New.Sprite('planetcomix', 'comix3planet', vGroup);
-  FEngine.New.Formatter(vSpr, 'comix3planet', [], 0).Format;
-
-  vSpr := FEngine.New.Sprite('shipcomix', 'comix3ship', vGroup);
-  FEngine.New.Formatter(vSpr, 'comix3ship', [], 0).Format;
-
-  vSpr := FEngine.New.Sprite('captain3', 'comix3captain', vGroup);
-  FEngine.New.Formatter(vSpr, 'comix3captain', [], 0).Format;
-
-
-  vSpr := FEngine.New.Sprite('asteroidcomix', 'comix3asteroids', vGroup);
-  FEngine.New.Formatter(vSpr, 'comix3asteroids', [], 0).Format;
-
-  vSpr := FEngine.New.Sprite('arrow', 'comix3arrow', vGroup);
-  FEngine.New.Formatter(vSpr, 'comix3arrow', [], 0).Format;
+  FEngine.New.AutoSprite('planetcomix', 'comix3planet', [], vGroup);
+  FEngine.New.AutoSprite('shipcomix', 'comix3ship', [], vGroup);
+  FEngine.New.AutoSprite('captain3', 'comix3captain', [], vGroup);
+  FEngine.New.AutoSprite('asteroidcomix', 'comix3asteroids', [], vGroup);
+  FEngine.New.AutoSprite('arrow', 'comix3arrow', [], vGroup);
 
   vTxt := FEngine.New.Text('Your destination', TAlphaColorRec.White, 'monolog3', vGroup);
   vTxt.WordWrap := True;
@@ -271,9 +247,7 @@ begin
     FEngine.AddObject(vSpr);
     vSpr.Visible := True;
 
-    Formatter(vSpr,
-      'width: engine.width * 0.05; widthifhor: engine.height * 0.05; top: height * 0.8;' +
-      'left: 1.05 * width * ( 0.8 + ' +IntToStr(i) +');').Format;
+    FEngine.New.Formatter(vSpr, 'lifes', [i], 0).Format;
     FLifes.Add(vSpr)
   end;
 end;
@@ -283,7 +257,6 @@ var
   vText: TEngine2DText;
   vFont: TFont;
   vPrimaryColor, vSecondaryColor: TAlphaColor;
-  vLeft, vRight: String;
   i: Integer;
   vGroup: String;
 begin
@@ -295,37 +268,33 @@ begin
   vPrimaryColor := TAlphaColorRec.White;
   vSecondaryColor := TAlphaColorRec.Lightgray;
 
-  vLeft := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
-           'left: engine.width - width * 1.15; top: 1.3 * height * ';
-  vRight := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
-           'left: engine.width - width * 0.05; top: 1.3 * height * ';
 
   vText := FastText('time', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Time:';
   FPanel.Add('time', vText);
-  Formatter(vText, vLeft + IntToStr(1));
+  FEngine.New.Formatter(vText,'panelleftside', [1]).Format;
   vText := FastText('timevalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('timevalue', vText);
-  Formatter(vText, vRight + IntToStr(1)).Format;
+  FEngine.New.Formatter(vText,'panelrightside', [1]).Format;
 
   vText := FastText('collisions', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Collisions:';
   FPanel.Add('collisions', vText);
-  Formatter(vText, vLeft + IntToStr(2));
+  FEngine.New.Formatter(vText,'panelleftside', [2]).Format;
   vText := FastText('collisionsvalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('collisionsvalue', vText);
-  Formatter(vText, vRight + IntToStr(2)).Format;
+  FEngine.New.Formatter(vText,'panelrightside', [2]).Format;
 
   vText := FastText('score', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Score:';
   FPanel.Add('score', vText);
-  Formatter(vText, vLeft + IntToStr(3));
+  FEngine.New.Formatter(vText,'panelleftside', [3]).Format;
   vText := FastText('scoresvalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('scorevalue', vText);
-  Formatter(vText, vRight + IntToStr(3)).Format;
+  FEngine.New.Formatter(vText,'panelrightside', [3]).Format;
 
   for i := 0 to FPanel.Count - 1 do
     FPanel[i].Opacity := 0.5;
@@ -338,7 +307,7 @@ var
   vText: TEngine2DText;
   vFont: TFont;
   vPrimaryColor, vSecondaryColor: TAlphaColor;
-  vLeft, vRight: String;
+//  vLeft, vRight: String;
   i: Integer;
   vGroup: String;
 begin
@@ -350,28 +319,23 @@ begin
   vPrimaryColor := TAlphaColorRec.White;
   vSecondaryColor := TAlphaColorRec.Lightgray;
 
-  vLeft := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
-           'left: engine.width - width * 1.15; top: 1.3 * height * ';
-  vRight := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
-           'left: engine.width - width * 0.05; top: 1.3 * height * ';
-
   vText := FastText('level', vFont, vSecondaryColor, vGroup, CenterLeft);
   vText.Text := 'Level:';
   FPanel.Add('level', vText);
-  Formatter(vText, vLeft + IntToStr(1));
+  FEngine.New.Formatter(vText,'panelleftside', [1]).Format;
   vText := FastText('levelvalue', vFont, vSecondaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('levelvalue', vText);
-  Formatter(vText, vRight + IntToStr(1)).Format;
+  FEngine.New.Formatter(vText,'panelrightside', [1]).Format;
 
   vText := FastText('time', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Time left:';
   FPanel.Add('time', vText);
-  Formatter(vText, vLeft + IntToStr(2));
+  FEngine.New.Formatter(vText,'panelleftside', [2]).Format;
   vText := FastText('timevalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('timevalue', vText);
-  Formatter(vText, vRight + IntToStr(2)).Format;
+  FEngine.New.Formatter(vText,'panelrightside', [2]).Format;
 
   for i := 0 to FPanel.Count - 1 do
     FPanel[i].Opacity := 0.5;
@@ -384,7 +348,7 @@ var
   vText: TEngine2DText;
   vFont: TFont;
   vPrimaryColor, vSecondaryColor: TAlphaColor;
-  vLeft, vRight: String;
+//  vLeft, vRight: String;
   i: Integer;
   vGroup: String;
 begin
@@ -396,37 +360,23 @@ begin
   vPrimaryColor := TAlphaColorRec.White;
   vSecondaryColor := TAlphaColorRec.Lightgray;
 
-  vLeft := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
-           'left: engine.width - width * 1.15; top: 1.3 * height * ';
-  vRight := 'width: engine.width * 0.25; wifhor: engine.height * 0.25;' +
-           'left: engine.width - width * 0.05; top: 1.3 * height * ';
-
- { vText := FastText('asteroids', vFont, vPrimaryColor, vGroup, CenterLeft);
-  vText.Text := 'Asteroids:';
-  FPanel.Add('collisions', vText);
-  Formatter(vText, vLeft + IntToStr(1));
-  vText := FastText('asteroidsvalue', vFont, vSecondaryColor, vGroup, CenterRight);
-  vText.Text := '0';
-  FPanel.Add('asteroidsvalue', vText);
-  Formatter(vText, vRight + IntToStr(1)).Format;   }
-
   vText := FastText('time', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Time:';
   FPanel.Add('time', vText);
-  Formatter(vText, vLeft + IntToStr(1));
+  FEngine.New.Formatter(vText,'panelleftside', [1]).Format;
   vText := FastText('timevalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('timevalue', vText);
-  Formatter(vText, vRight + IntToStr(1)).Format;
+  FEngine.New.Formatter(vText, 'panelrightside', [1]).Format;
 
   vText := FastText('score', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Score:';
   FPanel.Add('score', vText);
-  Formatter(vText, vLeft + IntToStr(2));
+  FEngine.New.Formatter(vText,'panelleftside', [2]).Format;
   vText := FastText('scoresvalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('scorevalue', vText);
-  Formatter(vText, vRight + IntToStr(2)).Format;
+  FEngine.New.Formatter(vText, 'panelrightside', [2]).Format;
 
   for i := 0 to FPanel.Count - 1 do
     FPanel[i].Opacity := 0.5;

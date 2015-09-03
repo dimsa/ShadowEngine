@@ -69,7 +69,6 @@ type
     procedure SetLevel(const Value: Integer);
     procedure SetScore(const Value: Integer);
   public
-
     // Статитические данные игры
     property Score: Integer read GetScore write SetScore;
     property Time: Double read GetTime;
@@ -346,10 +345,7 @@ begin
   FGameOverText.TextRect := RectF(-150, -35, 150, 35);
   FGameOverText.Text := 'Game Over';
   FEngine.AddObject(FGameOverText, 'gameovertext');
-  FLoader.Formatter(FGameOverText, 'left: engine.width * 0.5; top: engine.height * 0.5; width: 0.8 * engine.width;').Format;
-
-  FEngine.HideGroup('gameover');
-  FEngine.HideGroup('stat');
+  FEngine.New.Formatter(FGameOverText, 'gameovertext', []).Format;
 
   FMenu := TGameMenu.Create(FEngine);
   FMenu.StartGame := SelectMode;//StartGame;
@@ -363,17 +359,14 @@ begin
   FMenu.OnNextLevelYes := ToNextLevel;
   FMenu.OnNextLevelNo := ToMainMenu;
   FMenu.OnRetryLevelYes := ToRetryLevel;
+  FLoader.CreateComix(vTxt1, vTxt2);
+  FMenu.ComixText1 := vTxt1;
+  FMenu.ComixText2 := vTxt2;
 
-  FEngine.HideGroup('ship');
-  FEngine.HideGroup('menu2');
-  FEngine.HideGroup('menu3');
-  FEngine.HideGroup('relaxmodemenu');
+  FEngine.HideGroup('ship, menu2, menu3, relaxmodemenu, gameover, stat');
 
   FEngine.InBeginPaintBehavior := DoGameTick;
   FEngine.Start;
-  FLoader.CreateComix(vTxt1, vTxt2);
-  FMenu.ComixText1 := vTxt1;
-  FMenu.ComixText2 := vTxt2
 end;
 
 procedure TDemoGame.Resize(const AWidth, AHeight: Integer);

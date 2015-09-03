@@ -31,6 +31,7 @@ type
     function Text(const AText: string = ''; const AColor: TAlphaColor = TAlphaColorRec.White; const AName: string = ''; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TEngine2DText;
     function Sprite(const AResource: string; const AName: string = ''; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TSprite; overload;
     function Sprite(const AResource: Integer; const AName: string = ''; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TSprite; overload;
+    function AutoSprite(const AResource: string; const AName: string; const AParam: array of const; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TSprite; overload;
   end;
 
 implementation
@@ -39,6 +40,14 @@ uses
   uEngine2D;
 
 { TEngine2DObjectCreator }
+
+function TEngine2DObjectCreator.AutoSprite(const AResource, AName: string;
+  const AParam: array of const; const AGroup: string;
+  const AJustify: TObjectJustify): TSprite;
+begin
+  Result := Sprite(AResource, AName, AGroup, AJustify);
+  Formatter(Result, AName, []);
+end;
 
 constructor TEngine2DObjectCreator.Create(const AEngine: Pointer;
   const AResourcesList: TEngine2DResources; const AObjectsList: TObjectsList;

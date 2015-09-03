@@ -170,7 +170,7 @@ lifes {
 	width: engine.width * 0.05; 
 	widthifhor: engine.height * 0.05;
 	top: height * 0.8;
-	left: 1.05 * width * ( 0.8 + %n);
+	left: 1.05 * width * ( 0.8 + %d);
 }
 
 panelleftside {
