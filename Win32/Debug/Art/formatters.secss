@@ -57,6 +57,7 @@ comix1text {
 	wifhor:engine.width * 0.4;
 	leftifhor: engine.width * (18/24); 
 	topifhor: engine.height * (6/24);
+	max-height: engine.height * 0.5;
 }
 
 comix2back {
@@ -110,6 +111,7 @@ comix2text {
 	wifhor:engine.width * 0.4;
 	leftifhor: engine.width * (18/24); 
 	topifhor: engine.height * (18/24);
+	max-height: engine.height * 0.5;
 }
 
 comix3back {
@@ -129,7 +131,7 @@ comix3planet {
 }
 
 comix3ship {
-	width:engine.width * 0.12
+	width:engine.width * 0.12;
 	left: engine.width * (6/24); 
 	top: engine.height * (15.1/24);
 }
@@ -141,7 +143,7 @@ comix3captain {
 	top: engine.height * (9.5/24);
 }
 
-comix3asteroid {
+comix3asteroids {
 	width:engine.width * 0.3; 
 	max-height: engine.height*0.23;
 	left: engine.width * (6/24); 
@@ -159,9 +161,9 @@ comix3arrow {
 
 comix3text {
 	width:engine.width * 0.6;
-	max-width: planetcomix3.width;
+	max-width: comix3planet.width;
 	left: engine.width * (18/24); 
-	top: arrow.top + height*1.2;
+	top: comix3arrow.top + height*1.2;
 }
 
 lifes {

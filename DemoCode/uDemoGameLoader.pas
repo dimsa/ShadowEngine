@@ -35,7 +35,6 @@ type
     function ButtonAnimation(ASubject: TEngine2dObject; const AEndScale: Double):  TMouseDownMigrationAnimation;
     function Formatter(const ASubject: tEngine2DObject; const AText: String): TEngineFormatter;
     function Sprite(const AResource: string = ''; const AGroup: string = ''; const AName: string = ''): TSprite;
-    function LevelFormatText(const AX, AY: Integer): String;
     procedure CreateLifes(FLifes: TList<TSprite>; const ACount: Integer);
     procedure CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
     procedure CreateRelaxPanel(FPanel: TNamedList<tEngine2DText>);
@@ -126,38 +125,31 @@ begin
   vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FEngine.AddObject(vFig);
 
-  Formatter(vFig, 'scalex:engine.width; scaley: engine.height*0.5;' +
-                  'width: engine.width;left: engine.width * (12/24); top: engine.height * (6/24);').Format;
+  FEngine.New.Formatter(vFig, 'comix1back', [], 0);
   vFig.Visible := True;
   vFig.Opacity := 1;
 
- vSpr := Self.Sprite('planetcomix', vGroup);
- Formatter(vSpr, 'width: engine.width * 0.5;' +
-                 'left: engine.width * (16/24); top: engine.height * (2/24);' +
-                 'wifhor: engine.height * 0.5;' +
-                 'leftifhor: engine.width * (8/24);').format;
+  vSpr := FEngine.New.Sprite('planetcomix', 'comix1planet', vGroup);
+  FEngine.New.Formatter(vSpr, 'comix1planet', [], 0).Format;
 
- vSpr := Self.Sprite('shipcomix', vGroup);
- Formatter(vSpr, 'width:engine.width * 0.3;' +
-                 'left: engine.width * (7/24); top: engine.height * (5/24);' +
-                 'wifhor:engine.height * 0.3;' +
-                 'leftifhor: engine.width * (3/24); topifhor:engine.height * (9/24);').format;
+  vSpr := FEngine.New.Sprite('shipcomix', 'comix1ship', vGroup);
+  FEngine.New.Formatter(vSpr, 'comix1ship', []).Format;
 
-  vSpr := Self.Sprite('captain1', vGroup);
-  Formatter(vSpr, 'width:engine.width * 0.3;max-height: engine.height*0.23;' +
-                 'left: engine.width * (5/24); top: engine.height * (9/24);' +
-                 'leftifhor:engine.width * (3/24); topifhor: engine.height * (3.5/24);').format;
-  vTxt := Self.FastText('monolog1', TFont.Create, TAlphaColorRec.White, vGroup);
+  vSpr := FEngine.New.Sprite('captain1', 'comix1captain', vGroup);
+  FEngine.New.Formatter(vSpr, 'comix1captain', [],0).Format;
+
+  vTxt := FEngine.New.Text(
+    'Great! I so close to the destination planet! I need only 3 minutes to reach it.',
+    TAlphaColorRec.White,
+    'monolog1',
+    vGroup,
+    CenterRight);
   vTxt.WordWrap := True;
   vTxt.TextRect := RectF(-200, -100, 200, 100);
   vTxt.FontSize := 36;
-  vTxt.Justify := CenterRight;
-  vTxt.Text := 'Great! I so close to the destination planet! I need only 3 minutes to reach it.';
-  Formatter(vTxt, 'width:engine.width * 0.575;' +
-                 'left: engine.width * (16.5/24); top: engine.height * (9.2/24);' +
-                 'wifhor:engine.width * 0.4;' +
-                 'leftifhor: engine.width * (18/24); topifhor: engine.height * (6/24)').format;
-   AComixText := vTxt;
+  FEngine.New.Formatter(vTxt, 'comix1text', [], 0).Format;
+
+  AComixText := vTxt;
 end;
 
 procedure TLoader.Comix2Create(var AComixText: TEngine2DText);
@@ -176,45 +168,35 @@ begin
   vFig.Pen.Thickness := 4;
   vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FEngine.AddObject(vFig);
-  Formatter(vFig, 'scalex:engine.width/50; scaley: engine.height/(50*2);' +
-                  'width: engine.width;left: engine.width/2; top: engine.height * (3/4);').format;
+
+  FEngine.New.Formatter(vFig, 'comix2back', [], 0);
   vFig.Visible := True;
   vFig.Opacity := 1;
 
-vSpr := Self.Sprite('planetcomix', vGroup);
- Formatter(vSpr, 'width: engine.width * 0.45;' +
-                 'left: engine.width * (20/24); top: engine.height * (16/24);' +
-                 'wifhor: engine.height * 0.3;' +
-                 'leftifhor: engine.width * (8/24);').format;
+  vSpr := FEngine.New.Sprite('planetcomix', 'comix2planet', vGroup);
+  FEngine.New.Formatter(vSpr, 'comix2planet', [], 0).Format;
 
- vSpr := Self.Sprite('shipcomix', vGroup);
- Formatter(vSpr, 'width:engine.width * 0.25;' +
-                 'left: engine.width * (7/24); top: engine.height * (14/24);' +
-                 'wifhor:engine.height * 0.2;' +
-                 'leftifhor: engine.width * (3/24); topifhor:engine.height * (21/24);').format;
+  vSpr := FEngine.New.Sprite('shipcomix', 'comix2ship', vGroup);
+  FEngine.New.Formatter(vSpr, 'comix2ship', []).Format;
 
-  vSpr := Self.Sprite('captain2', vGroup);
-  Formatter(vSpr, 'width:engine.width * 0.3; max-height: engine.height*0.23;' +
-                 'left: engine.width * (5/24); top: engine.height * (21/24);' +
-                 'leftifhor:engine.width * (3/24); topifhor: engine.height * (15.5/24);').format;
+  vSpr := FEngine.New.Sprite('captain2', 'comix2captain', vGroup);
+  FEngine.New.Formatter(vSpr, 'comix2captain', [],0).Format;
+
+  vSpr := FEngine.New.Sprite('asteroidcomix', 'comix2asteroids', vGroup);
+  FEngine.New.Formatter(vSpr, 'comix2asteroids', [], 0).Format;
 
 
-  vSpr := Self.Sprite('asteroidcomix', vGroup);
-  Formatter(vSpr, 'width:engine.width * 0.25; max-height: engine.height*0.23;' +
-                 'left: engine.width * (15/24); top: engine.height * (17/24);' +
-                 'wifhor: 0.1*engine.width;' +
-                 'leftifhor: engine.width * (9/24); topifhor: engine.height * (19/24); ').format;
-
-  vTxt := Self.FastText('monolog2', TFont.Create, TAlphaColorRec.White, vGroup);
+  vTxt := FEngine.New.Text(
+    'Usually asteroids are at a very long distance from each other. But here are 5 of them within easy reach! And they are moving towards me at the high speed!',
+    TAlphaColorRec.White,
+    'monolog2',
+    vGroup,
+    CenterRight);
   vTxt.WordWrap := True;
   vTxt.TextRect := RectF(-260, -150, 260, 150);
   vTxt.FontSize := 36;
-  vTxt.Justify := CenterRight;
-  vTxt.Text := 'Usually asteroids are at a very long distance from each other. But here are 5 of them within easy reach! And they are moving towards me at the high speed!';
-  Formatter(vTxt, 'width:engine.width * 0.575;' +
-                 'left: engine.width * (5.5/8); top: engine.height * (21.2/24);' +
-                 'wifhor:engine.width * 0.4;' +
-                 'leftifhor: engine.width * (18/24); topifhor: engine.height * (18/24)').format;
+
+  FEngine.New.Formatter(vTxt, 'comix2text', [], 0).Format;;
   AComixText := vTxt;
 end;
 
@@ -234,42 +216,32 @@ begin
   vFig.Pen.Thickness := 4;
   vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FEngine.AddObject(vFig);
-  Formatter(vFig, 'scalex:0.85*(engine.width); scaley: engine.height*0.5;' +
-                  'scyifhor: engine.height * 0.85;'+
-                  'width: engine.width * 0.8;' +
 
-                  'left: engine.width/2; top: engine.height / 2').format;
+   FEngine.New.Formatter(vFig, 'comix3back', [], 0);
   vFig.Visible := True;
   vFig.Opacity := 1;
 
-  vSpr := Self.Sprite('planetcomix', vGroup, 'planetcomix3');
-  Formatter(vSpr, 'width: engine.width * 0.25;' +
-                 'left: engine.width * (18/24); top: engine.height * (8/24);' +
-                 'wifhor: engine.height * 0.25').format;
+  vSpr := FEngine.New.Sprite('planetcomix', 'comix3planet', vGroup);
+  FEngine.New.Formatter(vSpr, 'comix3planet', [], 0).Format;
 
- vSpr := Self.Sprite('shipcomix', vGroup);
- Formatter(vSpr, 'width:engine.width * 0.12;' +
-                 'left: engine.width * (6/24); top: engine.height * (15.1/24);').format;
+  vSpr := FEngine.New.Sprite('shipcomix', 'comix3ship', vGroup);
+  FEngine.New.Formatter(vSpr, 'comix3ship', [], 0).Format;
 
-  vSpr := Self.Sprite('captain3', vGroup);
-  Formatter(vSpr, 'width:engine.width * 0.3; max-height: engine.height*0.23;' +
-                 'left: engine.width * (6/24); top: engine.height * (9.5/24);').format;
+  vSpr := FEngine.New.Sprite('captain3', 'comix3captain', vGroup);
+  FEngine.New.Formatter(vSpr, 'comix3captain', [], 0).Format;
 
-  vSpr := Self.Sprite('asteroidcomix', vGroup);
-  Formatter(vSpr, 'width:engine.width * 0.3; max-height: engine.height*0.23;' +
-                 'left: engine.width * (6/24); top: engine.height * (15/24);').format;
 
-  vSpr := Self.Sprite('arrow', vGroup, 'arrow');
-  Formatter(vSpr, 'width: engine.width * 0.2; wifhor: engine.height*0.2; rotate: 270; max-height: engine.width * 0.1;' +
-                 'left: engine.width * (18/24); top: engine.height * (12/24);').format;
+  vSpr := FEngine.New.Sprite('asteroidcomix', 'comix3asteroids', vGroup);
+  FEngine.New.Formatter(vSpr, 'comix3asteroids', [], 0).Format;
 
-  vTxt := Self.FastText('monolog3', TFont.Create, TAlphaColorRec.White, vGroup);
+  vSpr := FEngine.New.Sprite('arrow', 'comix3arrow', vGroup);
+  FEngine.New.Formatter(vSpr, 'comix3arrow', [], 0).Format;
+
+  vTxt := FEngine.New.Text('Your destination', TAlphaColorRec.White, 'monolog3', vGroup);
   vTxt.WordWrap := True;
   vTxt.TextRect := RectF(-150, -50, 150, 50);
   vTxt.FontSize := 36;
-  vTxt.Text := 'Your destination';
-  Formatter(vTxt, 'width:engine.width * 0.6; max-width: planetcomix3.width;' +
-                 'left: engine.width * (18/24); top: arrow.top + height*1.2;').format;
+  FEngine.New.Formatter(vTxt, 'comix3text', [], 0).Format;
 end;
 
 constructor TLoader.Create(AEngine: TEngine2D);
@@ -605,17 +577,6 @@ begin
   Result := TEngineFormatter.Create(ASubject);
   Result.Text := AText;
   FEngine.FormatterList.Insert(0, Result);
-end;
-
-function TLoader.LevelFormatText(const AX, AY: Integer): String;
-begin
-  Result :=
-    'left:  Engine.Width * 0.2     + ((Engine.Width * 0.8) / 4) * (0' + IntToStr(AX) + ');' +
-    'top:  gamelogo.bottomborder + engine.height * 0.1 + (engine.height * 0.5) / 5 * (' + IntToStr(AY) + ');' +
-    'width : ((Engine.Width * 0.8) / 5);' +
-    'xifhor: engine.width * 0.6 + ((Engine.Width * 0.8) / 8) * (0' + IntToStr(AX) + ');' +
-    'yifhor: gamelogo.y + 0.8*height  * (0' + IntToStr(AY - 2) + ' + 0.5);' +
-    'widthifhor: ((Engine.Width * 0.8) / 10)'
 end;
 
 function TLoader.OpacityAnimation(ASubject: TSprite; const AEndOpacity: Double): TOpacityAnimation;
