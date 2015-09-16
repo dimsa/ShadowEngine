@@ -104,7 +104,6 @@ var
 begin
   vFile := TStringList.Create;
   vFile.LoadFromFile(AFileName);
-
   // Убираем переносы строк
   vReg := TRegEx.Create('[\r\n\s\t]*');
   vFile.Text := vReg.Replace(vFile.Text, '');
@@ -112,14 +111,15 @@ begin
   // Делим по стилям
   vReg := TRegEx.Create('}');
   vStrs := vReg.Split(vFile.Text);
-
   // Делим на название стиля и его текст
   vReg := TRegEx.Create('{');
   for i := 0 to Length(vStrs) - 1 do
   begin
     vDirective := vReg.Split(vStrs[i]);
-    if Length(vStrs) >= 2 then
+    if Length(vDirective) >= 2 then
+    begin
       FLoadedStyles.Add(vDirective[0], vDirective[1]);
+    end;
   end;
   vFile.Free;
 end;
