@@ -83,7 +83,7 @@ type
     property Speed: Byte read FSpeed; // prSmall = 1; prMedium = 2; prBig = 3;
     property Size: Byte read FSize; // prSmall = 1; prMedium = 2; prBig = 3;
     property ScaleMod: Single read FScaleMod write SetScaleMod;
-    function Collide(const AObject: TEngine2DObject): Boolean;
+    function Collide(const AObject: TMovingUnit): Boolean;
     constructor Create(AParent: pointer); override;
   end;
 
@@ -413,7 +413,7 @@ end;
 
 { TAsteroid }
 
-function TAsteroid.Collide(const AObject: TEngine2DObject): Boolean;
+function TAsteroid.Collide(const AObject: TMovingUnit): Boolean;
 var
   vArcTan, vArcTan2: Extended;
   vDX: Single;
@@ -421,6 +421,12 @@ var
   vAng: Double;
   vAni: TAnimation;
   vExp: TExplosion;
+  Theta1, Theta2, Phi: Double;
+  V1, V2: Double;
+  V1NewX, V1NewY: Double;
+  V2NewX, V2NewY: Double;
+  M1, M2: Double;
+  XC, YC: Double; // Точка соприкосновения
 begin
   if FNotChange > 0 then
   begin
@@ -429,15 +435,51 @@ begin
   end;
 
   vArcTan := ArcTan2(AObject.y - Self.y, AObject.x - Self.x);
-  vArcTan2 := ArcTan2(-FDy, FDx) + vArcTan;
+  //vArcTan2 := ArcTan2(-FDy, FDx) + vArcTan;
+
+  XC := Self.x + (Self.Shape.MaxRadius * 1) * Cos(vArcTan);
+  YC := Self.y + (Self.Shape.MaxRadius * 1) * Sin(vArcTan);
+
+  Phi := vArcTan;
+  Theta1 := ArcTan2(YC - Self.y, XC - Self.x); //(Self.Rotate) * pi180;
+  Theta2 := ArcTan2(YC - AObject.y, XC - AObject.x);//(AObject.Rotate) * pi180;
+  M1 := Self.ScaleX;
+  M2 := AObject.ScaleX;
+
+  V1 := Sqrt((FDx * FDx) + (FDy * FDy));
+  V2 := Sqrt((AObject.DX * AObject.DX) + (AObject.DY * AObject.DY));
+
+  if (AObject is TShip) then
+  begin
+    M2 := M1;
+    V2 := V1;
+  end;
+
+  V1NewX := ((V1 * Cos(Theta1 - Phi)*(M1-M2) + 2*M2*V2*Cos(Theta2 - Phi)) /
+            (M1 + M2)) * Cos(Phi) + V1 * Sin(Theta1 - Phi)*Cos(Phi + Pi * 0.5);
+  V1NewY := ((V1 * Cos(Theta1 - Phi)*(M1-M2) + 2*M2*V2*Cos(Theta2 - Phi)) /
+            (M1 + M2)) * Sin(Phi) + V1 * Sin(Theta1 - Phi)*Sin(Phi + Pi * 0.5);
+
+  V2NewX := ((V2 * Cos(Theta2 - Phi)*(M2-M1) + 2*M1*V1*Cos(Theta1 - Phi)) /
+            (M1 + M2)) * Cos(Phi) + V2 * Sin(Theta2 - Phi)*Cos(Phi + Pi * 0.5);
+  V2NewY := ((V2 * Cos(Theta2 - Phi)*(M2-M1) + 2*M1*V1*Cos(Theta1 - Phi)) /
+            (M1 + M2)) * Sin(Phi) + V2 * Sin(Theta2 - Phi)*Sin(Phi + Pi * 0.5);
 
   vDX := FDx;
-  FDX := Cos(vArcTan2) * (FDX) - Sin(vArcTan2) * (FDY);
-  FDY := Sin(vArcTan2) * (vDX) + Cos(vArcTan2) * (FDY);
-  FDx := - FDx;
-  FDy := - FDy;
-  AObject.x := AObject.x - FDx * Game.Speed * 2 * FSpeedModScale;
-  AObject.y := AObject.y - FDy * Game.Speed * 2 * FSpeedModScale;
+  FDX := V1NewX;//Cos(vArcTan2) * (FDX) - Sin(vArcTan2) * (FDY);
+  FDY := V1NewY;//Sin(vArcTan2) * (vDX) + Cos(vArcTan2) * (FDY);
+
+  if not (AObject is TShip) then
+  begin
+    AObject.DX := V2NewX;
+    AObject.DY := V2NewY;
+  end;
+
+ // FDx := - FDx;
+ // FDy := - FDy;
+
+  AObject.x := AObject.x - FDx *  tEngine2d(Parent).EngineThread.Speed * 2 * FSpeedModScale;
+  AObject.y := AObject.y - FDy * tEngine2d(Parent).EngineThread.Speed * 2 * FSpeedModScale;
 
   vLoader := TLoader.Create(FParent);
   vAng := vArcTan / pi180;
@@ -494,9 +536,9 @@ procedure TAsteroid.Repaint;
 begin
   inherited;
 
-  Self.x := Self.x + FDx * Game.Speed * FSpeedModScale;
-  Self.y := Self.y + FDy * Game.Speed * FSpeedModScale;
-  Self.Rotate := Self.Rotate + FDa * Game.Speed * FSpeedModScale;
+  Self.x := Self.x + FDx * tEngine2d(Parent).EngineThread.Speed * FSpeedModScale;
+  Self.y := Self.y + FDy * tEngine2d(Parent).EngineThread.Speed * FSpeedModScale;
+  Self.Rotate := Self.Rotate + FDa * tEngine2d(Parent).EngineThread.Speed * FSpeedModScale;
 
   if Self.Rotate >= 360 then
     Self.Rotate := 0;
@@ -556,13 +598,13 @@ procedure TLittleAsteroid.Repaint;
 begin
   inherited;
 
-  Self.Rotate := Self.Rotate + FDa * Game.Speed * FSpeedModScale;
+  Self.Rotate := Self.Rotate + FDa * tEngine2d(Parent).EngineThread.Speed * FSpeedModScale;
 
   if Self.Rotate >= 360 then
     Self.Rotate := 0;
 
-  Self.x := Self.x + FDx * Game.Speed * FSpeedModScale;
-  Self.y := Self.y + FDy * Game.Speed * FSpeedModScale;
+  Self.x := Self.x + FDx * tEngine2d(Parent).EngineThread.Speed * FSpeedModScale;
+  Self.y := Self.y + FDy * tEngine2d(Parent).EngineThread.Speed * FSpeedModScale;
 
   if Self.x > tEngine2d(Parent).Width then
     Self.x := -1;

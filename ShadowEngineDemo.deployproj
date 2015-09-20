@@ -230,14 +230,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
-            <RemoteName>formatters.secss</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Android\Release\splash_image_def.xml" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo\res\drawable\</RemoteDir>
             <RemoteName>splash_image_def.xml</RemoteName>
@@ -258,6 +250,14 @@
             <RemoteDir>ShadowEngineDemo\res\drawable-small\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
             <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>formatters.secss</RemoteName>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>

@@ -6,7 +6,7 @@
         <MainSource>ShadowEngineDemo.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Android</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>31</TargetedPlatforms>
         <AppType>Application</AppType>
     </PropertyGroup>
@@ -191,8 +191,8 @@
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Android)'!=''">
-        <PF_AliasKeyPass>851947D05F9B07B8CF5FE518A4467B8BE4440845A007979E97FF0FD68E643CD0DB48A3D6E35F1C31C1B0572FFA95C375BABB3651043C2288165745F0E5F4228DC949F31ED506FADDBFCAAF0D071E1D0F92013E44C3637204EB1F6E61122EECC61B4A6448BE998378</PF_AliasKeyPass>
-        <PF_KeyStorePass>857A47915F9607D2CF21E567A4527BF2E44208197EE3ECF89F507732D85CA8ECA5E85D1AE31B1C3CC1FB5752FAC7C331BAF7365004232280162B458DE5AE22C0C90AF35CD51DFA96BFD6AF3F07501D5992423E071DBB0928E3DE16FF442578D8659D9A84BECB831900BB77A8629D5753388467FD57B19CB1298827E63AECF237</PF_KeyStorePass>
+        <EL_AdMob>true</EL_AdMob>
+        <PF_AliasKeyPass>851947D05F9B07B8CF5FE518A4467B8BE44408457E9FECFC9F15777AD8293CDADB5BA3CFE3371C39C1EA5730FA9DC37FBAE93602043622DA163545DEE5A722D5C950F373D56AFA9EBFF9AF5207411D1A92103E761DE50925E3BB16E34439ECC61B4A6448BE998378</PF_AliasKeyPass>
         <BT_BuildType>AppStore</BT_BuildType>
         <AUP_READ_PHONE_STATE>false</AUP_READ_PHONE_STATE>
         <AUP_READ_EXTERNAL_STORAGE>false</AUP_READ_EXTERNAL_STORAGE>
@@ -278,6 +278,7 @@
         <DCCReference Include="Utils\inifile\FMX.IniFile.Apple.pas"/>
         <DCCReference Include="Utils\inifile\FMX.IniFile.pas"/>
         <DCCReference Include="Engine\uEngine2DObjectCreator.pas"/>
+        <DCCReference Include="Utils\uBannerPanel.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -471,7 +472,7 @@
                 </DeployFile>
                 <DeployFile LocalName="Android\Debug\libShadowEngineDemo.so" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Android">
-                        <RemoteName>ShadowEngineDemo.exe</RemoteName>
+                        <RemoteName>libShadowEngineDemo.so</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -589,6 +590,23 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="Android\Release\splash_image_def.xml" Configuration="Release" Class="AndroidSplashImageDef">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Source\icons\36.png" Configuration="Debug" Class="Android_LauncherIcon36">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Source\splashes\splash426x320.png" Configuration="Release" Class="Android_SplashImage426">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Art\formatters.secss" Configuration="Debug" Class="File">
                     <Platform Name="Android">
                         <RemoteDir>assets\internal\</RemoteDir>
@@ -609,23 +627,6 @@
                     </Platform>
                     <Platform Name="Win64">
                         <RemoteName>formatters.secss</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Android\Release\splash_image_def.xml" Configuration="Release" Class="AndroidSplashImageDef">
-                    <Platform Name="Android">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Source\icons\36.png" Configuration="Debug" Class="Android_LauncherIcon36">
-                    <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Source\splashes\splash426x320.png" Configuration="Release" Class="Android_SplashImage426">
-                    <Platform Name="Android">
-                        <RemoteName>splash_image.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -1156,13 +1157,13 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
             </Deployment>
             <Platforms>
                 <Platform value="Android" ActiveMobileDevice="0123456789ABCDEF">True</Platform>

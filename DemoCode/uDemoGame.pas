@@ -267,7 +267,7 @@ begin
       if Asteroids[i].Shape.IsIntersectWith(Asteroids[j].Shape) then
       begin
         Asteroids[i].Collide(Asteroids[j]);
-        Asteroids[j].Collide(Asteroids[i]);
+//        Asteroids[j].Collide(Asteroids[i]);
       end;
   end;
 end;
@@ -852,6 +852,7 @@ begin
   case AGameMode of
     gsRelaxMode: begin
       Self.FCollisions := 0;
+      DefineAsteroidCount(8);
       FLoader.CreateRelaxPanel(FPanels);
     end;
     gsSurvivalMode: begin
