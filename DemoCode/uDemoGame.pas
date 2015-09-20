@@ -10,7 +10,7 @@ uses
   FMX.IniFile,
   uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape,
   uEngine2DAnimation, uIntersectorClasses, uDemoMenu, uClasses, uEngine2DText,
-  uEngine2DSprite, uEngineFormatter, uNamedList, uEngine2DClasses;
+  uEngine2DSprite, uEngineFormatter, uNamedList, uEngine2DClasses, uBannerPanel;
 
 type
   TGameStatus = (gsMenu1, gsMenu2, gsMenu3,
@@ -117,6 +117,7 @@ type
     FGameOverText: TEngine2DText;
     FGameStatus: TGameStatus;
     FGP: TGameParam;
+    FBanners: TBannerPanel;
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
     function GetSpeed: Single; // Ѕеретс€ из Engine2D чтобы на всех устройствах была одна скорость
@@ -153,6 +154,7 @@ type
     property Image: TImage read GetImage write SetImage;
     property Speed: Single read GetSpeed;
     property DrawFigures: Boolean read GetDrawFigures write SetDrawFigures;
+    property Banners: TBannerPanel read FBanners write FBanners;
 
     procedure Prepare;
     procedure Resize(const AWidth, AHeight: Integer);
@@ -410,7 +412,7 @@ begin
       gsStoryMode: begin FGP.RestartGame(Value); HideGroup('menu3,menu,comix1,comix2,comix3'); end;
       gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); {FGP.Ship.Visible := False;} ShowGroup('gameover'); FGameOverText.SendToFront; end;
       gsComix1: begin FMenu.AsteroidCount := FGP.AsteroidsForLevel(FGP.Level); FMenu.SecondsToFly := FGP.AsteroidsForLevel(FGP.Level) * 10; ShowGroup('comix1');  HideGroup('menu3,menu,nextlevel,retrylevel,ship'); SendToFrontGroup('comix1'); end;
-      gsComix2: begin ShowGroup('comix2'); SendToFrontGroup('comix2'); end;
+      gsComix2: begin ShowGroup('comix2'); SendToFrontGroup('comix2'); if FBanners <> nil then if FBanners.IsReadyToShow then FBanners.Show; end;
       gsComix3: begin ShowGroup('comix3'); SendToFrontGroup('comix3'); end;
       gsNextLevel: begin ShowGroup('nextlevel'); {HideGroup('ship');} SendToFrontGroup('nextlevel'); end;
       gsRetryLevel: begin FLoader.ShipExplosionAnimation(FGP.Ship); ShowGroup('retrylevel'); {HideGroup('ship');} SendToFrontGroup('retrylevel'); end;
@@ -778,6 +780,8 @@ begin
     Self.DefineAsteroidCount(vNAster);
     for iAster := 0 to vNAster - 1 do
       FAsteroids[iAster].DefineProperty(prSmall, prSmall);
+
+    if iLevel > 1 then
     for iUpgrade := 0 to 2 do
     begin
       for iAster := 0 to vNAster - 1 do
@@ -804,6 +808,7 @@ begin
         FAsteroids[iAster].DefineProperty(vSize, vSpeed);
 
         Dec(iLevel);
+
         if iLevel <= 1 then
           Exit;
 
@@ -811,7 +816,7 @@ begin
       end;
     end;
     // ≈сли каждый астеройд получил по 3 апгрейда, приблав€ем один астеройд и 10 секунд
-    Inc(FSecondToEndLevel, 10);
+    Inc(FSecondToEndLevel, 5);
     Inc(vNAster);
     Dec(iLevel);
 
@@ -852,7 +857,7 @@ begin
   case AGameMode of
     gsRelaxMode: begin
       Self.FCollisions := 0;
-      DefineAsteroidCount(8);
+      DefineAsteroidCount(3 + Random(6));
       FLoader.CreateRelaxPanel(FPanels);
     end;
     gsSurvivalMode: begin

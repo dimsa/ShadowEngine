@@ -5,7 +5,7 @@ interface
 uses
   System.Types, System.UITypes, FMX.Forms, FMX.Objects, FMX.Controls,
   System.Classes, FMX.Types, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Advertising, FMX.Controls.Presentation,
+  FMX.Advertising,
   uEasyDevice, uDemoGame, uBannerPanel, FMX.Layouts;
 
 type
@@ -17,7 +17,6 @@ type
     procedure FormResize(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
-    procedure Banner1DidFail(Sender: TObject; const Error: string);
   private
     Game: TDemoGame;
     BannerPanel: TBannerPanel;
@@ -31,11 +30,6 @@ var
 implementation
 
 {$R *.fmx}
-
-procedure TmainForm.Banner1DidFail(Sender: TObject; const Error: string);
-begin
-  ShowMessage('Fail to load' + Error);
-end;
 
 procedure TmainForm.FormCreate(Sender: TObject);
 var
@@ -51,8 +45,8 @@ begin
   BannerPanel := TBannerPanel.Create(mainForm);
   {$I private/admob.inc} // Remove for your project.
   BannerPanel.Prepare;
-  {$IFDEF RELEASE}
-  {$ENDIF}
+
+  Game.Banners := BannerPanel;
   Game.Prepare;
 end;
 
@@ -72,8 +66,6 @@ begin
       gsStoryMode, gsRelaxMode, gsSurvivalMode, gsGameOver, gsComix1, gsComix2, gsComix3, gsNextLevel, gsRetryLevel: Game.GameStatus := gsMenu1;
      end;
   end;
-
-  BannerPanel.Show;
 end;
 
 procedure TmainForm.FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
@@ -86,6 +78,7 @@ end;
 procedure TmainForm.FormResize(Sender: TObject);
 begin
   Game.Resize(Round(mainImage.Width), Round(mainImage.Height));
+  BannerPanel.Resize;
 end;
 
 end.
