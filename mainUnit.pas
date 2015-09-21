@@ -56,8 +56,15 @@ begin
   if KeyChar = #32 then
     Game.DrawFigures := not Game.DrawFigures;
 
+
   if ReturnPressed(Key) then
   begin
+    if BannerPanel.Visible then
+    begin
+      BannerPanel.Visible := False;
+      Exit;
+    end;
+
     case Game.GameStatus of
       gsMenu2: Game.GameStatus := gsMenu1;
       gsMenu3: Game.GameStatus := gsMenu2;

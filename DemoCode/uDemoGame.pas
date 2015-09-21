@@ -294,6 +294,8 @@ procedure TDemoGame.MouseDown(Sender: TObject; Button: TMouseButton;
 var
   i: Integer;
 begin
+  if Banners.Visible then
+    Exit;
 
   case GameStatus of
     gsGameOver: GameStatus := gsMenu1;
