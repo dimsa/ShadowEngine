@@ -129,18 +129,17 @@ type
     procedure MouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Single);
 
-    procedure StartGame(ASender: TObject);
     procedure SelectMode(ASender: TObject);
     procedure SelectLevel(ASender: TObject);
-    procedure StartRelax(ASender: TObject);
-    procedure StartSurvival(ASender: TObject);
-    procedure StartStory(ASender: TObject);
     procedure StatGame(ASender: TObject);
     procedure AboutGame(ASender: TObject);
     procedure ExitGame(ASender: TObject);
     procedure ToMainMenu(ASender: TObject);
     procedure ToNextLevel(ASender: TObject);
     procedure ToRetryLevel(ASender: TObject);
+    procedure StartRelax(ASender: TObject);
+    procedure StartSurvival(ASender: TObject);
+    procedure StartStory(ASender: TObject);
 
     procedure DoGameTick;
     procedure FindCollide;
@@ -430,7 +429,7 @@ begin
   Value.OnMouseMove := Self.MouseMove;
 end;
 
-procedure TDemoGame.StartGame(ASender: TObject);
+{procedure TDemoGame.StartGame(ASender: TObject);
 var
   vSpr: TSprite;
 begin
@@ -446,11 +445,8 @@ begin
     );
   end;
 
-{  FGP.Seconds := 0;
-  FGP.Collisions := 0; }
-
   Self.GameStatus := gsStoryMode;
-end;
+end;  }
 
 procedure TDemoGame.StartRelax(ASender: TObject);
 begin

@@ -106,7 +106,9 @@ function TEngine2DObjectCreator.Sprite(const AResource, AName, AGroup: string;
   const AJustify: TObjectJustify): TSprite;
 begin
   if AResource <> '' then
-    Result := Self.Sprite(tEngine2d(FEngine).Resources.IndexOf(AResource), AName, AGroup, AJustify);
+    Exit(Self.Sprite(tEngine2d(FEngine).Resources.IndexOf(AResource), AName, AGroup, AJustify));
+
+  Result := Nil;
 end;
 
 function TEngine2DObjectCreator.Text(const AText: string; const AColor: TAlphaColor; const AName,

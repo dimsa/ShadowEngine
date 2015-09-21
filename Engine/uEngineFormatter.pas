@@ -99,7 +99,7 @@ type
     FList: TList<TFormatterDirective>;
     FText: String;
     FParent: Pointer;
-    function CreateIfNil(var vExp: TExpression): TExpression;
+//    function CreateIfNil(var vExp: TExpression): TExpression;
     procedure SetText(const Value: String);
     function CreateDirective(const AText: string;AExp: TExpression): TFormatterDirective;
     function DefineSelf(const AText: String): String;
@@ -130,13 +130,13 @@ begin
   FParent := AObject.Parent;
 end;
 
-function TEngineFormatter.CreateIfNil(var vExp: TExpression): TExpression;
+{function TEngineFormatter.CreateIfNil(var vExp: TExpression): TExpression;
 begin
   if vExp = Nil then
     vExp := TExpression.Create;
 
   Result := vExp;
-end;
+end; }
 
 function TEngineFormatter.DefineSelf(const AText: String): String;
 var

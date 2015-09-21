@@ -13,7 +13,6 @@ type
   TDemoEngine = class(TEngine2D)
   private
     FParalX, FParalY: Double;
-    FGameStatus: TGameStatus;
     procedure DoWork;
     procedure DoWorkGame;
     procedure ParallaxBackgroundBehavior;

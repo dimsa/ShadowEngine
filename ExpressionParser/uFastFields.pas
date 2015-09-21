@@ -39,11 +39,13 @@ type
   TFastEngineWidth = class(TFastEngineField)
   protected
     function GetValue: Double; override;
+    procedure SetValue(const Value: Double); override;
   end;
 
   TFastEngineHeight = class(TFastEngineField)
   protected
     function GetValue: Double; override;
+    procedure SetValue(const Value: Double); override;
   end;
 
   TFastObjectField = class(TFastField)
@@ -305,11 +307,21 @@ begin
   Result := TEngine2D(fEngine).width;
 end;
 
+procedure TFastEngineWidth.SetValue(const Value: Double);
+begin
+  raise Exception.Create('You can not directly set Engine Width by Fast Field');
+end;
+
 { TFastEngineHeight }
 
 function TFastEngineHeight.GetValue: Double;
 begin
   Result := TEngine2D(fEngine).height;
+end;
+
+procedure TFastEngineHeight.SetValue(const Value: Double);
+begin
+  raise Exception.Create('You can not directly set Engine Height by Fast Field');
 end;
 
 { TFastField }

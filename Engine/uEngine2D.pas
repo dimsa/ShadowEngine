@@ -72,8 +72,6 @@ type
     procedure InEndPaintDefaultBehavior;
 
     function GetIfHor: Boolean;
-    function GetHeight: integer;
-    function GetWidth: integer;
     procedure SetBackgroundBehavior(const Value: TProcedure);
   public
     // Ключевые свойства движка
@@ -357,11 +355,6 @@ begin
     fFormatters[i].Format;// then
 end;
 
-function tEngine2d.GetHeight: integer;
-begin
-  Result := fHeight;//Round(Self.fImage.Bitmap.Height);
-end;
-
 function tEngine2d.GetIfHor: Boolean;
 begin
   Result := fWidth > fHeight;
@@ -490,11 +483,6 @@ begin
   result := fObjects.Count;//length(fSprites)
 end;
 
-function tEngine2d.GetWidth: integer;
-begin
-  Result := fWidth;//Round(Self.fImage.Bitmap.Width);
-end;
-
 procedure tEngine2d.HideGroup(const AGroup: String);
 var
   i, iG: Integer;
@@ -580,8 +568,6 @@ begin
 end;
 
 procedure tEngine2d.Init(AImage: tImage);
-var
-  vSize: TPointF;
 begin
   fImage := AImage;
   fWidth := Round(AImage.Width);

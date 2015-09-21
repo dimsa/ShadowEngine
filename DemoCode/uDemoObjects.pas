@@ -415,8 +415,7 @@ end;
 
 function TAsteroid.Collide(const AObject: TMovingUnit): Boolean;
 var
-  vArcTan, vArcTan2: Extended;
-  vDX: Single;
+  vArcTan: Extended;
   vLoader: TLoader;
   vAng: Double;
   vAni: TAnimation;
@@ -465,7 +464,6 @@ begin
   V2NewY := ((V2 * Cos(Theta2 - Phi)*(M2-M1) + 2*M1*V1*Cos(Theta1 - Phi)) /
             (M1 + M2)) * Sin(Phi) + V2 * Sin(Theta2 - Phi)*Sin(Phi + Pi * 0.5);
 
-  vDX := FDx;
   FDX := V1NewX;//Cos(vArcTan2) * (FDX) - Sin(vArcTan2) * (FDY);
   FDY := V1NewY;//Sin(vArcTan2) * (vDX) + Cos(vArcTan2) * (FDY);
 

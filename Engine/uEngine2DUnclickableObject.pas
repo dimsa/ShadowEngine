@@ -175,8 +175,6 @@ begin
 end;
 
 procedure tEngine2DUnclickableObject.setScaleX(const Value: single);
-var
-  vSoot: Single;
 begin
   fPosition.ScaleX := Value;
 end;

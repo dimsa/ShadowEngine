@@ -110,7 +110,6 @@ end;
 procedure TLoader.Comix1Create(var AComixText: TEngine2DText);
 var
   vFig: TEngine2DShape;
-  vSpr: TSprite;
   vTxt: TEngine2DText;
   vGroup: string;
 begin
@@ -150,7 +149,6 @@ end;
 procedure TLoader.Comix2Create(var AComixText: TEngine2DText);
 var
   vFig: TEngine2DShape;
-  vSpr: TSprite;
   vGroup: string;
   vTxt: TEngine2DText;
 begin
@@ -615,7 +613,6 @@ end;
 procedure TLoader.ShipExplosionAnimation(ASubject: TShip);
 var
   vRes: TMigrationAnimation;
-  i: Integer;
 begin
   vRes := ScaleAnimation(ASubject, 0.01);
   vRes.OnDestroy := ASubject.Hide;
@@ -667,4 +664,3 @@ begin
 end;
 
 end.
-

@@ -32,8 +32,6 @@ implementation
 {$R *.fmx}
 
 procedure TmainForm.FormCreate(Sender: TObject);
-var
-  i: Integer;
 begin
   Game := TDemoGame.Create;
   Game.Image := mainImage;
