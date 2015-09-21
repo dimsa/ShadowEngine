@@ -67,10 +67,11 @@ type
 
   TAsteroid = class(TMovingUnit)
   private
-    FNotChange: Integer; // Кол-во тиков, которое не будет изменяться направление при коллайдер
+//    FNotChange: Integer; // Кол-во тиков, которое не будет изменяться направление при коллайдер
     FScaleMod: Single;
     FSize: Byte;
     FSpeed: Byte;
+    FCollidedWith: TDictionary<TMovingUnit, Integer>; // Кол-во тиков столкновения с объектами
     procedure SetScaleMod(const Value: Single); // Модификатор размера
   protected
     property DX;
@@ -427,9 +428,10 @@ var
   M1, M2: Double;
   XC, YC: Double; // Точка соприкосновения
 begin
-  if FNotChange > 0 then
+
+  if  FCollidedWith.ContainsKey(AObject) then
   begin
-    FNotChange := 2;
+    FCollidedWith[AObject] := 2;
     Exit(False);
   end;
 
@@ -490,7 +492,8 @@ begin
   vAni := vLoader.ExplosionAnimation(vExp);
 
   AObject.Rotate := AObject.Rotate + (vArcTan / pi180) * 0.02;
-  FNotChange := 3;
+//  FNotChange := 3;
+  FCollidedWith.Add(AObject, 3);
 
   vAni.Parent := fParent;
   tEngine2d(fParent).AnimationList.Add(vAni);
@@ -512,7 +515,8 @@ begin
   FDx := 3 * Random;
   FDy := 3 * Random;
   FDA := 10 * Random - 5;
-  FNotChange := 0;
+
+  FCollidedWith := TDictionary<TMovingUnit, Integer>.Create;
 end;
 
 procedure TAsteroid.DefineProperty(const ASize, ASpeed: Byte);
@@ -531,6 +535,8 @@ begin
 end;
 
 procedure TAsteroid.Repaint;
+var
+  vItem: TMovingUnit;
 begin
   inherited;
 
@@ -553,8 +559,15 @@ begin
     if Self.y < 0 - Self.scH then
      Self.y := tEngine2d(Parent).Height + Self.scH;
 
-  if FNotChange > 0 then
-    Dec(FNotChange);
+  for vItem in FCollidedWith.Keys do
+  begin
+    FCollidedWith[vItem] := FCollidedWith[vItem] - 1;
+    if FCollidedWith[vItem] <= 0 then
+      FCollidedWith.Remove(vItem);
+  end;
+
+{  if FNotChange > 0 then
+    Dec(FNotChange);}
 end;
 
 procedure TAsteroid.SetScale(AValue: single);
