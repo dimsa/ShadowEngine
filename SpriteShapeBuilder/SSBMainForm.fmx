@@ -1,0 +1,129 @@
+object SSBForm: TSSBForm
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  DesignerMasterStyle = 0
+  object MenuPanel: TPanel
+    Align = MostLeft
+    Size.Width = 117.791412353515600000
+    Size.Height = 480.000030517578100000
+    Size.PlatformDefault = False
+    TabOrder = 5
+    object SelectImage: TImage
+      MultiResBitmap = <
+        item
+        end>
+      Position.X = 8.000000000000000000
+      Position.Y = 8.000000000000000000
+      Size.Width = 97.000000000000000000
+      Size.Height = 97.000000000000000000
+      Size.PlatformDefault = False
+    end
+    object AddImageBtn: TCornerButton
+      Position.X = 8.000000000000000000
+      Position.Y = 120.000000000000000000
+      Sides = [Top, Left, Bottom, Right]
+      Size.Width = 97.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      Text = 'Add Image'
+      XRadius = 3.000000000000000000
+      YRadius = 3.000000000000000000
+      OnClick = AddImageBtnClick
+    end
+    object DeleteImageBtn: TCornerButton
+      Position.X = 8.000000000000000000
+      Position.Y = 160.000000000000000000
+      Sides = [Top, Left, Bottom, Right]
+      Size.Width = 97.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = 'Delete Image'
+      XRadius = 3.000000000000000000
+      YRadius = 3.000000000000000000
+    end
+  end
+  object AddPolyBtn: TCornerButton
+    Position.X = 8.000000000000000000
+    Position.Y = 240.000000000000000000
+    Sides = [Top, Left, Bottom, Right]
+    Size.Width = 97.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 3
+    Text = 'Add Poly'
+    XRadius = 3.000000000000000000
+    YRadius = 3.000000000000000000
+  end
+  object AddCircleBtn: TCornerButton
+    Position.X = 8.000000000000000000
+    Position.Y = 200.000000000000000000
+    Sides = [Top, Left, Bottom, Right]
+    Size.Width = 97.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 4
+    Text = 'Add Circle'
+    XRadius = 3.000000000000000000
+    YRadius = 3.000000000000000000
+  end
+  object DelShapeBtn: TCornerButton
+    Position.X = 8.000000000000000000
+    Position.Y = 280.000000000000000000
+    Sides = [Top, Left, Bottom, Right]
+    Size.Width = 97.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    Text = 'Delete Shape'
+    XRadius = 3.000000000000000000
+    YRadius = 3.000000000000000000
+  end
+  object SaveProjectBtn: TCornerButton
+    Anchors = [akLeft, akBottom]
+    Position.X = 8.000000000000000000
+    Position.Y = 440.000000000000000000
+    Sides = [Top, Left, Bottom, Right]
+    Size.Width = 97.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Text = 'Save Project'
+    XRadius = 3.000000000000000000
+    YRadius = 3.000000000000000000
+  end
+  object LoadProjectBtn: TCornerButton
+    Anchors = [akLeft, akBottom]
+    Position.X = 8.000000000000000000
+    Position.Y = 399.000000000000000000
+    Sides = [Top, Left, Bottom, Right]
+    Size.Width = 97.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    Text = 'Load Project'
+    XRadius = 3.000000000000000000
+    YRadius = 3.000000000000000000
+  end
+  object MainPanel: TPanel
+    Align = MostLeft
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Position.X = 117.791412353515600000
+    Size.Width = 523.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 6
+  end
+  object OpenDialog: TOpenDialog
+    Left = 126
+    Top = 8
+  end
+end

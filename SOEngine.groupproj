@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{76C8D2B8-74BD-43C5-A796-EBD791E3F53D}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="ShadowEngineDemo.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="SpriteShapeBuilder\SpriteShapeBuilder.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="ShadowEngineDemo">
+        <MSBuild Projects="ShadowEngineDemo.dproj"/>
+    </Target>
+    <Target Name="ShadowEngineDemo:Clean">
+        <MSBuild Projects="ShadowEngineDemo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ShadowEngineDemo:Make">
+        <MSBuild Projects="ShadowEngineDemo.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="SpriteShapeBuilder">
+        <MSBuild Projects="SpriteShapeBuilder\SpriteShapeBuilder.dproj"/>
+    </Target>
+    <Target Name="SpriteShapeBuilder:Clean">
+        <MSBuild Projects="SpriteShapeBuilder\SpriteShapeBuilder.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SpriteShapeBuilder:Make">
+        <MSBuild Projects="SpriteShapeBuilder\SpriteShapeBuilder.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="ShadowEngineDemo;SpriteShapeBuilder"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="ShadowEngineDemo:Clean;SpriteShapeBuilder:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="ShadowEngineDemo:Make;SpriteShapeBuilder:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

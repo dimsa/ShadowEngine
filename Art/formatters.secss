@@ -1,0 +1,276 @@
+gameovertext {
+	left: engine.width * 0.5; 
+	top: engine.height * 0.5; 
+	width: 0.8 * engine.width;
+}
+
+asteroid {
+	width: sqrt(engine.width * engine.height) * 0.2;	
+}
+
+littleasteroid {
+	width: sqrt(engine.width * engine.height) * 0.05;
+}
+
+ship {
+	width: sqrt(engine.width * engine.height) * 0.125;
+}
+
+comix1back {
+	scalex:engine.width; 
+	scaley: engine.height*0.5;
+	width: engine.width;
+	left: engine.width * (12/24); 
+	top: engine.height * (6/24);
+}
+
+comix1planet {
+	width: engine.width * 0.5;
+    left: engine.width * (16/24); 
+	top: engine.height * (2/24);
+	wifhor: engine.height * 0.5;
+    leftifhor: engine.width * (8/24);
+}				 
+
+comix1ship {
+	width:engine.width * 0.3;
+	left: engine.width * (7/24); 
+	top: engine.height * (5/24);
+	wifhor:engine.height * 0.3;
+	leftifhor: engine.width * (3/24);
+	topifhor:engine.height * (9/24);
+}
+
+comix1captain {
+	width:engine.width * 0.3;
+	max-height: engine.height*0.23;
+	left: engine.width * (5/24); 
+	top: engine.height * (9/24);
+	leftifhor:engine.width * (3/24); 
+	topifhor: engine.height * (3.5/24);
+}
+
+comix1text {
+	width:engine.width * 0.575;
+	left: engine.width * (16.5/24); 
+	top: engine.height * (9.2/24);
+	wifhor:engine.width * 0.4;
+	leftifhor: engine.width * (18/24); 
+	topifhor: engine.height * (6/24);
+	max-height: engine.height * 0.5;
+}
+
+comix2back {
+	scalex:engine.width/50; 
+	scaley: engine.height/(50*2);
+	width: engine.width;
+	left: engine.width/2; 
+	top: engine.height * (3/4);
+}
+
+comix2planet {
+	width: engine.width * 0.45;
+	left: engine.width * (20/24); 
+	top: engine.height * (16/24);
+	wifhor: engine.height * 0.3;
+    leftifhor: engine.width * (8/24);
+}
+
+comix2ship {
+	width:engine.width * 0.25;
+	left: engine.width * (7/24); 
+	top: engine.height * (14/24);
+	wifhor:engine.height * 0.2;
+    leftifhor: engine.width * (3/24); 
+	topifhor:engine.height * (21/24);
+}
+
+comix2captain {
+	width:engine.width * 0.3; 
+	max-height: engine.height*0.23;
+	left: engine.width * (5/24); 
+	top: engine.height * (21/24);
+	leftifhor:engine.width * (3/24); 
+	topifhor: engine.height * (15.5/24);
+}
+
+comix2asteroids {
+	width:engine.width * 0.25; 
+	max-height: engine.height*0.23;
+	left: engine.width * (15/24); 
+	top: engine.height * (17/24);
+	wifhor: 0.1*engine.width;
+	leftifhor: engine.width * (9/24); 
+	topifhor: engine.height * (19/24);
+}
+
+comix2text {
+	width:engine.width * 0.575;
+	left: engine.width * (5.5/8); 
+	top: engine.height * (21.2/24);
+	wifhor:engine.width * 0.4;
+	leftifhor: engine.width * (18/24); 
+	topifhor: engine.height * (18/24);
+	max-height: engine.height * 0.5;
+}
+
+comix3back {
+	scalex:0.85*(engine.width); 
+	scaley: engine.height*0.5;
+	scyifhor: engine.height * 0.85;
+	width: engine.width * 0.8;
+	left: engine.width/2; 
+	top: engine.height / 2;
+}
+
+comix3planet {
+	width: engine.width * 0.25;
+	left: engine.width * (18/24); 
+	top: engine.height * (8/24);
+	wifhor: engine.height * 0.25;
+}
+
+comix3ship {
+	width:engine.width * 0.12;
+	left: engine.width * (6/24); 
+	top: engine.height * (15.1/24);
+}
+
+comix3captain {
+	width:engine.width * 0.3; 
+	max-height: engine.height*0.23;
+	left: engine.width * (6/24); 
+	top: engine.height * (9.5/24);
+}
+
+comix3asteroids {
+	width:engine.width * 0.3; 
+	max-height: engine.height*0.23;
+	left: engine.width * (6/24); 
+	top: engine.height * (15/24);
+}
+
+comix3arrow {
+	width: engine.width * 0.2; 
+	wifhor: engine.height*0.2; 
+	rotate: 270; 
+	max-height: engine.width * 0.1;
+	left: engine.width * (18/24); 
+	top: engine.height * (12/24);
+}
+
+comix3text {
+	width:engine.width * 0.6;
+	max-width: comix3planet.width;
+	left: engine.width * (18/24); 
+	top: comix3arrow.top + height*1.2;
+}
+
+lifes {
+	width: engine.width * 0.05; 
+	widthifhor: engine.height * 0.05;
+	top: height * 0.8;
+	left: 1.05 * width * ( 0.8 + %d);
+}
+
+panelleftside {
+	width: engine.width * 0.25;
+	wifhor: engine.height * 0.25;
+	left: engine.width - width * 1.15; 
+	top: 1.3 * height * %d;
+}
+
+panelrightside {
+	width: engine.width * 0.25; 
+	wifhor: engine.height * 0.25;
+	left: engine.width - width * 0.05;
+	top: 1.3 * height * %d;
+}
+
+levelmenu {
+	left:  Engine.Width * 0.2 + ((Engine.Width * 0.8) / 4) * (0%d);
+    top:  gamelogo.bottomborder + engine.height * 0.1 + (engine.height * 0.5) / 5 * (%d);
+    width : ((Engine.Width * 0.8) / 5);
+    xifhor: engine.width * 0.6 + ((Engine.Width * 0.8) / 8) * (0%0:d);
+    yifhor: gamelogo.y + 0.8*height  * (0%1:d - 2 + 0.5);
+    widthifhor: ((Engine.Width * 0.8) / 10);
+}
+
+gamelogo {
+	left: engine.width * 0.5;
+	top: engine.height * 0.21; 
+	width: engine.width * 0.8; 
+	max-height: engine.height * 0.30;
+	xifhor: engine.width * 0.25; 
+	widthifhor: engine.width * 0.4; 
+	yifhor: engine.height * 0.5;
+}
+
+about1 {
+	left: engine.width * 0.5; 
+	top: gamelogo.bottomborder + engine.height * 0.15; 
+	width: engine.width * 0.8;
+	max-height: engine.height * 0.30;
+	topifhor: gamelogo.topborder; 
+	leftifhor: engine.width*0.75; 
+	wifhor: engine.width*0.4; 
+	maxheightifhor: engine.height * 0.4;
+}
+
+about2 {
+	left: engine.width * 0.5; 
+	top: aboutcaption.bottomborder + engine.height * 0.15; 
+	width: engine.width * 0.8;
+	leftifhor: engine.width*0.75; 
+	wifhor: engine.width*0.4; 
+	maxheightifhor: engine.height * 0.4;
+}
+
+menubuttons {
+	left: engine.width * 0.5; 
+	top: engine.height * 0.36 + engine.height * 0.14 * %d;
+	width: engine.width * 0.8; 
+	max-height: engine.height * 0.12; 
+	max-width: 0 + gamelogo.width;
+	xifhor: engine.width * 0.75; 
+	widthifhor: engine.width * 0.4; 
+	yifhor: engine.height * 0.2 * %0:d;
+}
+
+statistics {
+	left: engine.width * 0.5; 
+	top: gamelogo.bottomborder + engine.height * 0.15; 
+	width: engine.width * 0.8;
+	max-height: engine.height * 0.40;
+	topifhor: gamelogo.top; 
+	leftifhor: engine.width*0.75; 
+	wifhor: engine.width*0.4; 
+	maxheightifhor: engine.height * 0.4;
+}
+
+yesnoback {
+	width: engine.width * 0.6; 
+	left: engine.width * 0.5; 
+	top: engine.height * 0.5;
+}	
+
+yesnoyes {
+	width: engine.width * 0.2;
+	left: engine.width * 0.5 + width*0.75;
+	top: engine.height * 0.5 + %sback.height * 0.35; 
+	max-height: %0:sback.height * 0.225;
+}
+
+yesnono {
+	width: engine.width * 0.2;
+	left: engine.width * 0.5 - width*0.75;
+	top: engine.height * 0.5 + %sback.height * 0.35; 
+	max-height: %0:sback.height * 0.225;
+}
+
+yesnotext {
+	width: %sback.width * 0.8; 
+	left: %0:sback.left;
+    top: %0:sback.top - %0:sback.height * 0.20;
+}
+	
