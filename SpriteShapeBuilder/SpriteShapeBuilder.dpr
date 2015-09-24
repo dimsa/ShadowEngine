@@ -7,7 +7,8 @@ uses
   uSpriteShapeBuilder in 'uSpriteShapeBuilder.pas',
   uSSBElement in 'uSSBElement.pas',
   uNamedList in 'Utils\uNamedList.pas',
-  uClasses in 'Utils\uClasses.pas';
+  uClasses in 'Utils\uClasses.pas',
+  uEasyDevice in 'Utils\uEasyDevice.pas';
 
 {$R *.res}
 

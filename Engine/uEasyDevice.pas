@@ -13,6 +13,7 @@ uses
   function getScreenScale: single;
   function getMinLength: single;
   function getDisplaySizeInDp: tPointF;
+  function MousePos: TPointF;
   function LoadImageFromFile(AFileName: String): TBitmap; // Открывает битмап по пути внезависимости от названия
   function UniPath(const AFileName: String): String; // Даёт универсальный путь вне зависимости от платформы
   function ReturnPressed(var AKey: Word): Boolean;
@@ -23,6 +24,15 @@ implementation
 
 uses
   mainUnit;
+
+function MousePos: TPointF;
+var
+  MouseService: IFMXMouseService;
+begin
+  if TPlatformServices.Current.SupportsPlatformService(IFMXMouseService, IInterface(MouseService)) then
+    Exit(MouseService.GetMousePos);
+  Result := PointF(0, 0);
+end;
 
 procedure StopApplication;
 begin
