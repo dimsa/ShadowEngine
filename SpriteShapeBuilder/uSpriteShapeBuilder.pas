@@ -5,7 +5,7 @@ interface
 uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types,
-  uSSBElement, uNamedList, uEasyDevice;
+  uSSBElement, uNamedList, uEasyDevice, uClasses;
 
 type
   TSpriteShapeBuilder = class
@@ -96,52 +96,29 @@ procedure TSpriteShapeBuilder.DoMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Single);
 var
   i: Integer;
+  vX, vY: Integer;
 begin
   if Sender = FSelectedElement then
     if FIsMouseDown then
       with FSelectedElement{TSSBElement(Sender)} do
       begin
         Position.Point := FElementStartPosition + MousePos - FMouseStartPoint;
-      //  Position.X := Position.X - FMouseElementPoint.X + X;
-       // Position.Y := Position.Y - FMouseElementPoint.Y + Y;
 
         for i := 0 to FElements.Count - 1 do
           if FElements[i] <> FSelectedElement then
           begin
-        { TODO : Need refactor and add some expression to find nearest point }
-            if (Position.Point.X <= FElements[i].BoundsRect.Left + CPrec) and
-               (Position.Point.X >= FElements[i].BoundsRect.Left  - CPrec)  then
-                 Position.Point := PointF(FElements[i].Position.Point.X, Position.Point.Y);
+            for vX := 0 to 3 do
+              for vY := 0 to 3 do
+              begin
+                if (Points[vX].X <= FElements[i].Points[vY].X + CPrec) and
+                  (Points[vX].X >= FElements[i].Points[vY].X - CPrec) then
+                  Points[vX] := PointF(FElements[i].Points[vY].X, Points[vX].Y) ;
 
-            if (Position.Point.X <= FElements[i].BoundsRect.Right + CPrec) and
-               (Position.Point.X >= FElements[i].BoundsRect.Right  - CPrec)  then
-               Position.Point := PointF(FElements[i].BoundsRect.Right, Position.Point.Y);
-
-            if (Position.Point.Y <= FElements[i].BoundsRect.Top + CPrec) and
-               (Position.Point.Y >= FElements[i].BoundsRect.Top  - CPrec)  then
-               Position.Point := PointF(Position.Point.X, FElements[i].BoundsRect.Top);
-
-            if (Position.Point.Y <= FElements[i].BoundsRect.Bottom + CPrec) and
-               (Position.Point.Y >= FElements[i].BoundsRect.Bottom  - CPrec)  then
-               Position.Point := PointF(Position.Point.X, FElements[i].BoundsRect.Bottom);
-
-            if (Position.Point.X + Width <= FElements[i].BoundsRect.Left + CPrec) and
-               (Position.Point.X >= FElements[i].BoundsRect.Left  - CPrec)  then
-                 Position.Point := PointF(FElements[i].Position.Point.X - Width, Position.Point.Y);
-
-            if (Position.Point.X + Width <= FElements[i].BoundsRect.Right + CPrec) and
-               (Position.Point.X >= FElements[i].BoundsRect.Right  - CPrec)  then
-               Position.Point := PointF(FElements[i].BoundsRect.Right - Width, Position.Point.Y);
-
-            if (Position.Point.Y + Height <= FElements[i].BoundsRect.Top + CPrec) and
-               (Position.Point.Y + Height >= FElements[i].BoundsRect.Top  - CPrec)  then
-               Position.Point := PointF(Position.Point.X, FElements[i].BoundsRect.Top - Height);
-
-            if (Position.Point.Y + Height <= FElements[i].BoundsRect.Bottom + CPrec) and
-               (Position.Point.Y + Height >= FElements[i].BoundsRect.Bottom  - CPrec)  then
-               Position.Point := PointF(Position.Point.X, FElements[i].BoundsRect.Bottom - Height);
+                if (Points[vX].Y <= FElements[i].Points[vY].Y + CPrec) and
+                  (Points[vX].Y >= FElements[i].Points[vY].Y - CPrec)   then
+                  Points[vX] := PointF(Points[vX].X, FElements[i].Points[vY].Y) ;
+              end;
           end;
-
       end;
 end;
 

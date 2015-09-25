@@ -42,6 +42,7 @@ begin
   begin
     SSB.AddElement(OpenDialog.FileName);
   end;
+
 end;
 
 procedure TSSBForm.FormCreate(Sender: TObject);
