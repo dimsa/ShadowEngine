@@ -3,7 +3,7 @@ unit uSpriteShapeBuilder;
 interface
 
 uses
-  System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes,
+  System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types,
   uSSBElement, uNamedList, uEasyDevice, uClasses;
 
@@ -11,11 +11,15 @@ type
   TSpriteShapeBuilder = class
   private
     FPanel: TPanel;
+    FImageForSelect: TImage;
     FElements: TNamedList<TSSBElement>;
     FSelectedElement: TSSBElement;
     FIsMouseDown: Boolean;
     FMouseStartPoint, FMouseElementPoint, FElementStartPosition: TPointF;
+    procedure DoAddCircle(ASender: TObject);
+    procedure DoAddPoly(ASender: TObject);
     procedure DoSelect(ASender: TObject);
+    procedure DoDelete(ASender: TObject);
     procedure DoZoom(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean);
     procedure DoMouseDown(Sender: TObject; Button: TMouseButton;
@@ -24,13 +28,14 @@ type
       Shift: TShiftState; X, Y: Single);
     procedure DoMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Single);
+    procedure SetSelectedElement(const Value: TSSBElement);
   public
-    property SelectedElement: TSSBElement read FSelectedElement write FSelectedElement;
+    property SelectedElement: TSSBElement read FSelectedElement write SetSelectedElement;
     procedure AddElement(const AFileName: string);
     procedure LoadProject(const AFileName: string);
     procedure SaveProject(const AFileName: string);
     constructor Create;
-    procedure Init(const APanel: TPanel);
+    procedure Init(const AProgForm: TForm);
     destructor Destroy; override;
   const
     CPrec = 5;
@@ -77,6 +82,26 @@ begin
   inherited;
 end;
 
+procedure TSpriteShapeBuilder.DoAddCircle(ASender: TObject);
+begin
+  if FSelectedElement = nil then
+    Exit;
+  FSelectedElement.AddCircle;
+end;
+
+procedure TSpriteShapeBuilder.DoAddPoly(ASender: TObject);
+begin
+  if FSelectedElement = nil then
+    Exit;
+  FSelectedElement.AddPoly;
+end;
+
+procedure TSpriteShapeBuilder.DoDelete(ASender: TObject);
+begin
+  FElements.Delete(FSelectedElement);
+  FSelectedElement.Free;
+end;
+
 procedure TSpriteShapeBuilder.DoMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
@@ -86,7 +111,7 @@ begin
   FMouseElementPoint.Y := Y;
   if Sender is TSSBElement then
   begin
-    FSelectedElement := TSSBElement(Sender);
+    SelectedElement := TSSBElement(Sender);
     FElementStartPosition := FSelectedElement.Position.Point;
   end;
 
@@ -131,7 +156,7 @@ end;
 procedure TSpriteShapeBuilder.DoSelect(ASender: TObject);
 begin
   if ASender is TSSBElement then
-    FSelectedElement := TSSBElement(ASender);
+    SelectedElement := TSSBElement(ASender);
 end;
 
 procedure TSpriteShapeBuilder.DoZoom(Sender: TObject; Shift: TShiftState;
@@ -144,9 +169,11 @@ begin
   end;
 end;
 
-procedure TSpriteShapeBuilder.Init(const APanel: TPanel);
+procedure TSpriteShapeBuilder.Init(const AProgForm: TForm);
+var
+  vDelBtn: TCornerButton;
 begin
-  FPanel := APanel;
+  FPanel := TPanel(AProgForm.FindComponent('MainPanel'));
   FPanel.OnMouseWheel := DoZoom;
   FPanel.OnMouseDown := DoMouseDown;
   FPanel.OnMouseUp := DoMouseUp;
@@ -158,6 +185,11 @@ begin
   finally
     FPanel.Canvas.EndScene;
   end;
+
+  FImageForSelect := TImage(AProgForm.FindComponent('SelectImage'));
+
+  vDelBtn := TCornerButton(AProgForm.FindComponent('DeleteImageBtn'));
+  vDelBtn.OnClick := DoDelete;
 end;
 
 procedure TSpriteShapeBuilder.LoadProject(const AFileName: string);
@@ -168,6 +200,12 @@ end;
 procedure TSpriteShapeBuilder.SaveProject(const AFileName: string);
 begin
 
+end;
+
+procedure TSpriteShapeBuilder.SetSelectedElement(const Value: TSSBElement);
+begin
+  FSelectedElement := Value;
+  FImageForSelect.Bitmap.Assign(Value.Bitmap);
 end;
 
 end.

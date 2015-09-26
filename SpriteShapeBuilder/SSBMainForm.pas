@@ -48,7 +48,7 @@ end;
 procedure TSSBForm.FormCreate(Sender: TObject);
 begin
   SSB := TSpriteShapeBuilder.Create;
-  SSB.Init(MainPanel);
+  SSB.Init(Self);
 end;
 
 end.

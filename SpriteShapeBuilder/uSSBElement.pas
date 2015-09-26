@@ -8,7 +8,10 @@ uses
 type
   TSSBElement = class(TImage)
   private
+
   public
+    procedure AddCircle;
+    procedure AddPoly;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -16,6 +19,16 @@ type
 implementation
 
 { TSSBElement }
+
+procedure TSSBElement.AddCircle;
+begin
+
+end;
+
+procedure TSSBElement.AddPoly;
+begin
+
+end;
 
 constructor TSSBElement.Create(AOwner: TComponent);
 begin
