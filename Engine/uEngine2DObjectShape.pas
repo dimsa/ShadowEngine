@@ -90,7 +90,7 @@ begin
     begin
       vFigure.Reset;
       vFigure.TempTranslate(tEngine2DObject(Owner).Center);
-      vFigure.Draw(TEngine2DObject(Owner).Image);
+      vFigure.Draw(TEngine2DObject(Owner).Image.Bitmap.Canvas);
     end;
   end
   else begin

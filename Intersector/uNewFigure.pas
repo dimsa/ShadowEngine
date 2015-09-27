@@ -5,7 +5,7 @@ interface
 uses
   System.Generics.Collections, System.Types, System.Classes,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math,
-  uIntersectorClasses, uIntersectorMethods, FMX.Objects, System.UITypes;
+  uIntersectorClasses, uIntersectorMethods, FMX.Objects, System.UITypes, FMX.Graphics;
 
 type
   TNewFigure = class
@@ -40,7 +40,7 @@ type
     function IsIntersectWith(const AFigure: TNewFigure): Boolean;
     function FastIntersectWith(const AFigure: TNewFigure): Boolean; experimental; // APoint это центры фигур для сравнения. Нужны, т.к. у полигонов нет центра
     function BelongPointLocal(const APoint: TPointF): Boolean;
-    procedure Draw(AImage: TImage);
+    procedure Draw(ACanvas: TCanvas);
 
     constructor Create(const AKind: Byte);
     constructor CreatePoly;
@@ -88,13 +88,13 @@ begin
   Self.Create(cfPoly);
 end;
 
-procedure TNewFigure.Draw(AImage: TImage);
+procedure TNewFigure.Draw(ACanvas: TCanvas);
 begin
    case FKind of
     cfCircle:
     begin
-      AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Aqua;
-      AImage.Bitmap.Canvas.FillEllipse(
+      ACanvas.Fill.Color := TAlphaColorRec.Aqua;
+      ACanvas.FillEllipse(
         RectF(
         FTemp[0].X - FTemp[1].X,
         FTemp[0].Y - FTemp[1].X,
@@ -105,13 +105,13 @@ begin
     end;
     cfPoly:
     begin
-      AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Blue;
-      AImage.Bitmap.Canvas.FillPolygon(AsPoly, 0.75);
+      ACanvas.Fill.Color := TAlphaColorRec.Blue;
+      ACanvas.FillPolygon(AsPoly, 0.75);
     end;
   end;
 
-  AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Yellow;
-  AImage.Bitmap.Canvas.FillEllipse(
+  ACanvas.Fill.Color := TAlphaColorRec.Yellow;
+  ACanvas.FillEllipse(
     RectF(
     FTempCenter.X - FTempMaxRadius,
     FTempCenter.Y - FTempMaxRadius,
@@ -120,8 +120,8 @@ begin
     0.1
   );
 
-     AImage.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Green;
-     AImage.Bitmap.Canvas.FillEllipse(
+     ACanvas.Fill.Color := TAlphaColorRec.Green;
+     ACanvas.FillEllipse(
         RectF(
         FTempCenter.X - 5,
         FTempCenter.Y - 5,

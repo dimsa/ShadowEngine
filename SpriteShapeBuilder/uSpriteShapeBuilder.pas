@@ -98,6 +98,8 @@ end;
 
 procedure TSpriteShapeBuilder.DoDelete(ASender: TObject);
 begin
+  if FSelectedElement = nil then
+    Exit;
   FElements.Delete(FSelectedElement);
   FSelectedElement.Free;
 end;
@@ -106,7 +108,7 @@ procedure TSpriteShapeBuilder.DoMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
   FIsMouseDown := True;
-  FMouseStartPoint := MousePos;
+  FMouseStartPoint := MousePos / FPanel.Scale.X;//Point;
   FMouseElementPoint.X := X;
   FMouseElementPoint.Y := Y;
   if Sender is TSSBElement then
@@ -127,7 +129,7 @@ begin
     if FIsMouseDown then
       with FSelectedElement{TSSBElement(Sender)} do
       begin
-        Position.Point := FElementStartPosition + MousePos - FMouseStartPoint;
+        Position.Point := FElementStartPosition + MousePos / FPanel.Scale.X - FMouseStartPoint;
 
         for i := 0 to FElements.Count - 1 do
           if FElements[i] <> FSelectedElement then
@@ -171,7 +173,7 @@ end;
 
 procedure TSpriteShapeBuilder.Init(const AProgForm: TForm);
 var
-  vDelBtn: TCornerButton;
+  vDelBtn, vAddCircle, vAddPoly: TCornerButton;
 begin
   FPanel := TPanel(AProgForm.FindComponent('MainPanel'));
   FPanel.OnMouseWheel := DoZoom;
@@ -190,6 +192,11 @@ begin
 
   vDelBtn := TCornerButton(AProgForm.FindComponent('DeleteImageBtn'));
   vDelBtn.OnClick := DoDelete;
+
+  vAddCircle := TCornerButton(AProgForm.FindComponent('AddCircleBtn'));
+  vAddCircle.OnClick := DoAddCircle;
+  vAddPoly := TCornerButton(AProgForm.FindComponent('AddPolyBtn'));
+  vAddPoly.OnClick := DoAddPoly;
 end;
 
 procedure TSpriteShapeBuilder.LoadProject(const AFileName: string);

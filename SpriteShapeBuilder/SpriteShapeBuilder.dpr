@@ -8,7 +8,10 @@ uses
   uSSBElement in 'uSSBElement.pas',
   uNamedList in 'Utils\uNamedList.pas',
   uClasses in 'Utils\uClasses.pas',
-  uEasyDevice in 'Utils\uEasyDevice.pas';
+  uEasyDevice in 'Utils\uEasyDevice.pas',
+  uIntersectorClasses in 'Intersector\uIntersectorClasses.pas',
+  uIntersectorMethods in 'Intersector\uIntersectorMethods.pas',
+  uNewFigure in 'Intersector\uNewFigure.pas';
 
 {$R *.res}
 
