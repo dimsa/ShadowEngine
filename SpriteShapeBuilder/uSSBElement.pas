@@ -4,7 +4,8 @@ interface
 
 uses
   FMX.Objects, FMX.Controls, System.Classes, System.Generics.Collections,
-  System.Math, FMX.Types, System.Types, FMX.Graphics,
+  {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math, FMX.Types,
+  System.Types, FMX.Graphics,
   uNewFigure, uIntersectorClasses;
 
 type
@@ -33,6 +34,7 @@ begin
   vCircle.X := Self.Width / 2;
   vCircle.Y := Self.Height / 2;
   vCircle.Radius := Min(Width, Height) / 2;
+
   vFigure.SetData(vCircle);
   FFigures.Add(vFigure);
   Self.Repaint;
@@ -41,8 +43,15 @@ end;
 procedure TSSBElement.AddPoly;
 var
   vFigure: TNewFigure;
+  vPoly: TPolygon;
 begin
   vFigure := TNewFigure.Create(TNewFigure.cfPoly);
+  SetLength(vPoly, 3);
+  vPoly[0] := PointF(Self.Width* 0.5, Self.Height * 0.33);
+  vPoly[1] := PointF(Self.Width* 0.75, Self.Height * 0.66);
+  vPoly[2] := PointF(Self.Width* 0.25, Self.Height * 0.66);
+
+  vFigure.SetData(vPoly);
   FFigures.Add(vFigure);
   Self.Repaint;
 end;
