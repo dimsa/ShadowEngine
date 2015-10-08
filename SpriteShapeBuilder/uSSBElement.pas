@@ -17,6 +17,7 @@ type
   public
     procedure AddCircle;
     procedure AddPoly;
+    function FigureByCoord(const APoint: TPointF): TNewFigure;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -84,6 +85,21 @@ var
 begin
   for i := 0 to FFigures.Count - 1 do
     FFigures[i].Draw(Canvas);
+end;
+
+function TSSBElement.FigureByCoord(const APoint: TPointF): TNewFigure;
+var
+  i: Integer;
+begin
+  for i := 0 to FFigures.Count - 1 do
+  begin
+    if FFigures[i].BelongPointLocal(APoint) then
+    begin
+      Result := FFigures[i];
+      Exit;
+    end;
+  end;
+  Result := nil;
 end;
 
 end.

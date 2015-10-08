@@ -3,7 +3,7 @@ unit uClasses;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, FMX.Controls;
+  System.SysUtils, System.Types,   {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math, System.UITypes, FMX.Controls;
 
 type
   TProcedure = procedure of Object;
@@ -23,13 +23,17 @@ type
     property BottomLeft: TPointF read GetBottomLeft write SetBottomLeft;
   end;
 
-
   TAdvancedControl = class helper for TControl
   private
     function GetPoint(Index: Integer): TPointF;
     procedure SetPoint(Index: Integer; AValue: TPointF);
   public
     property Points[Index: Integer]: TPointF read GetPoint write SetPoint;
+  end;
+
+  TAdvancedPolygon = record helper for TPolygon
+  public
+    function Count: Integer;
   end;
 
 
@@ -135,6 +139,13 @@ begin
     2: Position.Point := PointF(AValue.X - Width, AValue.Y - Height);
     3: Position.Point := PointF(AValue.X, AValue.Y - Height);
   end;
+end;
+
+{ TAdvancedPolygon }
+
+function TAdvancedPolygon.Count: Integer;
+begin
+  Result := Length(Self);
 end;
 
 end.

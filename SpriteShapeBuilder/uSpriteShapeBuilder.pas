@@ -5,7 +5,7 @@ interface
 uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types,
-  uSSBElement, uNamedList, uEasyDevice, uClasses;
+  uSSBElement, uNamedList, uEasyDevice, uNewFigure, uClasses;
 
 type
   TSpriteShapeBuilder = class
@@ -106,6 +106,9 @@ end;
 
 procedure TSpriteShapeBuilder.DoMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
+var
+  vFigure: TNewFigure;
+  vPoint: TPointF;
 begin
   FIsMouseDown := True;
   FMouseStartPoint := MousePos / FPanel.Scale.X;//Point;
@@ -115,6 +118,17 @@ begin
   begin
     SelectedElement := TSSBElement(Sender);
     FElementStartPosition := FSelectedElement.Position.Point;
+
+    vFigure := SelectedElement.FigureByCoord(FMouseElementPoint);
+    if vFigure <> nil then
+    begin
+      if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, 10) then
+      begin
+        FSelectedElement.Canvas.BeginScene();
+        vFigure.DrawPoint(FSelectedElement.Canvas, vPoint + FSelectedElement.Position.Point + FPanel.Position.Point, TAlphaColorRec.Red);
+        FSelectedElement.Canvas.EndScene();
+      end;
+    end;
   end;
 
 end;
@@ -124,8 +138,11 @@ procedure TSpriteShapeBuilder.DoMouseMove(Sender: TObject; Shift: TShiftState;
 var
   i: Integer;
   vX, vY: Integer;
+  vFigure: TNewFigure;
+  vPoint: TPointF;
 begin
   if Sender = FSelectedElement then
+  begin
     if FIsMouseDown then
       with FSelectedElement{TSSBElement(Sender)} do
       begin
@@ -147,6 +164,21 @@ begin
               end;
           end;
       end;
+
+
+    FMouseElementPoint.X := X;
+    FMouseElementPoint.Y := Y;
+    vFigure := SelectedElement.FigureByCoord(FMouseElementPoint);
+    if vFigure <> nil then
+    begin
+      if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, 10) then
+      begin
+        FSelectedElement.Canvas.BeginScene();
+        vFigure.DrawPoint(FSelectedElement.Canvas, vPoint * FPanel.Scale.Point + FSelectedElement.Position.Point + FPanel.Position.Point, TAlphaColorRec.Red);
+        FSelectedElement.Canvas.EndScene();
+      end;
+    end;
+  end;
 end;
 
 procedure TSpriteShapeBuilder.DoMouseUp(Sender: TObject; Button: TMouseButton;

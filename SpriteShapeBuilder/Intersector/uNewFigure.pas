@@ -5,7 +5,8 @@ interface
 uses
   System.Generics.Collections, System.Types, System.Classes,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math,
-  uIntersectorClasses, uIntersectorMethods, FMX.Objects, System.UITypes, FMX.Graphics;
+  uIntersectorClasses, uIntersectorMethods, FMX.Objects, System.UITypes, FMX.Graphics,
+  uClasses;
 
 type
   TNewFigure = class
@@ -44,6 +45,7 @@ type
     function KeyPointLocal(const ATestPosition: TPointF; out AKeyPoint: TPointF; const ADistance: Double; const ALock: Boolean = false): Boolean; // Находит ближайшую к точке ATestPosition, находящуюся в на расстоянии не больше ADistance ключевую точку и возвращает её координаты в AKeyPoint. Если стоит ALock, то точка запоминается. True - если точка найдена
 
     procedure Draw(ACanvas: TCanvas; AColor: TColor = TAlphaColorRec.Aqua);
+    procedure DrawPoint(ACanvas: TCanvas; const APoint: TPointF; AColor: TColor = TAlphaColorRec.Aqua);
 
     constructor Create(const AKind: Byte);
     constructor CreatePoly;
@@ -133,6 +135,23 @@ begin
       );  }
 end;
 
+procedure TNewFigure.DrawPoint(ACanvas: TCanvas; const APoint: TPointF;
+  AColor: TColor);
+var
+  vPr: Single;
+begin
+   vPr := 5;
+   ACanvas.Fill.Color := AColor;
+   ACanvas.FillEllipse(
+     RectF(
+     APoint.X - vPr,
+     APoint.Y - vPr,
+     APoint.X + vPr,
+     APoint.Y + vPr),
+     0.75
+   );
+end;
+
 function TNewFigure.FastIntersectWith(const AFigure: TNewFigure): Boolean;
 begin
   Result :=
@@ -179,25 +198,29 @@ function TNewFigure.KeyPointLocal(const ATestPosition: TPointF;
 var
   vCenterToPoint, vCenterToRadius: Double;
   vArcTan: Double;
+  vPoly: TPolygon;
+  i: Integer;
 begin
    case FKind of
     cfCircle:
       begin
-        vCenterToPoint := SqrDistance(ATestPosition, FData[0]);
-        vCenterToRadius := SqrDistance(FData[0], FData[1]);
-        if (vCenterToRadius - vCenterToPoint) < vCenterToPoint then
+        vCenterToPoint := Distance(ATestPosition, FData[0]);
+        vCenterToRadius := FData[1].X;//Distance(PointF(0,0), FData[1]);
+        if (FData[1].X - vCenterToPoint) < vCenterToPoint then
         begin
-          if (vCenterToRadius <= vCenterToPoint + Sqr(ADistance)) and
-           (vCenterToRadius >= vCenterToPoint - Sqr(ADistance))
+          if (vCenterToPoint <= FData[1].X + (ADistance)) and
+           (vCenterToPoint >= FData[1].X - (ADistance))
           then
           begin
-            vArcTan := ArcTan2(FData[0].Y - ATestPosition.Y, FData[0].X - ATestPosition.X);
-            AKeyPoint := PointF(vCenterToRadius * Cos(vArcTan), vCenterToRadius * Sin(vArcTan));
+            vArcTan := ArcTan2(ATestPosition.Y - FData[0].Y, ATestPosition.X - FData[0].X );
+            AKeyPoint := PointF(FData[0].X + vCenterToRadius * Cos(vArcTan), vCenterToRadius * Sin(vArcTan) + FData[0].Y);
+///AKeyPoint := ATestPosition;
+
             Exit(True);
           end;
         end else
         begin
-          if vCenterToPoint <= Sqr(ADistance) then
+          if vCenterToPoint <= (ADistance) then
           begin
             AKeyPoint := FData[0];
             Exit(True);
@@ -206,6 +229,16 @@ begin
       end;
     cfPoly:
       begin
+        vPoly := Self.AsPoly;
+        for i := 0 to vPoly.Count do
+        begin
+          if Distance(vPoly[i], ATestPosition) <= ADistance then
+          begin
+            AKeyPoint := vPoly[i];
+            Exit(True);
+          end;
+        end;
+
       end;
   end;
   Result := False;
