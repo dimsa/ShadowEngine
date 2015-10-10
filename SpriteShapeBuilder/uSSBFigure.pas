@@ -11,8 +11,10 @@ type
   private
     FLockedIndex: Integer; // Номер запомненной точки в массиве
     FLockedPoint: TPointF; // Номер запомненной точки в массиве
+    FTempPoint: TPointF;
   public
     function KeyPointLocal(const ATestPosition: TPointF; out AKeyPoint: TPointF; const ADistance: Double; const ALock: Boolean = false): Boolean; // Находит ближайшую к точке ATestPosition, находящуюся в на расстоянии не больше ADistance ключевую точку и возвращает её координаты в AKeyPoint. Если стоит ALock, то точка запоминается. True - если точка найдена
+    procedure ChangeLockedPoint(const ANewPoint: TPointF);
     procedure UnlockPoint;
     constructor Create(const AKind: Byte); override;
   end;
@@ -20,6 +22,33 @@ type
 implementation
 
 { TSSBFigure }
+
+procedure TSSBFigure.ChangeLockedPoint(const ANewPoint: TPointF);
+var
+  vD: single;
+begin
+  if FLockedIndex <> -1 then
+  begin
+    if FKind = cfPoly then
+      FData[FLockedIndex] := ANewPoint;
+    if FKind = cfCircle then
+    begin
+      if FLockedIndex = 0 then
+        FData[FLockedIndex] := ANewPoint;
+
+      if FLockedIndex = 1 then
+      begin
+        vD := Distance(FData[0], ANewPoint); //Distance(FData[0], FLockedPoint) - Distance(FData[0], ANewPoint);
+        FData[FLockedIndex] := PointF(vD, vD);
+      end;
+
+    end;
+
+
+
+  end;
+
+end;
 
 constructor TSSBFigure.Create(const AKind: Byte);
 begin
@@ -99,7 +128,7 @@ end;
 
 procedure TSSBFigure.UnlockPoint;
 begin
-
+  FLockedIndex := -1;
 end;
 
 end.

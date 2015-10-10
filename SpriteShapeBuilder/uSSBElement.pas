@@ -15,13 +15,16 @@ type
     FPoint: TPointF;
     FColor: TColor;
     FNeedDraw: Boolean;
+    FLockedFigure: TSSBFigure;
     procedure DoShapeRepaint(Sender: TObject; Canvas: TCanvas;
       const ARect: TRectF);
   public
     procedure AddCircle;
     procedure AddPoly;
     procedure AddPointToDraw(const APoint: TPointF; const AColor: TColor);
-    function FigureByCoord(const APoint: TPointF): TSSBFigure;
+    procedure ChangeLockedPoint(const ANewPoint: TPointF);
+    function FigureByCoord(const APoint: TPointF; const ALock: Boolean = False): TSSBFigure;
+  //  function KeyPointByCoord(const APoint: TPointF; const ALock: Boolean = False): TSSBFigure;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -67,6 +70,11 @@ begin
   vFigure.SetData(vPoly);
   FFigures.Add(vFigure);
   Self.Repaint;
+end;
+
+procedure TSSBElement.ChangeLockedPoint(const ANewPoint: TPointF);
+begin
+  FLockedFigure.ChangeLockedPoint(ANewPoint);
 end;
 
 constructor TSSBElement.Create(AOwner: TComponent);
@@ -124,7 +132,7 @@ begin
 
 end;
 
-function TSSBElement.FigureByCoord(const APoint: TPointF): TSSBFigure;
+function TSSBElement.FigureByCoord(const APoint: TPointF; const ALock: Boolean): TSSBFigure;
 var
   i: Integer;
 begin
@@ -134,6 +142,8 @@ begin
     if FFigures[i].BelongPointLocal(APoint) then
     begin
       Result := FFigures[i];
+      if ALock then
+        FLockedFigure := Result;
     //  Exit;
     end;
   end;

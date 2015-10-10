@@ -14,6 +14,7 @@ type
     FImageForSelect: TImage;
     FElements: TNamedList<TSSBElement>;
     FSelectedElement: TSSBElement;
+    FLockPoint: Boolean;
     FIsMouseDown: Boolean;
     FMouseStartPoint, FMouseElementPoint, FElementStartPosition: TPointF;
     procedure DoAddCircle(ASender: TObject);
@@ -71,6 +72,8 @@ end;
 constructor TSpriteShapeBuilder.Create;
 begin
   FElements := TNamedList<TSSBElement>.Create;
+  FLockPoint := False;
+  FIsMouseDown := False;
 end;
 
 destructor TSpriteShapeBuilder.Destroy;
@@ -131,6 +134,10 @@ begin
       if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, CPrec*2, True) then
       begin
         FSelectedElement.AddPointToDraw(vPoint, TAlphaColorRec.Red);
+        //FMouseElementPoint := vPoint;
+        FElementStartPosition := vPoint ;
+        //FMouseStartPoint := vPoint;
+        FLockPoint := True;
       end;
     end;
    FSelectedElement.Repaint;
@@ -151,28 +158,37 @@ begin
     if FIsMouseDown then
       with FSelectedElement{TSSBElement(Sender)} do
       begin
-        Position.Point := FElementStartPosition + MousePos / FPanel.Scale.X - FMouseStartPoint;
+        if FLockPoint = False then
+        begin
+          Position.Point := FElementStartPosition + MousePos / FPanel.Scale.X - FMouseStartPoint;
 
-        for i := 0 to FElements.Count - 1 do
-          if FElements[i] <> FSelectedElement then
-          begin
-            for vX := 0 to 3 do
-              for vY := 0 to 3 do
-              begin
-                if (Points[vX].X <= FElements[i].Points[vY].X + CPrec) and
-                  (Points[vX].X >= FElements[i].Points[vY].X - CPrec) then
-                  Points[vX] := PointF(FElements[i].Points[vY].X, Points[vX].Y) ;
+          for i := 0 to FElements.Count - 1 do
+            if FElements[i] <> FSelectedElement then
+            begin
+              for vX := 0 to 3 do
+                for vY := 0 to 3 do
+                begin
+                  if (Points[vX].X <= FElements[i].Points[vY].X + CPrec) and
+                    (Points[vX].X >= FElements[i].Points[vY].X - CPrec) then
+                    Points[vX] := PointF(FElements[i].Points[vY].X, Points[vX].Y) ;
 
-                if (Points[vX].Y <= FElements[i].Points[vY].Y + CPrec) and
-                  (Points[vX].Y >= FElements[i].Points[vY].Y - CPrec)   then
-                  Points[vX] := PointF(Points[vX].X, FElements[i].Points[vY].Y) ;
-              end;
-          end;
+                  if (Points[vX].Y <= FElements[i].Points[vY].Y + CPrec) and
+                    (Points[vX].Y >= FElements[i].Points[vY].Y - CPrec)   then
+                    Points[vX] := PointF(Points[vX].X, FElements[i].Points[vY].Y) ;
+                end;
+            end;
+        end else
+        begin
+          FSelectedElement.ChangeLockedPoint(
+            FElementStartPosition + MousePos / FPanel.Scale.X - FMouseStartPoint);
+        end;
       end;
 
     FMouseElementPoint.X := X;
     FMouseElementPoint.Y := Y;
-    vFigure := SelectedElement.FigureByCoord(FMouseElementPoint);
+
+//    vFigure := SelectedElement.FigureByCoord(FMouseElementPoint);
+    vFigure :=SelectedElement.FigureByCoord(FMouseElementPoint, True);
     if vFigure <> nil then
     begin
       if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, CPrec*2) then
@@ -182,9 +198,6 @@ begin
     end;
    FSelectedElement.Repaint;
   end;
-
-
-
 end;
 
 procedure TSpriteShapeBuilder.DoMouseUp(Sender: TObject; Button: TMouseButton;
