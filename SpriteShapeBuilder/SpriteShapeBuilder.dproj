@@ -281,6 +281,7 @@
         <DCCReference Include="Intersector\uIntersectorClasses.pas"/>
         <DCCReference Include="Intersector\uIntersectorMethods.pas"/>
         <DCCReference Include="Intersector\uNewFigure.pas"/>
+        <DCCReference Include="uSSBFigure.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

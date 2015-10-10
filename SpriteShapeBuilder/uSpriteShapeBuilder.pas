@@ -5,7 +5,7 @@ interface
 uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types,
-  uSSBElement, uNamedList, uEasyDevice, uNewFigure, uClasses;
+  uSSBElement, uNamedList, uEasyDevice, uSSBFigure, uClasses;
 
 type
   TSpriteShapeBuilder = class
@@ -110,7 +110,7 @@ end;
 procedure TSpriteShapeBuilder.DoMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 var
-  vFigure: TNewFigure;
+  vFigure: TSSBFigure;
   vPoint: TPointF;
 begin
   FIsMouseDown := True;
@@ -143,7 +143,7 @@ procedure TSpriteShapeBuilder.DoMouseMove(Sender: TObject; Shift: TShiftState;
 var
   i: Integer;
   vX, vY: Integer;
-  vFigure: TNewFigure;
+  vFigure: TSSBFigure;
   vPoint: TPointF;
 begin
   if Sender = FSelectedElement then

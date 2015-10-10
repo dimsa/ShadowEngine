@@ -6,12 +6,12 @@ uses
   FMX.Objects, FMX.Controls, System.Classes, System.Generics.Collections,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math, FMX.Types,
   System.Types, FMX.Graphics, System.UITypes,
-  uNewFigure, uIntersectorClasses;
+  uSSBFigure, uIntersectorClasses;
 
 type
   TSSBElement = class(TImage)
   private
-    FFigures: TList<TNewFigure>;
+    FFigures: TList<TSSBFigure>;
     FPoint: TPointF;
     FColor: TColor;
     FNeedDraw: Boolean;
@@ -21,7 +21,7 @@ type
     procedure AddCircle;
     procedure AddPoly;
     procedure AddPointToDraw(const APoint: TPointF; const AColor: TColor);
-    function FigureByCoord(const APoint: TPointF): TNewFigure;
+    function FigureByCoord(const APoint: TPointF): TSSBFigure;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -32,10 +32,10 @@ implementation
 
 procedure TSSBElement.AddCircle;
 var
-  vFigure: TNewFigure;
+  vFigure: TSSBFigure;
   vCircle: TCircle;
 begin
-  vFigure := TNewFigure.Create(TNewFigure.cfCircle);
+  vFigure := TSSBFigure.Create(TSSBFigure.cfCircle);
   vCircle.X := Self.Width / 2;
   vCircle.Y := Self.Height / 2;
   vCircle.Radius := Min(Width, Height) / 2;
@@ -55,10 +55,10 @@ end;
 
 procedure TSSBElement.AddPoly;
 var
-  vFigure: TNewFigure;
+  vFigure: TSSBFigure;
   vPoly: TPolygon;
 begin
-  vFigure := TNewFigure.Create(TNewFigure.cfPoly);
+  vFigure := TSSBFigure.Create(TSSBFigure.cfPoly);
   SetLength(vPoly, 3);
   vPoly[0] := PointF(Self.Width* 0.5, Self.Height * 0.33);
   vPoly[1] := PointF(Self.Width* 0.75, Self.Height * 0.66);
@@ -72,13 +72,13 @@ end;
 constructor TSSBElement.Create(AOwner: TComponent);
 begin
   inherited;
-  FFigures := TList<TNewFigure>.Create;
+  FFigures := TList<TSSBFigure>.Create;
   Self.OnPaint := DoShapeRepaint;
 end;
 
 destructor TSSBElement.Destroy;
 var
-  vFigure: TNewFigure;
+  vFigure: TSSBFigure;
 begin
   for vFigure in FFigures do
   begin
@@ -124,7 +124,7 @@ begin
 
 end;
 
-function TSSBElement.FigureByCoord(const APoint: TPointF): TNewFigure;
+function TSSBElement.FigureByCoord(const APoint: TPointF): TSSBFigure;
 var
   i: Integer;
 begin

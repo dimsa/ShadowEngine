@@ -11,7 +11,8 @@ uses
   uEasyDevice in 'Utils\uEasyDevice.pas',
   uIntersectorClasses in 'Intersector\uIntersectorClasses.pas',
   uIntersectorMethods in 'Intersector\uIntersectorMethods.pas',
-  uNewFigure in 'Intersector\uNewFigure.pas';
+  uNewFigure in 'Intersector\uNewFigure.pas',
+  uSSBFigure in 'uSSBFigure.pas';
 
 {$R *.res}
 
