@@ -51,16 +51,19 @@ var
   vSSBElement: TSSBElement;
 begin
   vSSBElement := TSSBElement.Create(FPanel);
-  vSSBElement.Parent := FPanel;
-  vSSBElement.Bitmap.LoadFromFile(AFileName);
-  vSSBElement.Width := vSSBElement.Bitmap.Width;
-  vSSBElement.Height := vSSBElement.Bitmap.Height;
+  with vSSBElement do
+  begin
+    Parent := FPanel;
+    Bitmap.LoadFromFile(AFileName);
+    Width := vSSBElement.Bitmap.Width;
+    Height := vSSBElement.Bitmap.Height;
 
-  vSSBElement.OnClick := DoSelect;
-  vSSBElement.OnMouseDown := DoMouseDown;
-  vSSBElement.OnMouseUp := DoMouseUp;
-  vSSBElement.OnMouseMove := DoMouseMove;
-  vSSBElement.OnMouseWheel := DoZoom;
+    OnClick := DoSelect;
+    OnMouseDown := DoMouseDown;
+    OnMouseUp := DoMouseUp;
+    OnMouseMove := DoMouseMove;
+    OnMouseWheel := DoZoom;
+  end;
 
   FElements.Add(vSSBElement);
 end;
@@ -117,18 +120,20 @@ begin
   if Sender is TSSBElement then
   begin
     SelectedElement := TSSBElement(Sender);
+
     FElementStartPosition := FSelectedElement.Position.Point;
 
+    FMouseElementPoint.X := X;
+    FMouseElementPoint.Y := Y;
     vFigure := SelectedElement.FigureByCoord(FMouseElementPoint);
     if vFigure <> nil then
     begin
-      if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, 10) then
+      if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, CPrec*2, True) then
       begin
-        FSelectedElement.Canvas.BeginScene();
-        vFigure.DrawPoint(FSelectedElement.Canvas, vPoint + FSelectedElement.Position.Point + FPanel.Position.Point, TAlphaColorRec.Red);
-        FSelectedElement.Canvas.EndScene();
+        FSelectedElement.AddPointToDraw(vPoint, TAlphaColorRec.Red);
       end;
     end;
+   FSelectedElement.Repaint;
   end;
 
 end;
@@ -165,20 +170,21 @@ begin
           end;
       end;
 
-
     FMouseElementPoint.X := X;
     FMouseElementPoint.Y := Y;
     vFigure := SelectedElement.FigureByCoord(FMouseElementPoint);
     if vFigure <> nil then
     begin
-      if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, 10) then
+      if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, CPrec*2) then
       begin
-        FSelectedElement.Canvas.BeginScene();
-        vFigure.DrawPoint(FSelectedElement.Canvas, vPoint * FPanel.Scale.Point + FSelectedElement.Position.Point + FPanel.Position.Point, TAlphaColorRec.Red);
-        FSelectedElement.Canvas.EndScene();
+        FSelectedElement.AddPointToDraw(vPoint, TAlphaColorRec.Red);
       end;
     end;
+   FSelectedElement.Repaint;
   end;
+
+
+
 end;
 
 procedure TSpriteShapeBuilder.DoMouseUp(Sender: TObject; Button: TMouseButton;
@@ -208,16 +214,21 @@ var
   vDelBtn, vAddCircle, vAddPoly: TCornerButton;
 begin
   FPanel := TPanel(AProgForm.FindComponent('MainPanel'));
-  FPanel.OnMouseWheel := DoZoom;
-  FPanel.OnMouseDown := DoMouseDown;
-  FPanel.OnMouseUp := DoMouseUp;
-  FPanel.OnMouseMove := DoMouseMove;
-  try
-    FPanel.Canvas.BeginScene;
-    FPanel.Canvas.Fill.Color := TAlphaColorRec.Blanchedalmond;
-    FPanel.Canvas.FillRect(FPanel.BoundsRect, 0, 0, [], 1, FMX.Types.TCornerType.Round);
-  finally
-    FPanel.Canvas.EndScene;
+  with FPanel do
+  begin
+    OnMouseWheel := DoZoom;
+    OnMouseDown := DoMouseDown;
+    OnMouseUp := DoMouseUp;
+    OnMouseMove := DoMouseMove;
+
+    try
+      Canvas.BeginScene;
+      Canvas.Fill.Color := TAlphaColorRec.Blanchedalmond;
+      Canvas.FillRect(FPanel.BoundsRect, 0, 0, [], 1, FMX.Types.TCornerType.Round);
+    finally
+      Canvas.EndScene;
+    end;
+
   end;
 
   FImageForSelect := TImage(AProgForm.FindComponent('SelectImage'));
