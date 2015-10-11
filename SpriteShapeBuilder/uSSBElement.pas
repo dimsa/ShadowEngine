@@ -15,7 +15,9 @@ type
     FPoint: TPointF;
     FColor: TColor;
     FNeedDraw: Boolean;
+    FLock: Boolean;
     FLockedFigure: TSSBFigure;
+    FSelectedFigure: TSSBFigure; // Фигура над которой мышь
     procedure DoShapeRepaint(Sender: TObject; Canvas: TCanvas;
       const ARect: TRectF);
   public
@@ -23,6 +25,7 @@ type
     procedure AddPoly;
     procedure AddPointToDraw(const APoint: TPointF; const AColor: TColor);
     procedure ChangeLockedPoint(const ANewPoint: TPointF);
+    procedure UnlockPoint;
     function FigureByCoord(const APoint: TPointF; const ALock: Boolean = False): TSSBFigure;
   //  function KeyPointByCoord(const APoint: TPointF; const ALock: Boolean = False): TSSBFigure;
     constructor Create(AOwner: TComponent); override;
@@ -74,7 +77,9 @@ end;
 
 procedure TSSBElement.ChangeLockedPoint(const ANewPoint: TPointF);
 begin
-  FLockedFigure.ChangeLockedPoint(ANewPoint);
+  if FLock then
+    if FLockedFigure <> nil then
+      FLockedFigure.ChangeLockedPoint(ANewPoint);
 end;
 
 constructor TSSBElement.Create(AOwner: TComponent);
@@ -106,7 +111,18 @@ begin
 
   for i := 0 to FFigures.Count - 1 do
   begin
-    FFigures[i].Draw(Canvas);
+
+    if (FLock) and (FFigures[i] = FLockedFigure) then
+    begin
+      FFigures[i].Draw(Canvas, TAlphaColorRec.Green) end
+    else begin
+      if FFigures[i] = FSelectedFigure then
+      begin
+        FFigures[i].Draw(Canvas, TAlphaColorRec.Aquamarine)
+      end
+      else
+        FFigures[i].Draw(Canvas);
+    end;
   end;
 
   if FNeedDraw then
@@ -143,11 +159,22 @@ begin
     begin
       Result := FFigures[i];
       if ALock then
+      begin
+        FLock := True;
         FLockedFigure := Result;
-    //  Exit;
+      end;
     end;
   end;
 
+  FSelectedFigure := Result;
+end;
+
+procedure TSSBElement.UnlockPoint;
+begin
+  if FLockedFigure <> nil then
+    FLockedFigure.UnlockPoint;
+  FLockedFigure := nil;
+  FLock := False;
 end;
 
 end.

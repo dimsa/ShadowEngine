@@ -128,15 +128,13 @@ begin
 
     FMouseElementPoint.X := X;
     FMouseElementPoint.Y := Y;
-    vFigure := SelectedElement.FigureByCoord(FMouseElementPoint);
+    vFigure := SelectedElement.FigureByCoord(FMouseElementPoint, True);
     if vFigure <> nil then
     begin
       if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, CPrec*2, True) then
       begin
         FSelectedElement.AddPointToDraw(vPoint, TAlphaColorRec.Red);
-        //FMouseElementPoint := vPoint;
         FElementStartPosition := vPoint ;
-        //FMouseStartPoint := vPoint;
         FLockPoint := True;
       end;
     end;
@@ -187,8 +185,7 @@ begin
     FMouseElementPoint.X := X;
     FMouseElementPoint.Y := Y;
 
-//    vFigure := SelectedElement.FigureByCoord(FMouseElementPoint);
-    vFigure :=SelectedElement.FigureByCoord(FMouseElementPoint, True);
+    vFigure :=SelectedElement.FigureByCoord(FMouseElementPoint);
     if vFigure <> nil then
     begin
       if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, CPrec*2) then
@@ -204,6 +201,10 @@ procedure TSpriteShapeBuilder.DoMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
   FIsMouseDown := False;
+  FLockPoint := False;
+
+  if FSelectedElement <> Nil then
+    FSelectedElement.UnlockPoint;
 end;
 
 procedure TSpriteShapeBuilder.DoSelect(ASender: TObject);
