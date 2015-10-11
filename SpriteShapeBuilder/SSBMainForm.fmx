@@ -2,7 +2,7 @@ object SSBForm: TSSBForm
   Left = 0
   Top = 0
   Caption = 'Form1'
-  ClientHeight = 480
+  ClientHeight = 549
   ClientWidth = 640
   FormFactor.Width = 320
   FormFactor.Height = 480
@@ -12,9 +12,9 @@ object SSBForm: TSSBForm
   object MenuPanel: TPanel
     Align = MostLeft
     Size.Width = 117.791412353515600000
-    Size.Height = 480.000030517578100000
+    Size.Height = 549.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 5
+    TabOrder = 6
     object SelectImage: TImage
       MultiResBitmap = <
         item
@@ -50,6 +50,16 @@ object SSBForm: TSSBForm
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
     end
+    object Label1: TLabel
+      Position.X = 8.000000000000000000
+      Position.Y = 320.000000000000000000
+      Size.Width = 98.000000000000000000
+      Size.Height = 97.000000000000000000
+      Size.PlatformDefault = False
+      Text = 
+        'Double Click on Element to Edit and Double Click to Poly Point t' +
+        'o add New'
+    end
   end
   object AddPolyBtn: TCornerButton
     Position.X = 8.000000000000000000
@@ -58,7 +68,7 @@ object SSBForm: TSSBForm
     Size.Width = 97.000000000000000000
     Size.Height = 33.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 3
+    TabOrder = 4
     Text = 'Add Poly'
     XRadius = 3.000000000000000000
     YRadius = 3.000000000000000000
@@ -70,7 +80,7 @@ object SSBForm: TSSBForm
     Size.Width = 97.000000000000000000
     Size.Height = 33.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 4
+    TabOrder = 5
     Text = 'Add Circle'
     XRadius = 3.000000000000000000
     YRadius = 3.000000000000000000
@@ -82,7 +92,7 @@ object SSBForm: TSSBForm
     Size.Width = 97.000000000000000000
     Size.Height = 33.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 2
+    TabOrder = 3
     Text = 'Delete Shape'
     XRadius = 3.000000000000000000
     YRadius = 3.000000000000000000
@@ -90,20 +100,21 @@ object SSBForm: TSSBForm
   object SaveProjectBtn: TCornerButton
     Anchors = [akLeft, akBottom]
     Position.X = 8.000000000000000000
-    Position.Y = 440.000000000000000000
+    Position.Y = 509.000000000000000000
     Sides = [Top, Left, Bottom, Right]
     Size.Width = 97.000000000000000000
     Size.Height = 33.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 1
+    TabOrder = 2
     Text = 'Save Project'
     XRadius = 3.000000000000000000
     YRadius = 3.000000000000000000
+    OnClick = SaveProjectBtnClick
   end
   object LoadProjectBtn: TCornerButton
     Anchors = [akLeft, akBottom]
     Position.X = 8.000000000000000000
-    Position.Y = 399.000000000000000000
+    Position.Y = 468.000000000000000000
     Sides = [Top, Left, Bottom, Right]
     Size.Width = 97.000000000000000000
     Size.Height = 33.000000000000000000
@@ -112,18 +123,37 @@ object SSBForm: TSSBForm
     Text = 'Load Project'
     XRadius = 3.000000000000000000
     YRadius = 3.000000000000000000
+    OnClick = LoadProjectBtnClick
   end
   object MainPanel: TPanel
     Align = MostLeft
     Anchors = [akLeft, akTop, akRight, akBottom]
     Position.X = 117.791412353515600000
     Size.Width = 523.000000000000000000
-    Size.Height = 480.000000000000000000
+    Size.Height = 549.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 6
+    TabOrder = 7
   end
   object OpenDialog: TOpenDialog
-    Left = 126
-    Top = 8
+    Left = 150
+    Top = 16
+  end
+  object SaveForEngineBtn: TCornerButton
+    Anchors = [akLeft, akBottom]
+    Position.X = 8.000000000000000000
+    Position.Y = 428.000000000000000000
+    Sides = [Top, Left, Bottom, Right]
+    Size.Width = 97.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Text = 'Save for Engine'
+    XRadius = 3.000000000000000000
+    YRadius = 3.000000000000000000
+    OnClick = SaveForEngineBtnClick
+  end
+  object SaveDialog: TSaveDialog
+    Left = 198
+    Top = 16
   end
 end

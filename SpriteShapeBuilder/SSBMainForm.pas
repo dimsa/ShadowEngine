@@ -20,8 +20,14 @@ type
     MenuPanel: TPanel;
     MainPanel: TPanel;
     OpenDialog: TOpenDialog;
+    Label1: TLabel;
+    SaveForEngineBtn: TCornerButton;
+    SaveDialog: TSaveDialog;
     procedure AddImageBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure SaveProjectBtnClick(Sender: TObject);
+    procedure LoadProjectBtnClick(Sender: TObject);
+    procedure SaveForEngineBtnClick(Sender: TObject);
   private
     SSB: TSpriteShapeBuilder;
     { Private declarations }
@@ -39,16 +45,31 @@ implementation
 procedure TSSBForm.AddImageBtnClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
-  begin
     SSB.AddElement(OpenDialog.FileName);
-  end;
-
 end;
 
 procedure TSSBForm.FormCreate(Sender: TObject);
 begin
   SSB := TSpriteShapeBuilder.Create;
   SSB.Init(Self);
+end;
+
+procedure TSSBForm.LoadProjectBtnClick(Sender: TObject);
+begin
+  if OpenDialog.Execute then
+    SSB.LoadProject(OpenDialog.FileName);
+end;
+
+procedure TSSBForm.SaveForEngineBtnClick(Sender: TObject);
+begin
+  if SaveDialog.Execute then
+    SSB.SaveForEngine(SaveDialog.FileName);
+end;
+
+procedure TSSBForm.SaveProjectBtnClick(Sender: TObject);
+begin
+  if SaveDialog.Execute then
+    SSB.SaveProject(SaveDialog.FileName);
 end;
 
 end.

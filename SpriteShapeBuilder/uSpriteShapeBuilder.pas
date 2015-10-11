@@ -24,6 +24,7 @@ type
     procedure DoDelete(ASender: TObject);
     procedure DoSaveProject(ASender: TObject);
     procedure DoLoadProject(ASender: TObject);
+
     procedure DoZoom(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean);
     procedure DoMouseDown(Sender: TObject; Button: TMouseButton;
@@ -44,6 +45,7 @@ type
     procedure AddElement(const AElement: TSSBElement); overload;
     procedure LoadProject(const AFileName: string);
     procedure SaveProject(const AFileName: string);
+    procedure SaveForEngine(const AFileName: string);
     constructor Create;
     procedure Init(const AProgForm: TForm);
     destructor Destroy; override;
@@ -315,6 +317,11 @@ begin
   end;
 
   vList.Free;
+end;
+
+procedure TSpriteShapeBuilder.SaveForEngine(const AFileName: string);
+begin
+
 end;
 
 procedure TSpriteShapeBuilder.SaveProject(const AFileName: string);

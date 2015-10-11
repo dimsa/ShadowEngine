@@ -12,12 +12,14 @@ uses
   uIntersectorClasses in 'Intersector\uIntersectorClasses.pas',
   uIntersectorMethods in 'Intersector\uIntersectorMethods.pas',
   uNewFigure in 'Intersector\uNewFigure.pas',
-  uSSBFigure in 'uSSBFigure.pas';
+  uSSBFigure in 'uSSBFigure.pas',
+  SSBOptionsForm in 'SSBOptionsForm.pas' {OptionsForm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.CreateForm(TSSBForm, SSBForm);
+  Application.CreateForm(TOptionsForm, OptionsForm);
   Application.Run;
 end.

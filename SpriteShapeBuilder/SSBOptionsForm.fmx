@@ -1,0 +1,88 @@
+object OptionsForm: TOptionsForm
+  Left = 0
+  Top = 0
+  Caption = 'Options'
+  ClientHeight = 366
+  ClientWidth = 341
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object ElementsPointGrd: TStringGrid
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Position.X = 8.000000000000000000
+    Position.Y = 120.000000000000000000
+    Size.Width = 321.000000000000000000
+    Size.Height = 193.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    RowCount = 100
+    RowHeight = 21.000000000000000000
+    Viewport.Width = 317.000000000000000000
+    Viewport.Height = 168.000000000000000000
+  end
+  object ElementNameEdt: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 2
+    Position.X = 8.000000000000000000
+    Position.Y = 24.000000000000000000
+    Size.Width = 323.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object ElementPointsLbl: TLabel
+    Position.X = 8.000000000000000000
+    Position.Y = 104.000000000000000000
+    Text = 'ElementNameLbl'
+  end
+  object ElementPathEdt: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 1
+    Position.X = 8.000000000000000000
+    Position.Y = 72.000000000000000000
+    Size.Width = 323.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object ElementPathLbl: TLabel
+    Anchors = [akLeft, akTop, akRight]
+    Position.X = 8.000000000000000000
+    Position.Y = 56.000000000000000000
+    Size.Width = 328.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'Path to Element Picture'
+  end
+  object ApplyBtn: TButton
+    Anchors = [akRight, akBottom]
+    Position.X = 248.000000000000000000
+    Position.Y = 327.000000000000000000
+    Size.Width = 80.000000000000000000
+    Size.Height = 25.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 6
+    Text = 'Apply'
+  end
+  object CancelBtn: TButton
+    Anchors = [akRight, akBottom]
+    Position.X = 160.000000000000000000
+    Position.Y = 327.000000000000000000
+    Size.Width = 80.000000000000000000
+    Size.Height = 25.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 5
+    Text = 'Cancel'
+    OnClick = CancelBtnClick
+  end
+  object ElementNameLbl: TLabel
+    Anchors = [akLeft, akTop, akRight]
+    Position.X = 8.000000000000000000
+    Position.Y = 8.000000000000000000
+    Size.Width = 328.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'Element Name'
+  end
+end
