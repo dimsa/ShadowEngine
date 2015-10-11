@@ -4,21 +4,21 @@ interface
 
 uses
   System.Types, {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math,
-  uNewFigure, uIntersectorMethods, uClasses;
+  uNewFigure, uIntersectorMethods, System.JSON, System.SysUtils,
+  uClasses;
 
 type
 //  TInterfacedFigure = class(TNewFigure, TInterfacedObject)
 
 //  /end;
 
-  TSSBFigure = class(TNewFigure, IInterface)
+  TSSBFigure = class(TNewFigure, ISerializable)
   private
     FLockedIndex: Integer; // Номер запомненной точки в массиве
     FLockedPoint: TPointF; // Номер запомненной точки в массиве
-    FTempPoint: TPointF;
   public
-    function Serialize: string;
-    procedure Deserialize(const AJsonText: String);
+    function Serialize: TJSONObject;
+    procedure Deserialize(const AJson: TJSONObject);
     function KeyPointLocal(const ATestPosition: TPointF; out AKeyPoint: TPointF; const ADistance: Double; const ALock: Boolean = false): Boolean; // Находит ближайшую к точке ATestPosition, находящуюся в на расстоянии не больше ADistance ключевую точку и возвращает её координаты в AKeyPoint. Если стоит ALock, то точка запоминается. True - если точка найдена
     procedure ChangeLockedPoint(const ANewPoint: TPointF);
     procedure UnlockPoint;
@@ -62,9 +62,23 @@ begin
   FLockedIndex := -1;
 end;
 
-procedure TSSBFigure.Deserialize(const AJsonText: String);
+procedure TSSBFigure.Deserialize(const AJson: TJSONObject);
+var
+  vItem: TJSONValue;
+  vCoord: TJSONObject;
+  vArr: TJSONArray;
+  vPoint: TPointF;
+  vPolygon: TPolygon;
 begin
+  vArr := TJSONArray(AJson.GetValue('Data'));
 
+  for vItem in vArr do
+  begin
+    vPoint.X := TJSONObject(vItem).GetValue('x').Value.ToSingle();
+    vPoint.Y := TJSONObject(vItem).GetValue('y').Value.ToSingle();
+    vPolygon.Add(vPoint);
+  end;
+  SetData(vPolygon);
 end;
 
 function TSSBFigure.KeyPointLocal(const ATestPosition: TPointF;
@@ -137,9 +151,27 @@ begin
   Result := False;
 end;
 
-function TSSBFigure.Serialize: string;
+function TSSBFigure.Serialize: TJSONObject;
+var
+  vObj, vCoord: TJSONObject;
+  vArr: TJSONArray;
+  i: Integer;
 begin
+  vObj := TJSONObject.Create;
+  vArr := TJSONArray.Create;
 
+  for i := 0 to Length(FData) - 1 do
+  begin
+    vCoord := TJSONObject.Create;
+    vCoord.AddPair('x', FloatToStr(FData[i].X));
+    vCoord.AddPair('y', FloatToStr(FData[i].Y));
+    vArr.AddElement(vCoord);
+  end;
+
+  vObj.AddPair('Kind', IntToStr(Self.Kind));
+  vObj.AddPair('Data', vArr);
+
+  Result := vObj;
 end;
 
 procedure TSSBFigure.UnlockPoint;

@@ -5,7 +5,7 @@ interface
 uses
   FMX.Objects, FMX.Controls, System.Classes, System.Generics.Collections,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math, FMX.Types,
-  System.Types, FMX.Graphics, System.UITypes,
+  System.Types, FMX.Graphics, System.UITypes, System.JSON, System.SysUtils,
   uSSBFigure, uIntersectorClasses, uClasses;
 
 type
@@ -29,9 +29,10 @@ type
     procedure AddPointToDraw(const APoint: TPointF; const AColor: TColor);
     procedure ChangeLockedPoint(const ANewPoint: TPointF);
     procedure UnlockPoint;
+    procedure LoadFromFile(const AFileName: string);
     function FigureByCoord(const APoint: TPointF; const ALock: Boolean = False): TSSBFigure;
-    function Serialize: string;
-    procedure Deserialize(const AJsonText: String);
+    function Serialize: TJSONObject;
+    procedure Deserialize(const AJson: TJSONObject);
   //  function KeyPointByCoord(const APoint: TPointF; const ALock: Boolean = False): TSSBFigure;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -94,9 +95,31 @@ begin
   Self.OnPaint := DoShapeRepaint;
 end;
 
-procedure TSSBElement.Deserialize(const AJsonText: String);
+procedure TSSBElement.Deserialize(const AJson: TJSONObject);
+var
+  vItem: TJSONValue;
+  vCoord: TJSONObject;
+  vArr: TJSONArray;
+  vFigure: TSSBFigure;
 begin
+  vCoord := TJSONObject(AJson.GetValue('Position'));
+  Position.X := vCoord.GetValue('x').Value.ToSingle();
+  Position.Y := vCoord.GetValue('y').Value.ToSingle();
 
+  Path := AJson.GetValue('Path').Value;
+  Bitmap.LoadFromFile(Path);
+
+  Width := Self.Bitmap.Width;
+  Height := Self.Bitmap.Height;
+
+  vArr := TJSONArray(AJson.GetValue('Figures'));
+
+  for vItem in vArr do
+  begin
+    vFigure := TSSBFigure.Create(TJSONObject(vItem).GetValue('Kind').Value.ToInteger);
+    vFigure.Deserialize(TJSONObject(vItem));
+    Self.FFigures.Add(vFigure);
+  end;
 end;
 
 destructor TSSBElement.Destroy;
@@ -179,9 +202,38 @@ begin
   FSelectedFigure := Result;
 end;
 
-function TSSBElement.Serialize: string;
+procedure TSSBElement.LoadFromFile(const AFileName: string);
 begin
+  Bitmap.LoadFromFile(AFileName);
+  FPath := AFileName;
+  Width := Bitmap.Width;
+  Height := Bitmap.Height;
+end;
 
+function TSSBElement.Serialize: TJSONObject;
+var
+  vObj, vFig, vCoord: TJSONObject;
+  vArr: TJSONArray;
+  i: Integer;
+begin
+  vObj := TJSONObject.Create;
+  vArr := TJSONArray.Create;
+  vCoord:= TJSONObject.Create;
+
+  for i := 0 to FFigures.Count - 1 do
+  begin
+    vFig := FFigures[i].Serialize;
+    vArr.AddElement(vFig);
+  end;
+
+  vCoord.AddPair('x', FloatToStr(Self.Position.X));
+  vCoord.AddPair('y', FloatToStr(Self.Position.Y));
+
+  vObj.AddPair('Path', Self.Path);
+  vObj.AddPair('Position', vCoord);
+  vObj.AddPair('Figures', vArr);
+
+  Result := vObj;
 end;
 
 procedure TSSBElement.UnlockPoint;

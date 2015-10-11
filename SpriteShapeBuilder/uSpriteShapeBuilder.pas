@@ -23,6 +23,7 @@ type
     procedure DoSelect(ASender: TObject);
     procedure DoDelete(ASender: TObject);
     procedure DoSaveProject(ASender: TObject);
+    procedure DoLoadProject(ASender: TObject);
     procedure DoZoom(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean);
     procedure DoMouseDown(Sender: TObject; Button: TMouseButton;
@@ -32,14 +33,15 @@ type
     procedure DoMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Single);
     procedure SetSelectedElement(const Value: TSSBElement);
-    function Serialize: string;
-    procedure Deserialize(const AJsonText: String);
+    function Serialize: TJSONObject;
+    procedure Deserialize(const AJson: TJSONObject);
   public
     property IsMouseDown: Boolean read FIsMouseDown write FIsMouseDown;
     property Elements: TNamedList<TSSBElement> read FElements write FElements;
 //    property Elements[Index: Integer]: read GetElements write SetElements;
     property SelectedElement: TSSBElement read FSelectedElement write SetSelectedElement;
-    procedure AddElement(const AFileName: string);
+    procedure AddElement(const AFileName: string); overload;
+    procedure AddElement(const AElement: TSSBElement); overload;
     procedure LoadProject(const AFileName: string);
     procedure SaveProject(const AFileName: string);
     constructor Create;
@@ -59,12 +61,16 @@ var
   vSSBElement: TSSBElement;
 begin
   vSSBElement := TSSBElement.Create(FPanel);
-  with vSSBElement do
+  vSSBElement.LoadFromFile(AFileName);
+
+  AddElement(vSSBElement);
+end;
+
+procedure TSpriteShapeBuilder.AddElement(const AElement: TSSBElement);
+begin
+  with AElement do
   begin
     Parent := FPanel;
-    Bitmap.LoadFromFile(AFileName);
-    Width := vSSBElement.Bitmap.Width;
-    Height := vSSBElement.Bitmap.Height;
 
     OnClick := DoSelect;
     OnMouseDown := DoMouseDown;
@@ -73,7 +79,7 @@ begin
     OnMouseWheel := DoZoom;
   end;
 
-  FElements.Add(vSSBElement);
+  FElements.Add(AElement);
 end;
 
 constructor TSpriteShapeBuilder.Create;
@@ -83,7 +89,7 @@ begin
   FIsMouseDown := False;
 end;
 
-procedure TSpriteShapeBuilder.Deserialize(const AJsonText: String);
+procedure TSpriteShapeBuilder.Deserialize(const AJson: TJSONObject);
 begin
 
 end;
@@ -120,6 +126,11 @@ begin
     Exit;
   FElements.Delete(FSelectedElement);
   FSelectedElement.Free;
+end;
+
+procedure TSpriteShapeBuilder.DoLoadProject(ASender: TObject);
+begin
+  LoadProject('JSONoutput.txt');
 end;
 
 procedure TSpriteShapeBuilder.DoMouseDown(Sender: TObject; Button: TMouseButton;
@@ -270,6 +281,11 @@ begin
   vSavePrjBtn := TCornerButton(AProgForm.FindComponent('SaveProjectBtn'));
   vSavePrjBtn.OnClick := DoSaveProject;
 
+
+  vLoadPrjBtn := TCornerButton(AProgForm.FindComponent('LoadProjectBtn'));
+  vLoadPrjBtn.OnClick := DoLoadProject;
+
+
   vAddCircle := TCornerButton(AProgForm.FindComponent('AddCircleBtn'));
   vAddCircle.OnClick := DoAddCircle;
   vAddPoly := TCornerButton(AProgForm.FindComponent('AddPolyBtn'));
@@ -277,18 +293,57 @@ begin
 end;
 
 procedure TSpriteShapeBuilder.LoadProject(const AFileName: string);
+var
+  vList: TStringList;
+  vItem: TJSONValue;
+  vObj: TJSONObject;
+  vArr: TJSONArray;
+  vSSB: TSSBElement;
 begin
+  vList := TStringList.Create;
+  vList.LoadFromFile(AFileName);
 
+  vObj := TJSONObject(TJSONObject.ParseJSONValue(vList.Text));
+
+  vArr := TJSONArray(vObj.GetValue('Elements'));
+
+  for vItem in vArr do
+  begin
+    vSSB := TSSBElement.Create(FPanel);
+    vSSB.Deserialize(TJSONObject(vItem));
+    AddElement(vSSB);
+  end;
+
+  vList.Free;
 end;
 
 procedure TSpriteShapeBuilder.SaveProject(const AFileName: string);
+var
+  vList: TStringList;
 begin
-
+  vList := TStringList.Create;
+  vList.Add(Self.Serialize.ToJSON);
+  vList.SaveToFile(AFileName);
+  vList.Free;
 end;
 
-function TSpriteShapeBuilder.Serialize: string;
+function TSpriteShapeBuilder.Serialize: TJSONObject;
+var
+  vObj, vElem: TJSONObject;
+  vArr: TJSONArray;
+  i: Integer;
 begin
+  vObj := TJSONObject.Create;
+  vArr := TJSONArray.Create;
 
+  for i := 0 to FElements.Count - 1 do
+  begin
+    vElem := FElements[i].Serialize;
+    vArr.AddElement(vElem);
+  end;
+  vObj.AddPair('Elements', vArr);
+
+  Result := vObj;
 end;
 
 procedure TSpriteShapeBuilder.SetSelectedElement(const Value: TSSBElement);

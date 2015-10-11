@@ -3,15 +3,16 @@ unit uClasses;
 interface
 
 uses
-  System.SysUtils, System.Types,   {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math, System.UITypes, FMX.Controls;
+  System.SysUtils, System.Types, {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math, System.UITypes, FMX.Controls,
+  System.JSON;
 
 type
   TProcedure = procedure of Object;
   TVCLProcedure = procedure(ASender: TObject) of Object;
 
   ISerializable = interface
-    function Serialize: String;
-    procedure Deserialize(const AJsonText: String);
+    function Serialize: TJSONObject;
+    procedure Deserialize(const AJson: TJSONObject);
   end;
 
   TAdvancedRectF = record helper for TRectF
@@ -39,6 +40,7 @@ type
   TAdvancedPolygon = record helper for TPolygon
   public
     function Count: Integer;
+    procedure Add(const APoint: TPointF);
   end;
 
 
@@ -147,6 +149,12 @@ begin
 end;
 
 { TAdvancedPolygon }
+
+procedure TAdvancedPolygon.Add(const APoint: TPointF);
+begin
+  SetLength(Self, Length(Self) + 1);
+  Self[High(Self)] := APoint;
+end;
 
 function TAdvancedPolygon.Count: Integer;
 begin
