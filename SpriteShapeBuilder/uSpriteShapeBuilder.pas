@@ -5,10 +5,11 @@ interface
 uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types,
+  System.JSON,
   uSSBElement, uNamedList, uEasyDevice, uSSBFigure, uClasses;
 
 type
-  TSpriteShapeBuilder = class
+  TSpriteShapeBuilder = class(TInterfacedObject, ISerializable)
   private
     FPanel: TPanel;
     FImageForSelect: TImage;
@@ -21,6 +22,7 @@ type
     procedure DoAddPoly(ASender: TObject);
     procedure DoSelect(ASender: TObject);
     procedure DoDelete(ASender: TObject);
+    procedure DoSaveProject(ASender: TObject);
     procedure DoZoom(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean);
     procedure DoMouseDown(Sender: TObject; Button: TMouseButton;
@@ -30,7 +32,12 @@ type
     procedure DoMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Single);
     procedure SetSelectedElement(const Value: TSSBElement);
+    function Serialize: string;
+    procedure Deserialize(const AJsonText: String);
   public
+    property IsMouseDown: Boolean read FIsMouseDown write FIsMouseDown;
+    property Elements: TNamedList<TSSBElement> read FElements write FElements;
+//    property Elements[Index: Integer]: read GetElements write SetElements;
     property SelectedElement: TSSBElement read FSelectedElement write SetSelectedElement;
     procedure AddElement(const AFileName: string);
     procedure LoadProject(const AFileName: string);
@@ -74,6 +81,11 @@ begin
   FElements := TNamedList<TSSBElement>.Create;
   FLockPoint := False;
   FIsMouseDown := False;
+end;
+
+procedure TSpriteShapeBuilder.Deserialize(const AJsonText: String);
+begin
+
 end;
 
 destructor TSpriteShapeBuilder.Destroy;
@@ -207,6 +219,11 @@ begin
     FSelectedElement.UnlockPoint;
 end;
 
+procedure TSpriteShapeBuilder.DoSaveProject(ASender: TObject);
+begin
+  SaveProject('JSONoutput.txt');
+end;
+
 procedure TSpriteShapeBuilder.DoSelect(ASender: TObject);
 begin
   if ASender is TSSBElement then
@@ -225,7 +242,7 @@ end;
 
 procedure TSpriteShapeBuilder.Init(const AProgForm: TForm);
 var
-  vDelBtn, vAddCircle, vAddPoly: TCornerButton;
+  vDelBtn, vAddCircle, vAddPoly, vSavePrjBtn, vLoadPrjBtn: TCornerButton;
 begin
   FPanel := TPanel(AProgForm.FindComponent('MainPanel'));
   with FPanel do
@@ -250,6 +267,9 @@ begin
   vDelBtn := TCornerButton(AProgForm.FindComponent('DeleteImageBtn'));
   vDelBtn.OnClick := DoDelete;
 
+  vSavePrjBtn := TCornerButton(AProgForm.FindComponent('SaveProjectBtn'));
+  vSavePrjBtn.OnClick := DoSaveProject;
+
   vAddCircle := TCornerButton(AProgForm.FindComponent('AddCircleBtn'));
   vAddCircle.OnClick := DoAddCircle;
   vAddPoly := TCornerButton(AProgForm.FindComponent('AddPolyBtn'));
@@ -262,6 +282,11 @@ begin
 end;
 
 procedure TSpriteShapeBuilder.SaveProject(const AFileName: string);
+begin
+
+end;
+
+function TSpriteShapeBuilder.Serialize: string;
 begin
 
 end;

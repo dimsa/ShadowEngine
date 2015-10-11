@@ -9,7 +9,7 @@ uses
   uClasses;
 
 type
-  TNewFigure = class
+  TNewFigure = class(TInterfacedObject)
   private
     FTemp: TPolygon; // Темповые координаты. Задаются через Temp методы
     FTempMaxRadius: Single;
@@ -18,7 +18,9 @@ type
     function GetCircle: uIntersectorClasses.TCircle;
     function GetPoly: TPolygon; // Вызывается в SetData
   protected
+    [SvSerializer]
     FKind: Byte;
+    [SvSerializer]
     FData: TPolygon; // Оригинальная фигура. Задается через SetData
   public
     property Kind: Byte read FKind; // Тип. Круг или полигон пока что

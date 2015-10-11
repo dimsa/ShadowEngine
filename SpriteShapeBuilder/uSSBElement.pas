@@ -6,10 +6,10 @@ uses
   FMX.Objects, FMX.Controls, System.Classes, System.Generics.Collections,
   {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math, FMX.Types,
   System.Types, FMX.Graphics, System.UITypes,
-  uSSBFigure, uIntersectorClasses;
+  uSSBFigure, uIntersectorClasses, uClasses;
 
 type
-  TSSBElement = class(TImage)
+  TSSBElement = class(TImage, ISerializable)
   private
     FFigures: TList<TSSBFigure>;
     FPoint: TPointF;
@@ -18,15 +18,20 @@ type
     FLock: Boolean;
     FLockedFigure: TSSBFigure;
     FSelectedFigure: TSSBFigure; // Фигура над которой мышь
+    FPath: String;
     procedure DoShapeRepaint(Sender: TObject; Canvas: TCanvas;
       const ARect: TRectF);
   public
+    property Path: String read FPath write FPath;
+
     procedure AddCircle;
     procedure AddPoly;
     procedure AddPointToDraw(const APoint: TPointF; const AColor: TColor);
     procedure ChangeLockedPoint(const ANewPoint: TPointF);
     procedure UnlockPoint;
     function FigureByCoord(const APoint: TPointF; const ALock: Boolean = False): TSSBFigure;
+    function Serialize: string;
+    procedure Deserialize(const AJsonText: String);
   //  function KeyPointByCoord(const APoint: TPointF; const ALock: Boolean = False): TSSBFigure;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -87,6 +92,11 @@ begin
   inherited;
   FFigures := TList<TSSBFigure>.Create;
   Self.OnPaint := DoShapeRepaint;
+end;
+
+procedure TSSBElement.Deserialize(const AJsonText: String);
+begin
+
 end;
 
 destructor TSSBElement.Destroy;
@@ -167,6 +177,11 @@ begin
   end;
 
   FSelectedFigure := Result;
+end;
+
+function TSSBElement.Serialize: string;
+begin
+
 end;
 
 procedure TSSBElement.UnlockPoint;

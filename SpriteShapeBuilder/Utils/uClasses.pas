@@ -9,6 +9,11 @@ type
   TProcedure = procedure of Object;
   TVCLProcedure = procedure(ASender: TObject) of Object;
 
+  ISerializable = interface
+    function Serialize: String;
+    procedure Deserialize(const AJsonText: String);
+  end;
+
   TAdvancedRectF = record helper for TRectF
   private
     function GetPoint(Index: Integer): TPointF;

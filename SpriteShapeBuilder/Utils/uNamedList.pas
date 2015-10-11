@@ -18,14 +18,12 @@ type
   TNamedList<T> = class(TEnumerable<T>)
   strict private
     FParent: Pointer; // Pointer to master
-  //  FNames: TList<TNameAndValue>;
     FAdded: Integer; // —читает количество добавленных всего элементов
     FDict: TDictionary<String,T>;
     FList: TList<T>;
     FLink: TList<String>;//array of string;// TDictionary<Integer,String>;
     function GetItemS(Name: String): T;
     procedure SetItemS(AName: String; const Value: T);
-  private
     function GetItemI(Index: Integer): T;
     procedure SetItemI(Index: Integer; const Value: T);
     function GetCount: Integer;
@@ -33,7 +31,6 @@ type
     function DoGetEnumerator: TEnumerator<T>; override;
   public
     property Parent: Pointer read FParent write FParent;
-
     property Items[Index: Integer]: T read GetItemI write SetItemI; default;
     property Items[Name: String]: T read GetItemS write SetItemS; default;
     property Count: Integer read GetCount;{ write SetCount;}

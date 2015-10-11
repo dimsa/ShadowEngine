@@ -7,12 +7,18 @@ uses
   uNewFigure, uIntersectorMethods, uClasses;
 
 type
-  TSSBFigure = class(TNewFigure)
+//  TInterfacedFigure = class(TNewFigure, TInterfacedObject)
+
+//  /end;
+
+  TSSBFigure = class(TNewFigure, IInterface)
   private
     FLockedIndex: Integer; // Номер запомненной точки в массиве
     FLockedPoint: TPointF; // Номер запомненной точки в массиве
     FTempPoint: TPointF;
   public
+    function Serialize: string;
+    procedure Deserialize(const AJsonText: String);
     function KeyPointLocal(const ATestPosition: TPointF; out AKeyPoint: TPointF; const ADistance: Double; const ALock: Boolean = false): Boolean; // Находит ближайшую к точке ATestPosition, находящуюся в на расстоянии не больше ADistance ключевую точку и возвращает её координаты в AKeyPoint. Если стоит ALock, то точка запоминается. True - если точка найдена
     procedure ChangeLockedPoint(const ANewPoint: TPointF);
     procedure UnlockPoint;
@@ -54,6 +60,11 @@ constructor TSSBFigure.Create(const AKind: Byte);
 begin
   inherited;
   FLockedIndex := -1;
+end;
+
+procedure TSSBFigure.Deserialize(const AJsonText: String);
+begin
+
 end;
 
 function TSSBFigure.KeyPointLocal(const ATestPosition: TPointF;
@@ -124,6 +135,11 @@ begin
       end;
   end;
   Result := False;
+end;
+
+function TSSBFigure.Serialize: string;
+begin
+
 end;
 
 procedure TSSBFigure.UnlockPoint;
