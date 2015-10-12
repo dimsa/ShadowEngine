@@ -322,7 +322,7 @@ begin
   vText.Color :=  TAlphaColorRec.White;
   vText.Text :=
     'Asteroids vs You' + #13 +
-    'ver. 0.7.6' + #13 + #13 +
+    'ver. 0.8.0' + #13 + #13 +
     'Game about confrontation of' + #13 + 'Humankind and Asteroids';
   vText.Group := 'about';
   vEngine.AddObject(vText, 'aboutcaption');
