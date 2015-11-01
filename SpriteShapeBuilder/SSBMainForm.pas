@@ -5,29 +5,46 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Controls.Presentation, FMX.Objects, uSpriteShapeBuilder;
+  FMX.Controls.Presentation, FMX.Objects, uSpriteShapeBuilder, System.ImageList,
+  FMX.ImgList, FMX.Layouts;
 
 type
   TSSBForm = class(TForm)
     SelectImage: TImage;
-    AddImageBtn: TCornerButton;
-    DeleteImageBtn: TCornerButton;
-    AddPolyBtn: TCornerButton;
-    AddCircleBtn: TCornerButton;
-    DelShapeBtn: TCornerButton;
     SaveProjectBtn: TCornerButton;
     LoadProjectBtn: TCornerButton;
     MenuPanel: TPanel;
     MainPanel: TPanel;
     OpenDialog: TOpenDialog;
-    Label1: TLabel;
+    InfoLbl: TLabel;
     SaveForEngineBtn: TCornerButton;
     SaveDialog: TSaveDialog;
-    procedure AddImageBtnClick(Sender: TObject);
+    Instruments: TPanel;
+    Shape_img: TImage;
+    Object_img: TImage;
+    Picture_rect: TRectangle;
+    Object_rect: TRectangle;
+    Shape_rect: TRectangle;
+    InsrumentTabs: TLayout;
+    Picture_Inst: TLayout;
+    Picture_img: TImage;
+    Object_Inst: TLayout;
+    Shape_Inst: TLayout;
+    AddPictureBtn: TCornerButton;
+    DelPictureBtn: TCornerButton;
+    AddCircleBtn: TCornerButton;
+    AddPolyBtn: TCornerButton;
+    DelShapeBtn: TCornerButton;
+    AddObjectBtn: TCornerButton;
+    DelObjectBtn: TCornerButton;
+    EdtObjectBtn: TCornerButton;
+    EdtShapeBtn: TCornerButton;
+    procedure AddPictureBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
     procedure SaveForEngineBtnClick(Sender: TObject);
+    procedure Shape_edtClick(Sender: TObject);
   private
     SSB: TSpriteShapeBuilder;
     { Private declarations }
@@ -42,7 +59,7 @@ implementation
 
 {$R *.fmx}
 
-procedure TSSBForm.AddImageBtnClick(Sender: TObject);
+procedure TSSBForm.AddPictureBtnClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
     SSB.AddElement(OpenDialog.FileName);
@@ -50,6 +67,15 @@ end;
 
 procedure TSSBForm.FormCreate(Sender: TObject);
 begin
+  Picture_Inst.Position.X := 0;
+  Object_Inst.Position.X := 0;
+  Shape_Inst.Position.X := 0;
+
+  Picture_Inst.Visible := False;
+  Object_Inst.Visible := False;
+  Shape_Inst.Visible := False;
+
+
   SSB := TSpriteShapeBuilder.Create;
   SSB.Init(Self);
 end;
@@ -70,6 +96,11 @@ procedure TSSBForm.SaveProjectBtnClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
     SSB.SaveProject(SaveDialog.FileName);
+end;
+
+procedure TSSBForm.Shape_edtClick(Sender: TObject);
+begin
+  ShowMessage('11');
 end;
 
 end.

@@ -6,7 +6,7 @@
         <MainSource>ShadowEngineDemo.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
-        <Platform Condition="'$(Platform)'==''">Android</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>31</TargetedPlatforms>
         <AppType>Application</AppType>
     </PropertyGroup>
@@ -218,7 +218,8 @@
         <DCC_DebugInformation>0</DCC_DebugInformation>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Android)'!=''">
-        <VerInfo_Keys>package=com.ShadowEngine.AsteroidsVsYou;label=Asteroids vs You;versionCode=80;versionName=0.8.0;persistent=False;restoreAnyVersion=False;installLocation=preferExternal;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
+        <PF_AliasKeyPass>851947D0645855D8A342711DD129E36881D0051BA043979397B40FAB8E363C94DB04A3D7E3401C39C1CC5752FACFC338BAF83613042722C3164B45C2E5BA22DBC90AF35DEE85A8F3D3FC3B3A723785B3F7D9331AC3637204EB1F6E61122EECC61B4A6448BE998378</PF_AliasKeyPass>
+        <VerInfo_Keys>package=com.ShadowEngine.AsteroidsVsYou;label=Asteroids vs You;versionCode=82;versionName=0.8.2;persistent=False;restoreAnyVersion=False;installLocation=preferExternal;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
         <BT_BuildType>AppStore</BT_BuildType>
         <EL_AdMob>true</EL_AdMob>
         <AUP_READ_CALENDAR>false</AUP_READ_CALENDAR>
@@ -230,9 +231,8 @@
         <AUP_READ_PHONE_STATE>false</AUP_READ_PHONE_STATE>
         <AUP_CAMERA>false</AUP_CAMERA>
         <AUP_CALL_PHONE>false</AUP_CALL_PHONE>
-        <PF_KeyStorePass>857A47915F9607D2CF21E567A4527BF2E44208197EE3ECF89F507732D85CA8ECA5E85D1A7F23E2288729C8F70A5767931423B81E8DD97E2E8CA5A093E5A422D3C913F373D51EFAC4BFB4AF1107441D0A92533E171DF10975E3EC16E2446078D565B39AAA22A37D534633E8609215F3E8962EE9AFDE11C01AB354C2AB3AECF237</PF_KeyStorePass>
-        <PF_AliasKeyPass>851947D05F9B07B8CF5FE518A446E36281C30502A02B979B97EE0FB48E3E3C9EDB56A384E34A1C6BC1AE577CFA9CC360BAE1367E044B22801678459DE5E522CEC91BF36FD558FAD0BFAFAF11070285B3F7D9331AC3637204EB1F6E61122EECC61B4A6448BE998378</PF_AliasKeyPass>
-        <VerInfo_Build>80</VerInfo_Build>
+        <PF_KeyStorePass>857A47915F9607D2CF21E567A452E36281C30502A02B979B97EE0FB48E3E3C9EDB56A384E34A1C6BC1AE577CFA9CC360BAE1367E044B22801678459DE5E522CEC91BF36FD558FAD0BFAFAF11070285CAF7DF3346C31F7200EB5A6E29125BECBB1B716448BECB831900BB77A8629D5753388467FD57B19CB1298827E63AECF237</PF_KeyStorePass>
+        <VerInfo_Build>82</VerInfo_Build>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -449,6 +449,29 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="Art\formatters.secss" Configuration="Release" Class="File">
+                    <Platform Name="Android">
+                        <RemoteDir>assets\internal\</RemoteDir>
+                        <RemoteName>formatters.secss</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="Win32">
+                        <RemoteName>formatters.secss</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <RemoteName>formatters.secss</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <RemoteName>formatters.secss</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                    <Platform Name="Win64">
+                        <RemoteName>formatters.secss</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeArmeabiFile">
                     <Platform Name="Android">
                         <RemoteName>libShadowEngineDemo.so</RemoteName>
@@ -552,11 +575,6 @@
                 <DeployFile LocalName="Source\splashes\splash960x720.png" Configuration="Debug" Class="Android_SplashImage960">
                     <Platform Name="Android">
                         <RemoteName>splash_image.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Configuration="Release" Class="AndroidGDBServer">
-                    <Platform Name="Android">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -1170,11 +1188,11 @@
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
             </Deployment>
             <Platforms>
-                <Platform value="Android" ActiveMobileDevice="0123456789ABCDEF">True</Platform>
+                <Platform value="Android">True</Platform>
                 <Platform value="iOSSimulator" ActiveMobileDevice="iPad">True</Platform>
                 <Platform value="OSX32">True</Platform>
                 <Platform value="Win32">True</Platform>

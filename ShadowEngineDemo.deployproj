@@ -294,6 +294,14 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>formatters.secss</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Source\icons\36.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo\res\drawable-ldpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
@@ -451,6 +459,14 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>formatters.secss</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>res.png</RemoteName>
@@ -510,6 +526,14 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>formatters.secss</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>res.png</RemoteName>
@@ -563,6 +587,14 @@
         <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
             <RemoteName>back.jpg</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
+            <RemoteName>formatters.secss</RemoteName>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -637,6 +669,14 @@
         <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
             <RemoteName>back.jpg</RemoteName>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>formatters.secss</RemoteName>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
