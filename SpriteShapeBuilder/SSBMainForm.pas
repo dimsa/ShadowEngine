@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, uSpriteShapeBuilder, System.ImageList,
-  FMX.ImgList, FMX.Layouts;
+  FMX.ImgList, FMX.Layouts, uSSBControllers;
 
 type
   TSSBForm = class(TForm)
@@ -66,6 +66,8 @@ begin
 end;
 
 procedure TSSBForm.FormCreate(Sender: TObject);
+var
+  temp: TSSBImagerController;
 begin
   Picture_Inst.Position.X := 0;
   Object_Inst.Position.X := 0;
@@ -74,7 +76,6 @@ begin
   Picture_Inst.Visible := False;
   Object_Inst.Visible := False;
   Shape_Inst.Visible := False;
-
 
   SSB := TSpriteShapeBuilder.Create;
   SSB.Init(Self);

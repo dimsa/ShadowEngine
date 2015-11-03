@@ -13,7 +13,9 @@ uses
   uIntersectorMethods in 'Intersector\uIntersectorMethods.pas',
   uNewFigure in 'Intersector\uNewFigure.pas',
   uSSBFigure in 'uSSBFigure.pas',
-  SSBOptionsForm in 'SSBOptionsForm.pas' {OptionsForm};
+  SSBOptionsForm in 'SSBOptionsForm.pas' {OptionsForm},
+  uSSBModels in 'Model\uSSBModels.pas',
+  uSSBControllers in 'Controller\uSSBControllers.pas';
 
 {$R *.res}
 

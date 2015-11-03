@@ -6,7 +6,8 @@ uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types,
   System.JSON, FMX.Controls, FMX.Layouts,
-  uSSBElement, uNamedList, uEasyDevice, uSSBFigure, uClasses;
+  uSSBElement, uNamedList, uEasyDevice, uSSBFigure, uClasses, uSSBControllers,
+  uSSBModels;
 
 type
   TSSBStatus = (sPicture, sObject, sShape);
@@ -19,14 +20,16 @@ type
     FTabsRect: array[TSSBStatus] of TRectangle;
     FTabsImg: array[TSSBStatus] of TImage;
 
+    FImagerController: TSSBImagerController;
+    FImagerModel: TSSBImagerModel;
+
 //    Instruments: array[TSSBStatus] of TNamedList<TControl>;
-    FImageForSelect: TImage;
-    FElements: TNamedList<TSSBElement>;
+    FElements: TNamedList<TSSBElement>; // ־בתוךעû ס רויןאלט
     FSelectedElement: TSSBElement;
+    FSelectedImage: TImage;
     FLockPoint: Boolean;
     FIsMouseDown: Boolean;
     FMouseStartPoint, FMouseElementPoint, FElementStartPosition: TPointF;
-
 
     procedure DoAddCircle(ASender: TObject);
     procedure DoAddPoly(ASender: TObject);
@@ -107,9 +110,19 @@ begin
   FElements.Add(AElement);
 end;
 
+{procedure TSpriteShapeBuilder.AddImage(const AImage: TImage);
+begin
+
+end;     }
+
+{procedure TSpriteShapeBuilder.AddImage(const AFileName: string);
+
+end;    }
+
 constructor TSpriteShapeBuilder.Create;
 begin
   FElements := TNamedList<TSSBElement>.Create;
+
   FLockPoint := False;
   FIsMouseDown := False;
 end;
@@ -122,6 +135,7 @@ end;
 destructor TSpriteShapeBuilder.Destroy;
 var
   vSSBElement: TSSBElement;
+  vImg: TImage;
 begin
   for vSSBElement in FElements do
     vSSBElement.Free;
@@ -133,9 +147,10 @@ end;
 
 procedure TSpriteShapeBuilder.DoAddCircle(ASender: TObject);
 begin
-  if FSelectedElement = nil then
+  if (FSelectedElement = nil) or (not (FSelectedElement is TSSBElement)) then
     Exit;
-  FSelectedElement.AddCircle;
+
+  TSSBElement(FSelectedElement).AddCircle;
 end;
 
 procedure TSpriteShapeBuilder.DoAddObject(ASender: TObject);
@@ -150,9 +165,10 @@ end;
 
 procedure TSpriteShapeBuilder.DoAddPoly(ASender: TObject);
 begin
-  if FSelectedElement = nil then
+  if (FSelectedElement = nil) or (not (FSelectedElement is TSSBElement)) then
     Exit;
-  FSelectedElement.AddPoly;
+
+  TSSBElement(FSelectedElement).AddPoly;
 end;
 
 procedure TSpriteShapeBuilder.DoChangeStatus(ASender: TObject);
@@ -175,6 +191,7 @@ procedure TSpriteShapeBuilder.DoDeleteObject(ASender: TObject);
 begin
   if FSelectedElement = nil then
     Exit;
+
   FElements.Delete(FSelectedElement);
   FSelectedElement.Free;
 end;
@@ -209,6 +226,10 @@ begin
   FMouseStartPoint := MousePos / FPanel.Scale.X;//Point;
   FMouseElementPoint.X := X;
   FMouseElementPoint.Y := Y;
+
+//  if FStatus = sPicture then
+ // begin
+
   if Sender is TSSBElement then
   begin
     SelectedElement := TSSBElement(Sender);
@@ -309,7 +330,8 @@ end;
 
 procedure TSpriteShapeBuilder.DoSelectPicture(ASender: TObject);
 begin
-
+  if ASender is TImage then
+    SelectedElement := TSSBElement(ASender);
 end;
 
 procedure TSpriteShapeBuilder.DoZoom(Sender: TObject; Shift: TShiftState;
@@ -350,7 +372,6 @@ begin
   FPanels[sObject] := TLayout(AProgForm.FindComponent('Object_Inst'));
   FPanels[sShape] := TLayout(AProgForm.FindComponent('Shape_Inst'));
 
-
   FTabsRect[sPicture] := TRectangle(AProgForm.FindComponent('Picture_Rect'));
   FTabsRect[sObject] := TRectangle(AProgForm.FindComponent('Object_Rect'));
   FTabsRect[sShape] := TRectangle(AProgForm.FindComponent('Shape_Rect'));
@@ -367,7 +388,7 @@ begin
 
   Status := sPicture;
 
-  FImageForSelect := TImage(AProgForm.FindComponent('SelectImage'));
+  //FImageForSelect := TImage(AProgForm.FindComponent('SelectImage'));
 
   vDelBtn := TCornerButton(AProgForm.FindComponent('DelPictureBtn'));
   vDelBtn.OnClick := DoDeleteObject;
@@ -447,7 +468,7 @@ end;
 procedure TSpriteShapeBuilder.SetSelectedElement(const Value: TSSBElement);
 begin
   FSelectedElement := Value;
-  FImageForSelect.Bitmap.Assign(Value.Bitmap);
+  //ImageForSelect.Bitmap.Assign(Value.Bitmap);
 end;
 
 procedure TSpriteShapeBuilder.SetStatus(const Value: TSSBStatus);
