@@ -15,7 +15,9 @@ uses
   uSSBFigure in 'uSSBFigure.pas',
   SSBOptionsForm in 'SSBOptionsForm.pas' {OptionsForm},
   uSSBModels in 'Model\uSSBModels.pas',
-  uSSBControllers in 'Controller\uSSBControllers.pas';
+  uSSBControllers in 'Controller\uSSBControllers.pas',
+  uSSBView in 'View\uSSBView.pas',
+  uSSBTypes in 'uSSBTypes.pas';
 
 {$R *.res}
 

@@ -10,7 +10,7 @@ uses
 
 type
   TSSBForm = class(TForm)
-    SelectImage: TImage;
+    Selected: TImage;
     SaveProjectBtn: TCornerButton;
     LoadProjectBtn: TCornerButton;
     MenuPanel: TPanel;
@@ -39,12 +39,14 @@ type
     DelObjectBtn: TCornerButton;
     EdtObjectBtn: TCornerButton;
     EdtShapeBtn: TCornerButton;
+    Background: TImage;
     procedure AddPictureBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
     procedure SaveForEngineBtnClick(Sender: TObject);
     procedure Shape_edtClick(Sender: TObject);
+    procedure DelPictureBtnClick(Sender: TObject);
   private
     SSB: TSpriteShapeBuilder;
     { Private declarations }
@@ -60,9 +62,22 @@ implementation
 {$R *.fmx}
 
 procedure TSSBForm.AddPictureBtnClick(Sender: TObject);
+var
+  vImg: TBitmap;
+  v: TNotifyEvent;
 begin
+//  vImg :=    TNot
+//  vImg.
+//mage.
   if OpenDialog.Execute then
-    SSB.AddElement(OpenDialog.FileName);
+  //  Selected.Bitmap.LoadFromFile(OpenDialog.FileName);
+   // vImg.CreateFromFile(OpenDialog.FileName);
+    SSB.Controller.DoCommand('Add', [OpenDialog.FileName]);
+end;
+
+procedure TSSBForm.DelPictureBtnClick(Sender: TObject);
+begin
+  SSB.Controller.DoCommand('Remove');
 end;
 
 procedure TSSBForm.FormCreate(Sender: TObject);
@@ -76,6 +91,7 @@ begin
   Picture_Inst.Visible := False;
   Object_Inst.Visible := False;
   Shape_Inst.Visible := False;
+
 
   SSB := TSpriteShapeBuilder.Create;
   SSB.Init(Self);

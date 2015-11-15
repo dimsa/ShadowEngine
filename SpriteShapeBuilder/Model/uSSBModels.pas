@@ -3,19 +3,42 @@ unit uSSBModels;
 interface
 
 uses
-  FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types,
-  uNamedList, uClasses;
+  System.Generics.Collections, System.Classes,
+  FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, FMX.Graphics,
+  uNamedList, uClasses, uSSBTypes;
 
 type
-  TSSBImagerModel = class
+  TSSBModel = class abstract
+  private
+    function GetBackground: TBitmap; virtual; abstract;
+    function GetElements: TList<TControl>; virtual; abstract;
+    function GetSelectedBitmap: TBitmap; virtual; abstract;
+  public
+    property SelectedBitmap: TBitmap read GetSelectedBitmap;
+    property Background: TBitmap read GetBackground;
+    property Elements: TList<TControl> read GetElements;
+  end;
+
+  TSSBImagerModel = class(TSSBModel)
   private
     FSelected: TImage;
+    FBackground: TBitmap;
     FImages: TNamedList<TImage>; //Картинки из которых состоит подложока объектов
+    FImgToCtrlAdapter: TImgToCtrlAdapter;
+    FNotifyEvent: TNotifyEvent;
+    function GetBackground: TBitmap; override;
+    function GetElements: TList<TControl>; override;
+    function GetSelectedBitmap: TBitmap; override;
+    function GetImageCount: Integer;
+    function GetImage(AIndex: Integer): TImage;
+    procedure SetImage(AIndex: Integer; const Value: TImage);
   public
-    constructor Create;
+    constructor Create(const ANotifyEvent: TNotifyEvent);
     destructor Destroy;
-    procedure Adjust(AControl: TControl);
     procedure DelSelected;
+    property ImageCount: Integer read GetImageCount;
+    property Images[AIndex: Integer]: TImage read GetImage write SetImage;
+    function Add(const AImage: TImage): Boolean;
     function Select(const AImage: TImage): Boolean;
     property Selected: TImage read FSelected;
   const
@@ -26,32 +49,22 @@ implementation
 
 { TSSBImagerModel }
 
-procedure TSSBImagerModel.Adjust(AControl: TControl);
-var
-  i, vX, vY: Integer;
+function TSSBImagerModel.Add(const AImage: TImage): Boolean;
 begin
-
-  for i := 0 to FImages.Count - 1 do
-    if FImages[i] <> AControl then
-    begin
-      for vX := 0 to 3 do
-        for vY := 0 to 3 do
-          with AControl do
-          begin
-            if (Points[vX].X <= FImages[i].Points[vY].X + CPrec) and
-              (Points[vX].X >= FImages[i].Points[vY].X - CPrec) then
-              Points[vX] := PointF(FImages[i].Points[vY].X, Points[vX].Y);
-
-            if (Points[vX].Y <= FImages[i].Points[vY].Y + CPrec) and
-              (Points[vX].Y >= FImages[i].Points[vY].Y - CPrec) then
-              Points[vX] := PointF(Points[vX].X, FImages[i].Points[vY].Y);
-          end;
-    end;
+  FImages.Add(AImage);
+  FNotifyEvent(Self);
 end;
 
-constructor TSSBImagerModel.Create;
+constructor TSSBImagerModel.Create(const ANotifyEvent: TNotifyEvent);
+var
+  vList: TList<TImage>;
 begin
   FImages := TNamedList<TImage>.Create;
+
+  FImgToCtrlAdapter := TImgToCtrlAdapter.Create(FImages);
+  FBackground := TBitmap.Create;
+
+  FNotifyEvent := ANotifyEvent;
 end;
 
 procedure TSSBImagerModel.DelSelected;
@@ -62,22 +75,61 @@ begin
     FSelected.Free;
     FSelected := nil;
   end;
+  FNotifyEvent(Self);
 end;
 
 destructor TSSBImagerModel.Destroy;
 var
-  vImg: TImage;
+  vImg: TControl;
 begin
   for vImg in FImages do
     vImg.Free;
   FImages.Clear;
   FImages.Free;
+
+  FBackground.Free;
+
+  FImgToCtrlAdapter.Free;
+end;
+
+function TSSBImagerModel.GetBackground: TBitmap;
+begin
+  Result := FBackground;
+end;
+
+function TSSBImagerModel.GetElements: TList<TControl>;
+begin
+  Result := FImgToCtrlAdapter.ControlList;
+end;
+
+function TSSBImagerModel.GetImage(AIndex: Integer): TImage;
+begin
+  Result := FImages[AIndex];
+end;
+
+function TSSBImagerModel.GetImageCount: Integer;
+begin
+  Result := FImages.Count;
+end;
+
+function TSSBImagerModel.GetSelectedBitmap: TBitmap;
+begin
+  if FSelected <> nil then
+    Exit(FSelected.Bitmap);
+
+  Result := nil;
 end;
 
 function TSSBImagerModel.Select(const AImage: TImage): Boolean;
 begin
   if FImages.IsHere(AImage) then
-    FSelected := AImage;
+    FSelected.Assign(AImage);
+end;
+
+procedure TSSBImagerModel.SetImage(AIndex: Integer; const Value: TImage);
+begin
+  FImages[AIndex] := Value;
 end;
 
 end.
+

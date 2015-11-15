@@ -47,9 +47,7 @@ type
     procedure Delete(const AName: String); overload; virtual;
     procedure Delete(const AT: T); overload; virtual;
     procedure Delete(const AIndex: Integer); overload; virtual;
-   // procedure Remove(AT: T);
 
-//    function CountNames: Integer;
     function ByName(const AName: String): T;
     function NameOf(const AObject: T): String; overload; // Возвращает имя по объекту
     function NameOf(const AIndex: Integer): String; overload; // Возвращает имя по объекту
@@ -58,14 +56,11 @@ type
     function IsHere(const AObject: T): Boolean; overload;
     function IndexOf(const AName: String): Integer; overload;
     function IndexOfItem(const Value: T; Direction: TDirection): Integer; overload;
-//    function IndexOfItem(const AName: String): Integer; overload;
-//    function Count: Integer; reintroduce;
 
     procedure AddName(const AIndex: Integer; AName: String); overload;
     procedure AddName(const AValue: T; AName: String); overload;
-{    procedure DeleteName(const AIndex: Integer); overload;
-    procedure DeleteName(const AName: String); overload; }
 
+    procedure ToList(var AList: TList<T>);
     procedure AddList(const AList: TNamedList<T>);
     procedure AddListIfNo(const AList: TNamedList<T>);
     procedure Clear; reintroduce;
@@ -431,6 +426,19 @@ begin
   vObj := FDict[AName];
   FList[FList.IndexOf(vObj)] := Value;
   FDict[AName] := Value;
+end;
+
+procedure TNamedList<T>.ToList(var AList: TList<T>);
+var
+  i: Integer;
+begin
+  if not Assigned(AList) then
+    AList := TList<T>.Create;
+
+  AList.Clear;
+  for i := 0 to FList.Count - 1 do
+    AList.Add(FList[i])
+
 end;
 
 end.

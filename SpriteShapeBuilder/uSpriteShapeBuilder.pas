@@ -7,66 +7,61 @@ uses
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types,
   System.JSON, FMX.Controls, FMX.Layouts,
   uSSBElement, uNamedList, uEasyDevice, uSSBFigure, uClasses, uSSBControllers,
-  uSSBModels;
+  uSSBModels, uSSBView, uSSBTypes;
 
 type
-  TSSBStatus = (sPicture, sObject, sShape);
-
   TSpriteShapeBuilder = class(TInterfacedObject, ISerializable)
   private
     FStatus: TSSBStatus;
     FPanel: TPanel;
+
+    // Контролы для переключения статуса
     FPanels: array[TSSBStatus] of TLayout;
     FTabsRect: array[TSSBStatus] of TRectangle;
     FTabsImg: array[TSSBStatus] of TImage;
 
-    FImagerController: TSSBImagerController;
-    FImagerModel: TSSBImagerModel;
+    FView: TSSBView;
+    FControllers: array[TSSBStatus] of TSSBController;
+    FModels: array[TSSBStatus] of TSSBModel;
 
-//    Instruments: array[TSSBStatus] of TNamedList<TControl>;
-    FElements: TNamedList<TSSBElement>; // Объекты с шейпами
+//    FImagerController: TSSBImagerController;
+//    FImagerModel: TSSBImagerModel;
+
+//    FElements: TNamedList<TSSBElement>; // Объекты с шейпами
     FSelectedElement: TSSBElement;
     FSelectedImage: TImage;
     FLockPoint: Boolean;
     FIsMouseDown: Boolean;
     FMouseStartPoint, FMouseElementPoint, FElementStartPosition: TPointF;
 
+    procedure DoChangeStatus(ASender: TObject);
+
     procedure DoAddCircle(ASender: TObject);
     procedure DoAddPoly(ASender: TObject);
     procedure DoEditShape(ASender: TObject);
 
     procedure DoSelectPicture(ASender: TObject);
-    procedure DoAddPicture(ASender: TObject);
     procedure DoDeletePicture(ASender: TObject);
 
     procedure DoSelectObject(ASender: TObject);
-    procedure DoAddObject(ASender: TObject);
     procedure DoDeleteObject(ASender: TObject);
     procedure DoEditObject(ASender: TObject);
 
     procedure DoSaveProject(ASender: TObject);
     procedure DoLoadProject(ASender: TObject);
 
-    procedure DoChangeStatus(ASender: TObject);
-
-    procedure DoZoom(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; var Handled: Boolean);
-    procedure DoMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Single);
-    procedure DoMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Single);
-    procedure DoMouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Single);
     procedure SetSelectedElement(const Value: TSSBElement);
     function Serialize: TJSONObject;
     procedure Deserialize(const AJson: TJSONObject);
     procedure SetStatus(const Value: TSSBStatus);
+    function GetController: TSSBController;
   public
     property Status: TSSBStatus read FStatus write SetStatus;
     property IsMouseDown: Boolean read FIsMouseDown write FIsMouseDown;
-    property Elements: TNamedList<TSSBElement> read FElements write FElements;
+    property Controller: TSSBController read GetController;
+//    property Elements: TNamedList<TSSBElement> read FElements write FElements;
 //    property Elements[Index: Integer]: read GetElements write SetElements;
-    property SelectedElement: TSSBElement read FSelectedElement write SetSelectedElement;
+//    property SelectedElement: TSSBElement read FSelectedElement write SetSelectedElement;
     procedure AddElement(const AFileName: string); overload;
     procedure AddElement(const AElement: TSSBElement); overload;
     procedure LoadProject(const AFileName: string);
@@ -101,13 +96,13 @@ begin
     Parent := FPanel;
 
     OnClick := DoSelectObject;
-    OnMouseDown := DoMouseDown;
+{    OnMouseDown := DoMouseDown;
     OnMouseUp := DoMouseUp;
     OnMouseMove := DoMouseMove;
-    OnMouseWheel := DoZoom;
+    OnMouseWheel := DoZoom;  }
   end;
 
-  FElements.Add(AElement);
+//  FElements.Add(AElement);
 end;
 
 {procedure TSpriteShapeBuilder.AddImage(const AImage: TImage);
@@ -121,10 +116,18 @@ end;    }
 
 constructor TSpriteShapeBuilder.Create;
 begin
-  FElements := TNamedList<TSSBElement>.Create;
+  //FElements := TNamedList<TSSBElement>.Create;
 
   FLockPoint := False;
   FIsMouseDown := False;
+
+  FView := TSSBView.Create;
+
+  FModels[sPicture] := TSSBImagerModel.Create(FView.Update);
+  FControllers[sPicture] := TSSBImagerController.Create(
+    TSSBImagerModel(FModels[sPicture]));
+//  FImagerModel :=
+//  FImagerController := TSSBImagerController.Create(FImagerModel);
 end;
 
 procedure TSpriteShapeBuilder.Deserialize(const AJson: TJSONObject);
@@ -137,10 +140,16 @@ var
   vSSBElement: TSSBElement;
   vImg: TImage;
 begin
-  for vSSBElement in FElements do
+  FModels[sPicture].Free;
+  FControllers[sPicture].Free;
+  FView.Free;
+
+{  for vSSBElement in FElements do
     vSSBElement.Free;
   FElements.Clear;
-  FElements.Free;
+  FElements.Free; }
+
+
 
   inherited;
 end;
@@ -151,16 +160,6 @@ begin
     Exit;
 
   TSSBElement(FSelectedElement).AddCircle;
-end;
-
-procedure TSpriteShapeBuilder.DoAddObject(ASender: TObject);
-begin
-
-end;
-
-procedure TSpriteShapeBuilder.DoAddPicture(ASender: TObject);
-begin
-
 end;
 
 procedure TSpriteShapeBuilder.DoAddPoly(ASender: TObject);
@@ -185,15 +184,20 @@ begin
 
   if vName.Contains('shape') then
     Status := sShape;
+
+  FView.Model := FModels[Status];
+
+  FPanels[Status].Visible := True;
+
 end;
 
 procedure TSpriteShapeBuilder.DoDeleteObject(ASender: TObject);
 begin
-  if FSelectedElement = nil then
+ { if FSelectedElement = nil then
     Exit;
 
   FElements.Delete(FSelectedElement);
-  FSelectedElement.Free;
+  FSelectedElement.Free; }
 end;
 
 procedure TSpriteShapeBuilder.DoDeletePicture(ASender: TObject);
@@ -216,107 +220,6 @@ begin
   LoadProject('JSONoutput.txt');
 end;
 
-procedure TSpriteShapeBuilder.DoMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-var
-  vFigure: TSSBFigure;
-  vPoint: TPointF;
-begin
-  FIsMouseDown := True;
-  FMouseStartPoint := MousePos / FPanel.Scale.X;//Point;
-  FMouseElementPoint.X := X;
-  FMouseElementPoint.Y := Y;
-
-//  if FStatus = sPicture then
- // begin
-
-  if Sender is TSSBElement then
-  begin
-    SelectedElement := TSSBElement(Sender);
-
-    FElementStartPosition := FSelectedElement.Position.Point;
-
-    FMouseElementPoint.X := X;
-    FMouseElementPoint.Y := Y;
-    vFigure := SelectedElement.FigureByCoord(FMouseElementPoint, True);
-    if vFigure <> nil then
-    begin
-      if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, CPrec*2, True) then
-      begin
-        FSelectedElement.AddPointToDraw(vPoint, TAlphaColorRec.Red);
-        FElementStartPosition := vPoint ;
-        FLockPoint := True;
-      end;
-    end;
-   FSelectedElement.Repaint;
-  end;
-
-end;
-
-procedure TSpriteShapeBuilder.DoMouseMove(Sender: TObject; Shift: TShiftState;
-  X, Y: Single);
-var
-  i: Integer;
-  vX, vY: Integer;
-  vFigure: TSSBFigure;
-  vPoint: TPointF;
-begin
-  if Sender = FSelectedElement then
-  begin
-    if FIsMouseDown then
-      with FSelectedElement{TSSBElement(Sender)} do
-      begin
-        if FLockPoint = False then
-        begin
-          Position.Point := FElementStartPosition + MousePos / FPanel.Scale.X - FMouseStartPoint;
-
-          for i := 0 to FElements.Count - 1 do
-            if FElements[i] <> FSelectedElement then
-            begin
-              for vX := 0 to 3 do
-                for vY := 0 to 3 do
-                begin
-                  if (Points[vX].X <= FElements[i].Points[vY].X + CPrec) and
-                    (Points[vX].X >= FElements[i].Points[vY].X - CPrec) then
-                    Points[vX] := PointF(FElements[i].Points[vY].X, Points[vX].Y) ;
-
-                  if (Points[vX].Y <= FElements[i].Points[vY].Y + CPrec) and
-                    (Points[vX].Y >= FElements[i].Points[vY].Y - CPrec)   then
-                    Points[vX] := PointF(Points[vX].X, FElements[i].Points[vY].Y) ;
-                end;
-            end;
-        end else
-        begin
-          FSelectedElement.ChangeLockedPoint(
-            FElementStartPosition + MousePos / FPanel.Scale.X - FMouseStartPoint);
-        end;
-      end;
-
-    FMouseElementPoint.X := X;
-    FMouseElementPoint.Y := Y;
-
-    vFigure :=SelectedElement.FigureByCoord(FMouseElementPoint);
-    if vFigure <> nil then
-    begin
-      if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, CPrec*2) then
-      begin
-        FSelectedElement.AddPointToDraw(vPoint, TAlphaColorRec.Red);
-      end;
-    end;
-   FSelectedElement.Repaint;
-  end;
-end;
-
-procedure TSpriteShapeBuilder.DoMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-begin
-  FIsMouseDown := False;
-  FLockPoint := False;
-
-  if FSelectedElement <> Nil then
-    FSelectedElement.UnlockPoint;
-end;
-
 procedure TSpriteShapeBuilder.DoSaveProject(ASender: TObject);
 begin
   SaveProject('JSONoutput.txt');
@@ -324,24 +227,19 @@ end;
 
 procedure TSpriteShapeBuilder.DoSelectObject(ASender: TObject);
 begin
-  if ASender is TSSBElement then
-    SelectedElement := TSSBElement(ASender);
+{  if ASender is TSSBElement then
+    SelectedElement := TSSBElement(ASender); }
 end;
 
 procedure TSpriteShapeBuilder.DoSelectPicture(ASender: TObject);
 begin
-  if ASender is TImage then
-    SelectedElement := TSSBElement(ASender);
+{  if ASender is TImage then
+    SelectedElement := TSSBElement(ASender);   }
 end;
 
-procedure TSpriteShapeBuilder.DoZoom(Sender: TObject; Shift: TShiftState;
-  WheelDelta: Integer; var Handled: Boolean);
+function TSpriteShapeBuilder.GetController: TSSBController;
 begin
-  if FPanel.Scale.X + ((WheelDelta / 120) * 0.1) > 0.1 then
-  begin
-    FPanel.Scale.X := FPanel.Scale.X + ((WheelDelta / 120) * 0.1);
-    FPanel.Scale.Y := FPanel.Scale.X;
-  end;
+  Result := FControllers[FStatus];
 end;
 
 procedure TSpriteShapeBuilder.Init(const AProgForm: TForm);
@@ -350,13 +248,15 @@ var
   i: Integer;
   iStatus: TSSBStatus;
 begin
+
+  FView.Init(AProgForm);
   FPanel := TPanel(AProgForm.FindComponent('MainPanel'));
   with FPanel do
   begin
-    OnMouseWheel := DoZoom;
+{    OnMouseWheel := FSSBView.DoZoom;
     OnMouseDown := DoMouseDown;
     OnMouseUp := DoMouseUp;
-    OnMouseMove := DoMouseMove;
+    OnMouseMove := DoMouseMove;   }
 
     try
       Canvas.BeginScene;
@@ -368,9 +268,7 @@ begin
 
   end;
 
-  FPanels[sPicture] := TLayout(AProgForm.FindComponent('Picture_Inst'));
-  FPanels[sObject] := TLayout(AProgForm.FindComponent('Object_Inst'));
-  FPanels[sShape] := TLayout(AProgForm.FindComponent('Shape_Inst'));
+  Status := sPicture;
 
   FTabsRect[sPicture] := TRectangle(AProgForm.FindComponent('Picture_Rect'));
   FTabsRect[sObject] := TRectangle(AProgForm.FindComponent('Object_Rect'));
@@ -386,7 +284,10 @@ begin
     FTabsRect[iStatus].OnClick:= DoChangeStatus;
   end;
 
-  Status := sPicture;
+
+  FPanels[sPicture] := TLayout(AProgForm.FindComponent('Picture_Inst'));
+  FPanels[sObject] := TLayout(AProgForm.FindComponent('Object_Inst'));
+  FPanels[sShape] := TLayout(AProgForm.FindComponent('Shape_Inst'));
 
   //FImageForSelect := TImage(AProgForm.FindComponent('SelectImage'));
 
@@ -455,11 +356,11 @@ begin
   vObj := TJSONObject.Create;
   vArr := TJSONArray.Create;
 
-  for i := 0 to FElements.Count - 1 do
+{  for i := 0 to FElements.Count - 1 do
   begin
     vElem := FElements[i].Serialize;
     vArr.AddElement(vElem);
-  end;
+  end;  }
   vObj.AddPair('Elements', vArr);
 
   Result := vObj;
@@ -473,9 +374,9 @@ end;
 
 procedure TSpriteShapeBuilder.SetStatus(const Value: TSSBStatus);
 begin
-  FPanels[FStatus].Visible := False;
+//  FPanels[FStatus].Visible := False;
   FStatus := Value;
-  FPanels[Value].Visible := True;
+//  FPanels[Value].Visible := True;
 end;
 
 end.
