@@ -1,16 +1,16 @@
-unit uSSBControllers;
+unit uSSBPresenters;
 
 interface
 
 uses
   System.Classes, System.UITypes, System.Types, System.SysUtils,
-  FMX.StdCtrls, FMX.Controls, FMX.Graphics, FMX.Objects,
-  uSSBModels, uClasses, uEasyDevice;
+  FMX.StdCtrls, FMX.Controls, FMX.Graphics, FMX.Objects, FMX.Dialogs,
+  uSSBModels, uClasses, uEasyDevice, uIView;
 
 
 type
 
-  TSSBController = class abstract
+ { TSSBController = class abstract
   public
     // Обработчики мыши
     procedure DoZoom(Sender: TObject; Shift: TShiftState;
@@ -23,9 +23,19 @@ type
       Y: Single); virtual; abstract;
     procedure DoCommand(const ACommandName: string; AParams: array of Const); overload; virtual; abstract;
     procedure DoCommand(const ACommandName: string); overload;
+    procedure InitView(
+      AAddButton, ADelButton: TControl;
+      AMainPanel: TPanel); virtual; abstract;
+  end; }
+  TSSBPresenter = class
+  protected
+    FView: ISSBView;
+  public
+    constructor Create(AView: ISSBView);
+    destructor Destroy; override;
   end;
 
-  TSSBImagerController = class(TSSBController)
+  TSSBImagerPresenter = class(TSSBPresenter)
   private
     FModel: TSSBImagerModel;
     FAddButton, FDelButton: TControl;
@@ -40,7 +50,7 @@ type
     procedure DoDelImage(ASender: TObject);
 
     // Обработчики мыши
-    procedure DoZoom(Sender: TObject; Shift: TShiftState;
+    {procedure DoZoom(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean); override;
     procedure DoMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single); override;
@@ -48,22 +58,42 @@ type
       Shift: TShiftState; X, Y: Single); override;
     procedure DoMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Single); override;
-    procedure Adjust(AControl: TControl);
+    procedure Adjust(AControl: TControl); }
   public
-    constructor Create(const ASSBImagerModel: TSSBImagerModel);
-    procedure DoCommand(const ACommandName: string; AParams: array of Const); override;
-    procedure AddImage(const AFileName: string); overload;
-    procedure AddImage(const AImg: TImage); overload;
-    procedure InitView(
-      AAddButton, ADelButton: TControl;
-      AMainPanel: TPanel);
+    //procedure DoCommand(const ACommandName: string; AParams: array of Const); override;
+//    procedure AddImage;//(const AFileName: string); overload;
+    procedure AddImg;
+    procedure SelImg;
+    procedure DelImg;
+    procedure DragImg;
+    procedure StartDragImg;
+    procedure FinishDragImg;
+
+  end;
+
+  TSSBObjecterPresenter = class(TSSBPresenter)
+  public
+    procedure SelObj;
+    procedure AddObj;
+    procedure DelObj;
+    procedure EditObj;
+    procedure ImgAutoConvert;
+  end;
+
+  TSSBShaperPresenter = class(TSSBPresenter)
+  public
+    procedure SelObj;
+    procedure AddShape;
+    procedure DelShape;
+    procedure SelShape;
+    procedure EditShape;
   end;
 
 implementation
 
 { TSSBImagerController }
 
-procedure TSSBImagerController.AddImage(const AFileName: string);
+{rocedure TSSBImagerPresenter.AddImage(const AFileName: string);
 var
   vImg: TImage;
 begin
@@ -77,7 +107,7 @@ begin
   AddImage(vImg);
 end;
 
-procedure TSSBImagerController.AddImage(const AImg: TImage);
+procedure TSSBImagerPresenter.AddImage(const AImg: TImage);
 var
   vImg: TImage;
 begin
@@ -94,9 +124,34 @@ begin
 
   FModel.Add(vImg);
   //FImages.Add(AImage);
+end;  }
+
+procedure TSSBImagerPresenter.AddImg;
+var
+  vS: string;
+  vBmp: TBitmap;
+  vImg: TControl;
+begin
+  vS := FView.FilenameFromDlg;
+
+  if vS <> '' then
+  begin
+    vBmp := TBitmap.Create;
+    try
+      vBmp.LoadFromFile(vS);
+      vImg := FView.AddImage(vBmp);
+{      vImg.OnMouseDown := MouseDown;
+      vImg.OnMouseUp := MouseUp;
+      vImg.OnMouseMove := MouseMove;}
+
+    finally
+      vBmp.Free;
+    end;
+  end;
+
 end;
 
-procedure TSSBImagerController.Adjust(AControl: TControl);
+{procedure TSSBImagerPresenter.Adjust(AControl: TControl);
 var
   i, vX, vY: Integer;
 begin
@@ -117,14 +172,14 @@ begin
               Points[vX] := PointF(Points[vX].X, Images[i].Points[vY].Y);
           end;
     end;
-end;
+end; }
 
-constructor TSSBImagerController.Create(const ASSBImagerModel: TSSBImagerModel);
+procedure TSSBImagerPresenter.DelImg;
 begin
-  FModel := ASSBImagerModel;
+
 end;
 
-procedure TSSBImagerController.DoCommand(const ACommandName: string;
+{procedure TSSBImagerPresenter.DoCommand(const ACommandName: string;
   AParams: array of Const);
 var
   vName: string;
@@ -135,25 +190,28 @@ begin
   if vName = 'add' then
   begin
     vS := string(AParams[0].VString);
-    AddImage(vS);
+    //dImage(vS);
   end;
 
  if vName = 'remove' then
     DoDelImage(nil);
-end;
+end;  }
 
-procedure TSSBImagerController.DoDelImage(ASender: TObject);
+procedure TSSBImagerPresenter.DoDelImage(ASender: TObject);
 begin
   FModel.DelSelected;
 end;
 
-procedure TSSBImagerController.DoMouseDown(Sender: TObject;
+{procedure TSSBImagerPresenter.DoMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 var
   vSelected: TImage;
 begin
   FIsMouseDown := True;
 
+//  ShowMessage(Sender.ClassName);
+//  vSelected := Sender;
+  Exit;
   FMouseStartPoint := MousePos / FPanel.Scale.X;//Point;
   FMouseElementPoint.X := X;
   FMouseElementPoint.Y := Y;
@@ -180,11 +238,11 @@ begin
       end;
     end;
    FSelectedElement.Repaint; }
-  end;
+ { end;
 
-end;
+end; }
 
-procedure TSSBImagerController.DoMouseMove(Sender: TObject; Shift: TShiftState;
+{procedure TSSBImagerPresenter.DoMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Single);
 var
   i: Integer;
@@ -203,31 +261,47 @@ begin
 
   FMouseElementPoint.X := X;
   FMouseElementPoint.Y := Y;
-end;
+end; }
 
-procedure TSSBImagerController.DoMouseUp(Sender: TObject; Button: TMouseButton;
+{procedure TSSBImagerPresenter.DoMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
   FIsMouseDown := False;
-end;
+end;   }
 
-procedure TSSBImagerController.DoSelectImage(ASender: TObject);
+procedure TSSBImagerPresenter.DoSelectImage(ASender: TObject);
 begin
   if ASender is TImage then
     FModel.Select(ASender as TImage)
 end;
 
-procedure TSSBImagerController.DoZoom(Sender: TObject; Shift: TShiftState;
+{procedure TSSBImagerPresenter.DoZoom(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; var Handled: Boolean);
 begin
-  if FPanel.Scale.X + ((WheelDelta / 120) * 0.1) > 0.1 then
-  begin
-    FPanel.Scale.X := FPanel.Scale.X + ((WheelDelta / 120) * 0.1);
-    FPanel.Scale.Y := FPanel.Scale.X;
-  end;
+
+end;  }
+
+procedure TSSBImagerPresenter.DragImg;
+begin
+
 end;
 
-procedure TSSBImagerController.InitView(AAddButton, ADelButton: TControl;
+procedure TSSBImagerPresenter.FinishDragImg;
+begin
+
+end;
+
+procedure TSSBImagerPresenter.SelImg;
+begin
+
+end;
+
+procedure TSSBImagerPresenter.StartDragImg;
+begin
+
+end;
+
+{procedure TSSBImagerPresenter.InitView(AAddButton, ADelButton: TControl;
   AMainPanel: TPanel);
 begin
   FAddButton := AAddButton;
@@ -239,7 +313,7 @@ begin
   FPanel.OnMouseUp := DoMouseUp;
   FPanel.OnMouseMove := DoMouseMove;
   FPanel.OnMouseWheel := DoZoom;
-end;
+end; }
 
 
 {
@@ -355,9 +429,76 @@ begin
 end;}
 { TSSBController }
 
-procedure TSSBController.DoCommand(const ACommandName: string);
+{procedure TSSBController.DoCommand(const ACommandName: string);
 begin
   DoCommand(ACommandName, []);
+end;    }
+
+{ TSSBPresenter }
+
+constructor TSSBPresenter.Create(AView: ISSBView);
+begin
+  FView := AView;
+end;
+
+destructor TSSBPresenter.Destroy;
+begin
+  FView := nil;
+  inherited;
+end;
+
+{ TSSBObjecterPresenter }
+
+procedure TSSBObjecterPresenter.AddObj;
+begin
+
+end;
+
+procedure TSSBObjecterPresenter.DelObj;
+begin
+
+end;
+
+procedure TSSBObjecterPresenter.EditObj;
+begin
+
+end;
+
+procedure TSSBObjecterPresenter.ImgAutoConvert;
+begin
+
+end;
+
+procedure TSSBObjecterPresenter.SelObj;
+begin
+
+end;
+
+{ TSSBShaperPresenter }
+
+procedure TSSBShaperPresenter.AddShape;
+begin
+
+end;
+
+procedure TSSBShaperPresenter.DelShape;
+begin
+
+end;
+
+procedure TSSBShaperPresenter.EditShape;
+begin
+
+end;
+
+procedure TSSBShaperPresenter.SelObj;
+begin
+
+end;
+
+procedure TSSBShaperPresenter.SelShape;
+begin
+
 end;
 
 end.

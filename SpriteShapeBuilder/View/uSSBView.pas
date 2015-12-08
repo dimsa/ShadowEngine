@@ -3,9 +3,9 @@ unit uSSBView;
 interface
 
 uses
-  System.Generics.Collections, System.SysUtils, System.Types,
-  FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms,
-  uSSBTypes, uSSBModels;
+  System.Generics.Collections, System.SysUtils, System.Types, FMX.Graphics,
+  FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms, FMX.Dialogs,
+  uSSBTypes, uSSBModels, uIView;
 
 type
   TLinkedImage = class
@@ -18,50 +18,158 @@ type
     procedure AssignImage(const AObject: TObject); virtual;
   end;
 
-  TSSBView = class
+  TSSBView = class(TInterfacedObject, ISSBView)
   private
     FModel: TSSBModel;
     FChangeblePanel: TLayout;
-    FElements: TList<TLinkedImage>;
+    FElements: TList<TImage>;
     FPanel: TPanel;
     FBackground: TImage;
     FSelected: TImage;
+    FOpenDialog: TOpenDialog;
     procedure SetModel(const Value: TSSBModel);
+    procedure CopyEvents(const AFromControl: TControl; AToControl: TControl);
   public
-    property Selected: TImage read FSelected;
+
+   { property Selected: TImage read FSelected;
     property Elements: TList<TLinkedImage> read FElements;
     property ChangeblePanel: TLayout read FChangeblePanel;
     property Background: TImage read FBackground;
     property Model: TSSBModel read FModel write SetModel;
     procedure Update(Sender: TObject);
-    procedure Init(const AProgForm: TForm); // Инициализируем где будут размещатсья элементы
-    constructor Create;
+    procedure Init(const AProgForm: TForm); // Инициализируем где будут размещатсья элементы   }
+    constructor Create(APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog);
+    destructor Destroy; override;
+    function AddImage(const AImg: TBitmap): TControl;
+    procedure ClearAndFreeImg;
+    function GetMousePos: TPoint;
+    procedure RemoveImage;
+    procedure SelectImage;
+    procedure SetBackground(const AImg: TImage);
+    function FilenameFromDlg: string;
   end;
 
 implementation
 
 { TSSBView }
 
-constructor TSSBView.Create;
+function TSSBView.AddImage(const AImg: TBitmap): TControl;
+var
+  vImg: TImage;
+begin
+  vImg := TImage.Create(FPanel);
+  vImg.Parent := FPanel;
+  vImg.Width := AImg.Width;
+  vImg.Height:= AImg.Height;
+  vImg.Bitmap.Assign(AImg);
+  FElements.Add(vImg);
+  Result := vImg;
+end;
+
+procedure TSSBView.ClearAndFreeImg;
 begin
 
 end;
 
-procedure TSSBView.Init(const AProgForm: TForm);
+procedure TSSBView.CopyEvents(const AFromControl: TControl;
+  AToControl: TControl);
+begin
+  AToControl.OnDragEnter := AFromControl.OnDragEnter;
+  AToControl.OnDragLeave := AFromControl.OnDragLeave;
+  AToControl.OnDragOver := AFromControl.OnDragOver;
+  AToControl.OnDragDrop := AFromControl.OnDragDrop;
+  AToControl.OnDragEnd := AFromControl.OnDragEnd;
+  AToControl.OnKeyDown := AFromControl.OnKeyDown;
+  AToControl.OnKeyUp := AFromControl.OnKeyUp;
+  AToControl.OnClick := AFromControl.OnClick;
+  AToControl.OnDblClick := AFromControl.OnDblClick;
+  AToControl.OnCanFocus := AFromControl.OnCanFocus;
+  AToControl.OnEnter := AFromControl.OnEnter;
+  AToControl.OnExit := AFromControl.OnExit;
+  AToControl.OnMouseDown := AFromControl.OnMouseDown;
+  AToControl.OnMouseMove := AFromControl.OnMouseMove;
+  AToControl.OnMouseUp := AFromControl.OnMouseUp;
+  AToControl.OnMouseWheel := AFromControl.OnMouseWheel;
+  AToControl.OnMouseEnter := AFromControl.OnMouseEnter;
+  AToControl.OnMouseLeave := AFromControl.OnMouseLeave;
+  AToControl.OnPainting := AFromControl.OnPainting;
+  AToControl.OnPaint := AFromControl.OnPaint;
+  AToControl.OnResize := AFromControl.OnResize;
+  AToControl.OnActivate := AFromControl.OnActivate;
+  AToControl.OnDeactivate := AFromControl.OnDeactivate;
+  AToControl.OnApplyStyleLookup := AFromControl.OnApplyStyleLookup;
+  AToControl.OnGesture := AFromControl.OnGesture;
+  AToControl.OnTap := AFromControl.OnTap;
+end;
+
+constructor TSSBView.Create(APanel: TPanel; ABackground, ASelected: TImage;
+  AOpenDialog: TOpenDialog);
+begin
+  FElements := TList<TImage>.Create;
+  FPanel := APanel;
+  FBackground := ABackground;
+  FSelected := ASelected;
+  FOpenDialog := AOpenDialog;
+end;
+
+destructor TSSBView.Destroy;
+var
+  i: Integer;
+begin
+  for i := 0 to FElements.Count - 1 do
+    FElements[i].Free;
+  FElements.Clear;
+  FElements.Free;
+
+  FPanel := nil;
+  FBackground := nil;
+  FSelected := nil;
+  FOpenDialog := nil;
+  inherited;
+end;
+
+function TSSBView.FilenameFromDlg: string;
+begin
+  Result := '';
+  if FOpenDialog.Execute then
+    Result := FOpenDialog.FileName;
+end;
+
+function TSSBView.GetMousePos: TPoint;
+begin
+
+end;
+
+procedure TSSBView.RemoveImage;
+begin
+
+end;
+
+{procedure TSSBView.Init(const AProgForm: TForm);
 begin
   FSelected := TImage(AProgForm.FindComponent('Selected'));
   FBackground := TImage(AProgForm.FindComponent('Background'));
   FElements := TList<TLinkedImage>.Create;
   FPanel := TPanel(AProgForm.FindComponent('MainPanel'));
+end;  }
+
+procedure TSSBView.SelectImage;
+begin
+
+end;
+
+procedure TSSBView.SetBackground(const AImg: TImage);
+begin
+
 end;
 
 procedure TSSBView.SetModel(const Value: TSSBModel);
 begin
   FModel := Value;
-  Update(Self);
+  //Update(Self);
 end;
 
-procedure TSSBView.Update;
+{procedure TSSBView.Update;
 var
   vObj: TControl;
   vLinkCtrl: TLinkedImage;
@@ -95,9 +203,7 @@ begin
 
       FElements.Last.AssignImage(vObj);
 
-     { FElements.Last.Image := TImage.Create(FPanel);
-      FElements.Last.Image.Parent := FPanel;
-      FElements.Last.AssignImage(TControl(vObj)); }
+
 //      TImage(FElements.Last.Control).Bitmap.Assign(TControl(vObj).);
     end;
   end;
@@ -116,7 +222,7 @@ begin
     vLinkCtrl.Free;
   end;
 
-end;
+end;   }
 
 { TLinkedControl }
 

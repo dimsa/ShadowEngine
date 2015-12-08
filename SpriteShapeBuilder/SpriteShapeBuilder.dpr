@@ -15,9 +15,10 @@ uses
   uSSBFigure in 'uSSBFigure.pas',
   SSBOptionsForm in 'SSBOptionsForm.pas' {OptionsForm},
   uSSBModels in 'Model\uSSBModels.pas',
-  uSSBControllers in 'Controller\uSSBControllers.pas',
+  uSSBPresenters in 'Controller\uSSBPresenters.pas',
   uSSBView in 'View\uSSBView.pas',
-  uSSBTypes in 'uSSBTypes.pas';
+  uSSBTypes in 'uSSBTypes.pas',
+  uIView in 'View\uIView.pas';
 
 {$R *.res}
 

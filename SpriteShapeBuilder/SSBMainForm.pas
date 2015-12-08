@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, uSpriteShapeBuilder, System.ImageList,
-  FMX.ImgList, FMX.Layouts, uSSBControllers;
+  FMX.ImgList, FMX.Layouts, uSSBPresenters;
 
 type
   TSSBForm = class(TForm)
@@ -40,13 +40,15 @@ type
     EdtObjectBtn: TCornerButton;
     EdtShapeBtn: TCornerButton;
     Background: TImage;
-    procedure AddPictureBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
     procedure SaveForEngineBtnClick(Sender: TObject);
     procedure Shape_edtClick(Sender: TObject);
     procedure DelPictureBtnClick(Sender: TObject);
+    procedure BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; var Handled: Boolean);
+    procedure AddPictureBtnClick(Sender: TObject);
   private
     SSB: TSpriteShapeBuilder;
     { Private declarations }
@@ -62,27 +64,28 @@ implementation
 {$R *.fmx}
 
 procedure TSSBForm.AddPictureBtnClick(Sender: TObject);
-var
-  vImg: TBitmap;
-  v: TNotifyEvent;
 begin
-//  vImg :=    TNot
-//  vImg.
-//mage.
-  if OpenDialog.Execute then
-  //  Selected.Bitmap.LoadFromFile(OpenDialog.FileName);
-   // vImg.CreateFromFile(OpenDialog.FileName);
-    SSB.Controller.DoCommand('Add', [OpenDialog.FileName]);
+  SSB.Imager.AddImg;
+end;
+
+procedure TSSBForm.BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; var Handled: Boolean);
+begin
+  if MainPanel.Scale.X + ((WheelDelta / 120) * 0.1) > 0.1 then
+  begin
+    MainPanel.Scale.X := MainPanel.Scale.X + ((WheelDelta / 120) * 0.1);
+    MainPanel.Scale.Y := MainPanel.Scale.X;
+  end;
 end;
 
 procedure TSSBForm.DelPictureBtnClick(Sender: TObject);
 begin
-  SSB.Controller.DoCommand('Remove');
+  SSB.Imager.DelImg;
 end;
 
 procedure TSSBForm.FormCreate(Sender: TObject);
 var
-  temp: TSSBImagerController;
+  temp: TSSBImagerPresenter;
 begin
   Picture_Inst.Position.X := 0;
   Object_Inst.Position.X := 0;
@@ -93,7 +96,7 @@ begin
   Shape_Inst.Visible := False;
 
 
-  SSB := TSpriteShapeBuilder.Create;
+  SSB := TSpriteShapeBuilder.Create(MainPanel, Background, Selected, OpenDialog);
   SSB.Init(Self);
 end;
 
