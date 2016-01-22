@@ -44,6 +44,7 @@ type
     FMouseStartPoint: TPointF;
     FMouseElementPoint: TPointF;
     FElementStartPosition: TPointF;
+    FSelected: TImage;
 
     // Методы на клик
     procedure DoSelectImage(ASender: TObject);
@@ -140,7 +141,7 @@ begin
     try
       vBmp.LoadFromFile(vS);
       vImg := FView.AddImage(vBmp);
-{      vImg.OnMouseDown := MouseDown;
+      {vImg.OnMouseDown := MouseDown;
       vImg.OnMouseUp := MouseUp;
       vImg.OnMouseMove := MouseMove;}
 
@@ -292,8 +293,16 @@ begin
 end;
 
 procedure TSSBImagerPresenter.SelImg;
+var
+  i: Integer;
 begin
-
+  for i := 0 to FModel.ImageCount - 1 do
+    if FModel.Images[i].PointInObject(FView.MousePos.X, FView.MousePos.Y) then
+    begin
+      FSelected := FModel.Images[i];
+      Exit;
+    end;
+    FSelected := nil;
 end;
 
 procedure TSSBImagerPresenter.StartDragImg;

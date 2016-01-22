@@ -20,6 +20,8 @@ type
     destructor Destroy; override;
   end;
 
+  TAct = (Subscribe, Unsubscribe);
+
 implementation
 
 { TImageToControlAdapter }

@@ -5,6 +5,7 @@ interface
 uses
   System.Generics.Collections, System.SysUtils, System.Types, FMX.Graphics,
   FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms, FMX.Dialogs,
+  FMX.Types, System.Classes, System.UITypes,
   uSSBTypes, uSSBModels, uIView;
 
 type
@@ -27,8 +28,14 @@ type
     FBackground: TImage;
     FSelected: TImage;
     FOpenDialog: TOpenDialog;
+    FMouseMoveHandlers: TList<TMouseMoveEvent>;
+    FMouseDownHandlers: TList<TMouseEvent>;
+    FMouseUpHandlers: TList<TMouseEvent>;
     procedure SetModel(const Value: TSSBModel);
     procedure CopyEvents(const AFromControl: TControl; AToControl: TControl);
+    procedure DoMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure DoMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure DoMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
   public
 
    { property Selected: TImage read FSelected;
@@ -47,6 +54,9 @@ type
     procedure SelectImage;
     procedure SetBackground(const AImg: TImage);
     function FilenameFromDlg: string;
+    procedure ChangeImageMouseDownHandler(const AHandler: TMouseEvent; const AAct: TAct);
+    procedure ChangeImageMouseUpHandler(const AHandler: TMouseEvent;  const AAct: TAct);
+    procedure ChangeImageMouseMoveHandler(const AHandler: TMouseMoveEvent; const AAct: TAct);
   end;
 
 implementation
@@ -64,6 +74,42 @@ begin
   vImg.Bitmap.Assign(AImg);
   FElements.Add(vImg);
   Result := vImg;
+end;
+
+procedure TSSBView.ChangeImageMouseDownHandler(const AHandler: TMouseEvent;
+  const AAct: TAct);
+begin
+  if AAct = Subscribe then
+    if FMouseDownHandlers.Contains(AHandler) then
+      FMouseDownHandlers.Add(AHandler);
+
+  if AAct = Unsubscribe then
+    if FMouseDownHandlers.Contains(AHandler) then
+      FMouseDownHandlers.Remove(AHandler);
+end;
+
+procedure TSSBView.ChangeImageMouseMoveHandler(const AHandler: TMouseMoveEvent;
+  const AAct: TAct);
+begin
+  if AAct = Subscribe then
+    if FMouseMoveHandlers.Contains(AHandler) then
+      FMouseMoveHandlers.Add(AHandler);
+
+  if AAct = Unsubscribe then
+    if FMouseMoveHandlers.Contains(AHandler) then
+      FMouseMoveHandlers.Remove(AHandler);
+end;
+
+procedure TSSBView.ChangeImageMouseUpHandler(const AHandler: TMouseEvent;
+  const AAct: TAct);
+begin
+  if AAct = Subscribe then
+    if FMouseUpHandlers.Contains(AHandler) then
+      FMouseUpHandlers.Add(AHandler);
+
+  if AAct = Unsubscribe then
+    if FMouseUpHandlers.Contains(AHandler) then
+      FMouseUpHandlers.Remove(AHandler);
 end;
 
 procedure TSSBView.ClearAndFreeImg;
@@ -126,6 +172,32 @@ begin
   FSelected := nil;
   FOpenDialog := nil;
   inherited;
+end;
+
+procedure TSSBView.DoMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+var
+  i: Integer;
+begin
+  for i := 0 to FMouseDownHandlers.Count - 1 do
+    FMouseDownHandlers[i](Sender, Button, Shift, X, Y);
+end;
+
+procedure TSSBView.DoMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
+var
+  i: Integer;
+begin
+  for i := 0 to FMouseMoveHandlers.Count - 1 do
+    FMouseMoveHandlers[i](Sender, Shift, X, Y);
+end;
+
+procedure TSSBView.DoMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+var
+  i: Integer;
+begin
+  for i := 0 to FMouseUpHandlers.Count - 1 do
+    FMouseUpHandlers[i](Sender, Button, Shift, X, Y);
 end;
 
 function TSSBView.FilenameFromDlg: string;
