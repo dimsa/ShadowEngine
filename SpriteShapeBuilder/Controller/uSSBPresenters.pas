@@ -3,8 +3,8 @@ unit uSSBPresenters;
 interface
 
 uses
-  System.Classes, System.UITypes, System.Types, System.SysUtils,
-  FMX.StdCtrls, FMX.Controls, FMX.Graphics, FMX.Objects, FMX.Dialogs,
+  System.Classes, System.UITypes, System.Types, System.SysUtils, System.Generics.Collections,
+  FMX.StdCtrls, FMX.Controls, FMX.Graphics, FMX.Objects, FMX.Dialogs, FMX.Types,
   uSSBModels, uClasses, uEasyDevice, uIView;
 
 
@@ -31,25 +31,29 @@ type
   protected
     FView: ISSBView;
   public
-    constructor Create(AView: ISSBView);
+    constructor Create(AView: ISSBView); virtual;
+    procedure Init; virtual;
+    procedure OnModelUpdate(ASender: TObject); virtual;
     destructor Destroy; override;
   end;
 
   TSSBImagerPresenter = class(TSSBPresenter)
   private
     FModel: TSSBImagerModel;
-    FAddButton, FDelButton: TControl;
     FPanel: TPanel;
     FIsMouseDown: Boolean;
     FMouseStartPoint: TPointF;
     FMouseElementPoint: TPointF;
     FElementStartPosition: TPointF;
     FSelected: TImage;
+    FElements: TDictionary<ISSBViewElement, TImage>;
 
     // Методы на клик
     procedure DoSelectImage(ASender: TObject);
     procedure DoDelImage(ASender: TObject);
-
+    procedure DoMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure DoMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure DoMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
     // Обработчики мыши
     {procedure DoZoom(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean); override;
@@ -69,7 +73,9 @@ type
     procedure DragImg;
     procedure StartDragImg;
     procedure FinishDragImg;
-
+    procedure Init; override;
+    constructor Create(AView: ISSBView); override;
+    destructor Destroy; override;
   end;
 
   TSSBObjecterPresenter = class(TSSBPresenter)
@@ -130,26 +136,24 @@ end;  }
 procedure TSSBImagerPresenter.AddImg;
 var
   vS: string;
-  vBmp: TBitmap;
-  vImg: TControl;
+  vImg: TImage;
+  vViewItem: ISSBViewElement;
 begin
   vS := FView.FilenameFromDlg;
-
   if vS <> '' then
   begin
-    vBmp := TBitmap.Create;
+    vImg := TImage.Create(nil);
+    vViewItem := FView.AddElement;
+    FElements.Add(vViewItem, vImg);
     try
-      vBmp.LoadFromFile(vS);
-      vImg := FView.AddImage(vBmp);
-      {vImg.OnMouseDown := MouseDown;
-      vImg.OnMouseUp := MouseUp;
-      vImg.OnMouseMove := MouseMove;}
-
-    finally
-      vBmp.Free;
+      vImg.Bitmap.LoadFromFile(vS);
+      FModel.Add(vImg);
+      vViewItem.AssignBitmap(vImg.Bitmap);
+    except
+      vImg.Free;
+      FView.RemoveElement(vViewItem);
     end;
   end;
-
 end;
 
 {procedure TSSBImagerPresenter.Adjust(AControl: TControl);
@@ -175,9 +179,23 @@ begin
     end;
 end; }
 
+constructor TSSBImagerPresenter.Create(AView: ISSBView);
+begin
+  inherited;
+  FElements := TDictionary<ISSBViewElement, TImage>.Create;
+  FModel := TSSBImagerModel.Create(OnModelUpdate);
+end;
+
 procedure TSSBImagerPresenter.DelImg;
 begin
 
+end;
+
+destructor TSSBImagerPresenter.Destroy;
+begin
+  FElements.Free;
+  FModel.Free;
+  inherited;
 end;
 
 {procedure TSSBImagerPresenter.DoCommand(const ACommandName: string;
@@ -201,6 +219,24 @@ end;  }
 procedure TSSBImagerPresenter.DoDelImage(ASender: TObject);
 begin
   FModel.DelSelected;
+end;
+
+procedure TSSBImagerPresenter.DoMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+begin
+  SelImg;
+end;
+
+procedure TSSBImagerPresenter.DoMouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Single);
+begin
+  StartDragImg;
+end;
+
+procedure TSSBImagerPresenter.DoMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+begin
+  FinishDragImg;
 end;
 
 {procedure TSSBImagerPresenter.DoMouseDown(Sender: TObject;
@@ -272,8 +308,8 @@ end;   }
 
 procedure TSSBImagerPresenter.DoSelectImage(ASender: TObject);
 begin
-  if ASender is TImage then
-    FModel.Select(ASender as TImage)
+{  if ASender is TImage then
+    FModel.Select(ASender as TImage)     }
 end;
 
 {procedure TSSBImagerPresenter.DoZoom(Sender: TObject; Shift: TShiftState;
@@ -292,6 +328,15 @@ begin
 
 end;
 
+procedure TSSBImagerPresenter.Init;
+begin
+  inherited;
+
+  FView.ChangeImageMouseDownHandler(DoMouseDown);
+  FView.ChangeImageMouseUpHandler(DoMouseUp);
+  FView.ChangeImageMouseMoveHandler(DoMouseMove);
+end;
+
 procedure TSSBImagerPresenter.SelImg;
 var
   i: Integer;
@@ -300,6 +345,7 @@ begin
     if FModel.Images[i].PointInObject(FView.MousePos.X, FView.MousePos.Y) then
     begin
       FSelected := FModel.Images[i];
+      FView.SelectElement(FView.ElementUnderMouse);
       Exit;
     end;
     FSelected := nil;
@@ -309,139 +355,6 @@ procedure TSSBImagerPresenter.StartDragImg;
 begin
 
 end;
-
-{procedure TSSBImagerPresenter.InitView(AAddButton, ADelButton: TControl;
-  AMainPanel: TPanel);
-begin
-  FAddButton := AAddButton;
-  FDelButton := ADelButton;
-  FPanel := AMainPanel;
-
-  FDelButton.OnClick := DoDelImage;
-  FPanel.OnMouseDown := DoMouseDown;
-  FPanel.OnMouseUp := DoMouseUp;
-  FPanel.OnMouseMove := DoMouseMove;
-  FPanel.OnMouseWheel := DoZoom;
-end; }
-
-
-{
-procedure TSSBView.DoMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-var
-  vFigure: TSSBFigure;
-  vPoint: TPointF;
-begin
-  FIsMouseDown := True;
-  FMouseStartPoint := MousePos / FPanel.Scale.X;//Point;
-  FMouseElementPoint.X := X;
-  FMouseElementPoint.Y := Y;
-
-//  if FStatus = sPicture then
- // begin
-
-  if Sender is TSSBElement then
-  begin
-    SelectedElement := TSSBElement(Sender);
-
-    FElementStartPosition := FSelectedElement.Position.Point;
-
-    FMouseElementPoint.X := X;
-    FMouseElementPoint.Y := Y;
-    vFigure := SelectedElement.FigureByCoord(FMouseElementPoint, True);
-    if vFigure <> nil then
-    begin
-      if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, CPrec*2, True) then
-      begin
-        FSelectedElement.AddPointToDraw(vPoint, TAlphaColorRec.Red);
-        FElementStartPosition := vPoint ;
-        FLockPoint := True;
-      end;
-    end;
-   FSelectedElement.Repaint;
-  end;
-
-end;
-
-procedure TSSBView.DoMouseMove(Sender: TObject; Shift: TShiftState;
-  X, Y: Single);
-var
-  i: Integer;
-  vX, vY: Integer;
-  vFigure: TSSBFigure;
-  vPoint: TPointF;
-begin
-  if Sender = FSelectedElement then
-  begin
-    if FIsMouseDown then
-      with FSelectedElement do
-      begin
-        if FLockPoint = False then
-        begin
-          Position.Point := FElementStartPosition + MousePos / FPanel.Scale.X - FMouseStartPoint;
-
-          for i := 0 to FElements.Count - 1 do
-            if FElements[i] <> FSelectedElement then
-            begin
-              for vX := 0 to 3 do
-                for vY := 0 to 3 do
-                begin
-                  if (Points[vX].X <= FElements[i].Points[vY].X + CPrec) and
-                    (Points[vX].X >= FElements[i].Points[vY].X - CPrec) then
-                    Points[vX] := PointF(FElements[i].Points[vY].X, Points[vX].Y) ;
-
-                  if (Points[vX].Y <= FElements[i].Points[vY].Y + CPrec) and
-                    (Points[vX].Y >= FElements[i].Points[vY].Y - CPrec)   then
-                    Points[vX] := PointF(Points[vX].X, FElements[i].Points[vY].Y) ;
-                end;
-            end;
-        end else
-        begin
-          FSelectedElement.ChangeLockedPoint(
-            FElementStartPosition + MousePos / FPanel.Scale.X - FMouseStartPoint);
-        end;
-      end;
-
-    FMouseElementPoint.X := X;
-    FMouseElementPoint.Y := Y;
-
-    vFigure :=SelectedElement.FigureByCoord(FMouseElementPoint);
-    if vFigure <> nil then
-    begin
-      if vFigure.KeyPointLocal(FMouseElementPoint, vPoint, CPrec*2) then
-      begin
-        FSelectedElement.AddPointToDraw(vPoint, TAlphaColorRec.Red);
-      end;
-    end;
-   FSelectedElement.Repaint;
-  end;
-end;
-
-procedure TSSBView.DoMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-begin
-  FIsMouseDown := False;
-  FLockPoint := False;
-
-  if FSelectedElement <> Nil then
-    FSelectedElement.UnlockPoint;
-end;
-
-procedure TSSBView.DoZoom(Sender: TObject; Shift: TShiftState;
-  WheelDelta: Integer; var Handled: Boolean);
-begin
-  if FPanel.Scale.X + ((WheelDelta / 120) * 0.1) > 0.1 then
-  begin
-    FPanel.Scale.X := FPanel.Scale.X + ((WheelDelta / 120) * 0.1);
-    FPanel.Scale.Y := FPanel.Scale.X;
-  end;
-end;}
-{ TSSBController }
-
-{procedure TSSBController.DoCommand(const ACommandName: string);
-begin
-  DoCommand(ACommandName, []);
-end;    }
 
 { TSSBPresenter }
 
@@ -454,6 +367,16 @@ destructor TSSBPresenter.Destroy;
 begin
   FView := nil;
   inherited;
+end;
+
+procedure TSSBPresenter.Init;
+begin
+
+end;
+
+procedure TSSBPresenter.OnModelUpdate(ASender: TObject);
+begin
+
 end;
 
 { TSSBObjecterPresenter }

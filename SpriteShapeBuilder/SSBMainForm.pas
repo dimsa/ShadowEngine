@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, uSpriteShapeBuilder, System.ImageList,
-  FMX.ImgList, FMX.Layouts, uSSBPresenters;
+  FMX.ImgList, FMX.Layouts, uSSBPresenters, uSSBTypes;
 
 type
   TSSBForm = class(TForm)
@@ -49,6 +49,12 @@ type
     procedure BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean);
     procedure AddPictureBtnClick(Sender: TObject);
+    procedure Picture_imgClick(Sender: TObject);
+    procedure Object_imgClick(Sender: TObject);
+    procedure Shape_imgClick(Sender: TObject);
+    procedure BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Single);
+    procedure BackgroundResize(Sender: TObject);
   private
     SSB: TSpriteShapeBuilder;
     { Private declarations }
@@ -68,6 +74,12 @@ begin
   SSB.Imager.AddImg;
 end;
 
+procedure TSSBForm.BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Single);
+begin
+  SSBForm.Caption := x.ToString() + ' ' + y.ToString();
+end;
+
 procedure TSSBForm.BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; var Handled: Boolean);
 begin
@@ -76,6 +88,11 @@ begin
     MainPanel.Scale.X := MainPanel.Scale.X + ((WheelDelta / 120) * 0.1);
     MainPanel.Scale.Y := MainPanel.Scale.X;
   end;
+end;
+
+procedure TSSBForm.BackgroundResize(Sender: TObject);
+begin
+  SSBForm.Caption := Random(100).ToString;
 end;
 
 procedure TSSBForm.DelPictureBtnClick(Sender: TObject);
@@ -96,7 +113,7 @@ begin
   Shape_Inst.Visible := False;
 
 
-  SSB := TSpriteShapeBuilder.Create(MainPanel, Background, Selected, OpenDialog);
+  SSB := TSpriteShapeBuilder.Create(Self, MainPanel, Background, Selected, OpenDialog);
   SSB.Init(Self);
 end;
 
@@ -104,6 +121,17 @@ procedure TSSBForm.LoadProjectBtnClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
     SSB.LoadProject(OpenDialog.FileName);
+end;
+
+procedure TSSBForm.Object_imgClick(Sender: TObject);
+begin
+   SSB.Objecter.Init;
+end;
+
+procedure TSSBForm.Picture_imgClick(Sender: TObject);
+begin
+  SSB.Status := TSSBStatus.sPicture;
+  SSB.Imager.Init;
 end;
 
 procedure TSSBForm.SaveForEngineBtnClick(Sender: TObject);
@@ -121,6 +149,11 @@ end;
 procedure TSSBForm.Shape_edtClick(Sender: TObject);
 begin
   ShowMessage('11');
+end;
+
+procedure TSSBForm.Shape_imgClick(Sender: TObject);
+begin
+  SSB.Shaper.Init;
 end;
 
 end.

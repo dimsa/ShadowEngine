@@ -3,7 +3,7 @@ unit uSSBTypes;
 interface
 
 uses
-  System.Generics.Collections, FMX.Controls, FMX.Objects,
+  System.Generics.Collections, FMX.Controls, FMX.Objects, System.Types,
   uNamedList;
 
 type
@@ -19,6 +19,8 @@ type
     constructor Create(const AImageList: TNamedList<TImage>);
     destructor Destroy; override;
   end;
+
+  TPositionFunc = Function(const APoint: TPointF) : TPointF of Object;
 
   TAct = (Subscribe, Unsubscribe);
 

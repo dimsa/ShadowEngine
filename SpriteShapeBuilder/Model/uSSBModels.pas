@@ -19,6 +19,13 @@ type
     property Elements: TList<TControl> read GetElements;
   end;
 
+{  TSSBItemModel = class
+  private
+
+  public
+    property Items
+  end;  }
+
   TSSBImagerModel = class(TSSBModel)
   private
     FSelected: TImage;
@@ -39,7 +46,6 @@ type
     property ImageCount: Integer read GetImageCount;
     property Images[AIndex: Integer]: TImage read GetImage write SetImage;
     function Add(const AImage: TImage): Boolean;
-    function Select(const AImage: TImage): Boolean;
     property Selected: TImage read FSelected;
   const
     CPrec = 5;
@@ -56,12 +62,10 @@ begin
 end;
 
 constructor TSSBImagerModel.Create(const ANotifyEvent: TNotifyEvent);
-var
-  vList: TList<TImage>;
 begin
   FImages := TNamedList<TImage>.Create;
 
-  FImgToCtrlAdapter := TImgToCtrlAdapter.Create(FImages);
+//  FImgToCtrlAdapter := TImgToCtrlAdapter.Create(FImages);
   FBackground := TBitmap.Create;
 
   FNotifyEvent := ANotifyEvent;
@@ -69,18 +73,18 @@ end;
 
 procedure TSSBImagerModel.DelSelected;
 begin
-  if FImages.IsHere(FSelected) then
+{  if FImages.IsHere(FSelected) then
   begin
     FImages.Delete(FSelected);
     FSelected.Free;
     FSelected := nil;
   end;
-  FNotifyEvent(Self);
+  FNotifyEvent(Self);  }
 end;
 
 destructor TSSBImagerModel.Destroy;
 var
-  vImg: TControl;
+  vImg: TImage;
 begin
   for vImg in FImages do
     vImg.Free;
@@ -120,11 +124,11 @@ begin
   Result := nil;
 end;
 
-function TSSBImagerModel.Select(const AImage: TImage): Boolean;
+{function TSSBImagerModel.Select(const AImage: TImage): Boolean;
 begin
   if FImages.IsHere(AImage) then
     FSelected.Assign(AImage);
-end;
+end;            }
 
 procedure TSSBImagerModel.SetImage(AIndex: Integer; const Value: TImage);
 begin

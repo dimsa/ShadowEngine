@@ -14,6 +14,7 @@ type
   private
     FStatus: TSSBStatus;
     FPanel: TPanel;
+    FForm: TForm;
 
     // Контролы для переключения статуса
     FPanels: array[TSSBStatus] of TLayout;
@@ -22,12 +23,6 @@ type
 
     FView: TSSBView;
     FControllers: array[TSSBStatus] of TSSBPresenter;
-    FModels: array[TSSBStatus] of TSSBModel;
-
-//    FImagerController: TSSBImagerController;
-//    FImagerModel: TSSBImagerModel;
-
-//    FElements: TNamedList<TSSBElement>; // Объекты с шейпами
     FSelectedElement: TSSBElement;
     FSelectedImage: TImage;
     FLockPoint: Boolean;
@@ -53,11 +48,11 @@ type
     procedure DoSaveProject(ASender: TObject);
     procedure DoLoadProject(ASender: TObject);
 
-    procedure SetSelectedElement(const Value: TSSBElement);
     function Serialize: TJSONObject;
     procedure Deserialize(const AJson: TJSONObject);
     procedure SetStatus(const Value: TSSBStatus);
     function GetController: TSSBPresenter;
+    function FormScreenToClient(const APoint: TPointF): TPointF;
   public
     property Status: TSSBStatus read FStatus write SetStatus;
     property IsMouseDown: Boolean read FIsMouseDown write FIsMouseDown;
@@ -68,12 +63,12 @@ type
 //    property Elements: TNamedList<TSSBElement> read FElements write FElements;
 //    property Elements[Index: Integer]: read GetElements write SetElements;
 //    property SelectedElement: TSSBElement read FSelectedElement write SetSelectedElement;
-    procedure AddElement(const AFileName: string); overload;
-    procedure AddElement(const AElement: TSSBElement); overload;
+{    procedure AddElement(const AFileName: string); overload;
+    procedure AddElement(const AElement: TSSBElement); overload;    }
     procedure LoadProject(const AFileName: string);
     procedure SaveProject(const AFileName: string);
     procedure SaveForEngine(const AFileName: string);
-    constructor Create(APanel: TPanel; ABackground, ASelected: TImage;
+    constructor Create(AForm: TForm; APanel: TPanel; ABackground, ASelected: TImage;
   AOpenDialog: TOpenDialog);
     procedure Init(const AProgForm: TForm);
     destructor Destroy; override;
@@ -89,7 +84,7 @@ uses
 
 { TSpriteShapeBuilder }
 
-procedure TSpriteShapeBuilder.AddElement(const AFileName: string);
+{procedure TSpriteShapeBuilder.AddElement(const AFileName: string);
 var
   vSSBElement: TSSBElement;
 begin
@@ -97,34 +92,33 @@ begin
   vSSBElement.LoadFromFile(AFileName);
 
   AddElement(vSSBElement);
-end;
+end; }
 
-procedure TSpriteShapeBuilder.AddElement(const AElement: TSSBElement);
+{procedure TSpriteShapeBuilder.AddElement(const AElement: TSSBElement);
 begin
   with AElement do
   begin
     Parent := FPanel;
 
     OnClick := DoSelectObject;
-{    OnMouseDown := DoMouseDown;
-    OnMouseUp := DoMouseUp;
-    OnMouseMove := DoMouseMove;
-    OnMouseWheel := DoZoom;  }
   end;
 
 //  FElements.Add(AElement);
-end;
+end;  }
 
-constructor TSpriteShapeBuilder.Create(APanel: TPanel; ABackground,
+constructor TSpriteShapeBuilder.Create(AForm: TForm; APanel: TPanel; ABackground,
   ASelected: TImage; AOpenDialog: TOpenDialog);
 begin
   //FElements := TNamedList<TSSBElement>.Create;
-
   FLockPoint := False;
   FIsMouseDown := False;
+  FForm := AForm;
 
-  FView := TSSBView.Create(APanel, ABackground, ASelected, AOpenDialog);
+
+  FView := TSSBView.Create(APanel, ABackground, ASelected, AOpenDialog, FormScreenToClient);
+
   FImager := TSSBImagerPresenter.Create(FView);
+  //FModels[sPicture] := TSSBImagerModel.Create(FImager.OnModelUpdate);
 
 
 //  FControllers[sPicture] := TSSBImagerPresenter.Create(FView);
@@ -195,9 +189,6 @@ begin
     Status := sShape;
 
 //  FView.Model := FModels[Status];
-
-  FPanels[Status].Visible := True;
-
 end;
 
 procedure TSpriteShapeBuilder.DoDeleteObject(ASender: TObject);
@@ -246,6 +237,11 @@ begin
     SelectedElement := TSSBElement(ASender);   }
 end;
 
+function TSpriteShapeBuilder.FormScreenToClient(const APoint: TPointF): TPointF;
+begin
+  Result := FForm.ScreenToClient(APoint);
+end;
+
 function TSpriteShapeBuilder.GetController: TSSBPresenter;
 begin
   Result := FControllers[FStatus];
@@ -277,6 +273,10 @@ begin
 
   end;
 
+  FPanels[sPicture] := TLayout(AProgForm.FindComponent('Picture_Inst'));
+  FPanels[sObject] := TLayout(AProgForm.FindComponent('Object_Inst'));
+  FPanels[sShape] := TLayout(AProgForm.FindComponent('Shape_Inst'));
+
   Status := sPicture;
 
   FTabsRect[sPicture] := TRectangle(AProgForm.FindComponent('Picture_Rect'));
@@ -287,16 +287,12 @@ begin
   FTabsImg[sObject] := TImage(AProgForm.FindComponent('Object_Img'));
   FTabsImg[sShape] := TImage(AProgForm.FindComponent('Shape_Img'));
 
-  for iStatus := Low(TSSBStatus) to High(TSSBStatus) do
+ { for iStatus := Low(TSSBStatus) to High(TSSBStatus) do
   begin
     FTabsImg[iStatus].OnClick := DoChangeStatus;
     FTabsRect[iStatus].OnClick:= DoChangeStatus;
-  end;
+  end;    }
 
-
-  FPanels[sPicture] := TLayout(AProgForm.FindComponent('Picture_Inst'));
-  FPanels[sObject] := TLayout(AProgForm.FindComponent('Object_Inst'));
-  FPanels[sShape] := TLayout(AProgForm.FindComponent('Shape_Inst'));
 
   //FImageForSelect := TImage(AProgForm.FindComponent('SelectImage'));
 
@@ -335,7 +331,7 @@ begin
   begin
     vSSB := TSSBElement.Create(FPanel);
     vSSB.Deserialize(TJSONObject(vItem));
-    AddElement(vSSB);
+    //AddElement(vSSB);
   end;
 
   vList.Free;
@@ -375,16 +371,11 @@ begin
   Result := vObj;
 end;
 
-procedure TSpriteShapeBuilder.SetSelectedElement(const Value: TSSBElement);
-begin
-  FSelectedElement := Value;
-  //ImageForSelect.Bitmap.Assign(Value.Bitmap);
-end;
-
 procedure TSpriteShapeBuilder.SetStatus(const Value: TSSBStatus);
 begin
 //  FPanels[FStatus].Visible := False;
   FStatus := Value;
+  FPanels[FStatus].Visible := True;
 //  FPanels[Value].Visible := True;
 end;
 
