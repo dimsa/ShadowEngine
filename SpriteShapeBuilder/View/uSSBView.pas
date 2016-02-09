@@ -19,8 +19,9 @@ type
     procedure AssignImage(const AObject: TObject); virtual;
   end;    }
 
-  TElement = class(TImage, ISSBViewElement)
+  TElement = class(TInterfacedObject, ISSBViewElement)
   private
+    FImage: TImage;
     function GetWidth: Integer;
     procedure SetWidth(AValue: Integer);
     function GetHeight: Integer;
@@ -29,9 +30,19 @@ type
     procedure SetTop(AValue: Integer);
     function GetLeft: Integer;
     procedure SetLeft(AValue: Integer);
+    function GetOnMouseDown: TMouseEvent;
+    function GetOnMouseMove: TMouseMoveEvent;
+    function GetOnMouseUp: TMouseEvent;
+    procedure SetOnMouseDown(const Value: TMouseEvent);
+    procedure SetOnMouseMove(const Value: TMouseMoveEvent);
+    procedure SetOnMouseUp(const Value: TMouseEvent);
   public
     procedure AssignBitmap(ABmp: TBitmap);
-    property Width: Integer read GetWidth write SetWidth;
+    property OnMouseMove: TMouseMoveEvent read GetOnMouseMove write SetOnMouseMove;
+    property OnMouseDown: TMouseEvent read GetOnMouseDown write SetOnMouseDown;
+    property OnMouseUp: TMouseEvent read GetOnMouseUp write SetOnMouseUp;
+    constructor Create(AOwner: TControl);
+    destructor Destroy; override;
   end;
 
   TSSBView = class(TInterfacedObject, ISSBView)
@@ -80,12 +91,11 @@ implementation
 function TSSBView.AddElement: ISSBViewElement;
 var
   vImg: TElement;
+  vi: TImage;
 begin
   vImg := TElement.Create(FPanel);
-  vImg.Parent := FPanel;
-//  vImg.Width := ABmp.Width;
-//  vImg.Height:= ABmp.Height;
-//  vImg.Bitmap.Assign(ABmp);
+
+//  vImg.Parent := FPanel;
 
   vImg.OnMouseDown := FMouseDownHandler;
   vImg.OnMouseUp := FMouseUpHandler;
@@ -240,7 +250,7 @@ end;  }
 
 procedure TSSBView.SelectElement(const AElement: ISSBViewElement);
 begin
-  FSelected.Assign(ElementByInterface(AElement).Bitmap);
+//  FSelected.Assign(ElementByInterface(AElement).Bitmap);
 end;
 
 procedure TSSBView.SetBackground(const AImg: TImage);
@@ -324,49 +334,90 @@ end;  }
 
 procedure TElement.AssignBitmap(ABmp: TBitmap);
 begin
-  Self.Bitmap.Assign(ABmp);
-  Self.Width := ABmp.Width;
-  Self.Height:= ABmp.Height;
+  FImage.Width := ABmp.Width;
+  FImage.Height:= ABmp.Height;
+  FImage.Bitmap.Assign(ABmp);
+end;
+
+constructor TElement.Create(AOwner: TControl);
+begin
+  FImage := TImage.Create(AOwner);
+  FImage.Parent := AOwner;
+end;
+
+destructor TElement.Destroy;
+begin
+  FImage.Free;
 end;
 
 function TElement.GetHeight: Integer;
 begin
-  Result := Self.Width;
+  Result := Round(FImage.Height);
 end;
 
 function TElement.GetLeft: Integer;
 begin
+  Result := Round(FImage.Position.X);
+end;
 
+function TElement.GetOnMouseDown: TMouseEvent;
+begin
+  Result := FImage.OnMouseDown;
+end;
+
+function TElement.GetOnMouseMove: TMouseMoveEvent;
+begin
+  Result := FImage.OnMouseMove;
+end;
+
+function TElement.GetOnMouseUp: TMouseEvent;
+begin
+  Result := FImage.OnMouseUp;
 end;
 
 function TElement.GetTop: Integer;
 begin
-
+  Result := Round(FImage.Position.Y);
 end;
 
 function TElement.GetWidth: Integer;
 begin
-
+  Result := Round(FImage.Width);
 end;
 
 procedure TElement.SetHeight(AValue: Integer);
 begin
-
+  FImage.Height := AValue;
 end;
 
 procedure TElement.SetLeft(AValue: Integer);
 begin
+  FImage.Position.X := AValue;
+end;
 
+procedure TElement.SetOnMouseDown(const Value: TMouseEvent);
+begin
+  FImage.OnMouseDown := Value;
+end;
+
+procedure TElement.SetOnMouseMove(const Value: TMouseMoveEvent);
+begin
+  FImage.OnMouseMove := Value;
+end;
+
+procedure TElement.SetOnMouseUp(const Value: TMouseEvent);
+begin
+  FImage.OnMouseUp := Value;
 end;
 
 procedure TElement.SetTop(AValue: Integer);
 begin
-
+  FImage.Position.Y := AValue;
 end;
 
 procedure TElement.SetWidth(AValue: Integer);
 begin
-
+  FImage.Width := AValue;
 end;
 
 end.

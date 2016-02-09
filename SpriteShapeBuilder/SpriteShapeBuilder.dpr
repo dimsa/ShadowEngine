@@ -15,7 +15,7 @@ uses
   uSSBFigure in 'uSSBFigure.pas',
   SSBOptionsForm in 'SSBOptionsForm.pas' {OptionsForm},
   uSSBModels in 'Model\uSSBModels.pas',
-  uSSBPresenters in 'Controller\uSSBPresenters.pas',
+  uSSBPresenters in 'Presenters\uSSBPresenters.pas',
   uSSBView in 'View\uSSBView.pas',
   uSSBTypes in 'uSSBTypes.pas',
   uIView in 'View\uIView.pas';

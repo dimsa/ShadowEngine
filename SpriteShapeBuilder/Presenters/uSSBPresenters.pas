@@ -144,6 +144,11 @@ begin
   begin
     vImg := TImage.Create(nil);
     vViewItem := FView.AddElement;
+    vViewItem.Left := 0;
+    vViewItem.Top := 0;
+    vViewItem.Width := Round(vImg.Width);
+    vViewItem.Height:= Round(vImg.Height);
+
     FElements.Add(vViewItem, vImg);
     try
       vImg.Bitmap.LoadFromFile(vS);

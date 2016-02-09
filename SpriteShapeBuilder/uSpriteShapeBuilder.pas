@@ -33,11 +33,6 @@ type
     FImager: TSSBImagerPresenter;
 
     procedure DoChangeStatus(ASender: TObject);
-
-    procedure DoAddCircle(ASender: TObject);
-    procedure DoAddPoly(ASender: TObject);
-    procedure DoEditShape(ASender: TObject);
-
     procedure DoSelectPicture(ASender: TObject);
     procedure DoDeletePicture(ASender: TObject);
 
@@ -84,54 +79,13 @@ uses
 
 { TSpriteShapeBuilder }
 
-{procedure TSpriteShapeBuilder.AddElement(const AFileName: string);
-var
-  vSSBElement: TSSBElement;
-begin
-  vSSBElement := TSSBElement.Create(FPanel);
-  vSSBElement.LoadFromFile(AFileName);
-
-  AddElement(vSSBElement);
-end; }
-
-{procedure TSpriteShapeBuilder.AddElement(const AElement: TSSBElement);
-begin
-  with AElement do
-  begin
-    Parent := FPanel;
-
-    OnClick := DoSelectObject;
-  end;
-
-//  FElements.Add(AElement);
-end;  }
-
 constructor TSpriteShapeBuilder.Create(AForm: TForm; APanel: TPanel; ABackground,
   ASelected: TImage; AOpenDialog: TOpenDialog);
 begin
-  //FElements := TNamedList<TSSBElement>.Create;
-  FLockPoint := False;
-  FIsMouseDown := False;
   FForm := AForm;
-
-
   FView := TSSBView.Create(APanel, ABackground, ASelected, AOpenDialog, FormScreenToClient);
-
   FImager := TSSBImagerPresenter.Create(FView);
-  //FModels[sPicture] := TSSBImagerModel.Create(FImager.OnModelUpdate);
-
-
-//  FControllers[sPicture] := TSSBImagerPresenter.Create(FView);
 end;
-
-{procedure TSpriteShapeBuilder.AddImage(const AImage: TImage);
-begin
-
-end;     }
-
-{procedure TSpriteShapeBuilder.AddImage(const AFileName: string);
-
-end;    }
 
 procedure TSpriteShapeBuilder.Deserialize(const AJson: TJSONObject);
 begin
@@ -143,34 +97,10 @@ var
   vSSBElement: TSSBElement;
   vImg: TImage;
 begin
- { FModels[sPicture].Free;
-  FControllers[sPicture].Free;  }
   FView.Free;
-
-{  for vSSBElement in FElements do
-    vSSBElement.Free;
-  FElements.Clear;
-  FElements.Free; }
-
-
+  FImager.Free;
 
   inherited;
-end;
-
-procedure TSpriteShapeBuilder.DoAddCircle(ASender: TObject);
-begin
-  if (FSelectedElement = nil) or (not (FSelectedElement is TSSBElement)) then
-    Exit;
-
-  TSSBElement(FSelectedElement).AddCircle;
-end;
-
-procedure TSpriteShapeBuilder.DoAddPoly(ASender: TObject);
-begin
-  if (FSelectedElement = nil) or (not (FSelectedElement is TSSBElement)) then
-    Exit;
-
-  TSSBElement(FSelectedElement).AddPoly;
 end;
 
 procedure TSpriteShapeBuilder.DoChangeStatus(ASender: TObject);
@@ -206,11 +136,6 @@ begin
 end;
 
 procedure TSpriteShapeBuilder.DoEditObject(ASender: TObject);
-begin
-
-end;
-
-procedure TSpriteShapeBuilder.DoEditShape(ASender: TObject);
 begin
 
 end;
@@ -287,6 +212,9 @@ begin
   FTabsImg[sObject] := TImage(AProgForm.FindComponent('Object_Img'));
   FTabsImg[sShape] := TImage(AProgForm.FindComponent('Shape_Img'));
 
+  Status := TSSBStatus.sPicture;
+  Imager.Init;
+
  { for iStatus := Low(TSSBStatus) to High(TSSBStatus) do
   begin
     FTabsImg[iStatus].OnClick := DoChangeStatus;
@@ -296,7 +224,7 @@ begin
 
   //FImageForSelect := TImage(AProgForm.FindComponent('SelectImage'));
 
-  vDelBtn := TCornerButton(AProgForm.FindComponent('DelPictureBtn'));
+ { vDelBtn := TCornerButton(AProgForm.FindComponent('DelPictureBtn'));
   vDelBtn.OnClick := DoDeleteObject;
 
   vSavePrjBtn := TCornerButton(AProgForm.FindComponent('SaveProjectBtn'));
@@ -309,7 +237,7 @@ begin
   vAddCircle.OnClick := DoAddCircle;
 
   vAddPoly := TCornerButton(AProgForm.FindComponent('AddPolyBtn'));
-  vAddPoly.OnClick := DoAddPoly;
+  vAddPoly.OnClick := DoAddPoly;}
 end;
 
 procedure TSpriteShapeBuilder.LoadProject(const AFileName: string);
