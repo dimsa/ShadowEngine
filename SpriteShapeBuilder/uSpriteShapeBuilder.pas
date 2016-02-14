@@ -7,7 +7,7 @@ uses
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types,
   System.JSON, FMX.Controls, FMX.Layouts,
   uSSBElement, uNamedList, uEasyDevice, uSSBFigure, uClasses, uSSBPresenters,
-  uSSBModels, uSSBView, uSSBTypes;
+  uSSBModels, uView, uSSBTypes, uImagerPresenter;
 
 type
   TSpriteShapeBuilder = class(TInterfacedObject, ISerializable)
@@ -21,8 +21,8 @@ type
     FTabsRect: array[TSSBStatus] of TRectangle;
     FTabsImg: array[TSSBStatus] of TImage;
 
-    FView: TSSBView;
-    FControllers: array[TSSBStatus] of TSSBPresenter;
+    FView: TView;
+    FControllers: array[TSSBStatus] of TMainPresenter;
     FSelectedElement: TSSBElement;
     FSelectedImage: TImage;
     FLockPoint: Boolean;
@@ -30,7 +30,7 @@ type
     FMouseStartPoint, FMouseElementPoint, FElementStartPosition: TPointF;
     FShaper: TSSBShaperPresenter;
     FObjecter: TSSBObjecterPresenter;
-    FImager: TSSBImagerPresenter;
+    FImager: TImagerPresenter;
 
     procedure DoChangeStatus(ASender: TObject);
     procedure DoSelectPicture(ASender: TObject);
@@ -46,13 +46,13 @@ type
     function Serialize: TJSONObject;
     procedure Deserialize(const AJson: TJSONObject);
     procedure SetStatus(const Value: TSSBStatus);
-    function GetController: TSSBPresenter;
+    function GetController: TMainPresenter;
     function FormScreenToClient(const APoint: TPointF): TPointF;
   public
     property Status: TSSBStatus read FStatus write SetStatus;
     property IsMouseDown: Boolean read FIsMouseDown write FIsMouseDown;
-    property Controller: TSSBPresenter read GetController;
-    property Imager: TSSBImagerPresenter read FImager;
+    property Controller: TMainPresenter read GetController;
+    property Imager: TImagerPresenter read FImager;
     property Objecter: TSSBObjecterPresenter read FObjecter;
     property Shaper: TSSBShaperPresenter read FShaper;
 //    property Elements: TNamedList<TSSBElement> read FElements write FElements;
@@ -83,8 +83,8 @@ constructor TSpriteShapeBuilder.Create(AForm: TForm; APanel: TPanel; ABackground
   ASelected: TImage; AOpenDialog: TOpenDialog);
 begin
   FForm := AForm;
-  FView := TSSBView.Create(APanel, ABackground, ASelected, AOpenDialog, FormScreenToClient);
-  FImager := TSSBImagerPresenter.Create(FView);
+  FView := TView.Create(APanel, ABackground, ASelected, AOpenDialog, FormScreenToClient);
+  FImager := TImagerPresenter.Create(FView);
 end;
 
 procedure TSpriteShapeBuilder.Deserialize(const AJson: TJSONObject);
@@ -167,7 +167,7 @@ begin
   Result := FForm.ScreenToClient(APoint);
 end;
 
-function TSpriteShapeBuilder.GetController: TSSBPresenter;
+function TSpriteShapeBuilder.GetController: TMainPresenter;
 begin
   Result := FControllers[FStatus];
 end;

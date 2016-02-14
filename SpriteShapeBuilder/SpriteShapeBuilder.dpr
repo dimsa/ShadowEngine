@@ -16,9 +16,13 @@ uses
   SSBOptionsForm in 'SSBOptionsForm.pas' {OptionsForm},
   uSSBModels in 'Model\uSSBModels.pas',
   uSSBPresenters in 'Presenters\uSSBPresenters.pas',
-  uSSBView in 'View\uSSBView.pas',
+  uView in 'View\uView.pas',
   uSSBTypes in 'uSSBTypes.pas',
-  uIView in 'View\uIView.pas';
+  uIView in 'IView\uIView.pas',
+  uIItemView in 'IView\uIItemView.pas',
+  uItemView in 'View\uItemView.pas',
+  uImagerPresenter in 'Presenters\uImagerPresenter.pas',
+  uImagerItemPresenter in 'Presenters\uImagerItemPresenter.pas';
 
 {$R *.res}
 

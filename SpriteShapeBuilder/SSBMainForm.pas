@@ -101,8 +101,6 @@ begin
 end;
 
 procedure TSSBForm.FormCreate(Sender: TObject);
-var
-  temp: TSSBImagerPresenter;
 begin
   Picture_Inst.Position.X := 0;
   Object_Inst.Position.X := 0;

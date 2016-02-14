@@ -1,4 +1,4 @@
-unit uSSBView;
+unit uView;
 
 interface
 
@@ -9,7 +9,7 @@ uses
   uSSBTypes, uSSBPresenters, uIView, uIItemView, uItemView;
 
 type
-  TView = class(TInterfacedObject, IView)
+  TView = class(TInterfacedObject, IMainView)
   private
     FChangeblePanel: TLayout;
     FElements: TList<TItemView>;

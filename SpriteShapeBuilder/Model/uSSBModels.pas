@@ -5,10 +5,10 @@ interface
 uses
   System.Generics.Collections, System.Classes,
   FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, FMX.Graphics,
-  uNamedList, uClasses, uSSBTypes;
+  uNamedList, uClasses, uSSBTypes, uMVPFrameWork;
 
 type
-  TSSBModel = class abstract
+  TSSBModel = class abstract(TModel)
   private
     function GetBackground: TBitmap; virtual; abstract;
     function GetElements: TList<TControl>; virtual; abstract;
@@ -32,7 +32,6 @@ type
     FBackground: TBitmap;
     FImages: TNamedList<TImage>; //Картинки из которых состоит подложока объектов
     FImgToCtrlAdapter: TImgToCtrlAdapter;
-    FNotifyEvent: TNotifyEvent;
     function GetBackground: TBitmap; override;
     function GetElements: TList<TControl>; override;
     function GetSelectedBitmap: TBitmap; override;
@@ -40,7 +39,7 @@ type
     function GetImage(AIndex: Integer): TImage;
     procedure SetImage(AIndex: Integer; const Value: TImage);
   public
-    constructor Create(const ANotifyEvent: TNotifyEvent);
+    constructor Create(const AUpdateHandler: TNotifyEvent); override;
     destructor Destroy;
     procedure DelSelected;
     property ImageCount: Integer read GetImageCount;
@@ -58,28 +57,18 @@ implementation
 function TSSBImagerModel.Add(const AImage: TImage): Boolean;
 begin
   FImages.Add(AImage);
-  FNotifyEvent(Self);
 end;
 
-constructor TSSBImagerModel.Create(const ANotifyEvent: TNotifyEvent);
+constructor TSSBImagerModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
+  inherited;
   FImages := TNamedList<TImage>.Create;
-
-//  FImgToCtrlAdapter := TImgToCtrlAdapter.Create(FImages);
   FBackground := TBitmap.Create;
-
-  FNotifyEvent := ANotifyEvent;
 end;
 
 procedure TSSBImagerModel.DelSelected;
 begin
-{  if FImages.IsHere(FSelected) then
-  begin
-    FImages.Delete(FSelected);
-    FSelected.Free;
-    FSelected := nil;
-  end;
-  FNotifyEvent(Self);  }
+
 end;
 
 destructor TSSBImagerModel.Destroy;

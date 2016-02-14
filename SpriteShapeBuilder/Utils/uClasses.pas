@@ -8,7 +8,8 @@ uses
 
 type
   TProcedure = procedure of Object;
-  TVCLProcedure = procedure(ASender: TObject) of Object;
+  TVCLProcedure = procedure(ASender: TObject) of object;
+  TItemSelectEvent = procedure (Sender: TObject) of object;
 
   ISerializable = interface
     function Serialize: TJSONObject;
