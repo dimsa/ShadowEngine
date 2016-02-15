@@ -4,12 +4,12 @@ interface
 
 uses
   System.Classes, System.Types, FMX.Objects,
-  uIItemView;
+  uIItemView, uIItemPresenter;
 
 type
   TItemSelectEvent = TNotifyEvent;
 
-  TImagerItemPresenter = class
+  TImagerItemPresenter = class(TInterfacedObject, IItemPresenter)
   private
     FOnSelect: TItemSelectEvent;
     FView: IItemView;
@@ -27,6 +27,11 @@ type
     property Position: TPoint read GetPosition write SetPosition;
     property Image: TImage read GetImage write SetImage;
     property OnSelect: TItemSelectEvent read FOnSelect write FOnSelect;
+
+    procedure Select;
+    procedure StartDrag;
+    procedure EndDrag;
+    procedure Delete;
 
     constructor Create(const AItemView: IItemView);
   end;
@@ -58,6 +63,16 @@ begin
   FView := AItemView;
 end;
 
+procedure TImagerItemPresenter.Delete;
+begin
+
+end;
+
+procedure TImagerItemPresenter.EndDrag;
+begin
+
+end;
+
 function TImagerItemPresenter.GetHeight: Integer;
 begin
 
@@ -78,6 +93,11 @@ begin
 
 end;
 
+procedure TImagerItemPresenter.Select;
+begin
+
+end;
+
 procedure TImagerItemPresenter.SetHeigt(const Value: Integer);
 begin
 
@@ -94,6 +114,11 @@ begin
 end;
 
 procedure TImagerItemPresenter.SetWidth(const Value: Integer);
+begin
+
+end;
+
+procedure TImagerItemPresenter.StartDrag;
 begin
 
 end;

@@ -15,14 +15,17 @@ uses
   uSSBFigure in 'uSSBFigure.pas',
   SSBOptionsForm in 'SSBOptionsForm.pas' {OptionsForm},
   uSSBModels in 'Model\uSSBModels.pas',
-  uSSBPresenters in 'Presenters\uSSBPresenters.pas',
+  uMainPresenter in 'Presenters\uMainPresenter.pas',
   uView in 'View\uView.pas',
   uSSBTypes in 'uSSBTypes.pas',
   uIView in 'IView\uIView.pas',
   uIItemView in 'IView\uIItemView.pas',
   uItemView in 'View\uItemView.pas',
   uImagerPresenter in 'Presenters\uImagerPresenter.pas',
-  uImagerItemPresenter in 'Presenters\uImagerItemPresenter.pas';
+  uImagerItemPresenter in 'Presenters\uImagerItemPresenter.pas',
+  uMVPFrameWork in 'Utils\uMVPFrameWork.pas',
+  uItemPresenterFacade in 'Presenters\uItemPresenterFacade.pas',
+  uIItemPresenter in 'Presenters\uIItemPresenter.pas';
 
 {$R *.res}
 

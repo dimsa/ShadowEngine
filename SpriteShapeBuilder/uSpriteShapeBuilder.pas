@@ -6,7 +6,7 @@ uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types,
   System.JSON, FMX.Controls, FMX.Layouts,
-  uSSBElement, uNamedList, uEasyDevice, uSSBFigure, uClasses, uSSBPresenters,
+  uSSBElement, uNamedList, uEasyDevice, uSSBFigure, uClasses, uMainPresenter,
   uSSBModels, uView, uSSBTypes, uImagerPresenter;
 
 type
@@ -22,14 +22,15 @@ type
     FTabsImg: array[TSSBStatus] of TImage;
 
     FView: TView;
+    FModel: TSSBModel;
     FControllers: array[TSSBStatus] of TMainPresenter;
     FSelectedElement: TSSBElement;
     FSelectedImage: TImage;
     FLockPoint: Boolean;
     FIsMouseDown: Boolean;
     FMouseStartPoint, FMouseElementPoint, FElementStartPosition: TPointF;
-    FShaper: TSSBShaperPresenter;
-    FObjecter: TSSBObjecterPresenter;
+//    FShaper: TSSBShaperPresenter;
+//    FObjecter: TSSBObjecterPresenter;
     FImager: TImagerPresenter;
 
     procedure DoChangeStatus(ASender: TObject);
@@ -48,13 +49,14 @@ type
     procedure SetStatus(const Value: TSSBStatus);
     function GetController: TMainPresenter;
     function FormScreenToClient(const APoint: TPointF): TPointF;
+    procedure OnModelUpdate(ASender: TObject);
   public
     property Status: TSSBStatus read FStatus write SetStatus;
     property IsMouseDown: Boolean read FIsMouseDown write FIsMouseDown;
     property Controller: TMainPresenter read GetController;
     property Imager: TImagerPresenter read FImager;
-    property Objecter: TSSBObjecterPresenter read FObjecter;
-    property Shaper: TSSBShaperPresenter read FShaper;
+//    property Objecter: TSSBObjecterPresenter read FObjecter;
+//    property Shaper: TSSBShaperPresenter read FShaper;
 //    property Elements: TNamedList<TSSBElement> read FElements write FElements;
 //    property Elements[Index: Integer]: read GetElements write SetElements;
 //    property SelectedElement: TSSBElement read FSelectedElement write SetSelectedElement;
@@ -84,7 +86,8 @@ constructor TSpriteShapeBuilder.Create(AForm: TForm; APanel: TPanel; ABackground
 begin
   FForm := AForm;
   FView := TView.Create(APanel, ABackground, ASelected, AOpenDialog, FormScreenToClient);
-  FImager := TImagerPresenter.Create(FView);
+  FModel := TSSBModel.Create(OnModelUpdate);
+  FImager := TImagerPresenter.Create(FView, FModel);
 end;
 
 procedure TSpriteShapeBuilder.Deserialize(const AJson: TJSONObject);
@@ -263,6 +266,11 @@ begin
   end;
 
   vList.Free;
+end;
+
+procedure TSpriteShapeBuilder.OnModelUpdate(ASender: TObject);
+begin
+  FImager.OnModelUpdate(ASender);
 end;
 
 procedure TSpriteShapeBuilder.SaveForEngine(const AFileName: string);

@@ -6,10 +6,10 @@ uses
   System.Generics.Collections, System.SysUtils, System.Types, FMX.Graphics,
   FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms, FMX.Dialogs,
   FMX.Types, System.Classes, System.UITypes, uEasyDevice,
-  uSSBTypes, uSSBPresenters, uIView, uIItemView, uItemView;
+  uSSBTypes, uIView, uIItemView, uItemView, uMVPFrameWork;
 
 type
-  TView = class(TInterfacedObject, IMainView)
+  TView = class(TInterfacedObject, IMainView, IView)
   private
     FChangeblePanel: TLayout;
     FElements: TList<TItemView>;
@@ -58,9 +58,9 @@ var
   vi: TImage;
 begin
   vImg := TItemView.Create(FPanel);
-  vImg.OnMouseDown := MouseDown;
+{  vImg.OnMouseDown := MouseDown;
   vImg.OnMouseUp := FMouseUpHandler;
-  vImg.OnMouseMove := FMouseMoveHandler;
+  vImg.OnMouseMove := FMouseMoveHandler; }
   FElements.Add(vImg);
   Result := vImg;
 end;

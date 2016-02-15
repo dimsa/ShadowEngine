@@ -8,120 +8,66 @@ uses
   uNamedList, uClasses, uSSBTypes, uMVPFrameWork;
 
 type
-  TSSBModel = class abstract(TModel)
-  private
-    function GetBackground: TBitmap; virtual; abstract;
-    function GetElements: TList<TControl>; virtual; abstract;
-    function GetSelectedBitmap: TBitmap; virtual; abstract;
-  public
-    property SelectedBitmap: TBitmap read GetSelectedBitmap;
-    property Background: TBitmap read GetBackground;
-    property Elements: TList<TControl> read GetElements;
+
+  TElement = class
+
   end;
 
-{  TSSBItemModel = class
+  TSSBModel = class(TModel)
   private
-
-  public
-    property Items
-  end;  }
-
-  TSSBImagerModel = class(TSSBModel)
-  private
-    FSelected: TImage;
-    FBackground: TBitmap;
-    FImages: TNamedList<TImage>; //Картинки из которых состоит подложока объектов
-    FImgToCtrlAdapter: TImgToCtrlAdapter;
-    function GetBackground: TBitmap; override;
-    function GetElements: TList<TControl>; override;
-    function GetSelectedBitmap: TBitmap; override;
-    function GetImageCount: Integer;
-    function GetImage(AIndex: Integer): TImage;
-    procedure SetImage(AIndex: Integer; const Value: TImage);
+    FBitmap: TBitmap; // Подложка объекта
+    FItems: TList<TElement>;
+    function Add(const AImage: TImage): Boolean;
+    procedure DelSelected;
+    function GetElementCount: Integer;
+    function GetItem(AIndex: Integer): TElement;
+    procedure SetItem(AIndex: Integer; const Value: TElement);
   public
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
     destructor Destroy;
-    procedure DelSelected;
-    property ImageCount: Integer read GetImageCount;
-    property Images[AIndex: Integer]: TImage read GetImage write SetImage;
-    function Add(const AImage: TImage): Boolean;
-    property Selected: TImage read FSelected;
-  const
-    CPrec = 5;
+    property ElementCount: Integer read GetElementCount;
+    property Items[AIndex: Integer]: TElement read GetItem write SetItem;
+    property Image: TBitmap read FBitmap;
 end;
 
 implementation
 
-{ TSSBImagerModel }
+{ TSSBModel }
 
-function TSSBImagerModel.Add(const AImage: TImage): Boolean;
+function TSSBModel.Add(const AImage: TImage): Boolean;
 begin
-  FImages.Add(AImage);
+
 end;
 
-constructor TSSBImagerModel.Create(const AUpdateHandler: TNotifyEvent);
+constructor TSSBModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
   inherited;
-  FImages := TNamedList<TImage>.Create;
-  FBackground := TBitmap.Create;
+  FBitmap := TBitmap.Create;
 end;
 
-procedure TSSBImagerModel.DelSelected;
+procedure TSSBModel.DelSelected;
 begin
 
 end;
 
-destructor TSSBImagerModel.Destroy;
-var
-  vImg: TImage;
+destructor TSSBModel.Destroy;
 begin
-  for vImg in FImages do
-    vImg.Free;
-  FImages.Clear;
-  FImages.Free;
 
-  FBackground.Free;
-
-  FImgToCtrlAdapter.Free;
 end;
 
-function TSSBImagerModel.GetBackground: TBitmap;
+function TSSBModel.GetElementCount: Integer;
 begin
-  Result := FBackground;
+
 end;
 
-function TSSBImagerModel.GetElements: TList<TControl>;
+function TSSBModel.GetItem(AIndex: Integer): TElement;
 begin
-  Result := FImgToCtrlAdapter.ControlList;
+
 end;
 
-function TSSBImagerModel.GetImage(AIndex: Integer): TImage;
+procedure TSSBModel.SetItem(AIndex: Integer; const Value: TElement);
 begin
-  Result := FImages[AIndex];
-end;
 
-function TSSBImagerModel.GetImageCount: Integer;
-begin
-  Result := FImages.Count;
-end;
-
-function TSSBImagerModel.GetSelectedBitmap: TBitmap;
-begin
-  if FSelected <> nil then
-    Exit(FSelected.Bitmap);
-
-  Result := nil;
-end;
-
-{function TSSBImagerModel.Select(const AImage: TImage): Boolean;
-begin
-  if FImages.IsHere(AImage) then
-    FSelected.Assign(AImage);
-end;            }
-
-procedure TSSBImagerModel.SetImage(AIndex: Integer; const Value: TImage);
-begin
-  FImages[AIndex] := Value;
 end;
 
 end.

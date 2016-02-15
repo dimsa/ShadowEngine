@@ -287,7 +287,7 @@
             <FormType>fmx</FormType>
         </DCCReference>
         <DCCReference Include="Model\uSSBModels.pas"/>
-        <DCCReference Include="Presenters\uSSBPresenters.pas"/>
+        <DCCReference Include="Presenters\uMainPresenter.pas"/>
         <DCCReference Include="View\uView.pas"/>
         <DCCReference Include="uSSBTypes.pas"/>
         <DCCReference Include="IView\uIView.pas"/>
@@ -295,6 +295,9 @@
         <DCCReference Include="View\uItemView.pas"/>
         <DCCReference Include="Presenters\uImagerPresenter.pas"/>
         <DCCReference Include="Presenters\uImagerItemPresenter.pas"/>
+        <DCCReference Include="Utils\uMVPFrameWork.pas"/>
+        <DCCReference Include="Presenters\uItemPresenterFacade.pas"/>
+        <DCCReference Include="Presenters\uIItemPresenter.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -713,8 +716,8 @@
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
             </Deployment>
             <Platforms>

@@ -5,13 +5,12 @@ interface
 uses
   System.Types, System.Generics.Collections, FMX.Objects,
   uIView,
-  uIItemView, uImagerItemPresenter, uSSBModels, uSSBPresenters;
+  uIItemView, uImagerItemPresenter, uSSBModels, uMainPresenter, uMVPFrameWork;
 
 
 type
   TImagerPresenter = class(TMainPresenter)
   private
-    FModel: TSSBImagerModel;
     FSelected: TImagerItemPresenter;
     FIsMouseDown: Boolean;
     FMouseStartPoint: TPointF;
@@ -22,22 +21,7 @@ type
     // Методы на клик
     procedure DoSelectItem(ASender: TObject);
     procedure DoDelImage(ASender: TObject);
-{    procedure DoMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-    procedure DoMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-    procedure DoMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);   }
-    // Обработчики мыши
-    {procedure DoZoom(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; var Handled: Boolean); override;
-    procedure DoMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Single); override;
-    procedure DoMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Single); override;
-    procedure DoMouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Single); override;
-    procedure Adjust(AControl: TControl); }
   public
-    //procedure DoCommand(const ACommandName: string; AParams: array of Const); override;
-//    procedure AddImage;//(const AFileName: string); overload;
     procedure AddImg;
     //procedure SelImg;
     procedure DelImg;
@@ -45,7 +29,7 @@ type
     procedure StartDragImg;
     procedure FinishDragImg;
     procedure Init; override;
-    constructor Create(AView: IMainView); override;
+    constructor Create(AView: IView; AModel: TSSBModel); override;
     destructor Destroy; override;
   end;
 
@@ -64,8 +48,6 @@ begin
     vImg := TImage.Create(nil);
     vImg.Bitmap.LoadFromFile(vFileName);
 
-    FModel.Add(vImg);
-
     // Creating View
     vViewItem := View.AddElement;
     vViewItem.Left := 0;
@@ -79,7 +61,6 @@ begin
 
     FItems.Add(vItemPresenter, vViewItem);
     try
-      FModel.Add(vImg);
       vViewItem.AssignBitmap(vImg.Bitmap);
     except
       vImg.Free;
@@ -88,11 +69,10 @@ begin
   end;
 end;
 
-constructor TImagerPresenter.Create(AView: IMainView);
+constructor TImagerPresenter.Create(AView: IView; AModel: TSSBModel);
 begin
   inherited;
-//  FElements := TDictionary<IItemView, TIi>.Create;
-//  FModel := TSSBImagerModel.Create(OnModelUpdate);
+  FItems := TDictionary<TImagerItemPresenter, IItemView>.Create;
 end;
 
 procedure TImagerPresenter.DelImg;
@@ -109,7 +89,7 @@ end;
 
 procedure TImagerPresenter.DoDelImage(ASender: TObject);
 begin
-  FModel.DelSelected;
+
 end;
 
 procedure TImagerPresenter.DoSelectItem(ASender: TObject);

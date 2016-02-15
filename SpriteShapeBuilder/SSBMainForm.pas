@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, uSpriteShapeBuilder, System.ImageList,
-  FMX.ImgList, FMX.Layouts, uSSBPresenters, uSSBTypes;
+  FMX.ImgList, FMX.Layouts, uMainPresenter, uSSBTypes;
 
 type
   TSSBForm = class(TForm)
@@ -123,7 +123,7 @@ end;
 
 procedure TSSBForm.Object_imgClick(Sender: TObject);
 begin
-   SSB.Objecter.Init;
+//   SSB.Objecter.Init;
 end;
 
 procedure TSSBForm.Picture_imgClick(Sender: TObject);
@@ -151,7 +151,7 @@ end;
 
 procedure TSSBForm.Shape_imgClick(Sender: TObject);
 begin
-  SSB.Shaper.Init;
+//  SSB.Shaper.Init;
 end;
 
 end.
