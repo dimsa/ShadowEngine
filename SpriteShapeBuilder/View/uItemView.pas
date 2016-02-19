@@ -5,13 +5,13 @@ interface
 uses
   System.UITypes, System.Classes,
   FMX.Types, FMX.Objects, FMX.Graphics, FMX.Controls,
-  uIItemView, uImagerItemPresenter, uItemPresenterFacade;
+  uIItemView, uImagerItemPresenter, uItemPresenterProxy;
 
 type
 
   TItemView = class(TInterfacedObject, IItemView)
   private
-    FPresenter: TItemPresenterFacade;
+    FPresenter: TItemPresenterProxy;
     FImage: TImage;
     function GetWidth: Integer;
     procedure SetWidth(AValue: Integer);
@@ -45,7 +45,7 @@ begin
   FImage := TImage.Create(AOwner);
   FImage.Parent := AOwner;
 
-  FPresenter := TItemPresenterFacade.Create;
+  FPresenter := TItemPresenterProxy.Create(Self);
 
   FImage.OnMouseDown := MouseDown;
   FImage.OnMouseUp:= MouseUp;

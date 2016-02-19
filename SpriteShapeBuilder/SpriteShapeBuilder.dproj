@@ -296,7 +296,7 @@
         <DCCReference Include="Presenters\uImagerPresenter.pas"/>
         <DCCReference Include="Presenters\uImagerItemPresenter.pas"/>
         <DCCReference Include="Utils\uMVPFrameWork.pas"/>
-        <DCCReference Include="Presenters\uItemPresenterFacade.pas"/>
+        <DCCReference Include="Presenters\uItemPresenterProxy.pas"/>
         <DCCReference Include="Presenters\uIItemPresenter.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

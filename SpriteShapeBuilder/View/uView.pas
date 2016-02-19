@@ -58,9 +58,6 @@ var
   vi: TImage;
 begin
   vImg := TItemView.Create(FPanel);
-{  vImg.OnMouseDown := MouseDown;
-  vImg.OnMouseUp := FMouseUpHandler;
-  vImg.OnMouseMove := FMouseMoveHandler; }
   FElements.Add(vImg);
   Result := vImg;
 end;

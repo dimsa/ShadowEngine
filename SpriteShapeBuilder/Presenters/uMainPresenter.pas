@@ -5,7 +5,7 @@ interface
 uses
   System.Classes, System.UITypes, System.Types, System.SysUtils, System.Generics.Collections,
   FMX.StdCtrls, FMX.Controls, FMX.Graphics, FMX.Objects, FMX.Dialogs, FMX.Types,
-  uSSBModels, uClasses, uEasyDevice, uIView, uIItemView, uMVPFrameWork;
+  uSSBModels, uClasses, uEasyDevice, uIView, uIItemView, uMVPFrameWork, uItemPresenterProxy;
 
 
 type
@@ -14,6 +14,7 @@ type
     function GetView: IMainView;
   protected
     FModel: TSSBModel;
+    FPresenterProxy: TItemPresenterProxy;
     property View: IMainView read GetView;
   public
     procedure Init; virtual;

@@ -24,7 +24,7 @@ uses
   uImagerPresenter in 'Presenters\uImagerPresenter.pas',
   uImagerItemPresenter in 'Presenters\uImagerItemPresenter.pas',
   uMVPFrameWork in 'Utils\uMVPFrameWork.pas',
-  uItemPresenterFacade in 'Presenters\uItemPresenterFacade.pas',
+  uItemPresenterProxy in 'Presenters\uItemPresenterProxy.pas',
   uIItemPresenter in 'Presenters\uIItemPresenter.pas';
 
 {$R *.res}

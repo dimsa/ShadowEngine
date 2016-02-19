@@ -7,16 +7,17 @@ uses
 
 type
 
-TItemPresenterFacade = class
+TItemPresenterProxy = class
 private
-  FPresenter: IItemPresenter;
+  FImagerPresenter: IItemPresenter;
+  FObjecterPresenter: IItemPresenter;
+  FShaperPresenter: IItemPresenter;
   procedure SetPresenter(const Value: IItemPresenter);
 public
   procedure Select;
   procedure StartDrag;
   procedure EndDrag;
   procedure Delete;
-  property Presenter: IItemPresenter write SetPresenter;
   destructor Destroy; override;
 end;
 
@@ -24,37 +25,37 @@ implementation
 
 { TItemPresenterFacade }
 
-procedure TItemPresenterFacade.Delete;
+procedure TItemPresenterProxy.Delete;
 begin
   if Assigned(FPresenter) then
     FPresenter.Delete;
 end;
 
-destructor TItemPresenterFacade.Destroy;
+destructor TItemPresenterProxy.Destroy;
 begin
   FPresenter := nil;
   inherited;
 end;
 
-procedure TItemPresenterFacade.EndDrag;
+procedure TItemPresenterProxy.EndDrag;
 begin
   if Assigned(FPresenter) then
     FPresenter.EndDrag;
 end;
 
-procedure TItemPresenterFacade.Select;
+procedure TItemPresenterProxy.Select;
 begin
   if Assigned(FPresenter) then
     FPresenter.Select;
 end;
 
-procedure TItemPresenterFacade.SetPresenter(const Value: IItemPresenter);
+procedure TItemPresenterProxy.SetPresenter(const Value: IItemPresenter);
 begin
   FPresenter := nil;
   FPresenter := Value;
 end;
 
-procedure TItemPresenterFacade.StartDrag;
+procedure TItemPresenterProxy.StartDrag;
 begin
   if Assigned(FPresenter) then
     FPresenter.StartDrag;
