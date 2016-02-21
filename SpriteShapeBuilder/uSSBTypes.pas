@@ -3,11 +3,14 @@ unit uSSBTypes;
 interface
 
 uses
+  System.Classes,
   System.Generics.Collections, FMX.Controls, FMX.Objects, System.Types,
   uNamedList;
 
 type
   TSSBStatus = (sPicture, sObject, sShape);
+
+  TItemSelectEvent = TNotifyEvent;
 
   TImgToCtrlAdapter = class
   private

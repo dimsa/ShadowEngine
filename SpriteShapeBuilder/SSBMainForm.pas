@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, uSpriteShapeBuilder, System.ImageList,
-  FMX.ImgList, FMX.Layouts, uMainPresenter, uSSBTypes;
+  FMX.ImgList, FMX.Layouts, uSSBTypes;
 
 type
   TSSBForm = class(TForm)

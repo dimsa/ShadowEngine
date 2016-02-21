@@ -5,13 +5,13 @@ interface
 uses
   System.UITypes, System.Classes,
   FMX.Types, FMX.Objects, FMX.Graphics, FMX.Controls,
-  uIItemView, uImagerItemPresenter, uItemPresenterProxy;
+  uIItemView, uImagerItemPresenter, uItemPresenterProxy, uIItemPresenter;
 
 type
 
   TItemView = class(TInterfacedObject, IItemView)
   private
-    FPresenter: TItemPresenterProxy;
+    FPresenter: IItemPresenter;
     FImage: TImage;
     function GetWidth: Integer;
     procedure SetWidth(AValue: Integer);
@@ -24,7 +24,11 @@ type
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
     procedure MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    function GetPresenter: IItemPresenter;
+    procedure SetPresenter(AValue: IItemPresenter);
   public
+    property Presenter: IItemPresenter read GetPresenter write SetPresenter;
+    property Image: TImage read FImage write FImage;
     procedure AssignBitmap(ABmp: TBitmap);
     constructor Create(AOwner: TControl);
     destructor Destroy; override;
@@ -67,6 +71,11 @@ begin
   Result := Round(FImage.Position.X);
 end;
 
+function TItemView.GetPresenter: IItemPresenter;
+begin
+  Result := FPresenter;
+end;
+
 function TItemView.GetTop: Integer;
 begin
   Result := Round(FImage.Position.Y);
@@ -103,6 +112,11 @@ end;
 procedure TItemView.SetLeft(AValue: Integer);
 begin
   FImage.Position.X := AValue;
+end;
+
+procedure TItemView.SetPresenter(AValue: IItemPresenter);
+begin
+  FPresenter := AValue;
 end;
 
 procedure TItemView.SetTop(AValue: Integer);

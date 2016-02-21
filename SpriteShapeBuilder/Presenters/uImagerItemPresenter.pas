@@ -4,14 +4,13 @@ interface
 
 uses
   System.Classes, System.Types, FMX.Objects,
-  uIItemView, uIItemPresenter;
+  uIItemView, uIItemPresenter, uSSBTypes;
 
 type
-  TItemSelectEvent = TNotifyEvent;
-
   TImagerItemPresenter = class(TInterfacedObject, IItemPresenter)
   private
     FOnSelect: TItemSelectEvent;
+
     FView: IItemView;
     function GetHeight: Integer;
     function GetImage: TImage;
@@ -21,6 +20,8 @@ type
     procedure SetImage(const Value: TImage);
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
+    function GetOnSelect: TItemSelectEvent;
+    procedure SetOnSelect(AValue: TItemSelectEvent);
   public
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeigt;
@@ -83,6 +84,11 @@ begin
 
 end;
 
+function TImagerItemPresenter.GetOnSelect: TItemSelectEvent;
+begin
+  Result := FOnSelect;
+end;
+
 function TImagerItemPresenter.GetPosition: TPoint;
 begin
 
@@ -95,7 +101,8 @@ end;
 
 procedure TImagerItemPresenter.Select;
 begin
-
+  if Assigned(FOnSelect) then
+    FOnSelect(Self);
 end;
 
 procedure TImagerItemPresenter.SetHeigt(const Value: Integer);
@@ -106,6 +113,11 @@ end;
 procedure TImagerItemPresenter.SetImage(const Value: TImage);
 begin
 
+end;
+
+procedure TImagerItemPresenter.SetOnSelect(AValue: TItemSelectEvent);
+begin
+  FOnSelect := AValue;
 end;
 
 procedure TImagerItemPresenter.SetPosition(const Value: TPoint);

@@ -6,8 +6,8 @@ uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types,
   System.JSON, FMX.Controls, FMX.Layouts,
-  uSSBElement, uNamedList, uEasyDevice, uSSBFigure, uClasses, uMainPresenter,
-  uSSBModels, uView, uSSBTypes, uImagerPresenter;
+  uSSBElement, uNamedList, uEasyDevice, uSSBFigure, uClasses,
+  uSSBModels, uView, uSSBTypes, uMainPresenter;
 
 type
   TSpriteShapeBuilder = class(TInterfacedObject, ISerializable)
@@ -31,7 +31,7 @@ type
     FMouseStartPoint, FMouseElementPoint, FElementStartPosition: TPointF;
 //    FShaper: TSSBShaperPresenter;
 //    FObjecter: TSSBObjecterPresenter;
-    FImager: TImagerPresenter;
+    FImager: TMainPresenter;
 
     procedure DoChangeStatus(ASender: TObject);
     procedure DoSelectPicture(ASender: TObject);
@@ -54,7 +54,7 @@ type
     property Status: TSSBStatus read FStatus write SetStatus;
     property IsMouseDown: Boolean read FIsMouseDown write FIsMouseDown;
     property Controller: TMainPresenter read GetController;
-    property Imager: TImagerPresenter read FImager;
+    property Imager: TMainPresenter read FImager;
 //    property Objecter: TSSBObjecterPresenter read FObjecter;
 //    property Shaper: TSSBShaperPresenter read FShaper;
 //    property Elements: TNamedList<TSSBElement> read FElements write FElements;
@@ -87,7 +87,7 @@ begin
   FForm := AForm;
   FView := TView.Create(APanel, ABackground, ASelected, AOpenDialog, FormScreenToClient);
   FModel := TSSBModel.Create(OnModelUpdate);
-  FImager := TImagerPresenter.Create(FView, FModel);
+  FImager := TMainPresenter.Create(FView, FModel);
 end;
 
 procedure TSpriteShapeBuilder.Deserialize(const AJson: TJSONObject);

@@ -12,7 +12,7 @@ type
   TView = class(TInterfacedObject, IMainView, IView)
   private
     FChangeblePanel: TLayout;
-    FElements: TList<TItemView>;
+    FElements: TDictionary<IItemView, TItemView>;
     FPanel: TPanel;
     FFormPosition: TPositionFunc;
     FBackground: TImage;
@@ -22,7 +22,7 @@ type
     FMouseDownHandler: TMouseEvent;
     FMouseUpHandler: TMouseEvent;
     procedure CopyEvents(const AFromControl: TControl; AToControl: TControl);
-    function ElementByInterface(AElem: IItemView): TItemView;
+//    function ElementByInterface(AElem: IItemView): TItemView;
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 //    function ElementUnderMouse: ISSBViewElement;
   public
@@ -58,7 +58,7 @@ var
   vi: TImage;
 begin
   vImg := TItemView.Create(FPanel);
-  FElements.Add(vImg);
+  FElements.Add(vImg, vImg);
   Result := vImg;
 end;
 
@@ -116,7 +116,7 @@ end;
 constructor TView.Create(APanel: TPanel; ABackground, ASelected: TImage;
   AOpenDialog: TOpenDialog; AFormPosition: TPositionFunc);
 begin
-  FElements := TList<TItemView>.Create;
+  FElements := TDictionary<IItemView, TItemView>.Create;
   FPanel := APanel;
   FBackground := ABackground;
   FSelected := ASelected;
@@ -127,9 +127,13 @@ end;
 destructor TView.Destroy;
 var
   i: Integer;
+  vItem: TPair<IItemView, TItemView>;
 begin
-  for i := 0 to FElements.Count - 1 do
-    FElements[i].Free;
+  for vItem in FElements do
+    FElements.Remove(vItem.Key);
+
+ {for i := 0 to FElements.Count - 1 do
+    FElements[i].Free;}
   FElements.Clear;
   FElements.Free;
 
@@ -145,7 +149,7 @@ begin
   inherited;
 end;
 
-function TView.ElementByInterface(AElem: IItemView): TItemView;
+{unction TView.ElementByInterface(AElem: IItemView): TItemView;
 var
   i: Integer;
 begin
@@ -153,7 +157,7 @@ begin
   for i := 0 to FElements.Count - 1 do
     if IItemView(FElements[i]) = AElem then
       Exit(FElements[i]);
-end;
+end; }
 
 function TView.FilenameFromDlg: string;
 begin
@@ -181,7 +185,7 @@ var
   i: Integer;
   vElem: TItemView;
 begin
-  vElem := ElementByInterface(AElement);
+//  vElem := ElementByInterface(AElement);
   FElements.Remove(vElem);
   vElem.Free;
   {for i := 0 to FElements.Count - 1 do
@@ -195,7 +199,7 @@ begin
 
 procedure TView.SelectElement(const AElement: IItemView);
 begin
-
+  FSelected.Bitmap.Assign(FElements[AElement].Image.Bitmap);
 end;
 
 procedure TView.SetBackground(const AImg: TImage);
