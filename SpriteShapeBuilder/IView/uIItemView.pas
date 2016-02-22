@@ -3,7 +3,7 @@ unit uIItemView;
 interface
 
 uses
-  FMX.Graphics, uIItemPresenter;
+  FMX.Graphics, System.Types, uIItemPresenter;
 
 type
   IItemView = interface
@@ -19,11 +19,13 @@ type
     function GetPresenter: IItemPresenter;
     procedure SetPresenter(AValue: IItemPresenter);
 
+    function MousePos: TPointF;
 
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property Top: Integer read GetTop write SetTop;
     property Left: Integer read GetLeft write SetLeft;
+
 
     property Presenter: IItemPresenter read GetPresenter write SetPresenter;
   end;

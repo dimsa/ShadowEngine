@@ -3,9 +3,10 @@ unit uItemView;
 interface
 
 uses
-  System.UITypes, System.Classes,
+  System.UITypes, System.Classes, System.Types,
   FMX.Types, FMX.Objects, FMX.Graphics, FMX.Controls,
-  uIItemView, uImagerItemPresenter, uItemPresenterProxy, uIItemPresenter;
+  uIItemView, uImagerItemPresenter, uItemPresenterProxy, uIItemPresenter,
+  uEasyDevice;
 
 type
 
@@ -29,6 +30,7 @@ type
   public
     property Presenter: IItemPresenter read GetPresenter write SetPresenter;
     property Image: TImage read FImage write FImage;
+    function MousePos: TPointF;
     procedure AssignBitmap(ABmp: TBitmap);
     constructor Create(AOwner: TControl);
     destructor Destroy; override;
@@ -89,19 +91,27 @@ end;
 procedure TItemView.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
+  FPresenter.Capture;
   FPresenter.Select;
 end;
 
 procedure TItemView.MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Single);
 begin
-  FPresenter.StartDrag;
+//  FPresenter.StartDrag;
+  FPresenter.Hover;
+end;
+
+function TItemView.MousePos: TPointF;
+begin
+  Result := uEasyDevice.MousePos;//(FFormPosition(vPoint) - FPanel.Position.Point).Round;
 end;
 
 procedure TItemView.MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
   FPresenter.EndDrag;
+  FPresenter.UnCapture;
 end;
 
 procedure TItemView.SetHeight(AValue: Integer);

@@ -10,7 +10,8 @@ type
   TImagerItemPresenter = class(TInterfacedObject, IItemPresenter)
   private
     FOnSelect: TItemSelectEvent;
-
+    FStartDragPoint, FStartObjectPoint: TPointF;
+    FCaptured: Boolean;
     FView: IItemView;
     function GetHeight: Integer;
     function GetImage: TImage;
@@ -33,31 +34,23 @@ type
     procedure StartDrag;
     procedure EndDrag;
     procedure Delete;
+    procedure Capture;
+    procedure Hover;
+    procedure UnCapture;
 
     constructor Create(const AItemView: IItemView);
   end;
 
 implementation
 
-{procedure TSSBImagerPresenter.DoMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-begin
-  SelImg;
-end;
-
-procedure TSSBImagerPresenter.DoMouseMove(Sender: TObject; Shift: TShiftState;
-  X, Y: Single);
-begin
-  StartDragImg;
-end;
-
-procedure TSSBImagerPresenter.DoMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-begin
-  FinishDragImg;
-end;}
-
 { TImagerItemPresenter }
+
+procedure TImagerItemPresenter.Capture;
+begin
+  FCaptured := True;
+  FStartObjectPoint := PointF(FView.Left, FView.Top);
+  FStartDragPoint := FView.MousePos;
+end;
 
 constructor TImagerItemPresenter.Create(const AItemView: IItemView);
 begin
@@ -71,7 +64,11 @@ end;
 
 procedure TImagerItemPresenter.EndDrag;
 begin
-
+  if FCaptured then
+  begin
+    FView.Left := (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.X;
+    FView.Top:= (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.Y;
+  end;
 end;
 
 function TImagerItemPresenter.GetHeight: Integer;
@@ -97,6 +94,15 @@ end;
 function TImagerItemPresenter.GetWidth: Integer;
 begin
 
+end;
+
+procedure TImagerItemPresenter.Hover;
+begin
+  if FCaptured then
+  begin
+    FView.Left := (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.X;
+    FView.Top:= (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.Y;
+  end;
 end;
 
 procedure TImagerItemPresenter.Select;
@@ -133,6 +139,11 @@ end;
 procedure TImagerItemPresenter.StartDrag;
 begin
 
+end;
+
+procedure TImagerItemPresenter.UnCapture;
+begin
+  FCaptured := False;
 end;
 
 end.
