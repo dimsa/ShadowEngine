@@ -4,12 +4,11 @@ interface
 
 uses
   System.Classes, System.Types, FMX.Objects,
-  uIItemView, uIItemPresenter, uSSBTypes;
+  uIItemView, uIItemPresenter, uSSBTypes, uBaseItemPresenter;
 
 type
-  TImagerItemPresenter = class(TInterfacedObject, IItemPresenter)
+  TImagerItemPresenter = class(TBaseItemPresenter)
   private
-    FOnSelect: TItemSelectEvent;
     FStartDragPoint, FStartObjectPoint: TPointF;
     FCaptured: Boolean;
     FView: IItemView;
@@ -17,26 +16,23 @@ type
     function GetImage: TImage;
     function GetPosition: TPoint;
     function GetWidth: Integer;
-    procedure SetHeigt(const Value: Integer);
+    procedure SetHeight(const Value: Integer);
     procedure SetImage(const Value: TImage);
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
-    function GetOnSelect: TItemSelectEvent;
-    procedure SetOnSelect(AValue: TItemSelectEvent);
   public
     property Width: Integer read GetWidth write SetWidth;
-    property Height: Integer read GetHeight write SetHeigt;
+    property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
     property Image: TImage read GetImage write SetImage;
-    property OnSelect: TItemSelectEvent read FOnSelect write FOnSelect;
 
-    procedure Select;
-    procedure StartDrag;
-    procedure EndDrag;
-    procedure Delete;
-    procedure Capture;
-    procedure Hover;
-    procedure UnCapture;
+    procedure Select; override;
+    procedure StartDrag; override;
+    procedure EndDrag; override;
+    procedure Delete; override;
+    procedure Capture; override;
+    procedure Hover; override;
+    procedure UnCapture; override;
 
     constructor Create(const AItemView: IItemView);
   end;
@@ -50,6 +46,9 @@ begin
   FCaptured := True;
   FStartObjectPoint := PointF(FView.Left, FView.Top);
   FStartDragPoint := FView.MousePos;
+
+  if Assigned(FOnCapture) then
+    FOnSelect(Self);
 end;
 
 constructor TImagerItemPresenter.Create(const AItemView: IItemView);
@@ -81,11 +80,6 @@ begin
 
 end;
 
-function TImagerItemPresenter.GetOnSelect: TItemSelectEvent;
-begin
-  Result := FOnSelect;
-end;
-
 function TImagerItemPresenter.GetPosition: TPoint;
 begin
 
@@ -111,7 +105,7 @@ begin
     FOnSelect(Self);
 end;
 
-procedure TImagerItemPresenter.SetHeigt(const Value: Integer);
+procedure TImagerItemPresenter.SetHeight(const Value: Integer);
 begin
 
 end;
@@ -119,11 +113,6 @@ end;
 procedure TImagerItemPresenter.SetImage(const Value: TImage);
 begin
 
-end;
-
-procedure TImagerItemPresenter.SetOnSelect(AValue: TItemSelectEvent);
-begin
-  FOnSelect := AValue;
 end;
 
 procedure TImagerItemPresenter.SetPosition(const Value: TPoint);
@@ -144,6 +133,9 @@ end;
 procedure TImagerItemPresenter.UnCapture;
 begin
   FCaptured := False;
+
+  if Assigned(FOnUnCapture) then
+    FOnSelect(Self);
 end;
 
 end.

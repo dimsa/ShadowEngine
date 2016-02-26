@@ -10,8 +10,6 @@ uses
 type
   TSSBStatus = (sPicture, sObject, sShape);
 
-  TItemSelectEvent = TNotifyEvent;
-
   TImgToCtrlAdapter = class
   private
     FControlList: TList<TControl>;

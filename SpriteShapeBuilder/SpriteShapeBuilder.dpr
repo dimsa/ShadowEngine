@@ -26,7 +26,8 @@ uses
   uMVPFrameWork in 'Utils\uMVPFrameWork.pas',
   uItemPresenterProxy in 'Presenters\uItemPresenterProxy.pas',
   uIItemPresenter in 'Presenters\uIItemPresenter.pas',
-  uIPresenterEvent in 'Presenters\uIPresenterEvent.pas';
+  uIPresenterEvent in 'Presenters\uIPresenterEvent.pas',
+  uBaseItemPresenter in 'Presenters\uBaseItemPresenter.pas';
 
 {$R *.res}
 

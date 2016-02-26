@@ -4,11 +4,11 @@ interface
 
 uses
   System.Classes,
-  uIItemPresenter, uIItemView, uSSBTypes;
+  uIItemPresenter, uIPresenterEvent, uIItemView, uSSBTypes, uBaseItemPresenter;
 
 type
 
-TItemPresenterProxy = class(TInterfacedObject, IItemPresenter)
+TItemPresenterProxy = class(TBaseItemPresenter)
 private
   FStatus: TSSBStatus;
   FItemView: IItemView;
@@ -16,16 +16,14 @@ private
     FOnSelect: TNotifyEvent;
   procedure OnSelectHandler(ASender: TObject);
   function CreatePresenter(const AType: TSSBStatus): IItemPresenter;
-  function GetOnSelect: TItemSelectEvent;
-  procedure SetOnSelect(AValue: TItemSelectEvent);
 public
-  procedure Select;
-  procedure StartDrag;
-  procedure EndDrag;
-  procedure Delete;
-  procedure Capture;
-  procedure Hover;
-  procedure UnCapture;
+  procedure Select; override;
+  procedure StartDrag; override;
+  procedure EndDrag; override;
+  procedure Delete; override;
+  procedure Capture; override;
+  procedure Hover; override;
+  procedure UnCapture; override;
   property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
   property Status: TSSBStatus read FStatus write FStatus;
   constructor Create(const AView: IItemView);
@@ -90,11 +88,6 @@ begin
     FPresenters[FStatus].EndDrag;
 end;
 
-function TItemPresenterProxy.GetOnSelect: TItemSelectEvent;
-begin
-  Result := FOnSelect;
-end;
-
 procedure TItemPresenterProxy.Hover;
 begin
   CreatePresenter(FStatus);
@@ -112,11 +105,6 @@ procedure TItemPresenterProxy.Select;
 begin
   CreatePresenter(FStatus);
   FPresenters[FStatus].Select;
-end;
-
-procedure TItemPresenterProxy.SetOnSelect(AValue: TItemSelectEvent);
-begin
-  FOnSelect := AValue;
 end;
 
 procedure TItemPresenterProxy.StartDrag;
