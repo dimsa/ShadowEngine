@@ -51,6 +51,8 @@ end;
 
 function TItemPresenterProxy.CreatePresenter(
   const AType: TSSBStatus): IItemPresenter;
+var
+  vImagerItem: TImagerItemPresenter;
 begin
   if FPresenters[AType] <> nil then
     Exit;
@@ -58,8 +60,9 @@ begin
   case AType of
     sPicture:
     begin
-      FPresenters[AType] := TImagerItemPresenter.Create(FItemView);
-      FPresenters[AType].OnSelect := OnSelectHandler;
+      vImagerItem := TImagerItemPresenter.Create(FItemView);
+      vImagerItem.OnSelect := OnSelectHandler;
+      FPresenters[AType] := vImagerItem;
     end;
     sObject: ;
     sShape: ;

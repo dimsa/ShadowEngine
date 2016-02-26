@@ -12,6 +12,7 @@ type
   TMainPresenter = class(TPresenter)
   private
     FSelected: TItemPresenterProxy;
+    FCaptured: TItemPresenterProxy;
     FIsMouseDown: Boolean;
     FMouseStartPoint: TPointF;
     FMouseElementPoint: TPointF;
@@ -21,12 +22,13 @@ type
     // Методы на клик
     procedure DoSelectItem(ASender: TObject);
     procedure DoDelImage(ASender: TObject);
+    procedure DoStartDragItem(ASender: TObject);
+    procedure DoFinishDragItem(ASender: TObject);
   protected
     FModel: TSSBModel;
     property View: IMainView read GetView;
   public
     procedure AddImg;
-    //procedure SelImg;
     procedure DelImg;
     procedure DragImg;
     procedure StartDragImg;
@@ -61,7 +63,8 @@ begin
     // Creating Presenter
     vItemPresenter := TItemPresenterProxy.Create(vViewItem);
     vViewItem.Presenter := vItemPresenter;
-    vViewItem.Presenter.OnSelect := DoSelectItem;
+    vItemPresenter.OnSelect := DoSelectItem;
+//    vViewItem.Presenter.OnSelect := DoSelectItem;
 
     FItems.Add(vItemPresenter, vViewItem);
     try
@@ -97,12 +100,26 @@ begin
 
 end;
 
+procedure TMainPresenter.DoFinishDragItem(ASender: TObject);
+begin
+
+end;
+
 procedure TMainPresenter.DoSelectItem(ASender: TObject);
 begin
   if (ASender is TItemPresenterProxy) then
   begin
     FSelected := TItemPresenterProxy(ASender);
     View.SelectElement(FItems[FSelected]);
+  end;
+end;
+
+procedure TMainPresenter.DoStartDragItem(ASender: TObject);
+begin
+  if (ASender is TItemPresenterProxy) then
+  begin
+    FCaptured := TItemPresenterProxy(ASender);
+
   end;
 end;
 
@@ -113,7 +130,7 @@ end;
 
 procedure TMainPresenter.FinishDragImg;
 begin
-
+  FCaptured := Nil;
 end;
 
 function TMainPresenter.GetView: IMainView;
