@@ -13,13 +13,13 @@ type
   TImagerPresenter = class(TPresenter)
   private
     FModel: TSSBModel;
-    FSelected: TItemPresenterProxy;
-    FCaptured: TItemPresenterProxy;
+    FSelected: TImagerItemPresenter;
+    FCaptured: TImagerItemPresenter;
     FIsMouseDown: Boolean;
     FMouseStartPoint: TPointF;
     FMouseElementPoint: TPointF;
     FElementStartPosition: TPointF;
-    FItems: TDictionary<TItemPresenterProxy, IItemView>;
+    FItems: TDictionary<TImagerItemPresenter, IItemView>;
     function GetView: IMainView;
     property View: IMainView read GetView;
     // Методы на клик
@@ -68,7 +68,7 @@ begin
     vItemPresenter.OnCapture:= DoCaptureItem;
     vItemPresenter.OnUnCapture:= DoUnCaptureItem;
 
-    FItems.Add(vItemPresenter, vViewItem);
+    FItems.Add(TImagerItemPresenter(vItemPresenter.Instance), vViewItem);
     try
       vViewItem.AssignBitmap(vImg.Bitmap);
     except
@@ -80,7 +80,7 @@ end;
 
 constructor TImagerPresenter.Create(AView: IView; AModel: TSSBModel);
 begin
-  FItems := TDictionary<TItemPresenterProxy, IItemView>.Create;
+  FItems := TDictionary<TImagerItemPresenter, IItemView>.Create;
   FView := AView;
   FModel := AModel;
 end;
@@ -102,7 +102,7 @@ begin
   if (ASender is TItemPresenterProxy) then
   begin
     FMouseStartPoint := uEasyDevice.MousePos;
-    FCaptured := TItemPresenterProxy(ASender);
+    FCaptured := TImagerItemPresenter(ASender);
   end;
 end;
 
@@ -116,15 +116,15 @@ begin
   if (ASender is TItemPresenterProxy) then
   begin
     FMouseStartPoint := uEasyDevice.MousePos;
-    FCaptured := TItemPresenterProxy(ASender);
+    FCaptured := TImagerItemPresenter(ASender);
   end;
 end;
 
 procedure TImagerPresenter.DoSelectItem(ASender: TObject);
 begin
-  if (ASender is TItemPresenterProxy) then
+  if (ASender is TImagerItemPresenter) then
   begin
-    FSelected := TItemPresenterProxy(ASender);
+    FSelected := TImagerItemPresenter(ASender);
     View.SelectElement(FItems[FSelected]);
   end;
 end;

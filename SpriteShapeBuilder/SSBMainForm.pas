@@ -55,6 +55,7 @@ type
     procedure BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Single);
     procedure BackgroundResize(Sender: TObject);
+    procedure AddObjectBtnClick(Sender: TObject);
   private
     SSB: TSpriteShapeBuilder;
     { Private declarations }
@@ -68,6 +69,11 @@ var
 implementation
 
 {$R *.fmx}
+
+procedure TSSBForm.AddObjectBtnClick(Sender: TObject);
+begin
+  SSB.Objecter.AddObj;
+end;
 
 procedure TSSBForm.AddPictureBtnClick(Sender: TObject);
 begin
@@ -110,7 +116,6 @@ begin
   Object_Inst.Visible := False;
   Shape_Inst.Visible := False;
 
-
   SSB := TSpriteShapeBuilder.Create(Self, MainPanel, Background, Selected, OpenDialog);
   SSB.Init(Self);
 end;
@@ -123,7 +128,7 @@ end;
 
 procedure TSSBForm.Object_imgClick(Sender: TObject);
 begin
-//   SSB.Objecter.Init;
+  SSB.Status := TSSBStatus.sObject;
 end;
 
 procedure TSSBForm.Picture_imgClick(Sender: TObject);

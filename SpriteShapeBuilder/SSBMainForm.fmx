@@ -393,6 +393,7 @@ object SSBForm: TSSBForm
           Text = 'Add Object'
           XRadius = 3.000000000000000000
           YRadius = 3.000000000000000000
+          OnClick = AddObjectBtnClick
         end
         object DelObjectBtn: TCornerButton
           Align = Horizontal

@@ -87,6 +87,7 @@ begin
   FView := TView.Create(APanel, ABackground, ASelected, AOpenDialog, FormScreenToClient);
   FModel := TSSBModel.Create(OnModelUpdate);
   FImager := TImagerPresenter.Create(FView, FModel);
+  FObjecter := TObjecterPresenter.Create(FView, FModel);
 end;
 
 procedure TSpriteShapeBuilder.Deserialize(const AJson: TJSONObject);
@@ -180,16 +181,9 @@ var
   i: Integer;
   iStatus: TSSBStatus;
 begin
-
-//  FView.Init(AProgForm);
   FPanel := TPanel(AProgForm.FindComponent('MainPanel'));
   with FPanel do
   begin
-{    OnMouseWheel := FSSBView.DoZoom;
-    OnMouseDown := DoMouseDown;
-    OnMouseUp := DoMouseUp;
-    OnMouseMove := DoMouseMove;   }
-
     try
       Canvas.BeginScene;
       Canvas.Fill.Color := TAlphaColorRec.Blanchedalmond;
@@ -216,30 +210,6 @@ begin
 
   Status := TSSBStatus.sPicture;
   Imager.Init;
-
- { for iStatus := Low(TSSBStatus) to High(TSSBStatus) do
-  begin
-    FTabsImg[iStatus].OnClick := DoChangeStatus;
-    FTabsRect[iStatus].OnClick:= DoChangeStatus;
-  end;    }
-
-
-  //FImageForSelect := TImage(AProgForm.FindComponent('SelectImage'));
-
- { vDelBtn := TCornerButton(AProgForm.FindComponent('DelPictureBtn'));
-  vDelBtn.OnClick := DoDeleteObject;
-
-  vSavePrjBtn := TCornerButton(AProgForm.FindComponent('SaveProjectBtn'));
-  vSavePrjBtn.OnClick := DoSaveProject;
-
-  vLoadPrjBtn := TCornerButton(AProgForm.FindComponent('LoadProjectBtn'));
-  vLoadPrjBtn.OnClick := DoLoadProject;
-
-  vAddCircle := TCornerButton(AProgForm.FindComponent('AddCircleBtn'));
-  vAddCircle.OnClick := DoAddCircle;
-
-  vAddPoly := TCornerButton(AProgForm.FindComponent('AddPolyBtn'));
-  vAddPoly.OnClick := DoAddPoly;}
 end;
 
 procedure TSpriteShapeBuilder.LoadProject(const AFileName: string);
@@ -308,7 +278,7 @@ end;
 
 procedure TSpriteShapeBuilder.SetStatus(const Value: TSSBStatus);
 begin
-//  FPanels[FStatus].Visible := False;
+  FPanels[FStatus].Visible := False;
   FStatus := Value;
   FPanels[FStatus].Visible := True;
 //  FPanels[Value].Visible := True;

@@ -5,13 +5,16 @@ interface
 uses
   System.Generics.Collections, FMX.Objects,
   uIView, uItemPresenterProxy, uMVPFrameWork, uSSBModels, uSSBTypes,
-  uIItemView;
+  uIItemView, uItemObjecterPresenter;
 
 type
   TObjecterPresenter = class(TPresenter)
+  private
+    FSelected: TItemObjecterPresenter;
+    FCaptured: TItemObjecterPresenter;
   protected
     FModel: TSSBModel;
-    FItems: TDictionary<TItemPresenterProxy, IItemView>;
+    FItems: TDictionary<TItemObjecterPresenter, IItemView>;
     function GetView: IMainView;
     property View: IMainView read GetView;
     // Методы на клик
@@ -27,6 +30,9 @@ type
 
 implementation
 
+uses
+  System.Types, FMX.Types, System.UITypes;
+
 { TObjecterPresenter }
 
 procedure TObjecterPresenter.AddObj;
@@ -35,16 +41,25 @@ var
   vViewItem: IItemView;
   vItemPresenter: TItemPresenterProxy;
 begin
-
     vImg := TImage.Create(nil);
-    {vImg.Bitmap.LoadFromFile(vFileName);  }
-
+    vImg.Width := 50;
+    vImg.Height := 50;
+    vImg.Bitmap.Width := 50;
+    vImg.Bitmap.Height := 50;
+    vImg.Bitmap.Canvas.BeginScene();
+    vImg.Bitmap.Canvas.StrokeThickness := 5;
+    vImg.Bitmap.Canvas.Stroke.Color := TAlphaColorRec.Red;
+    vImg.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Blue;
+    vImg.Bitmap.Canvas.FillRect(
+    RectF(0, 0, vImg.Width, vImg.Height), 0, 0, [], 1, FMX.Types.TCornerType.ctBevel);
+    vImg.Bitmap.Canvas.EndScene;
     // Creating View
     vViewItem := View.AddElement;
     vViewItem.Left := 0;
     vViewItem.Top := 0;
-    vViewItem.Width := 100;//Round(vImg.Width);
-    vViewItem.Height:= 100; //Round(vImg.Height);
+    vViewItem.Width := 50;//Round(vImg.Width);
+    vViewItem.Height:= 50; //Round(vImg.Height);
+    vViewItem.AssignBitmap(vImg.Bitmap);
 
     // Creating Presenter
     vItemPresenter := TItemPresenterProxy.Create(vViewItem, sObject);
@@ -53,7 +68,7 @@ begin
     vItemPresenter.OnCapture:= DoCaptureItem;
     vItemPresenter.OnUnCapture:= DoUnCaptureItem;
 
-    FItems.Add(vItemPresenter, vViewItem);
+    FItems.Add(TItemObjecterPresenter(vItemPresenter.Instance), vViewItem);
     try
       vViewItem.AssignBitmap(vImg.Bitmap);
     except
@@ -64,7 +79,7 @@ end;
 
 constructor TObjecterPresenter.Create(AView: IView; AModel: TSSBModel);
 begin
-  FItems := TDictionary<TItemPresenterProxy, IItemView>.Create;
+  FItems := TDictionary<TItemObjecterPresenter, IItemView>.Create;
   FView := AView;
   FModel := AModel;
 end;
@@ -86,7 +101,11 @@ end;
 
 procedure TObjecterPresenter.DoSelectItem(ASender: TObject);
 begin
-
+  if (ASender is TItemObjecterPresenter) then
+  begin
+    FSelected := TItemObjecterPresenter(ASender);
+    View.SelectElement(FItems[FSelected]);
+  end;
 end;
 
 procedure TObjecterPresenter.DoUncaptureItem(ASender: TObject);
