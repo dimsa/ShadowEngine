@@ -4,18 +4,20 @@ interface
 
 uses
   System.Classes,
-  uIItemPresenter, uIPresenterEvent, uIItemView, uSSBTypes, uBaseItemPresenter;
+  uIItemPresenter, uIItemPresenterEvent, uIItemView, uSSBTypes, uItemBasePresenter;
 
 type
 
-TItemPresenterProxy = class(TBaseItemPresenter)
+TItemPresenterProxy = class(TItemBasePresenter)
 private
+  FOnSelect, FOnCapture, FOnUncapture: TNotifyEvent; // Unused from uBaseItemPresenter
   FStatus: TSSBStatus;
   FItemView: IItemView;
-  FPresenters: array [TSSBStatus] of IItemPresenter;
-    FOnSelect: TNotifyEvent;
+  FPresenters: array [TSSBStatus] of TItemBasePresenter;
   procedure OnSelectHandler(ASender: TObject);
   function CreatePresenter(const AType: TSSBStatus): IItemPresenter;
+  procedure SetOnSelect(AHandler: TNotifyEvent); override;
+  function GetOnSelect: TNotifyEvent; override;
 public
   procedure Select; override;
   procedure StartDrag; override;
@@ -24,16 +26,16 @@ public
   procedure Capture; override;
   procedure Hover; override;
   procedure UnCapture; override;
-  property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
+  property OnSelect: TNotifyEvent read GetOnSelect write SetOnSelect;
   property Status: TSSBStatus read FStatus write FStatus;
-  constructor Create(const AView: IItemView);
+  constructor Create(const AView: IItemView; const AStatus: TSSBStatus = sPicture);
   destructor Destroy; override;
 end;
 
 implementation
 
 uses
-  uImagerItemPresenter;
+  uItemImagerPresenter, uItemObjecterPresenter;
 { TItemPresenterFacade }
 
 procedure TItemPresenterProxy.Capture;
@@ -42,8 +44,9 @@ begin
   FPresenters[FStatus].Capture;
 end;
 
-constructor TItemPresenterProxy.Create(const AView: IItemView);
+constructor TItemPresenterProxy.Create(const AView: IItemView; const AStatus: TSSBStatus);
 begin
+  FStatus := AStatus;
   FItemView := AView;
 end;
 
@@ -51,6 +54,7 @@ function TItemPresenterProxy.CreatePresenter(
   const AType: TSSBStatus): IItemPresenter;
 var
   vImagerItem: TImagerItemPresenter;
+  vObjecterItem: TObjecterItemPresenter;
 begin
   if FPresenters[AType] <> nil then
     Exit;
@@ -59,12 +63,16 @@ begin
     sPicture:
     begin
       vImagerItem := TImagerItemPresenter.Create(FItemView);
-      vImagerItem.OnSelect := OnSelectHandler;
+//      vImagerItem.OnSelect := OnSelectHandler;
       FPresenters[AType] := vImagerItem;
     end;
-    sObject: ;
-    sShape: ;
+    sObject:
+    begin
+      vObjecterItem := TObjecterItemPresenter.Create(FItemView);
+      FPresenters[AType] := vObjecterItem;
     end;
+    sShape: ;
+  end;
 end;
 
 procedure TItemPresenterProxy.Delete;
@@ -88,6 +96,12 @@ begin
     FPresenters[FStatus].EndDrag;
 end;
 
+function TItemPresenterProxy.GetOnSelect: TNotifyEvent;
+begin
+  CreatePresenter(FStatus);
+  Result := FPresenters[FStatus].OnSelect;
+end;
+
 procedure TItemPresenterProxy.Hover;
 begin
   CreatePresenter(FStatus);
@@ -96,15 +110,20 @@ end;
 
 procedure TItemPresenterProxy.OnSelectHandler(ASender: TObject);
 begin
-  if Assigned(FOnSelect) then
-    FOnSelect(Self);
-//    FOnSelect(ASender); ћб сделать типа RoutedEvent
+  CreatePresenter(FStatus);
+  FPresenters[FStatus].OnSelect(ASender);
 end;
 
 procedure TItemPresenterProxy.Select;
 begin
   CreatePresenter(FStatus);
   FPresenters[FStatus].Select;
+end;
+
+procedure TItemPresenterProxy.SetOnSelect(AHandler: TNotifyEvent);
+begin
+  CreatePresenter(FStatus);
+  FPresenters[FStatus].OnSelect := AHandler;
 end;
 
 procedure TItemPresenterProxy.StartDrag;

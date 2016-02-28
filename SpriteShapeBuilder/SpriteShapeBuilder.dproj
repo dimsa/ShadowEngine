@@ -287,19 +287,20 @@
             <FormType>fmx</FormType>
         </DCCReference>
         <DCCReference Include="Model\uSSBModels.pas"/>
-        <DCCReference Include="Presenters\uMainPresenter__.pas"/>
         <DCCReference Include="View\uView.pas"/>
         <DCCReference Include="uSSBTypes.pas"/>
         <DCCReference Include="IView\uIView.pas"/>
         <DCCReference Include="IView\uIItemView.pas"/>
         <DCCReference Include="View\uItemView.pas"/>
-        <DCCReference Include="Presenters\uMainPresenter.pas"/>
-        <DCCReference Include="Presenters\uImagerItemPresenter.pas"/>
         <DCCReference Include="Utils\uMVPFrameWork.pas"/>
-        <DCCReference Include="Presenters\uItemPresenterProxy.pas"/>
-        <DCCReference Include="Presenters\uIItemPresenter.pas"/>
-        <DCCReference Include="Presenters\uIPresenterEvent.pas"/>
-        <DCCReference Include="Presenters\uBaseItemPresenter.pas"/>
+        <DCCReference Include="Presenters\Item\uIItemPresenter.pas"/>
+        <DCCReference Include="Presenters\Item\uIItemPresenterEvent.pas"/>
+        <DCCReference Include="Presenters\Item\uItemBasePresenter.pas"/>
+        <DCCReference Include="Presenters\Item\uItemImagerPresenter.pas"/>
+        <DCCReference Include="Presenters\Item\uItemObjecterPresenter.pas"/>
+        <DCCReference Include="Presenters\Item\uItemPresenterProxy.pas"/>
+        <DCCReference Include="Presenters\Main\uImagerPresenter.pas"/>
+        <DCCReference Include="Presenters\Main\uObjecterPresenter.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -714,13 +715,13 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
             </Deployment>
             <Platforms>
                 <Platform value="Android">True</Platform>

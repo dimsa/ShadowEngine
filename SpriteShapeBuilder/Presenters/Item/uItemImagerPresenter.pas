@@ -1,17 +1,16 @@
-unit uImagerItemPresenter;
+unit uItemImagerPresenter;
 
 interface
 
 uses
   System.Classes, System.Types, FMX.Objects,
-  uIItemView, uIItemPresenter, uSSBTypes, uBaseItemPresenter;
+  uIItemView, uIItemPresenter, uSSBTypes, uItemBasePresenter;
 
 type
-  TImagerItemPresenter = class(TBaseItemPresenter)
+  TImagerItemPresenter = class(TItemBasePresenter)
   private
     FStartDragPoint, FStartObjectPoint: TPointF;
     FCaptured: Boolean;
-    FView: IItemView;
     function GetHeight: Integer;
     function GetImage: TImage;
     function GetPosition: TPoint;
@@ -33,8 +32,6 @@ type
     procedure Capture; override;
     procedure Hover; override;
     procedure UnCapture; override;
-
-    constructor Create(const AItemView: IItemView);
   end;
 
 implementation
@@ -49,11 +46,6 @@ begin
 
   if Assigned(FOnCapture) then
     FOnSelect(Self);
-end;
-
-constructor TImagerItemPresenter.Create(const AItemView: IItemView);
-begin
-  FView := AItemView;
 end;
 
 procedure TImagerItemPresenter.Delete;

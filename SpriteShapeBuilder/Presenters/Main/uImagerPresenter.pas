@@ -1,16 +1,18 @@
-unit uMainPresenter;
+unit uImagerPresenter;
 
 interface
 
 uses
   System.Types, System.Generics.Collections, FMX.Objects,
-  uIView, uItemPresenterProxy,
-  uIItemView, uImagerItemPresenter, uSSBModels, uMVPFrameWork;
+  uIView, uItemPresenterProxy, uSSBTypes, uItemBasePresenter,
+  uIItemView, uItemImagerPresenter, uSSBModels, uMVPFrameWork,
+  uEasyDevice;
 
 
 type
-  TMainPresenter = class(TPresenter)
+  TImagerPresenter = class(TPresenter)
   private
+    FModel: TSSBModel;
     FSelected: TItemPresenterProxy;
     FCaptured: TItemPresenterProxy;
     FIsMouseDown: Boolean;
@@ -19,14 +21,13 @@ type
     FElementStartPosition: TPointF;
     FItems: TDictionary<TItemPresenterProxy, IItemView>;
     function GetView: IMainView;
+    property View: IMainView read GetView;
     // Методы на клик
     procedure DoSelectItem(ASender: TObject);
-    procedure DoDelImage(ASender: TObject);
-    procedure DoStartDragItem(ASender: TObject);
-    procedure DoFinishDragItem(ASender: TObject);
-  protected
-    FModel: TSSBModel;
-    property View: IMainView read GetView;
+    procedure DoCaptureItem(ASender: TObject);
+    procedure DoUncaptureItem(ASender: TObject);
+    procedure DoDeleteItem(ASender: TObject);
+    procedure DoDragCapturedItem(ASender: TObject);
   public
     procedure AddImg;
     procedure DelImg;
@@ -40,7 +41,7 @@ type
 
 implementation
 
-procedure TMainPresenter.AddImg;
+procedure TImagerPresenter.AddImg;
 var
   vFileName: string;
   vViewItem: IItemView;
@@ -61,10 +62,11 @@ begin
     vViewItem.Height:= Round(vImg.Height);
 
     // Creating Presenter
-    vItemPresenter := TItemPresenterProxy.Create(vViewItem);
+    vItemPresenter := TItemPresenterProxy.Create(vViewItem, sPicture);
     vViewItem.Presenter := vItemPresenter;
     vItemPresenter.OnSelect := DoSelectItem;
-//    vViewItem.Presenter.OnSelect := DoSelectItem;
+    vItemPresenter.OnCapture:= DoCaptureItem;
+    vItemPresenter.OnUnCapture:= DoUnCaptureItem;
 
     FItems.Add(vItemPresenter, vViewItem);
     try
@@ -76,36 +78,49 @@ begin
   end;
 end;
 
-constructor TMainPresenter.Create(AView: IView; AModel: TSSBModel);
+constructor TImagerPresenter.Create(AView: IView; AModel: TSSBModel);
 begin
   FItems := TDictionary<TItemPresenterProxy, IItemView>.Create;
   FView := AView;
   FModel := AModel;
 end;
 
-procedure TMainPresenter.DelImg;
+procedure TImagerPresenter.DelImg;
 begin
 
 end;
 
-destructor TMainPresenter.Destroy;
+destructor TImagerPresenter.Destroy;
 begin
   FItems.Free;
   FModel.Free;
   inherited;
 end;
 
-procedure TMainPresenter.DoDelImage(ASender: TObject);
+procedure TImagerPresenter.DoCaptureItem(ASender: TObject);
+begin
+  if (ASender is TItemPresenterProxy) then
+  begin
+    FMouseStartPoint := uEasyDevice.MousePos;
+    FCaptured := TItemPresenterProxy(ASender);
+  end;
+end;
+
+procedure TImagerPresenter.DoDeleteItem(ASender: TObject);
 begin
 
 end;
 
-procedure TMainPresenter.DoFinishDragItem(ASender: TObject);
+procedure TImagerPresenter.DoDragCapturedItem(ASender: TObject);
 begin
-
+  if (ASender is TItemPresenterProxy) then
+  begin
+    FMouseStartPoint := uEasyDevice.MousePos;
+    FCaptured := TItemPresenterProxy(ASender);
+  end;
 end;
 
-procedure TMainPresenter.DoSelectItem(ASender: TObject);
+procedure TImagerPresenter.DoSelectItem(ASender: TObject);
 begin
   if (ASender is TItemPresenterProxy) then
   begin
@@ -114,31 +129,27 @@ begin
   end;
 end;
 
-procedure TMainPresenter.DoStartDragItem(ASender: TObject);
+procedure TImagerPresenter.DoUncaptureItem(ASender: TObject);
 begin
-  if (ASender is TItemPresenterProxy) then
-  begin
-    FCaptured := TItemPresenterProxy(ASender);
-
-  end;
+  FCaptured := nil;
 end;
 
-procedure TMainPresenter.DragImg;
+procedure TImagerPresenter.DragImg;
 begin
 
 end;
 
-procedure TMainPresenter.FinishDragImg;
+procedure TImagerPresenter.FinishDragImg;
 begin
   FCaptured := Nil;
 end;
 
-function TMainPresenter.GetView: IMainView;
+function TImagerPresenter.GetView: IMainView;
 begin
   Result := IMainView(FView);
 end;
 
-procedure TMainPresenter.Init;
+procedure TImagerPresenter.Init;
 begin
   inherited;
 
@@ -161,7 +172,7 @@ begin
     FSelected := nil;
 end;  }
 
-procedure TMainPresenter.StartDragImg;
+procedure TImagerPresenter.StartDragImg;
 begin
 
 end;

@@ -15,19 +15,20 @@ uses
   uSSBFigure in 'uSSBFigure.pas',
   SSBOptionsForm in 'SSBOptionsForm.pas' {OptionsForm},
   uSSBModels in 'Model\uSSBModels.pas',
-  uMainPresenter__ in 'Presenters\uMainPresenter__.pas',
   uView in 'View\uView.pas',
   uSSBTypes in 'uSSBTypes.pas',
   uIView in 'IView\uIView.pas',
   uIItemView in 'IView\uIItemView.pas',
   uItemView in 'View\uItemView.pas',
-  uMainPresenter in 'Presenters\uMainPresenter.pas',
-  uImagerItemPresenter in 'Presenters\uImagerItemPresenter.pas',
   uMVPFrameWork in 'Utils\uMVPFrameWork.pas',
-  uItemPresenterProxy in 'Presenters\uItemPresenterProxy.pas',
-  uIItemPresenter in 'Presenters\uIItemPresenter.pas',
-  uIPresenterEvent in 'Presenters\uIPresenterEvent.pas',
-  uBaseItemPresenter in 'Presenters\uBaseItemPresenter.pas';
+  uIItemPresenter in 'Presenters\Item\uIItemPresenter.pas',
+  uIItemPresenterEvent in 'Presenters\Item\uIItemPresenterEvent.pas',
+  uItemBasePresenter in 'Presenters\Item\uItemBasePresenter.pas',
+  uItemImagerPresenter in 'Presenters\Item\uItemImagerPresenter.pas',
+  uItemObjecterPresenter in 'Presenters\Item\uItemObjecterPresenter.pas',
+  uItemPresenterProxy in 'Presenters\Item\uItemPresenterProxy.pas',
+  uImagerPresenter in 'Presenters\Main\uImagerPresenter.pas',
+  uObjecterPresenter in 'Presenters\Main\uObjecterPresenter.pas';
 
 {$R *.res}
 

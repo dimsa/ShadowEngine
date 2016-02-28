@@ -10,7 +10,7 @@ type
 
   end;
 
-  TModel = class
+  TModel = class(TInterfacedObject)
   protected
     FUpdateHandler: TNotifyEvent;
   public
@@ -18,7 +18,7 @@ type
     destructor Destroy; override;
   end;
 
-  TPresenter = class
+  TPresenter = class(TInterfacedObject)
   protected
     FView: IView;
   public

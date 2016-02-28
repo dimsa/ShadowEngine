@@ -5,7 +5,7 @@ interface
 uses
   System.UITypes, System.Classes, System.Types,
   FMX.Types, FMX.Objects, FMX.Graphics, FMX.Controls,
-  uIItemView, uImagerItemPresenter, uItemPresenterProxy, uIItemPresenter,
+  uIItemView, uItemImagerPresenter, uItemPresenterProxy, uIItemPresenter,
   uEasyDevice;
 
 type
