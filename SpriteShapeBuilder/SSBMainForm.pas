@@ -56,6 +56,7 @@ type
       Y: Single);
     procedure BackgroundResize(Sender: TObject);
     procedure AddObjectBtnClick(Sender: TObject);
+    procedure DelObjectBtnClick(Sender: TObject);
   private
     SSB: TSpriteShapeBuilder;
     { Private declarations }
@@ -78,12 +79,16 @@ end;
 procedure TSSBForm.AddPictureBtnClick(Sender: TObject);
 begin
   SSB.Imager.AddImg;
+
+
 end;
 
 procedure TSSBForm.BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Single);
 begin
   SSBForm.Caption := x.ToString() + ' ' + y.ToString();
+  SSB.Imager.MouseMove;
+  SSB.Objecter.MouseMove;
 end;
 
 procedure TSSBForm.BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -99,6 +104,11 @@ end;
 procedure TSSBForm.BackgroundResize(Sender: TObject);
 begin
   SSBForm.Caption := Random(100).ToString;
+end;
+
+procedure TSSBForm.DelObjectBtnClick(Sender: TObject);
+begin
+  SSB.Objecter.DelObj;
 end;
 
 procedure TSSBForm.DelPictureBtnClick(Sender: TObject);

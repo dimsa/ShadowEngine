@@ -3,7 +3,7 @@ unit uImagerPresenter;
 interface
 
 uses
-  System.Types, System.Generics.Collections, FMX.Objects,
+  System.Types, System.SysUtils, System.Generics.Collections, FMX.Objects,
   uIView, uItemPresenterProxy, uSSBTypes, uItemBasePresenter,
   uIItemView, uItemImagerPresenter, uSSBModels, uMVPFrameWork,
   uEasyDevice;
@@ -28,18 +28,23 @@ type
     procedure DoUncaptureItem(ASender: TObject);
     procedure DoDeleteItem(ASender: TObject);
     procedure DoDragCapturedItem(ASender: TObject);
+    procedure DoHoverItem(ASender: TObject);
   public
     procedure AddImg;
     procedure DelImg;
     procedure DragImg;
     procedure StartDragImg;
     procedure FinishDragImg;
+    procedure MouseMove;
     procedure Init;
     constructor Create(AView: IView; AModel: TSSBModel);
     destructor Destroy; override;
   end;
 
 implementation
+
+uses
+  FMX.Platform, FMX.Platform.Win, FMX.Types, System.UITypes;
 
 procedure TImagerPresenter.AddImg;
 var
@@ -67,6 +72,7 @@ begin
     vItemPresenter.OnSelect := DoSelectItem;
     vItemPresenter.OnCapture:= DoCaptureItem;
     vItemPresenter.OnUnCapture:= DoUnCaptureItem;
+    vItemPresenter.OnHover := DoHoverItem;
 
     FItems.Add(TImagerItemPresenter(vItemPresenter.Instance), vViewItem);
     try
@@ -120,6 +126,11 @@ begin
   end;
 end;
 
+procedure TImagerPresenter.DoHoverItem(ASender: TObject);
+begin
+  MouseMove;
+end;
+
 procedure TImagerPresenter.DoSelectItem(ASender: TObject);
 begin
   if (ASender is TImagerItemPresenter) then
@@ -153,9 +164,68 @@ procedure TImagerPresenter.Init;
 begin
   inherited;
 
-{  FView.ChangeImageMouseDownHandler(DoMouseDown);
-  FView.ChangeImageMouseUpHandler(DoMouseUp);
-  FView.ChangeImageMouseMoveHandler(DoMouseMove);}
+end;
+
+procedure SetCursor(ACursor: TCursor);
+var
+  CS: IFMXCursorService;
+begin
+  if TPlatformServices.Current.SupportsPlatformService(IFMXCursorService) then
+  begin
+    CS := TPlatformServices.Current.GetPlatformService(IFMXCursorService) as IFMXCursorService;
+  end;
+  if Assigned(CS) then
+  begin
+    CS.SetCursor(ACursor);
+    CS.SetCursor(ACursor);
+  end;
+end;
+
+procedure TImagerPresenter.MouseMove;
+var
+  vItem: TImagerItemPresenter;
+  vPoint: TPoint;
+  vD: Integer;
+begin
+  vPoint := View.GetMousePos;
+
+  if not Assigned(FSelected) then
+    Exit;
+
+  vD := 5;
+  if (FSelected.Position.X - vD <= vPoint.X) and
+     (FSelected.Position.X + vD >= vPoint.X) and
+     (FSelected.Position.Y < vPoint.Y) and (FSelected.Position.Y + FSelected.Height > vPoint.Y) then
+     begin
+       View.ChangeCursor(crSizeWE);
+       Exit;
+     end;
+
+  if (FSelected.Position.X + FSelected.Width - vD <= vPoint.X) and
+     (FSelected.Position.X + FSelected.Width + vD >= vPoint.X) and
+     (FSelected.Position.Y < vPoint.Y) and (FSelected.Position.Y + FSelected.Height > vPoint.Y) then
+     begin
+       View.ChangeCursor(crSizeWE);
+       Exit;
+     end;
+
+  if (FSelected.Position.Y - vD <= vPoint.Y) and
+     (FSelected.Position.Y + vD >= vPoint.Y) and
+     (FSelected.Position.X < vPoint.X) and (FSelected.Position.X + FSelected.Width > vPoint.X) then
+     begin
+       View.ChangeCursor(crSizeNS);
+       Exit;
+     end;
+
+  if (FSelected.Position.Y + FSelected.Height - vD <= vPoint.Y) and
+     (FSelected.Position.Y + FSelected.Height + vD >= vPoint.Y) and
+     (FSelected.Position.X < vPoint.X) and (FSelected.Position.X + FSelected.Width > vPoint.X) then
+     begin
+       View.ChangeCursor(crSizeNS);
+       Exit;
+     end;
+
+   View.ChangeCursor(crArrow);
 end;
 
 {procedure TSSBImagerPresenter.SelImg;

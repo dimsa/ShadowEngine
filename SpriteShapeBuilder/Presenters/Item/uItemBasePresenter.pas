@@ -10,17 +10,20 @@ type
   TItemBasePresenter = class abstract(TPresenter, IItemPresenter, IPresenterEvent)
   protected
     FView: IItemView;
-    FOnSelect, FOnCapture, FOnUncapture: TNotifyEvent;
+    FOnSelect, FOnCapture, FOnUncapture, FOnHover: TNotifyEvent;
     procedure SetOnSelect(AHandler: TNotifyEvent); virtual;
     function GetOnSelect: TNotifyEvent; virtual;
     procedure SetOnCapture(AHandler: TNotifyEvent); virtual;
     function GetOnCapture: TNotifyEvent; virtual;
     procedure SetOnUnCapture(AHandler: TNotifyEvent); virtual;
     function GetOnUnCapture: TNotifyEvent; virtual;
+    procedure SetOnHover(AHandler: TNotifyEvent); virtual;
+    function GetOnHover: TNotifyEvent; virtual;
   public
     property OnSelect: TNotifyEvent read GetOnSelect write SetOnSelect;
     property OnCapture: TNotifyEvent read GetOnCapture write SetOnCapture;
     property OnUnCapture: TNotifyEvent read GetOnCapture write SetOnCapture;
+    property OnHover: TNotifyEvent read GetOnHover write SetOnHover;
 
     procedure Select; virtual; abstract;
     procedure Capture; virtual; abstract;
@@ -47,6 +50,11 @@ begin
   Result := FOnCapture;
 end;
 
+function TItemBasePresenter.GetOnHover: TNotifyEvent;
+begin
+  Result := FOnHover;
+end;
+
 function TItemBasePresenter.GetOnSelect: TNotifyEvent;
 begin
   Result := FOnSelect;
@@ -60,6 +68,11 @@ end;
 procedure TItemBasePresenter.SetOnCapture(AHandler: TNotifyEvent);
 begin
   FOnCapture := AHandler;
+end;
+
+procedure TItemBasePresenter.SetOnHover(AHandler: TNotifyEvent);
+begin
+  FOnHover := AHandler;
 end;
 
 procedure TItemBasePresenter.SetOnSelect(AHandler: TNotifyEvent);

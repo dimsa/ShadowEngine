@@ -3,7 +3,7 @@ unit uIView;
 interface
 
 uses
-  FMX.Objects, System.Types, FMX.Graphics, FMX.Types,
+  FMX.Objects, System.Types, FMX.Graphics, FMX.Types, System.UITypes,
   uSSBTypes, uIItemView, uMVPFrameWork;
 
 type
@@ -15,9 +15,7 @@ type
     procedure ClearAndFreeImg;
     procedure SetBackground(const AImg: TImage);
     function FilenameFromDlg: string;
-    procedure ChangeImageMouseDownHandler(const AHandler: TMouseEvent);
-    procedure ChangeImageMouseUpHandler(const AHandler: TMouseEvent);
-    procedure ChangeImageMouseMoveHandler(const AHandler: TMouseMoveEvent);
+    procedure ChangeCursor(const ACursor: TCursor);
   end;
 
 implementation

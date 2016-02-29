@@ -26,6 +26,8 @@ type
   public
     constructor Create(AView: IView; AModel: TSSBModel);
     procedure AddObj;
+    procedure DelObj;
+    procedure MouseMove;
   end;
 
 implementation
@@ -84,6 +86,11 @@ begin
   FModel := AModel;
 end;
 
+procedure TObjecterPresenter.DelObj;
+begin
+
+end;
+
 procedure TObjecterPresenter.DoCaptureItem(ASender: TObject);
 begin
 
@@ -116,6 +123,11 @@ end;
 function TObjecterPresenter.GetView: IMainView;
 begin
   Result := IMainView(FView);
+end;
+
+procedure TObjecterPresenter.MouseMove;
+begin
+
 end;
 
 end.

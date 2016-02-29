@@ -18,13 +18,8 @@ type
     FBackground: TImage;
     FSelected: TImage;
     FOpenDialog: TOpenDialog;
-    FMouseMoveHandler: TMouseMoveEvent;
-    FMouseDownHandler: TMouseEvent;
-    FMouseUpHandler: TMouseEvent;
     procedure CopyEvents(const AFromControl: TControl; AToControl: TControl);
-//    function ElementByInterface(AElem: IItemView): TItemView;
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-//    function ElementUnderMouse: ISSBViewElement;
   public
 
    { property Selected: TImage read FSelected;
@@ -43,9 +38,7 @@ type
     procedure SelectElement(const AElement: IItemView);
     procedure SetBackground(const AImg: TImage);
     function FilenameFromDlg: string;
-    procedure ChangeImageMouseDownHandler(const AHandler: TMouseEvent);
-    procedure ChangeImageMouseUpHandler(const AHandler: TMouseEvent);
-    procedure ChangeImageMouseMoveHandler(const AHandler: TMouseMoveEvent);
+    procedure ChangeCursor(const ACursor: TCursor);
   end;
 
 implementation
@@ -62,19 +55,11 @@ begin
   Result := vImg;
 end;
 
-procedure TView.ChangeImageMouseDownHandler(const AHandler: TMouseEvent);
+procedure TView.ChangeCursor(const ACursor: TCursor);
 begin
-  FMouseDownHandler := AHandler;
-end;
-
-procedure TView.ChangeImageMouseMoveHandler(const AHandler: TMouseMoveEvent);
-begin
-  FMouseMoveHandler := AHandler;
-end;
-
-procedure TView.ChangeImageMouseUpHandler(const AHandler: TMouseEvent);
-begin
-  FMouseUpHandler := AHandler;
+  if ACursor = FPanel.Cursor then
+    Exit;
+  FPanel.Cursor := ACursor;
 end;
 
 procedure TView.ClearAndFreeImg;
@@ -141,10 +126,6 @@ begin
   FBackground := nil;
   FSelected := nil;
   FOpenDialog := nil;
-
-  FMouseMoveHandler := nil;
-  FMouseDownHandler := nil;
-  FMouseUpHandler := nil;
 
   inherited;
 end;

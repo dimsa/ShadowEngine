@@ -29,6 +29,7 @@ type
     procedure SetPresenter(AValue: IItemPresenter);
   public
     property Presenter: IItemPresenter read GetPresenter write SetPresenter;
+    procedure ChangeCursor(const ACursor: TCursor);
     property Image: TImage read FImage write FImage;
     function MousePos: TPointF;
     procedure AssignBitmap(ABmp: TBitmap);
@@ -44,6 +45,13 @@ begin
   FImage.Width := ABmp.Width;
   FImage.Height:= ABmp.Height;
   FImage.Bitmap.Assign(ABmp);
+end;
+
+procedure TItemView.ChangeCursor(const ACursor: TCursor);
+begin
+  if ACursor = FImage.Cursor then
+    Exit;
+  FImage.Cursor := ACursor;
 end;
 
 constructor TItemView.Create(AOwner: TControl);

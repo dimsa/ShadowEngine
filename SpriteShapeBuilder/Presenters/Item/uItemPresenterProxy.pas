@@ -22,7 +22,9 @@ private
   function GetOnUnCapture: TNotifyEvent;
   procedure SetOnCapture(const Value: TNotifyEvent);
   procedure SetOnUnCapture(const Value: TNotifyEvent);
-    function GetInstance: TItemBasePresenter;
+  function GetOnHover: TNotifyEvent;
+  procedure SetOnHover(const Value: TNotifyEvent);
+  function GetInstance: TItemBasePresenter;
 public
   procedure Select; override;
   procedure StartDrag; override;
@@ -34,6 +36,7 @@ public
   property OnSelect: TNotifyEvent read GetOnSelect write SetOnSelect;
   property OnCapture: TNotifyEvent read GetOnCapture write SetOnCapture;
   property OnUnCapture: TNotifyEvent read GetOnUnCapture write SetOnUnCapture;
+  property OnHover: TNotifyEvent read GetOnHover write SetOnHover;
   property Status: TSSBStatus read FStatus write FStatus;
   property Instance: TItemBasePresenter read GetInstance; // Give object of Status
   constructor Create(const AView: IItemView; const AStatus: TSSBStatus = sPicture);
@@ -104,6 +107,12 @@ begin
     FPresenters[FStatus].EndDrag;
 end;
 
+function TItemPresenterProxy.GetOnHover: TNotifyEvent;
+begin
+  CreatePresenter(FStatus);
+  Result := FPresenters[FStatus].OnHover;
+end;
+
 function TItemPresenterProxy.GetInstance: TItemBasePresenter;
 begin
   CreatePresenter(FStatus);
@@ -150,6 +159,12 @@ procedure TItemPresenterProxy.SetOnCapture(const Value: TNotifyEvent);
 begin
   CreatePresenter(FStatus);
   FPresenters[FStatus].OnCapture := Value;
+end;
+
+procedure TItemPresenterProxy.SetOnHover(const Value: TNotifyEvent);
+begin
+  CreatePresenter(FStatus);
+  FPresenters[FStatus].OnHover := Value;
 end;
 
 procedure TItemPresenterProxy.SetOnSelect(AHandler: TNotifyEvent);

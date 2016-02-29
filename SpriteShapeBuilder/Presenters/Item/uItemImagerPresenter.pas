@@ -64,7 +64,7 @@ end;
 
 function TImagerItemPresenter.GetHeight: Integer;
 begin
-
+  Result := FView.Height;
 end;
 
 function TImagerItemPresenter.GetImage: TImage;
@@ -74,12 +74,12 @@ end;
 
 function TImagerItemPresenter.GetPosition: TPoint;
 begin
-
+  Result := Point(FView.Left, FView.Top);
 end;
 
 function TImagerItemPresenter.GetWidth: Integer;
 begin
-
+  Result := FView.Width;
 end;
 
 procedure TImagerItemPresenter.Hover;
@@ -89,6 +89,9 @@ begin
     FView.Left := (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.X;
     FView.Top:= (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.Y;
   end;
+
+  if Assigned(FOnHover) then
+    FOnHover(Self);
 end;
 
 procedure TImagerItemPresenter.Select;
@@ -99,7 +102,7 @@ end;
 
 procedure TImagerItemPresenter.SetHeight(const Value: Integer);
 begin
-
+  FView.Height := Value;
 end;
 
 procedure TImagerItemPresenter.SetImage(const Value: TImage);
@@ -109,12 +112,13 @@ end;
 
 procedure TImagerItemPresenter.SetPosition(const Value: TPoint);
 begin
-
+  FView.Left := Value.X;
+  FView.Top := Value.Y;
 end;
 
 procedure TImagerItemPresenter.SetWidth(const Value: Integer);
 begin
-
+  FView.Width := Value;
 end;
 
 procedure TImagerItemPresenter.StartDrag;
