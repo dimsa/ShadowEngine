@@ -99,15 +99,13 @@ end;
 procedure TItemView.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
-  FPresenter.Capture;
-  FPresenter.Select;
+  FPresenter.MouseDown;
 end;
 
 procedure TItemView.MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Single);
 begin
-//  FPresenter.StartDrag;
-  FPresenter.Hover;
+  FPresenter.MouseMove;
 end;
 
 function TItemView.MousePos: TPointF;
@@ -118,8 +116,7 @@ end;
 procedure TItemView.MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
-  FPresenter.EndDrag;
-  FPresenter.UnCapture;
+  FPresenter.MouseUp;
 end;
 
 procedure TItemView.SetHeight(AValue: Integer);

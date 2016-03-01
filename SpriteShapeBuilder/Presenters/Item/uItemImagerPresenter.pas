@@ -25,41 +25,19 @@ type
     property Position: TPoint read GetPosition write SetPosition;
     property Image: TImage read GetImage write SetImage;
 
-    procedure Select; override;
-    procedure StartDrag; override;
-    procedure EndDrag; override;
     procedure Delete; override;
-    procedure Capture; override;
-    procedure Hover; override;
-    procedure UnCapture; override;
+    procedure MouseDown; override;
+    procedure MouseUp; override;
+    procedure MouseMove; override;
   end;
 
 implementation
 
 { TImagerItemPresenter }
 
-procedure TImagerItemPresenter.Capture;
-begin
-  FCaptured := True;
-  FStartObjectPoint := PointF(FView.Left, FView.Top);
-  FStartDragPoint := FView.MousePos;
-
-  if Assigned(FOnCapture) then
-    FOnSelect(Self);
-end;
-
 procedure TImagerItemPresenter.Delete;
 begin
 
-end;
-
-procedure TImagerItemPresenter.EndDrag;
-begin
-  if FCaptured then
-  begin
-    FView.Left := (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.X;
-    FView.Top:= (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.Y;
-  end;
 end;
 
 function TImagerItemPresenter.GetHeight: Integer;
@@ -82,22 +60,25 @@ begin
   Result := FView.Width;
 end;
 
-procedure TImagerItemPresenter.Hover;
+procedure TImagerItemPresenter.MouseDown;
 begin
-  if FCaptured then
-  begin
-    FView.Left := (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.X;
-    FView.Top:= (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.Y;
-  end;
-
-  if Assigned(FOnHover) then
-    FOnHover(Self);
+  inherited;
+  if Assigned(FOnMouseDown) then
+    FOnMouseDown(Self);
 end;
 
-procedure TImagerItemPresenter.Select;
+procedure TImagerItemPresenter.MouseMove;
 begin
-  if Assigned(FOnSelect) then
-    FOnSelect(Self);
+  inherited;
+  if Assigned(FOnMouseMove) then
+    FOnMouseMove(Self);
+end;
+
+procedure TImagerItemPresenter.MouseUp;
+begin
+  inherited;
+  if Assigned(FOnMouseUp) then
+    FOnMouseUp(Self)
 end;
 
 procedure TImagerItemPresenter.SetHeight(const Value: Integer);
@@ -121,6 +102,43 @@ begin
   FView.Width := Value;
 end;
 
+{procedure TImagerItemPresenter.Capture;
+begin
+  FCaptured := True;
+  FStartObjectPoint := PointF(FView.Left, FView.Top);
+  FStartDragPoint := FView.MousePos;
+
+  if Assigned(FOnCapture) then
+    FOnSelect(Self);
+end;
+
+procedure TImagerItemPresenter.EndDrag;
+begin
+  if FCaptured then
+  begin
+    FView.Left := (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.X;
+    FView.Top:= (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.Y;
+  end;
+end;
+
+procedure TImagerItemPresenter.Hover;
+begin
+  if FCaptured then
+  begin
+    FView.Left := (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.X;
+    FView.Top:= (FStartObjectPoint + FView.MousePos - FStartDragPoint).Round.Y;
+  end;
+
+  if Assigned(FOnHover) then
+    FOnHover(Self);
+end;
+
+procedure TImagerItemPresenter.Select;
+begin
+  if Assigned(FOnSelect) then
+    FOnSelect(Self);
+end;
+
 procedure TImagerItemPresenter.StartDrag;
 begin
 
@@ -132,6 +150,6 @@ begin
 
   if Assigned(FOnUnCapture) then
     FOnSelect(Self);
-end;
+end;                 }
 
 end.

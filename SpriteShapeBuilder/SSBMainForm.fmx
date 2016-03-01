@@ -486,7 +486,9 @@ object SSBForm: TSSBForm
       Size.Width = 523.000000000000000000
       Size.Height = 549.000000000000000000
       Size.PlatformDefault = False
+      OnMouseDown = BackgroundMouseDown
       OnMouseMove = BackgroundMouseMove
+      OnMouseUp = BackgroundMouseUp
       OnMouseWheel = BackgroundMouseWheel
       OnResize = BackgroundResize
     end

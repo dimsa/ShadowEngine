@@ -8,14 +8,14 @@ uses
 
 type
 
-TItemPresenterProxy = class(TItemBasePresenter)
-private
-  FOnSelect, FOnCapture, FOnUncapture: TNotifyEvent; // Unused from uBaseItemPresenter
-  FStatus: TSSBStatus;
-  FItemView: IItemView;
-  FPresenters: array [TSSBStatus] of TItemBasePresenter;
-  procedure OnSelectHandler(ASender: TObject);
-  function CreatePresenter(const AType: TSSBStatus): IItemPresenter;
+  TItemPresenterProxy = class(TItemBasePresenter)
+  private
+    FOnSelect, FOnCapture, FOnUncapture: TNotifyEvent; // Unused from uBaseItemPresenter
+    FStatus: TSSBStatus;
+    FItemView: IItemView;
+    FPresenters: array [TSSBStatus] of TItemBasePresenter;
+    function CreatePresenter(const AType: TSSBStatus): IItemPresenter;
+ { procedure OnSelectHandler(ASender: TObject);
   procedure SetOnSelect(AHandler: TNotifyEvent); override;
   function GetOnSelect: TNotifyEvent; override;
   function GetOnCapture: TNotifyEvent;
@@ -23,20 +23,20 @@ private
   procedure SetOnCapture(const Value: TNotifyEvent);
   procedure SetOnUnCapture(const Value: TNotifyEvent);
   function GetOnHover: TNotifyEvent;
-  procedure SetOnHover(const Value: TNotifyEvent);
-  function GetInstance: TItemBasePresenter;
-public
-  procedure Select; override;
-  procedure StartDrag; override;
-  procedure EndDrag; override;
-  procedure Delete; override;
-  procedure Capture; override;
-  procedure Hover; override;
-  procedure UnCapture; override;
-  property OnSelect: TNotifyEvent read GetOnSelect write SetOnSelect;
-  property OnCapture: TNotifyEvent read GetOnCapture write SetOnCapture;
-  property OnUnCapture: TNotifyEvent read GetOnUnCapture write SetOnUnCapture;
-  property OnHover: TNotifyEvent read GetOnHover write SetOnHover;
+  procedure SetOnHover(const Value: TNotifyEvent); }
+    procedure SetOnMouseDown(AHandler: TNotifyEvent); override;
+    function GetOnMouseDown: TNotifyEvent; override;
+    procedure SetOnMouseUp(AHandler: TNotifyEvent); override;
+    function GetOnMouseUp: TNotifyEvent; override;
+    procedure SetOnMouseMove(AHandler: TNotifyEvent); override;
+    function GetOnMouseMove: TNotifyEvent; override;
+    function GetInstance: TItemBasePresenter;
+  public
+    procedure Delete; override;
+    procedure MouseDown; override;
+    procedure MouseUp; override;
+    procedure MouseMove; override;
+
   property Status: TSSBStatus read FStatus write FStatus;
   property Instance: TItemBasePresenter read GetInstance; // Give object of Status
   constructor Create(const AView: IItemView; const AStatus: TSSBStatus = sPicture);
@@ -49,11 +49,11 @@ uses
   uItemImagerPresenter, uItemObjecterPresenter;
 { TItemPresenterFacade }
 
-procedure TItemPresenterProxy.Capture;
+{procedure TItemPresenterProxy.Capture;
 begin
   CreatePresenter(FStatus);
   FPresenters[FStatus].Capture;
-end;
+end; }
 
 constructor TItemPresenterProxy.Create(const AView: IItemView; const AStatus: TSSBStatus);
 begin
@@ -74,7 +74,6 @@ begin
     sPicture:
     begin
       vImagerItem := TImagerItemPresenter.Create(FItemView);
-//      vImagerItem.OnSelect := OnSelectHandler;
       FPresenters[AType] := vImagerItem;
     end;
     sObject:
@@ -101,16 +100,31 @@ begin
   inherited;
 end;
 
-procedure TItemPresenterProxy.EndDrag;
+{procedure TItemPresenterProxy.EndDrag;
 begin
   if Assigned(FPresenters[FStatus]) then
     FPresenters[FStatus].EndDrag;
-end;
+end;        }
 
-function TItemPresenterProxy.GetOnHover: TNotifyEvent;
+{function TItemPresenterProxy.GetOnHover: TNotifyEvent;
 begin
   CreatePresenter(FStatus);
   Result := FPresenters[FStatus].OnHover;
+end;                 }
+
+function TItemPresenterProxy.GetOnMouseDown: TNotifyEvent;
+begin
+  Result := FPresenters[FStatus].OnMouseDown;
+end;
+
+function TItemPresenterProxy.GetOnMouseMove: TNotifyEvent;
+begin
+  Result := FPresenters[FStatus].OnMouseMove;
+end;
+
+function TItemPresenterProxy.GetOnMouseUp: TNotifyEvent;
+begin
+  Result := FPresenters[FStatus].OnMouseUp;
 end;
 
 function TItemPresenterProxy.GetInstance: TItemBasePresenter;
@@ -119,7 +133,7 @@ begin
   Result := FPresenters[FStatus];
 end;
 
-function TItemPresenterProxy.GetOnCapture: TNotifyEvent;
+{function TItemPresenterProxy.GetOnCapture: TNotifyEvent;
 begin
   CreatePresenter(FStatus);
   Result := FPresenters[FStatus].OnCapture;
@@ -141,9 +155,30 @@ procedure TItemPresenterProxy.Hover;
 begin
   CreatePresenter(FStatus);
   FPresenters[FStatus].Hover;
+end;          }
+
+procedure TItemPresenterProxy.MouseDown;
+begin
+  inherited;
+  CreatePresenter(FStatus);
+  FPresenters[FStatus].MouseDown;
 end;
 
-procedure TItemPresenterProxy.OnSelectHandler(ASender: TObject);
+procedure TItemPresenterProxy.MouseMove;
+begin
+  inherited;
+  CreatePresenter(FStatus);
+  FPresenters[FStatus].MouseMove;
+end;
+
+procedure TItemPresenterProxy.MouseUp;
+begin
+  inherited;
+  CreatePresenter(FStatus);
+  FPresenters[FStatus].MouseUp;
+end;
+
+{procedure TItemPresenterProxy.OnSelectHandler(ASender: TObject);
 begin
   CreatePresenter(FStatus);
   FPresenters[FStatus].OnSelect(ASender);
@@ -165,9 +200,30 @@ procedure TItemPresenterProxy.SetOnHover(const Value: TNotifyEvent);
 begin
   CreatePresenter(FStatus);
   FPresenters[FStatus].OnHover := Value;
+end;  }
+
+procedure TItemPresenterProxy.SetOnMouseDown(AHandler: TNotifyEvent);
+begin
+  inherited;
+  CreatePresenter(FStatus);
+  FPresenters[FStatus].OnMouseDown := AHandler;
 end;
 
-procedure TItemPresenterProxy.SetOnSelect(AHandler: TNotifyEvent);
+procedure TItemPresenterProxy.SetOnMouseMove(AHandler: TNotifyEvent);
+begin
+  inherited;
+  CreatePresenter(FStatus);
+  FPresenters[FStatus].OnMouseMove := AHandler;
+end;
+
+procedure TItemPresenterProxy.SetOnMouseUp(AHandler: TNotifyEvent);
+begin
+  inherited;
+  CreatePresenter(FStatus);
+  FPresenters[FStatus].OnMouseUp := AHandler;
+end;
+
+{procedure TItemPresenterProxy.SetOnSelect(AHandler: TNotifyEvent);
 begin
   CreatePresenter(FStatus);
   FPresenters[FStatus].OnSelect := AHandler;
@@ -189,7 +245,7 @@ procedure TItemPresenterProxy.UnCapture;
 begin
   CreatePresenter(FStatus);
   FPresenters[FStatus].UnCapture;
-end;
+end;     }
 
 end.
 

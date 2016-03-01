@@ -57,6 +57,10 @@ type
     procedure BackgroundResize(Sender: TObject);
     procedure AddObjectBtnClick(Sender: TObject);
     procedure DelObjectBtnClick(Sender: TObject);
+    procedure BackgroundMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Single);
+    procedure BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Single);
   private
     SSB: TSpriteShapeBuilder;
     { Private declarations }
@@ -83,12 +87,26 @@ begin
 
 end;
 
+procedure TSSBForm.BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+begin
+  SSB.Objecter.MouseDown;
+  SSB.Imager.MouseDown;
+end;
+
 procedure TSSBForm.BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Single);
 begin
   SSBForm.Caption := x.ToString() + ' ' + y.ToString();
   SSB.Imager.MouseMove;
   SSB.Objecter.MouseMove;
+end;
+
+procedure TSSBForm.BackgroundMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+begin
+  SSB.Objecter.MouseUp;
+  SSB.Imager.MouseUp;
 end;
 
 procedure TSSBForm.BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;

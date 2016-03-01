@@ -10,28 +10,22 @@ type
   TItemBasePresenter = class abstract(TPresenter, IItemPresenter, IPresenterEvent)
   protected
     FView: IItemView;
-    FOnSelect, FOnCapture, FOnUncapture, FOnHover: TNotifyEvent;
-    procedure SetOnSelect(AHandler: TNotifyEvent); virtual;
-    function GetOnSelect: TNotifyEvent; virtual;
-    procedure SetOnCapture(AHandler: TNotifyEvent); virtual;
-    function GetOnCapture: TNotifyEvent; virtual;
-    procedure SetOnUnCapture(AHandler: TNotifyEvent); virtual;
-    function GetOnUnCapture: TNotifyEvent; virtual;
-    procedure SetOnHover(AHandler: TNotifyEvent); virtual;
-    function GetOnHover: TNotifyEvent; virtual;
+    FOnMouseDown, FOnMouseUp, FOnMouseMove: TNotifyEvent;
+    procedure SetOnMouseDown(AHandler: TNotifyEvent); virtual;
+    function GetOnMouseDown: TNotifyEvent; virtual;
+    procedure SetOnMouseUp(AHandler: TNotifyEvent); virtual;
+    function GetOnMouseUp: TNotifyEvent; virtual;
+    procedure SetOnMouseMove(AHandler: TNotifyEvent); virtual;
+    function GetOnMouseMove: TNotifyEvent; virtual;
   public
-    property OnSelect: TNotifyEvent read GetOnSelect write SetOnSelect;
-    property OnCapture: TNotifyEvent read GetOnCapture write SetOnCapture;
-    property OnUnCapture: TNotifyEvent read GetOnCapture write SetOnCapture;
-    property OnHover: TNotifyEvent read GetOnHover write SetOnHover;
+    property OnMouseDown: TNotifyEvent read GetOnMouseDown write SetOnMouseDown;
+    property OnMouseUp: TNotifyEvent read GetOnMouseUp write SetOnMouseUp;
+    property OnMouseMove: TNotifyEvent read GetOnMouseMove write SetOnMouseMove;
 
-    procedure Select; virtual; abstract;
-    procedure Capture; virtual; abstract;
-    procedure UnCapture; virtual; abstract;
-    procedure Hover; virtual; abstract;
-    procedure StartDrag; virtual; abstract;
-    procedure EndDrag; virtual; abstract;
     procedure Delete; virtual; abstract;
+    procedure MouseDown; virtual; abstract;
+    procedure MouseUp; virtual; abstract;
+    procedure MouseMove; virtual; abstract;
 
     constructor Create(const AItemView: IItemView);
   end;
@@ -45,44 +39,34 @@ begin
   FView := AItemView;
 end;
 
-function TItemBasePresenter.GetOnCapture: TNotifyEvent;
+function TItemBasePresenter.GetOnMouseDown: TNotifyEvent;
 begin
-  Result := FOnCapture;
+  Result := FOnMouseDown;
 end;
 
-function TItemBasePresenter.GetOnHover: TNotifyEvent;
+function TItemBasePresenter.GetOnMouseMove: TNotifyEvent;
 begin
-  Result := FOnHover;
+  Result := FOnMouseMove;
 end;
 
-function TItemBasePresenter.GetOnSelect: TNotifyEvent;
+function TItemBasePresenter.GetOnMouseUp: TNotifyEvent;
 begin
-  Result := FOnSelect;
+  Result := FOnMouseUp;
 end;
 
-function TItemBasePresenter.GetOnUnCapture: TNotifyEvent;
+procedure TItemBasePresenter.SetOnMouseDown(AHandler: TNotifyEvent);
 begin
-  Result := FOnUnCapture;
+  FOnMouseDown := AHandler;
 end;
 
-procedure TItemBasePresenter.SetOnCapture(AHandler: TNotifyEvent);
+procedure TItemBasePresenter.SetOnMouseMove(AHandler: TNotifyEvent);
 begin
-  FOnCapture := AHandler;
+  FOnMouseMove := AHandler;
 end;
 
-procedure TItemBasePresenter.SetOnHover(AHandler: TNotifyEvent);
+procedure TItemBasePresenter.SetOnMouseUp(AHandler: TNotifyEvent);
 begin
-  FOnHover := AHandler;
-end;
-
-procedure TItemBasePresenter.SetOnSelect(AHandler: TNotifyEvent);
-begin
-  FOnSelect := AHandler;
-end;
-
-procedure TItemBasePresenter.SetOnUnCapture(AHandler: TNotifyEvent);
-begin
-  FOnUncapture := AHandler;
+  FOnMouseUp := AHandler;
 end;
 
 end.

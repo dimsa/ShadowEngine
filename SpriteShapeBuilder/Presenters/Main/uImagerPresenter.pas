@@ -15,27 +15,25 @@ type
     FModel: TSSBModel;
     FSelected: TImagerItemPresenter;
     FCaptured: TImagerItemPresenter;
+    FResizing: TImagerItemPresenter;
     FIsMouseDown: Boolean;
-    FMouseStartPoint: TPointF;
-    FMouseElementPoint: TPointF;
-    FElementStartPosition: TPointF;
+    FMouseStartPoint: TPoint;
+    FElementStartPoint: TPoint;    
+    FMouseDowned: Boolean;
+
     FItems: TDictionary<TImagerItemPresenter, IItemView>;
     function GetView: IMainView;
     property View: IMainView read GetView;
     // Методы на клик
-    procedure DoSelectItem(ASender: TObject);
-    procedure DoCaptureItem(ASender: TObject);
-    procedure DoUncaptureItem(ASender: TObject);
-    procedure DoDeleteItem(ASender: TObject);
-    procedure DoDragCapturedItem(ASender: TObject);
-    procedure DoHoverItem(ASender: TObject);
+    procedure DoMouseDown(ASender: TObject);
+    procedure DoMouseUp(ASender: TObject);
+    procedure DoMouseMove(ASender: TObject);
   public
     procedure AddImg;
     procedure DelImg;
-    procedure DragImg;
-    procedure StartDragImg;
-    procedure FinishDragImg;
     procedure MouseMove;
+    procedure MouseDown;
+    procedure MouseUp;
     procedure Init;
     constructor Create(AView: IView; AModel: TSSBModel);
     destructor Destroy; override;
@@ -69,10 +67,10 @@ begin
     // Creating Presenter
     vItemPresenter := TItemPresenterProxy.Create(vViewItem, sPicture);
     vViewItem.Presenter := vItemPresenter;
-    vItemPresenter.OnSelect := DoSelectItem;
-    vItemPresenter.OnCapture:= DoCaptureItem;
-    vItemPresenter.OnUnCapture:= DoUnCaptureItem;
-    vItemPresenter.OnHover := DoHoverItem;
+
+    vItemPresenter.OnMouseDown := DoMouseDown;
+    vItemPresenter.OnMouseUp := DoMouseUp;
+    vItemPresenter.OnMouseMove := DoMouseMove;
 
     FItems.Add(TImagerItemPresenter(vItemPresenter.Instance), vViewItem);
     try
@@ -103,56 +101,34 @@ begin
   inherited;
 end;
 
-procedure TImagerPresenter.DoCaptureItem(ASender: TObject);
-begin
-  if (ASender is TItemPresenterProxy) then
-  begin
-    FMouseStartPoint := uEasyDevice.MousePos;
-    FCaptured := TImagerItemPresenter(ASender);
-  end;
-end;
-
-procedure TImagerPresenter.DoDeleteItem(ASender: TObject);
-begin
-
-end;
-
-procedure TImagerPresenter.DoDragCapturedItem(ASender: TObject);
-begin
-  if (ASender is TItemPresenterProxy) then
-  begin
-    FMouseStartPoint := uEasyDevice.MousePos;
-    FCaptured := TImagerItemPresenter(ASender);
-  end;
-end;
-
-procedure TImagerPresenter.DoHoverItem(ASender: TObject);
-begin
-  MouseMove;
-end;
-
-procedure TImagerPresenter.DoSelectItem(ASender: TObject);
+procedure TImagerPresenter.DoMouseDown(ASender: TObject);
 begin
   if (ASender is TImagerItemPresenter) then
   begin
     FSelected := TImagerItemPresenter(ASender);
+    FCaptured := TImagerItemPresenter(ASender);
+    FMouseDowned := True;
+    FMouseStartPoint := View.GetMousePos;
+    FElementStartPoint := FSelected.Position;
     View.SelectElement(FItems[FSelected]);
   end;
 end;
 
-procedure TImagerPresenter.DoUncaptureItem(ASender: TObject);
+procedure TImagerPresenter.DoMouseMove(ASender: TObject);
 begin
+  if FMouseDowned then
+    if FCaptured <> nil then
+      FCaptured.Position := FElementStartPoint - FMouseStartPoint + View.GetMousePos;
+end;
+
+procedure TImagerPresenter.DoMouseUp(ASender: TObject);
+begin
+  if FMouseDowned then
+    if FCaptured <> nil then
+      FCaptured.Position := FElementStartPoint - FMouseStartPoint + View.GetMousePos;
   FCaptured := nil;
-end;
-
-procedure TImagerPresenter.DragImg;
-begin
-
-end;
-
-procedure TImagerPresenter.FinishDragImg;
-begin
-  FCaptured := Nil;
+  
+  FMouseDowned := False;
 end;
 
 function TImagerPresenter.GetView: IMainView;
@@ -166,19 +142,9 @@ begin
 
 end;
 
-procedure SetCursor(ACursor: TCursor);
-var
-  CS: IFMXCursorService;
+procedure TImagerPresenter.MouseDown;
 begin
-  if TPlatformServices.Current.SupportsPlatformService(IFMXCursorService) then
-  begin
-    CS := TPlatformServices.Current.GetPlatformService(IFMXCursorService) as IFMXCursorService;
-  end;
-  if Assigned(CS) then
-  begin
-    CS.SetCursor(ACursor);
-    CS.SetCursor(ACursor);
-  end;
+
 end;
 
 procedure TImagerPresenter.MouseMove;
@@ -187,6 +153,10 @@ var
   vPoint: TPoint;
   vD: Integer;
 begin
+  if FMouseDowned then
+    if FCaptured <> nil then
+      FCaptured.Position := FElementStartPoint - FMouseStartPoint + View.GetMousePos;
+
   vPoint := View.GetMousePos;
 
   if not Assigned(FSelected) then
@@ -198,6 +168,7 @@ begin
      (FSelected.Position.Y < vPoint.Y) and (FSelected.Position.Y + FSelected.Height > vPoint.Y) then
      begin
        View.ChangeCursor(crSizeWE);
+       FResizing := FSelected;
        Exit;
      end;
 
@@ -206,6 +177,7 @@ begin
      (FSelected.Position.Y < vPoint.Y) and (FSelected.Position.Y + FSelected.Height > vPoint.Y) then
      begin
        View.ChangeCursor(crSizeWE);
+       FResizing := FSelected;
        Exit;
      end;
 
@@ -214,6 +186,7 @@ begin
      (FSelected.Position.X < vPoint.X) and (FSelected.Position.X + FSelected.Width > vPoint.X) then
      begin
        View.ChangeCursor(crSizeNS);
+       FResizing := FSelected;
        Exit;
      end;
 
@@ -222,29 +195,19 @@ begin
      (FSelected.Position.X < vPoint.X) and (FSelected.Position.X + FSelected.Width > vPoint.X) then
      begin
        View.ChangeCursor(crSizeNS);
+       FResizing := FSelected;
        Exit;
      end;
 
    View.ChangeCursor(crArrow);
 end;
 
-{procedure TSSBImagerPresenter.SelImg;
-var
-  i: Integer;
+procedure TImagerPresenter.MouseUp;
 begin
-  for i := 0 to FModel.ImageCount - 1 do
-    if FModel.Images[i].PointInObject(FView.MousePos.X, FView.MousePos.Y) then
-    begin
-      FSelected := FModel.Images[i];
-      FView.SelectElement(FView.ElementUnderMouse);
-      Exit;
-    end;
-    FSelected := nil;
-end;  }
-
-procedure TImagerPresenter.StartDragImg;
-begin
-
+  FCaptured := nil;
+  FMouseDowned := False;
 end;
 
 end.
+
+

@@ -18,16 +18,16 @@ type
     function GetView: IMainView;
     property View: IMainView read GetView;
     // Методы на клик
-    procedure DoSelectItem(ASender: TObject);
-    procedure DoCaptureItem(ASender: TObject);
-    procedure DoUncaptureItem(ASender: TObject);
-    procedure DoDeleteItem(ASender: TObject);
-    procedure DoDragCapturedItem(ASender: TObject);
+    procedure DoMouseUp(ASender: TObject);
+    procedure DoMouseDown(ASender: TObject);
+    procedure DoMouseMove(ASender: TObject);
   public
     constructor Create(AView: IView; AModel: TSSBModel);
     procedure AddObj;
     procedure DelObj;
     procedure MouseMove;
+    procedure MouseUp;
+    procedure MouseDown;
   end;
 
 implementation
@@ -66,9 +66,9 @@ begin
     // Creating Presenter
     vItemPresenter := TItemPresenterProxy.Create(vViewItem, sObject);
     vViewItem.Presenter := vItemPresenter;
-    vItemPresenter.OnSelect := DoSelectItem;
-    vItemPresenter.OnCapture:= DoCaptureItem;
-    vItemPresenter.OnUnCapture:= DoUnCaptureItem;
+    vItemPresenter.OnMouseDown := DoMouseDown;
+    vItemPresenter.OnMouseUp := DoMouseUp;
+    vItemPresenter.OnMouseMove := DoMouseMove;
 
     FItems.Add(TItemObjecterPresenter(vItemPresenter.Instance), vViewItem);
     try
@@ -91,43 +91,48 @@ begin
 
 end;
 
-procedure TObjecterPresenter.DoCaptureItem(ASender: TObject);
+procedure TObjecterPresenter.DoMouseDown(ASender: TObject);
 begin
 
 end;
 
-procedure TObjecterPresenter.DoDeleteItem(ASender: TObject);
+procedure TObjecterPresenter.DoMouseMove(ASender: TObject);
 begin
 
 end;
 
-procedure TObjecterPresenter.DoDragCapturedItem(ASender: TObject);
+procedure TObjecterPresenter.DoMouseUp(ASender: TObject);
 begin
 
 end;
 
-procedure TObjecterPresenter.DoSelectItem(ASender: TObject);
+{procedure TObjecterPresenter.DoSelectItem(ASender: TObject);
 begin
   if (ASender is TItemObjecterPresenter) then
   begin
     FSelected := TItemObjecterPresenter(ASender);
     View.SelectElement(FItems[FSelected]);
   end;
-end;
-
-procedure TObjecterPresenter.DoUncaptureItem(ASender: TObject);
-begin
-
-end;
+end;  }
 
 function TObjecterPresenter.GetView: IMainView;
 begin
   Result := IMainView(FView);
 end;
 
+procedure TObjecterPresenter.MouseDown;
+begin
+
+end;
+
 procedure TObjecterPresenter.MouseMove;
 begin
 
+end;
+
+procedure TObjecterPresenter.MouseUp;
+begin
+  FCaptured := nil;
 end;
 
 end.
