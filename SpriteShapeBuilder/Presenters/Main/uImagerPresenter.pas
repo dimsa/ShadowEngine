@@ -10,32 +10,47 @@ uses
 
 
 type
-  TImagerPresenter = class(TPresenter)
-  private
-    FModel: TSSBModel;
-    FSelected: TImagerItemPresenter;
+  TImagerPresenterIncapsulator = class(TPresenter)
+  strict private
     FCaptured: TImagerItemPresenter;
-    FResizing: TImagerItemPresenter;
-    FIsMouseDown: Boolean;
+    FModel: TSSBModel;
+    FElementStart: TRect;
     FMouseStartPoint: TPoint;
-    FElementStartPoint: TPoint;    
-    FMouseDowned: Boolean;
+    FIsMouseDowned: Boolean;
+    function GetView: IMainView;    
+    procedure SetCaptured(const Value: TImagerItemPresenter);
+    procedure SetIsMouseDowned(const Value: Boolean);    
+  protected
+    property View: IMainView read GetView;  
+    property ElementStart: TRect read FElementStart;
+    property MouseStart: TPoint read FMouseStartPoint;
+    property IsMouseDowned: Boolean read FIsMouseDowned write SetIsMouseDowned;
+    property Captured: TImagerItemPresenter read FCaptured write SetCaptured;
 
-    FItems: TDictionary<TImagerItemPresenter, IItemView>;
-    function GetView: IMainView;
-    property View: IMainView read GetView;
+    constructor Create(AView: IView; AModel: TSSBModel); virtual;    
+    destructor Destroy; override;
+  end;
+
+  TImagerPresenter = class(TImagerPresenterIncapsulator)
+  private
+    FSelected: TImagerItemPresenter;
+    FCaptureMode: TCaptureMode; 
+
+    FItems: TDictionary<TImagerItemPresenter, IItemView>;  
     // Методы на клик
     procedure DoMouseDown(ASender: TObject);
     procedure DoMouseUp(ASender: TObject);
     procedure DoMouseMove(ASender: TObject);
+    function ResizeType(const AItem: TImagerItemPresenter): TResizeType;
+    function GetView: IMainView;
   public
     procedure AddImg;
     procedure DelImg;
     procedure MouseMove;
     procedure MouseDown;
     procedure MouseUp;
-    procedure Init;
-    constructor Create(AView: IView; AModel: TSSBModel);
+    procedure Init;                        
+    constructor Create(AView: IView; AModel: TSSBModel); override;
     destructor Destroy; override;
   end;
 
@@ -84,9 +99,8 @@ end;
 
 constructor TImagerPresenter.Create(AView: IView; AModel: TSSBModel);
 begin
+  inherited;
   FItems := TDictionary<TImagerItemPresenter, IItemView>.Create;
-  FView := AView;
-  FModel := AModel;
 end;
 
 procedure TImagerPresenter.DelImg;
@@ -97,7 +111,6 @@ end;
 destructor TImagerPresenter.Destroy;
 begin
   FItems.Free;
-  FModel.Free;
   inherited;
 end;
 
@@ -106,34 +119,40 @@ begin
   if (ASender is TImagerItemPresenter) then
   begin
     FSelected := TImagerItemPresenter(ASender);
-    FCaptured := TImagerItemPresenter(ASender);
-    FMouseDowned := True;
-    FMouseStartPoint := View.GetMousePos;
-    FElementStartPoint := FSelected.Position;
+    Captured := TImagerItemPresenter(ASender);
+
+    if ResizeType(Captured) <> TResizeType.rtNone then
+      FCaptureMode := TCaptureMode.cmMove
+    else
+      FCaptureMode := TCaptureMode.cmResize;
+    
+    IsMouseDowned := True;
     View.SelectElement(FItems[FSelected]);
+    
   end;
 end;
 
 procedure TImagerPresenter.DoMouseMove(ASender: TObject);
 begin
-  if FMouseDowned then
-    if FCaptured <> nil then
-      FCaptured.Position := FElementStartPoint - FMouseStartPoint + View.GetMousePos;
+  if IsMouseDowned then
+    if Captured <> nil then
+      Captured.Position := ElementStart.TopLeft - MouseStart + View.GetMousePos;
+  MouseMove;  
 end;
 
 procedure TImagerPresenter.DoMouseUp(ASender: TObject);
 begin
-  if FMouseDowned then
-    if FCaptured <> nil then
-      FCaptured.Position := FElementStartPoint - FMouseStartPoint + View.GetMousePos;
-  FCaptured := nil;
+  if IsMouseDowned then
+    if Captured <> nil then
+      Captured.Position := ElementStart.TopLeft - MouseStart + View.GetMousePos;
+  Captured := nil;
   
-  FMouseDowned := False;
+  IsMouseDowned := False;
 end;
 
 function TImagerPresenter.GetView: IMainView;
 begin
-  Result := IMainView(FView);
+
 end;
 
 procedure TImagerPresenter.Init;
@@ -144,7 +163,14 @@ end;
 
 procedure TImagerPresenter.MouseDown;
 begin
-
+  if FSelected <> nil then
+    if ResizeType(FSelected) <> TResizeType.rtNone then
+    begin
+      Captured := FSelected;
+      FCaptureMode := TCaptureMode.cmResize;
+      IsMouseDowned := True;
+    end;
+  
 end;
 
 procedure TImagerPresenter.MouseMove;
@@ -153,59 +179,115 @@ var
   vPoint: TPoint;
   vD: Integer;
 begin
-  if FMouseDowned then
-    if FCaptured <> nil then
-      FCaptured.Position := FElementStartPoint - FMouseStartPoint + View.GetMousePos;
+  if FSelected <> nil then  
+    ResizeType(FSelected);
+  if IsMouseDowned then
+    if Captured <> nil then
+    begin
+      if FCaptureMode = TCaptureMode.cmMove then
+        Captured.Position := ElementStart.TopLeft - MouseStart + View.GetMousePos;
+      if FCaptureMode = TCaptureMode.cmResize then   
+      begin
+        case ResizeType(Captured) of
+          TResizeType.rtEW: begin  
+            Captured.Width := ElementStart.Width - MouseStart.X + View.GetMousePos.X;
+          end;
+        end;
 
-  vPoint := View.GetMousePos;
+      end; 
+    end;
 
-  if not Assigned(FSelected) then
-    Exit;
-
-  vD := 5;
-  if (FSelected.Position.X - vD <= vPoint.X) and
-     (FSelected.Position.X + vD >= vPoint.X) and
-     (FSelected.Position.Y < vPoint.Y) and (FSelected.Position.Y + FSelected.Height > vPoint.Y) then
-     begin
-       View.ChangeCursor(crSizeWE);
-       FResizing := FSelected;
-       Exit;
-     end;
-
-  if (FSelected.Position.X + FSelected.Width - vD <= vPoint.X) and
-     (FSelected.Position.X + FSelected.Width + vD >= vPoint.X) and
-     (FSelected.Position.Y < vPoint.Y) and (FSelected.Position.Y + FSelected.Height > vPoint.Y) then
-     begin
-       View.ChangeCursor(crSizeWE);
-       FResizing := FSelected;
-       Exit;
-     end;
-
-  if (FSelected.Position.Y - vD <= vPoint.Y) and
-     (FSelected.Position.Y + vD >= vPoint.Y) and
-     (FSelected.Position.X < vPoint.X) and (FSelected.Position.X + FSelected.Width > vPoint.X) then
-     begin
-       View.ChangeCursor(crSizeNS);
-       FResizing := FSelected;
-       Exit;
-     end;
-
-  if (FSelected.Position.Y + FSelected.Height - vD <= vPoint.Y) and
-     (FSelected.Position.Y + FSelected.Height + vD >= vPoint.Y) and
-     (FSelected.Position.X < vPoint.X) and (FSelected.Position.X + FSelected.Width > vPoint.X) then
-     begin
-       View.ChangeCursor(crSizeNS);
-       FResizing := FSelected;
-       Exit;
-     end;
-
-   View.ChangeCursor(crArrow);
 end;
 
 procedure TImagerPresenter.MouseUp;
 begin
-  FCaptured := nil;
-  FMouseDowned := False;
+  Captured := nil;
+  FCaptureMode := cmNone;
+  IsMouseDowned := False;
+end;
+
+function TImagerPresenter.ResizeType(
+  const AItem: TImagerItemPresenter): TResizeType;
+var
+  vPoint: TPoint;
+  vD: Integer;
+begin
+  vPoint := View.GetMousePos;
+
+  vD := 5;
+  if (AItem.Position.X - vD <= vPoint.X) and
+     (AItem.Position.X + vD >= vPoint.X) and
+     (AItem.Position.Y < vPoint.Y) and (AItem.Position.Y + AItem.Height > vPoint.Y) then
+     begin
+       View.ChangeCursor(crSizeWE);
+       Exit(TResizeType.rtWE);
+     end;
+
+  if (AItem.Position.X + AItem.Width - vD <= vPoint.X) and
+     (AItem.Position.X + AItem.Width + vD >= vPoint.X) and
+     (AItem.Position.Y < vPoint.Y) and (AItem.Position.Y + AItem.Height > vPoint.Y) then
+     begin
+       View.ChangeCursor(crSizeWE);
+       Exit(TResizeType.rtEW);
+     end;
+
+  if (AItem.Position.Y - vD <= vPoint.Y) and
+     (AItem.Position.Y + vD >= vPoint.Y) and
+     (AItem.Position.X < vPoint.X) and (AItem.Position.X + AItem.Width > vPoint.X) then
+     begin
+       View.ChangeCursor(crSizeNS);
+       Exit(TResizeType.rtNS);
+     end;
+
+  if (AItem.Position.Y + AItem.Height - vD <= vPoint.Y) and
+     (AItem.Position.Y + AItem.Height + vD >= vPoint.Y) and
+     (AItem.Position.X < vPoint.X) and (AItem.Position.X + AItem.Width > vPoint.X) then
+     begin
+       View.ChangeCursor(crSizeNS);
+       Exit(TResizeType.rtSN);
+     end;
+     
+   View.ChangeCursor(crArrow);
+   Exit(TResizeType.rtNone)
+end;
+
+{ TImagerPresenterIncapsulator }
+
+constructor TImagerPresenterIncapsulator.Create(AView: IView;
+  AModel: TSSBModel);
+begin
+  FView := AView;
+  FModel := AModel;
+end;
+
+destructor TImagerPresenterIncapsulator.Destroy;
+begin
+  FModel.Free;
+  inherited;
+end;
+
+function TImagerPresenterIncapsulator.GetView: IMainView;
+begin
+  Result := IMainView(FView);
+end;
+
+procedure TImagerPresenterIncapsulator.SetCaptured(
+  const Value: TImagerItemPresenter);
+begin
+  FCaptured := Value;
+  if Value <> nil then
+  begin
+    FElementStart.TopLeft := Value.Position;
+    FElementStart.Width := Value.Width;
+    FElementStart.Height := Value.Height;
+  end else
+    FElementStart := TRect.Empty;
+end;
+
+procedure TImagerPresenterIncapsulator.SetIsMouseDowned(const Value: Boolean);
+begin
+  FIsMouseDowned := Value;
+  FMouseStartPoint := View.GetMousePos;
 end;
 
 end.

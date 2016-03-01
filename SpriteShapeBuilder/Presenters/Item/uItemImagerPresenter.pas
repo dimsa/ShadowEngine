@@ -9,7 +9,6 @@ uses
 type
   TImagerItemPresenter = class(TItemBasePresenter)
   private
-    FStartDragPoint, FStartObjectPoint: TPointF;
     FCaptured: Boolean;
     function GetHeight: Integer;
     function GetImage: TImage;

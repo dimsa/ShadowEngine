@@ -10,6 +10,10 @@ uses
 type
   TSSBStatus = (sPicture, sObject, sShape);
 
+  TResizeType = (rtWE, rtEW, rtNS, rtSN, rtNone);
+
+  TCaptureMode = (cmMove, cmResize, cmNone);
+
   TImgToCtrlAdapter = class
   private
     FControlList: TList<TControl>;

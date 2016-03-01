@@ -47,15 +47,8 @@ implementation
 
 uses
   uItemImagerPresenter, uItemObjecterPresenter;
-{ TItemPresenterFacade }
 
-{procedure TItemPresenterProxy.Capture;
-begin
-  CreatePresenter(FStatus);
-  FPresenters[FStatus].Capture;
-end; }
-
-constructor TItemPresenterProxy.Create(const AView: IItemView; const AStatus: TSSBStatus);
+  constructor TItemPresenterProxy.Create(const AView: IItemView; const AStatus: TSSBStatus);
 begin
   FStatus := AStatus;
   FItemView := AView;
@@ -114,16 +107,19 @@ end;                 }
 
 function TItemPresenterProxy.GetOnMouseDown: TNotifyEvent;
 begin
+  CreatePresenter(FStatus);
   Result := FPresenters[FStatus].OnMouseDown;
 end;
 
 function TItemPresenterProxy.GetOnMouseMove: TNotifyEvent;
 begin
+  CreatePresenter(FStatus);
   Result := FPresenters[FStatus].OnMouseMove;
 end;
 
 function TItemPresenterProxy.GetOnMouseUp: TNotifyEvent;
 begin
+  CreatePresenter(FStatus);
   Result := FPresenters[FStatus].OnMouseUp;
 end;
 
