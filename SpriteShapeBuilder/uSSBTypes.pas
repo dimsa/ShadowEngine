@@ -10,7 +10,7 @@ uses
 type
   TSSBStatus = (sPicture, sObject, sShape);
 
-  TResizeType = (rtWE, rtEW, rtNS, rtSN, rtNone);
+  TResizeType = (rtWE, rtEW, rtNS, rtSN, rtCenter, rtNone);
 
   TCaptureMode = (cmMove, cmResize, cmNone);
 

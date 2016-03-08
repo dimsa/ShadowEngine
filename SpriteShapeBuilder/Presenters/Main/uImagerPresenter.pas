@@ -101,6 +101,7 @@ constructor TImagerPresenter.Create(AView: IView; AModel: TSSBModel);
 begin
   inherited;
   FItems := TDictionary<TImagerItemPresenter, IItemView>.Create;
+  FCaptureMode := cmNone;
 end;
 
 procedure TImagerPresenter.DelImg;
@@ -119,35 +120,19 @@ begin
   if (ASender is TImagerItemPresenter) then
   begin
     FSelected := TImagerItemPresenter(ASender);
-    Captured := TImagerItemPresenter(ASender);
-
-    if ResizeType(Captured) <> TResizeType.rtNone then
-      FCaptureMode := TCaptureMode.cmMove
-    else
-      FCaptureMode := TCaptureMode.cmResize;
-    
-    IsMouseDowned := True;
     View.SelectElement(FItems[FSelected]);
-    
+    MouseDown;
   end;
 end;
 
 procedure TImagerPresenter.DoMouseMove(ASender: TObject);
 begin
-  if IsMouseDowned then
-    if Captured <> nil then
-      Captured.Position := ElementStart.TopLeft - MouseStart + View.GetMousePos;
-  MouseMove;  
+  MouseMove;
 end;
 
 procedure TImagerPresenter.DoMouseUp(ASender: TObject);
 begin
-  if IsMouseDowned then
-    if Captured <> nil then
-      Captured.Position := ElementStart.TopLeft - MouseStart + View.GetMousePos;
-  Captured := nil;
-  
-  IsMouseDowned := False;
+  MouseUp;
 end;
 
 function TImagerPresenter.GetView: IMainView;
@@ -163,14 +148,22 @@ end;
 
 procedure TImagerPresenter.MouseDown;
 begin
+  IsMouseDowned := True;
   if FSelected <> nil then
-    if ResizeType(FSelected) <> TResizeType.rtNone then
+  begin
+    if ResizeType(FSelected) = TResizeType.rtNone then
     begin
-      Captured := FSelected;
-      FCaptureMode := TCaptureMode.cmResize;
-      IsMouseDowned := True;
+      Captured := nil;
+      FSelected := nil;
+      Exit;
     end;
-  
+
+    Captured := FSelected;
+    if ResizeType(FSelected) = TResizeType.rtCenter then
+      FCaptureMode := TCaptureMode.cmMove
+    else
+      FCaptureMode := TCaptureMode.cmResize
+  end;
 end;
 
 procedure TImagerPresenter.MouseMove;
@@ -179,8 +172,9 @@ var
   vPoint: TPoint;
   vD: Integer;
 begin
-  if FSelected <> nil then  
-    ResizeType(FSelected);
+  if (FSelected <> nil) then
+      ResizeType(FSelected);
+
   if IsMouseDowned then
     if Captured <> nil then
     begin
@@ -219,7 +213,7 @@ begin
      (AItem.Position.X + vD >= vPoint.X) and
      (AItem.Position.Y < vPoint.Y) and (AItem.Position.Y + AItem.Height > vPoint.Y) then
      begin
-       View.ChangeCursor(crSizeWE);
+         View.ChangeCursor(crSizeWE);
        Exit(TResizeType.rtWE);
      end;
 
@@ -227,7 +221,7 @@ begin
      (AItem.Position.X + AItem.Width + vD >= vPoint.X) and
      (AItem.Position.Y < vPoint.Y) and (AItem.Position.Y + AItem.Height > vPoint.Y) then
      begin
-       View.ChangeCursor(crSizeWE);
+         View.ChangeCursor(crSizeWE);
        Exit(TResizeType.rtEW);
      end;
 
@@ -235,7 +229,7 @@ begin
      (AItem.Position.Y + vD >= vPoint.Y) and
      (AItem.Position.X < vPoint.X) and (AItem.Position.X + AItem.Width > vPoint.X) then
      begin
-       View.ChangeCursor(crSizeNS);
+         View.ChangeCursor(crSizeNS);
        Exit(TResizeType.rtNS);
      end;
 
@@ -243,11 +237,16 @@ begin
      (AItem.Position.Y + AItem.Height + vD >= vPoint.Y) and
      (AItem.Position.X < vPoint.X) and (AItem.Position.X + AItem.Width > vPoint.X) then
      begin
-       View.ChangeCursor(crSizeNS);
+         View.ChangeCursor(crSizeNS);
        Exit(TResizeType.rtSN);
      end;
-     
+
+
    View.ChangeCursor(crArrow);
+   if (AItem.Position.X <= vPoint.X) and (AItem.Position.Y <= vPoint.Y) and
+      (AItem.Position.X + AItem.Width >= vPoint.X) and (AItem.Position.Y + AItem.Height >= vPoint.Y) then
+        Exit(TResizeType.rtCenter);
+
    Exit(TResizeType.rtNone)
 end;
 
