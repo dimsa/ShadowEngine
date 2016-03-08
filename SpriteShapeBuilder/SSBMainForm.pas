@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, uSpriteShapeBuilder, System.ImageList,
-  FMX.ImgList, FMX.Layouts, uSSBTypes;
+  FMX.ImgList, FMX.Layouts, uSSBTypes, FMX.Effects;
 
 type
   TSSBForm = class(TForm)
@@ -40,6 +40,7 @@ type
     EdtObjectBtn: TCornerButton;
     EdtShapeBtn: TCornerButton;
     Background: TImage;
+    GlowEffect1: TGlowEffect;
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);

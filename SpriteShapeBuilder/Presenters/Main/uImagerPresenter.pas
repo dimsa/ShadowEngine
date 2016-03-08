@@ -171,6 +171,7 @@ var
   vItem: TImagerItemPresenter;
   vPoint: TPoint;
   vD: Integer;
+  vTmp: Integer;
 begin
   if (FSelected <> nil) then
       ResizeType(FSelected);
@@ -180,11 +181,22 @@ begin
     begin
       if FCaptureMode = TCaptureMode.cmMove then
         Captured.Position := ElementStart.TopLeft - MouseStart + View.GetMousePos;
-      if FCaptureMode = TCaptureMode.cmResize then   
+      if FCaptureMode = TCaptureMode.cmResize then
       begin
         case ResizeType(Captured) of
-          TResizeType.rtEW: begin  
+          TResizeType.rtEW: begin
             Captured.Width := ElementStart.Width - MouseStart.X + View.GetMousePos.X;
+          end;
+          TResizeType.rtWE: begin
+            Captured.Position := Point(ElementStart.Left - MouseStart.X + View.GetMousePos.X, Captured.Position.Y);
+            Captured.Width := ElementStart.Width + MouseStart.X - View.GetMousePos.X;
+          end;
+          TResizeType.rtSN: begin
+            Captured.Height:= ElementStart.Height - MouseStart.Y + View.GetMousePos.Y;
+          end;
+          TResizeType.rtNS: begin
+            Captured.Position := Point(Captured.Position.X, ElementStart.Top - MouseStart.Y + View.GetMousePos.Y);
+            Captured.Height := ElementStart.Height + MouseStart.Y - View.GetMousePos.Y;
           end;
         end;
 

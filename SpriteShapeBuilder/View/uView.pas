@@ -6,13 +6,14 @@ uses
   System.Generics.Collections, System.SysUtils, System.Types, FMX.Graphics,
   FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms, FMX.Dialogs,
   FMX.Types, System.Classes, System.UITypes, uEasyDevice,
-  uSSBTypes, uIView, uIItemView, uItemView, uMVPFrameWork;
+  uSSBTypes, uIView, uIItemView, uItemView, uMVPFrameWork, FMX.Effects;
 
 type
   TView = class(TInterfacedObject, IMainView, IView)
   private
     FChangeblePanel: TLayout;
     FElements: TDictionary<IItemView, TItemView>;
+    FEffect: TGlowEffect;
     FPanel: TPanel;
     FFormPosition: TPositionFunc;
     FBackground: TImage;
@@ -52,6 +53,7 @@ var
 begin
   vImg := TItemView.Create(FPanel);
   FElements.Add(vImg, vImg);
+  vImg.Image.WrapMode := TImageWrapMode.Stretch;
   Result := vImg;
 end;
 
@@ -107,6 +109,7 @@ begin
   FSelected := ASelected;
   FOpenDialog := AOpenDialog;
   FFormPosition := AFormPosition;
+  FEffect := TGlowEffect.Create(nil);
 end;
 
 destructor TView.Destroy;
@@ -114,6 +117,7 @@ var
   i: Integer;
   vItem: TPair<IItemView, TItemView>;
 begin
+  FEffect.Free;
   for vItem in FElements do
     FElements.Remove(vItem.Key);
 
@@ -126,6 +130,7 @@ begin
   FBackground := nil;
   FSelected := nil;
   FOpenDialog := nil;
+
 
   inherited;
 end;
@@ -181,6 +186,7 @@ begin
 procedure TView.SelectElement(const AElement: IItemView);
 begin
   FSelected.Bitmap.Assign(FElements[AElement].Image.Bitmap);
+  FEffect.Parent := FElements[AElement].Image;
 end;
 
 procedure TView.SetBackground(const AImg: TImage);
