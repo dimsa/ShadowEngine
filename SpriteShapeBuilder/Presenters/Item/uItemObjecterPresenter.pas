@@ -39,19 +39,22 @@ end;
 procedure TItemObjecterPresenter.MouseDown;
 begin
   inherited;
-
+  if Assigned(FOnMouseDown) then
+    FOnMouseDown(Self);
 end;
 
 procedure TItemObjecterPresenter.MouseMove;
 begin
   inherited;
-
+  if Assigned(FOnMouseMove) then
+    FOnMouseMove(Self);
 end;
 
 procedure TItemObjecterPresenter.MouseUp;
 begin
   inherited;
-
+  if Assigned(FOnMouseUp) then
+    FOnMouseUp(Self)
 end;
 
 end.
