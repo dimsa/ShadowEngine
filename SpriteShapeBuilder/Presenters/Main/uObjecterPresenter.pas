@@ -3,15 +3,26 @@ unit uObjecterPresenter;
 interface
 
 uses
-  System.Generics.Collections, FMX.Objects,
+  System.Generics.Collections, FMX.Objects, System.Types,
   uIView, uItemPresenterProxy, uMVPFrameWork, uSSBModels, uSSBTypes,
-  uIItemView, uItemObjecterPresenter;
+  uIItemView, uItemObjecterPresenter, uBasePresenterIncapsulator;
 
 type
-  TObjecterPresenter = class(TPresenter)
+  TObjecterPresenterIncapsulator = class(TBasePresenterIncapsulator)
+  strict private
+    FCaptured: TItemObjecterPresenter;
+    procedure SetCaptured(const Value: TItemObjecterPresenter);
+    procedure SetElementStart(const ARect: TRect); override;
+  protected
+    property Captured: TItemObjecterPresenter read FCaptured write SetCaptured;
+  end;
+
+  TObjecterPresenter = class(TObjecterPresenterIncapsulator)
   private
     FSelected: TItemObjecterPresenter;
     FCaptured: TItemObjecterPresenter;
+    FCaptureMode: TCaptureMode;
+    function ResizeType(const AItem: TItemObjecterPresenter): TResizeType;
   protected
     FModel: TSSBModel;
     FItems: TDictionary<TItemObjecterPresenter, IItemView>;
@@ -33,7 +44,7 @@ type
 implementation
 
 uses
-  System.Types, FMX.Types, System.UITypes;
+  FMX.Types, System.UITypes;
 
 { TObjecterPresenter }
 
@@ -66,6 +77,7 @@ begin
     // Creating Presenter
     vItemPresenter := TItemPresenterProxy.Create(vViewItem, sObject);
     vViewItem.Presenter := vItemPresenter;
+
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
@@ -83,7 +95,6 @@ constructor TObjecterPresenter.Create(AView: IView; AModel: TSSBModel);
 begin
   FItems := TDictionary<TItemObjecterPresenter, IItemView>.Create;
   FView := AView;
-  FModel := AModel;
 end;
 
 procedure TObjecterPresenter.DelObj;
@@ -93,27 +104,23 @@ end;
 
 procedure TObjecterPresenter.DoMouseDown(ASender: TObject);
 begin
-
-end;
-
-procedure TObjecterPresenter.DoMouseMove(ASender: TObject);
-begin
-
-end;
-
-procedure TObjecterPresenter.DoMouseUp(ASender: TObject);
-begin
-
-end;
-
-{procedure TObjecterPresenter.DoSelectItem(ASender: TObject);
-begin
   if (ASender is TItemObjecterPresenter) then
   begin
     FSelected := TItemObjecterPresenter(ASender);
     View.SelectElement(FItems[FSelected]);
+    MouseDown;
   end;
-end;  }
+end;
+
+procedure TObjecterPresenter.DoMouseMove(ASender: TObject);
+begin
+  MouseMove;
+end;
+
+procedure TObjecterPresenter.DoMouseUp(ASender: TObject);
+begin
+  MouseUp;
+end;
 
 function TObjecterPresenter.GetView: IMainView;
 begin
@@ -122,17 +129,142 @@ end;
 
 procedure TObjecterPresenter.MouseDown;
 begin
+  IsMouseDowned := True;
+  if FSelected <> nil then
+  begin
+    if ResizeType(FSelected) = TResizeType.rtNone then
+    begin
+      Captured := nil;
+      FSelected := nil;
+      Exit;
+    end;
 
+    Captured := FSelected;
+    if ResizeType(FSelected) = TResizeType.rtCenter then
+      FCaptureMode := TCaptureMode.cmMove
+    else
+      FCaptureMode := TCaptureMode.cmResize
+  end;
 end;
 
 procedure TObjecterPresenter.MouseMove;
+var
+  vItem: TItemObjecterPresenter;
+  vPoint: TPoint;
+  vD: Integer;
+  vTmp: Integer;
 begin
+  if (FSelected <> nil) then
+      ResizeType(FSelected);
 
+  if IsMouseDowned then
+    if Captured <> nil then
+    begin
+      if FCaptureMode = TCaptureMode.cmMove then
+        Captured.Position := ElementStart.TopLeft - MouseStart + View.GetMousePos;
+      if FCaptureMode = TCaptureMode.cmResize then
+      begin
+        case ResizeType(Captured) of
+          TResizeType.rtEW: begin
+            Captured.Width := ElementStart.Width - MouseStart.X + View.GetMousePos.X;
+          end;
+          TResizeType.rtWE: begin
+            Captured.Position := Point(ElementStart.Left - MouseStart.X + View.GetMousePos.X, Captured.Position.Y);
+            Captured.Width := ElementStart.Width + MouseStart.X - View.GetMousePos.X;
+          end;
+          TResizeType.rtSN: begin
+            Captured.Height:= ElementStart.Height - MouseStart.Y + View.GetMousePos.Y;
+          end;
+          TResizeType.rtNS: begin
+            Captured.Position := Point(Captured.Position.X, ElementStart.Top - MouseStart.Y + View.GetMousePos.Y);
+            Captured.Height := ElementStart.Height + MouseStart.Y - View.GetMousePos.Y;
+          end;
+        end;
+
+      end;
+    end;
 end;
 
 procedure TObjecterPresenter.MouseUp;
 begin
-  FCaptured := nil;
+  Captured := nil;
+  FCaptureMode := cmNone;
+  IsMouseDowned := False;
+end;
+
+function TObjecterPresenter.ResizeType(
+  const AItem: TItemObjecterPresenter): TResizeType;
+var
+  vPoint: TPoint;
+  vD: Integer;
+begin
+  vPoint := View.GetMousePos;
+
+  vD := 5;
+  if (AItem.Position.X - vD <= vPoint.X) and
+     (AItem.Position.X + vD >= vPoint.X) and
+     (AItem.Position.Y < vPoint.Y) and (AItem.Position.Y + AItem.Height > vPoint.Y) then
+     begin
+         View.ChangeCursor(crSizeWE);
+       Exit(TResizeType.rtWE);
+     end;
+
+  if (AItem.Position.X + AItem.Width - vD <= vPoint.X) and
+     (AItem.Position.X + AItem.Width + vD >= vPoint.X) and
+     (AItem.Position.Y < vPoint.Y) and (AItem.Position.Y + AItem.Height > vPoint.Y) then
+     begin
+         View.ChangeCursor(crSizeWE);
+       Exit(TResizeType.rtEW);
+     end;
+
+  if (AItem.Position.Y - vD <= vPoint.Y) and
+     (AItem.Position.Y + vD >= vPoint.Y) and
+     (AItem.Position.X < vPoint.X) and (AItem.Position.X + AItem.Width > vPoint.X) then
+     begin
+         View.ChangeCursor(crSizeNS);
+       Exit(TResizeType.rtNS);
+     end;
+
+  if (AItem.Position.Y + AItem.Height - vD <= vPoint.Y) and
+     (AItem.Position.Y + AItem.Height + vD >= vPoint.Y) and
+     (AItem.Position.X < vPoint.X) and (AItem.Position.X + AItem.Width > vPoint.X) then
+     begin
+         View.ChangeCursor(crSizeNS);
+       Exit(TResizeType.rtSN);
+     end;
+
+
+   View.ChangeCursor(crArrow);
+   if (AItem.Position.X <= vPoint.X) and (AItem.Position.Y <= vPoint.Y) and
+      (AItem.Position.X + AItem.Width >= vPoint.X) and (AItem.Position.Y + AItem.Height >= vPoint.Y) then
+        Exit(TResizeType.rtCenter);
+
+   Exit(TResizeType.rtNone)
+end;
+
+{ TObjecterPresenterIncapsulator }
+
+procedure TObjecterPresenterIncapsulator.SetCaptured(
+  const Value: TItemObjecterPresenter);
+var
+  vRect: TRect;
+begin
+  FCaptured := Value;
+  if Value <> nil then
+  begin
+    vRect.TopLeft := Value.Position;
+    vRect.Width := Value.Width;
+    vRect.Height := Value.Height;
+  end else
+    vRect := TRect.Empty;
+
+  SetElementStart(vRect);
+end;
+
+procedure TObjecterPresenterIncapsulator.SetElementStart(const ARect: TRect);
+begin
+  inherited;
+
 end;
 
 end.

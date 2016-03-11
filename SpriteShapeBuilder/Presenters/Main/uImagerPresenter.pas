@@ -4,31 +4,20 @@ interface
 
 uses
   System.Types, System.SysUtils, System.Generics.Collections, FMX.Objects,
+  uBasePresenterIncapsulator,
   uIView, uItemPresenterProxy, uSSBTypes, uItemBasePresenter,
   uIItemView, uItemImagerPresenter, uSSBModels, uMVPFrameWork,
   uEasyDevice;
 
 
 type
-  TImagerPresenterIncapsulator = class(TPresenter)
+  TImagerPresenterIncapsulator = class(TBasePresenterIncapsulator)
   strict private
     FCaptured: TImagerItemPresenter;
-    FModel: TSSBModel;
-    FElementStart: TRect;
-    FMouseStartPoint: TPoint;
-    FIsMouseDowned: Boolean;
-    function GetView: IMainView;    
     procedure SetCaptured(const Value: TImagerItemPresenter);
-    procedure SetIsMouseDowned(const Value: Boolean);    
+    procedure SetElementStart(const ARect: TRect); override;
   protected
-    property View: IMainView read GetView;  
-    property ElementStart: TRect read FElementStart;
-    property MouseStart: TPoint read FMouseStartPoint;
-    property IsMouseDowned: Boolean read FIsMouseDowned write SetIsMouseDowned;
     property Captured: TImagerItemPresenter read FCaptured write SetCaptured;
-
-    constructor Create(AView: IView; AModel: TSSBModel); virtual;    
-    destructor Destroy; override;
   end;
 
   TImagerPresenter = class(TImagerPresenterIncapsulator)
@@ -262,43 +251,27 @@ begin
    Exit(TResizeType.rtNone)
 end;
 
-{ TImagerPresenterIncapsulator }
-
-constructor TImagerPresenterIncapsulator.Create(AView: IView;
-  AModel: TSSBModel);
-begin
-  FView := AView;
-  FModel := AModel;
-end;
-
-destructor TImagerPresenterIncapsulator.Destroy;
-begin
-  FModel.Free;
-  inherited;
-end;
-
-function TImagerPresenterIncapsulator.GetView: IMainView;
-begin
-  Result := IMainView(FView);
-end;
-
 procedure TImagerPresenterIncapsulator.SetCaptured(
   const Value: TImagerItemPresenter);
+var
+  vRect: TRect;
 begin
   FCaptured := Value;
   if Value <> nil then
   begin
-    FElementStart.TopLeft := Value.Position;
-    FElementStart.Width := Value.Width;
-    FElementStart.Height := Value.Height;
+    vRect.TopLeft := Value.Position;
+    vRect.Width := Value.Width;
+    vRect.Height := Value.Height;
   end else
-    FElementStart := TRect.Empty;
+    vRect := TRect.Empty;
+
+  SetElementStart(vRect);
 end;
 
-procedure TImagerPresenterIncapsulator.SetIsMouseDowned(const Value: Boolean);
+procedure TImagerPresenterIncapsulator.SetElementStart(const ARect: TRect);
 begin
-  FIsMouseDowned := Value;
-  FMouseStartPoint := View.GetMousePos;
+  inherited;
+
 end;
 
 end.

@@ -48,13 +48,15 @@ type
     procedure SetElement(AIndex: Integer; const Value: TElement);
     procedure SetImageElement(AIndex: Integer; const Value: TImageElement);
   public
-    constructor Create(const AUpdateHandler: TNotifyEvent); override;
-    destructor Destroy; override;
+    function ToJson: string;
+    procedure FromJson(const AJson: string);
     property ElementCount: Integer read GetElementCount;
     property ImageElementCount: Integer read GetImageElementCount;
     property Elements[AIndex: Integer]: TElement read GetElement write SetElement;
     property ImageElements[AIndex: Integer]: TImageElement read GetImageElement write SetImageElement;
     property Image: TBitmap read FBitmap;
+    constructor Create(const AUpdateHandler: TNotifyEvent); override;
+    destructor Destroy; override;
 end;
 
 implementation
@@ -82,6 +84,11 @@ begin
   for i := 0 to FImageElements.Count - 1 do
     FImageElements[i].Free;
   FImageElements.Free;
+end;
+
+procedure TSSBModel.FromJson(const AJson: string);
+begin
+
 end;
 
 function TSSBModel.GetElement(AIndex: Integer): TElement;
@@ -113,6 +120,11 @@ procedure TSSBModel.SetImageElement(AIndex: Integer;
   const Value: TImageElement);
 begin
   FImageElements[AIndex] := Value;
+end;
+
+function TSSBModel.ToJson: string;
+begin
+
 end;
 
 { TElement }

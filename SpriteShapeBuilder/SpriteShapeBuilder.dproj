@@ -301,6 +301,7 @@
         <DCCReference Include="Presenters\Item\uItemPresenterProxy.pas"/>
         <DCCReference Include="Presenters\Main\uImagerPresenter.pas"/>
         <DCCReference Include="Presenters\Main\uObjecterPresenter.pas"/>
+        <DCCReference Include="Presenters\Main\uBasePresenterIncapsulator.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
