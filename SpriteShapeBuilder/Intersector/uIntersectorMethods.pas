@@ -13,7 +13,7 @@ uses
   function Distance(const APoint: TPointF): Double; overload; // Находит растояние между точками, где первая в нуле
   function Distance(const AX1, AY1, AX2, AY2: Double): Double; overload; // Находит растояние между точками
 
-    // Некоторые функции взяты или подсмотрены в FastGEO http://www.partow.net/projects/fastgeo/
+  // Некоторые функции взяты или подсмотрены в FastGEO http://www.partow.net/projects/fastgeo/
   function IsPointInCircle(const APoint: TPointF; const AFigure: TCircle): Boolean;
   function IsPointInEllipse(const APoint: TPointF; const AFigure: TEllipse): Boolean; experimental;
   function IsPointInPolygon(const Point: TPointF; const Polygon: TPolygon): Boolean;
@@ -24,7 +24,7 @@ uses
   function IsLineIntersectPoly(const APoint1, APoint2: TPointF; const AFigure: TPolygon): Boolean;
   function IsPolyIntersectPoly(const Poly1, Poly2: TPolygon): Boolean;
 
-    // This includes both situatution! If one figure in another and if they are intersect
+  // This includes both situatution! If one figure in another and if they are intersect
   function CircleCircleCollide(const AFigure1, AFigure2: TCircle): Boolean;
   function CirclePolyCollide(const AFigure1: TPolygon; const AFigure2: TCircle): Boolean;
   function PolyPolyCollide(const AFigure1, AFigure2: TPolygon): Boolean;

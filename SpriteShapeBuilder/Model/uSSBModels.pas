@@ -5,29 +5,34 @@ interface
 uses
   System.Generics.Collections, System.Classes,
   FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, FMX.Graphics,
-  uNamedList, uClasses, uSSBTypes, uMVPFrameWork;
+  uNamedList, uClasses, uSSBTypes, uMVPFrameWork, uNewFigure;
 
 type
 
-  TElement = class(TModel)
+  TItemShapeModel = class(TNewFigure);
+
+  TItemObjectModel = class(TModel)
   private
     FName: string;
     FWidth: Integer;
     FHeight: Integer;
     FPosition: TPoint;
     FGroup: string;
+    FShapes: TList<TItemShapeModel>;
   public
     property Name: string read FName write FName;
     property Width: Integer read FWidth write FWidth;
     property Height: Integer read FHeight write FHeight;
     property Position: TPoint read FPosition write FPosition;
     property Group: string read FGroup write FGroup;
+    property Shapes: TList<TItemShapeModel> read FShapes write FShapes;
     function ToJson: string;
     procedure FromJson(const AJson: string);
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
+    destructor Destroy; override;
   end;
 
-  TImageElement = class(TModel)
+  TItemImageModel = class(TModel)
   private
     FOriginalImage: TImage;
     FRect: TRect;
@@ -40,21 +45,21 @@ type
   TSSBModel = class(TModel)
   private
     FBitmap: TBitmap; // Подложка объекта
-    FElements: TList<TElement>;
-    FImageElements: TList<TImageElement>;
+    FElements: TList<TItemObjectModel>;
+    FImageElements: TList<TItemImageModel>;
     function GetElementCount: Integer;
-    function GetElement(AIndex: Integer): TElement;
-    function GetImageElement(AIndex: Integer): TImageElement;
+    function GetElement(AIndex: Integer): TItemObjectModel;
+    function GetImageElement(AIndex: Integer): TItemImageModel;
     function GetImageElementCount: Integer;
-    procedure SetElement(AIndex: Integer; const Value: TElement);
-    procedure SetImageElement(AIndex: Integer; const Value: TImageElement);
+    procedure SetElement(AIndex: Integer; const Value: TItemObjectModel);
+    procedure SetImageElement(AIndex: Integer; const Value: TItemImageModel);
   public
     function ToJson: string;
     procedure FromJson(const AJson: string);
     property ElementCount: Integer read GetElementCount;
     property ImageElementCount: Integer read GetImageElementCount;
-    property Elements[AIndex: Integer]: TElement read GetElement write SetElement;
-    property ImageElements[AIndex: Integer]: TImageElement read GetImageElement write SetImageElement;
+    property Elements[AIndex: Integer]: TItemObjectModel read GetElement write SetElement;
+    property ImageElements[AIndex: Integer]: TItemImageModel read GetImageElement write SetImageElement;
     property Image: TBitmap read FBitmap;
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
     destructor Destroy; override;
@@ -68,8 +73,8 @@ constructor TSSBModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
   inherited;
   FBitmap := TBitmap.Create;
-  FElements := TList<TElement>.Create;
-  FImageElements := TList<TImageElement>.Create;
+  FElements := TList<TItemObjectModel>.Create;
+  FImageElements := TList<TItemImageModel>.Create;
 end;
 
 destructor TSSBModel.Destroy;
@@ -92,7 +97,7 @@ begin
 
 end;
 
-function TSSBModel.GetElement(AIndex: Integer): TElement;
+function TSSBModel.GetElement(AIndex: Integer): TItemObjectModel;
 begin
   Result := FElements[AIndex];
 end;
@@ -102,7 +107,7 @@ begin
   Result := FElements.Count;
 end;
 
-function TSSBModel.GetImageElement(AIndex: Integer): TImageElement;
+function TSSBModel.GetImageElement(AIndex: Integer): TItemImageModel;
 begin
   Result := FImageElements[AIndex];
 end;
@@ -112,13 +117,13 @@ begin
   Result := FImageElements.Count;
 end;
 
-procedure TSSBModel.SetElement(AIndex: Integer; const Value: TElement);
+procedure TSSBModel.SetElement(AIndex: Integer; const Value: TItemObjectModel);
 begin
   FElements[AIndex] := Value;
 end;
 
 procedure TSSBModel.SetImageElement(AIndex: Integer;
-  const Value: TImageElement);
+  const Value: TItemImageModel);
 begin
   FImageElements[AIndex] := Value;
 end;
@@ -130,24 +135,38 @@ end;
 
 { TElement }
 
-constructor TElement.Create(const AUpdateHandler: TNotifyEvent);
+constructor TItemObjectModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
+  inherited;
+
+  FShapes := TList<TItemShapeModel>.Create;
+end;
+
+destructor TItemObjectModel.Destroy;
+var
+  i: Integer;
+begin
+  for i := 0 to FShapes.Count - 1 do
+    FShapes[i].Free;
+
+  FShapes.Free;
+
   inherited;
 end;
 
-procedure TElement.FromJson(const AJson: string);
+procedure TItemObjectModel.FromJson(const AJson: string);
 begin
 
 end;
 
-function TElement.ToJson: string;
+function TItemObjectModel.ToJson: string;
 begin
 
 end;
 
 { TImageElement }
 
-constructor TImageElement.Create(const AUpdateHandler: TNotifyEvent);
+constructor TItemImageModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
   inherited;
 

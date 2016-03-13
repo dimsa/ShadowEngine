@@ -7,19 +7,20 @@ uses
   uItemBasePresenter, uItemShaperPresenter, uIItemView, uSSBModels;
 
 type
+  TItemShaperPresenterFriend = class(TItemShaperPresenter);
+
   TItemObjecterPresenter = class(TItemBasePresenter)
   private
-    FShapes: TList<TItemShaperPresenter>;
+    FShapes: TList<TItemShaperPresenterFriend>;
     FIsShapeVisible: Boolean;
-    FCapturedShape: TItemShaperPresenter;
-    FSelectedShaper: TItemShaperPresenter;
+    FCapturedShape: TItemShaperPresenterFriend;
+    FSelectedShaper: TItemShaperPresenterFriend;
     function GetHeight: Integer;
     function GetPosition: TPoint;
     function GetWidth: Integer;
     procedure SetHeight(const Value: Integer);
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
-    procedure ShowHideShapes;
   public
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
@@ -41,19 +42,29 @@ implementation
 { TObjecterItemPresenter }
 
 procedure TItemObjecterPresenter.AddCircle;
+var
+  vShape: TItemShaperPresenterFriend;
 begin
-
+  vShape := TItemShaperPresenterFriend.Create(FView, FModel);
+  vShape.MakeCircle;
+  FShapes.Add(vShape);
+  vShape.Repaint;
 end;
 
 procedure TItemObjecterPresenter.AddPoly;
+var
+  vShape: TItemShaperPresenterFriend;
 begin
-
+  vShape := TItemShaperPresenterFriend.Create(FView, FModel);
+  vShape.MakePoly;
+  FShapes.Add(vShape);
+  vShape.Repaint;
 end;
 
 constructor TItemObjecterPresenter.Create(const AItemView: IItemView; const AModel: TSSBModel);
 begin
   inherited;
-  FShapes := TList<TItemShaperPresenter>.Create;
+  FShapes := TList<TItemShaperPresenterFriend>.Create;
 end;
 
 procedure TItemObjecterPresenter.Delete;
@@ -153,14 +164,14 @@ begin
   FView.Width := Value;
 end;
 
-procedure TItemObjecterPresenter.ShowHideShapes;
-begin
-  FIsShapeVisible := False;
-end;
-
 procedure TItemObjecterPresenter.ShowShapes;
+var
+  i: Integer;
 begin
   FIsShapeVisible := True;
+
+  for i := 0 to FShapes.Count - 1 do
+    FShapes[i].Repaint;
 end;
 
 end.

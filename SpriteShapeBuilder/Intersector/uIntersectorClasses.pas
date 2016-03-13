@@ -24,7 +24,7 @@ type
     Radius: Single;
   end;
 
-  TEllipse = record
+  TEllipse = packed record
     X, Y: Single;
     R1, R2: Single; // Больший и меньший радиус. Или наоборот.
     Angle: Single; // Угол поворота эллипса
