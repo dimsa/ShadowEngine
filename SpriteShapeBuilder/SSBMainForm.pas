@@ -62,6 +62,7 @@ type
       Shift: TShiftState; X, Y: Single);
     procedure BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
+    procedure AddCircleBtnClick(Sender: TObject);
   private
     SSB: TSpriteShapeBuilder;
     { Private declarations }
@@ -76,6 +77,11 @@ implementation
 
 {$R *.fmx}
 
+procedure TSSBForm.AddCircleBtnClick(Sender: TObject);
+begin
+  SSB.Objecter.AddCircle;
+end;
+
 procedure TSSBForm.AddObjectBtnClick(Sender: TObject);
 begin
   SSB.Objecter.AddObj;
@@ -84,8 +90,6 @@ end;
 procedure TSSBForm.AddPictureBtnClick(Sender: TObject);
 begin
   SSB.Imager.AddImg;
-
-
 end;
 
 procedure TSSBForm.BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
@@ -185,7 +189,7 @@ end;
 
 procedure TSSBForm.Shape_imgClick(Sender: TObject);
 begin
-//  SSB.Shaper.Init;
+  SSB.Status := TSSBStatus.sShape;
 end;
 
 end.

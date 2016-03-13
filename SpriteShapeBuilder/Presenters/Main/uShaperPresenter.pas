@@ -1,15 +1,18 @@
-unit uObjecterPresenter;
+unit uShaperPresenter;
 
 interface
 
 uses
   System.Generics.Collections, FMX.Objects, System.Types,
   uIView, uItemPresenterProxy, uMVPFrameWork, uSSBModels, uSSBTypes,
-  uIItemView, uItemObjecterPresenter,
-  uBasePresenterIncapsulator;
+  uIItemView, uItemObjecterPresenter, uBasePresenterIncapsulator;
 
-type
-  TObjecterPresenterIncapsulator = class(TBasePresenterIncapsulator)
+  implementation
+
+  begin
+(*type
+
+  TShaperPresenterIncapsulator = class(TBasePresenterIncapsulator)
   strict private
     FCaptured: TItemObjecterPresenter;
     procedure SetCaptured(const Value: TItemObjecterPresenter);
@@ -18,12 +21,11 @@ type
     property Captured: TItemObjecterPresenter read FCaptured write SetCaptured;
   end;
 
-  TObjecterPresenter = class(TObjecterPresenterIncapsulator)
+  TShaperPresenter = class(TShaperPresenterIncapsulator)
   private
     FSelected: TItemObjecterPresenter;
     FCaptured: TItemObjecterPresenter;
     FCaptureMode: TCaptureMode;
-    FIsShapeVisible: Boolean;
     function ResizeType(const AItem: TItemObjecterPresenter): TResizeType;
   protected
     FModel: TSSBModel;
@@ -36,11 +38,8 @@ type
     procedure DoMouseMove(ASender: TObject);
   public
     constructor Create(AView: IView; AModel: TSSBModel);
-    procedure ShowShapes;
-    procedure HideShapes;
     procedure AddPoly;
     procedure AddCircle;
-    procedure AddObj;
     procedure DelObj;
     procedure MouseMove;
     procedure MouseUp;
@@ -52,15 +51,9 @@ implementation
 uses
   FMX.Types, System.UITypes;
 
-{ TObjecterPresenter }
+{ TShaperPresenter }
 
-procedure TObjecterPresenter.AddCircle;
-begin
-  if FSelected <> nil then
-    FSelected.AddCircle;
-end;
-
-procedure TObjecterPresenter.AddObj;
+{procedure TShaperPresenter.AddObj;
 var
   vImg: TImage;
   vViewItem: IItemView;
@@ -101,26 +94,30 @@ begin
       vImg.Free;
       View.RemoveElement(vViewItem);
     end;
-end;
+end;       }
 
-procedure TObjecterPresenter.AddPoly;
+procedure TShaperPresenter.AddCircle;
 begin
-  if FSelected <> nil then
-    FSelected.AddPoly;
+
 end;
 
-constructor TObjecterPresenter.Create(AView: IView; AModel: TSSBModel);
+procedure TShaperPresenter.AddPoly;
+begin
+
+end;
+
+constructor TShaperPresenter.Create(AView: IView; AModel: TSSBModel);
 begin
   FItems := TDictionary<TItemObjecterPresenter, IItemView>.Create;
   FView := AView;
 end;
 
-procedure TObjecterPresenter.DelObj;
+procedure TShaperPresenter.DelObj;
 begin
 
 end;
 
-procedure TObjecterPresenter.DoMouseDown(ASender: TObject);
+procedure TShaperPresenter.DoMouseDown(ASender: TObject);
 begin
   if (ASender is TItemObjecterPresenter) then
   begin
@@ -130,32 +127,22 @@ begin
   end;
 end;
 
-procedure TObjecterPresenter.DoMouseMove(ASender: TObject);
+procedure TShaperPresenter.DoMouseMove(ASender: TObject);
 begin
   MouseMove;
 end;
 
-procedure TObjecterPresenter.DoMouseUp(ASender: TObject);
+procedure TShaperPresenter.DoMouseUp(ASender: TObject);
 begin
   MouseUp;
 end;
 
-function TObjecterPresenter.GetView: IMainView;
+function TShaperPresenter.GetView: IMainView;
 begin
   Result := IMainView(FView);
 end;
 
-procedure TObjecterPresenter.HideShapes;
-var
-  vItem: TItemObjecterPresenter;
-begin
-  FIsShapeVisible := False;
-
-  for vItem in FItems.Keys do
-    vItem.HideShapes;
-end;
-
-procedure TObjecterPresenter.MouseDown;
+procedure TShaperPresenter.MouseDown;
 begin
   IsMouseDowned := True;
   if FSelected <> nil then
@@ -175,7 +162,7 @@ begin
   end;
 end;
 
-procedure TObjecterPresenter.MouseMove;
+procedure TShaperPresenter.MouseMove;
 var
   vItem: TItemObjecterPresenter;
   vPoint: TPoint;
@@ -213,14 +200,14 @@ begin
     end;
 end;
 
-procedure TObjecterPresenter.MouseUp;
+procedure TShaperPresenter.MouseUp;
 begin
   Captured := nil;
   FCaptureMode := cmNone;
   IsMouseDowned := False;
 end;
 
-function TObjecterPresenter.ResizeType(
+function TShaperPresenter.ResizeType(
   const AItem: TItemObjecterPresenter): TResizeType;
 var
   vPoint: TPoint;
@@ -270,19 +257,9 @@ begin
    Exit(TResizeType.rtNone)
 end;
 
-procedure TObjecterPresenter.ShowShapes;
-var
-  vItem: TItemObjecterPresenter;
-begin
-  FIsShapeVisible := True;
+{ TShaperPresenterIncapsulator }
 
-  for vItem in FItems.Keys do
-    vItem.ShowShapes;
-end;
-
-{ TObjecterPresenterIncapsulator }
-
-procedure TObjecterPresenterIncapsulator.SetCaptured(
+procedure TShaperPresenterIncapsulator.SetCaptured(
   const Value: TItemObjecterPresenter);
 var
   vRect: TRect;
@@ -299,10 +276,10 @@ begin
   SetElementStart(vRect);
 end;
 
-procedure TObjecterPresenterIncapsulator.SetElementStart(const ARect: TRect);
+procedure TShaperPresenterIncapsulator.SetElementStart(const ARect: TRect);
 begin
   inherited;
 
-end;
+end;        *)
 
 end.

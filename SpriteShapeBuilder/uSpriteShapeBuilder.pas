@@ -33,12 +33,6 @@ type
     FImager: TImagerPresenter;
 
     procedure DoChangeStatus(ASender: TObject);
-    procedure DoSelectPicture(ASender: TObject);
-    procedure DoDeletePicture(ASender: TObject);
-
-    procedure DoSelectObject(ASender: TObject);
-    procedure DoDeleteObject(ASender: TObject);
-    procedure DoEditObject(ASender: TObject);
 
     procedure DoSaveProject(ASender: TObject);
     procedure DoLoadProject(ASender: TObject);
@@ -120,27 +114,6 @@ begin
 
   if vName.Contains('shape') then
     Status := sShape;
-
-//  FView.Model := FModels[Status];
-end;
-
-procedure TSpriteShapeBuilder.DoDeleteObject(ASender: TObject);
-begin
- { if FSelectedElement = nil then
-    Exit;
-
-  FElements.Delete(FSelectedElement);
-  FSelectedElement.Free; }
-end;
-
-procedure TSpriteShapeBuilder.DoDeletePicture(ASender: TObject);
-begin
-
-end;
-
-procedure TSpriteShapeBuilder.DoEditObject(ASender: TObject);
-begin
-
 end;
 
 procedure TSpriteShapeBuilder.DoLoadProject(ASender: TObject);
@@ -151,18 +124,6 @@ end;
 procedure TSpriteShapeBuilder.DoSaveProject(ASender: TObject);
 begin
   SaveProject('JSONoutput.txt');
-end;
-
-procedure TSpriteShapeBuilder.DoSelectObject(ASender: TObject);
-begin
-{  if ASender is TSSBElement then
-    SelectedElement := TSSBElement(ASender); }
-end;
-
-procedure TSpriteShapeBuilder.DoSelectPicture(ASender: TObject);
-begin
-{  if ASender is TImage then
-    SelectedElement := TSSBElement(ASender);   }
 end;
 
 function TSpriteShapeBuilder.FormScreenToClient(const APoint: TPointF): TPointF;
@@ -281,6 +242,11 @@ begin
   FPanels[FStatus].Visible := False;
   FStatus := Value;
   FPanels[FStatus].Visible := True;
+
+  if Value = TSSBStatus.sShape then
+    FObjecter.ShowShapes
+  else
+    FObjecter.HideShapes;
 //  FPanels[Value].Visible := True;
 end;
 

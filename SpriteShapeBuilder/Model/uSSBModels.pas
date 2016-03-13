@@ -9,7 +9,7 @@ uses
 
 type
 
-  TElement = class
+  TElement = class(TModel)
   private
     FName: string;
     FWidth: Integer;
@@ -24,16 +24,17 @@ type
     property Group: string read FGroup write FGroup;
     function ToJson: string;
     procedure FromJson(const AJson: string);
-    constructor Create;
+    constructor Create(const AUpdateHandler: TNotifyEvent); override;
   end;
 
-  TImageElement = class
+  TImageElement = class(TModel)
   private
     FOriginalImage: TImage;
     FRect: TRect;
   public
     property OriginalImage: TImage read FOriginalImage write FOriginalImage;
     property Rect: TRect read FRect write FRect;
+    constructor Create(const AUpdateHandler: TNotifyEvent); override;
   end;
 
   TSSBModel = class(TModel)
@@ -129,9 +130,9 @@ end;
 
 { TElement }
 
-constructor TElement.Create;
+constructor TElement.Create(const AUpdateHandler: TNotifyEvent);
 begin
-
+  inherited;
 end;
 
 procedure TElement.FromJson(const AJson: string);
@@ -141,6 +142,14 @@ end;
 
 function TElement.ToJson: string;
 begin
+
+end;
+
+{ TImageElement }
+
+constructor TImageElement.Create(const AUpdateHandler: TNotifyEvent);
+begin
+  inherited;
 
 end;
 

@@ -37,10 +37,10 @@ type
     procedure MouseUp; override;
     procedure MouseMove; override;
 
-  property Status: TSSBStatus read FStatus write FStatus;
-  property Instance: TItemBasePresenter read GetInstance; // Give object of Status
-  constructor Create(const AView: IItemView; const AStatus: TSSBStatus = sPicture);
-  destructor Destroy; override;
+    property Status: TSSBStatus read FStatus write FStatus;
+    property Instance: TItemBasePresenter read GetInstance; // Give object of Status
+    constructor Create(const AView: IItemView; const AStatus: TSSBStatus = sPicture);
+    destructor Destroy; override;
 end;
 
 implementation
@@ -66,12 +66,12 @@ begin
   case AType of
     sPicture:
     begin
-      vImagerItem := TImagerItemPresenter.Create(FItemView);
+      vImagerItem := TImagerItemPresenter.Create(FItemView, FModel);
       FPresenters[AType] := vImagerItem;
     end;
     sObject:
     begin
-      vObjecterItem := TItemObjecterPresenter.Create(FItemView);
+      vObjecterItem := TItemObjecterPresenter.Create(FItemView, FModel);
       FPresenters[AType] := vObjecterItem;
     end;
     sShape: ;
