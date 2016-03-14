@@ -50,7 +50,7 @@ var
 begin
   vShapeModel := TItemShapeModel.CreateCircle(OnModelUpdate);
   vShape := TItemShaperPresenterFriend.Create(FView, vShapeModel);
-  FItemObjectModel.Shapes.Add(vShapeModel);
+  FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
   vShape.Repaint;
 end;
@@ -62,7 +62,7 @@ var
 begin
   vShapeModel := TItemShapeModel.CreatePoly(OnModelUpdate);
   vShape := TItemShaperPresenterFriend.Create(FView, vShapeModel);
-  FItemObjectModel.Shapes.Add(vShapeModel);
+  FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
   vShape.Repaint;
 end;

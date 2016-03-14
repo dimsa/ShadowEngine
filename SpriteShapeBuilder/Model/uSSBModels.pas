@@ -27,13 +27,20 @@ type
     FPosition: TPoint;
     FGroup: string;
     FShapes: TList<TItemShapeModel>;
+    procedure SetGroup(const Value: string);
+    procedure SetHeight(const Value: Integer);
+    procedure SetName(const Value: string);
+    procedure SetPosition(const Value: TPoint);
+    procedure SetWidth(const Value: Integer);
+    procedure SetShapesList(const Value: TList<TItemShapeModel>);
   public
-    property Name: string read FName write FName;
-    property Width: Integer read FWidth write FWidth;
-    property Height: Integer read FHeight write FHeight;
-    property Position: TPoint read FPosition write FPosition;
-    property Group: string read FGroup write FGroup;
-    property Shapes: TList<TItemShapeModel> read FShapes write FShapes;
+    property Name: string read FName write SetName;
+    property Width: Integer read FWidth write SetWidth;
+    property Height: Integer read FHeight write SetHeight;
+    property Position: TPoint read FPosition write SetPosition;
+    property Group: string read FGroup write SetGroup;
+    property ShapesList: TList<TItemShapeModel> write SetShapesList;
+    procedure AddShape(const AShape: TItemShapeModel);
     function ToJson: string;
     procedure FromJson(const AJson: string);
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
@@ -44,9 +51,11 @@ type
   private
     FOriginalImage: TImage;
     FRect: TRect;
+    procedure SetOriginalImage(const Value: TImage);
+    procedure SetRect(const Value: TRect);
   public
-    property OriginalImage: TImage read FOriginalImage write FOriginalImage;
-    property Rect: TRect read FRect write FRect;
+    property OriginalImage: TImage read FOriginalImage write SetOriginalImage;
+    property Rect: TRect read FRect write SetRect;
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
   end;
 
@@ -86,6 +95,7 @@ begin
   vModel := TItemObjectModel.Create;
   FElements.Add(vModel);
   Result := vModel;
+  RaiseUpdateEvent;
 end;
 
 function TSSBModel.AddImageElement: TItemImageModel;
@@ -95,6 +105,7 @@ begin
   vModel := TItemImageModel.Create;
   FImageElements.Add(vModel);
   Result := vModel;
+  RaiseUpdateEvent;
 end;
 
 constructor TSSBModel.Create(const AUpdateHandler: TNotifyEvent);
@@ -148,12 +159,14 @@ end;
 procedure TSSBModel.SetElement(AIndex: Integer; const Value: TItemObjectModel);
 begin
   FElements[AIndex] := Value;
+  RaiseUpdateEvent;
 end;
 
 procedure TSSBModel.SetImageElement(AIndex: Integer;
   const Value: TItemImageModel);
 begin
   FImageElements[AIndex] := Value;
+  RaiseUpdateEvent;
 end;
 
 function TSSBModel.ToJson: string;
@@ -162,6 +175,12 @@ begin
 end;
 
 { TElement }
+
+procedure TItemObjectModel.AddShape(const AShape: TItemShapeModel);
+begin
+  FShapes.Add(AShape);
+  RaiseUpdateEvent;
+end;
 
 constructor TItemObjectModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
@@ -184,7 +203,43 @@ end;
 
 procedure TItemObjectModel.FromJson(const AJson: string);
 begin
+  RaiseUpdateEvent;
+end;
 
+procedure TItemObjectModel.SetGroup(const Value: string);
+begin
+  FGroup := Value;
+  RaiseUpdateEvent;
+end;
+
+procedure TItemObjectModel.SetHeight(const Value: Integer);
+begin
+  FHeight := Value;
+  RaiseUpdateEvent;
+end;
+
+procedure TItemObjectModel.SetName(const Value: string);
+begin
+  FName := Value;
+  RaiseUpdateEvent;
+end;
+
+procedure TItemObjectModel.SetPosition(const Value: TPoint);
+begin
+  FPosition := Value;
+  RaiseUpdateEvent;
+end;
+
+procedure TItemObjectModel.SetShapesList(const Value: TList<TItemShapeModel>);
+begin
+  FShapes := Value;
+  RaiseUpdateEvent;
+end;
+
+procedure TItemObjectModel.SetWidth(const Value: Integer);
+begin
+  FWidth := Value;
+  RaiseUpdateEvent;
 end;
 
 function TItemObjectModel.ToJson: string;
@@ -218,6 +273,18 @@ destructor TItemShapeModel.Destroy;
 begin
   FFigure.Free;
   inherited;
+end;
+
+procedure TItemImageModel.SetOriginalImage(const Value: TImage);
+begin
+  FOriginalImage := Value;
+  RaiseUpdateEvent;
+end;
+
+procedure TItemImageModel.SetRect(const Value: TRect);
+begin
+  FRect := Value;
+  RaiseUpdateEvent;
 end;
 
 end.

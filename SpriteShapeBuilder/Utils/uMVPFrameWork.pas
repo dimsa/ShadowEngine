@@ -16,6 +16,7 @@ type
     procedure EmptyHandler(ASender: TObject);
   public
     property UpdateHander: TNotifyEvent read FUpdateHandler write FUpdateHandler;
+    procedure RaiseUpdateEvent;
     constructor Create; overload; virtual;
     constructor Create(const AUpdateHandler: TNotifyEvent); overload; virtual;
     destructor Destroy; override;
@@ -71,6 +72,12 @@ end;
 procedure TModel.EmptyHandler(ASender: TObject);
 begin
 
+end;
+
+procedure TModel.RaiseUpdateEvent;
+begin
+  if Assigned(FUpdateHandler) then
+    FUpdateHandler(Self);
 end;
 
 end.
