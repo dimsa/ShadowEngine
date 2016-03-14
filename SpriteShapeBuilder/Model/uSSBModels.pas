@@ -53,9 +53,18 @@ type
     FRect: TRect;
     procedure SetOriginalImage(const Value: TImage);
     procedure SetRect(const Value: TRect);
+    function GetHeight: Integer;
+    function GetPosition: TPoint;
+    function GetWidth: Integer;
+    procedure SetHeight(const Value: Integer);
+    procedure SetPosition(const Value: TPoint);
+    procedure SetWidth(const Value: Integer);
   public
     property OriginalImage: TImage read FOriginalImage write SetOriginalImage;
-    property Rect: TRect read FRect write SetRect;
+    property Rect: TRect write SetRect;
+    property Position: TPoint read GetPosition write SetPosition;
+    property Width: Integer read GetWidth write SetWidth;
+    property Height: Integer read GetHeight write SetHeight;
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
   end;
 
@@ -275,15 +284,50 @@ begin
   inherited;
 end;
 
+function TItemImageModel.GetHeight: Integer;
+begin
+  Result := FRect.Height;
+end;
+
+function TItemImageModel.GetPosition: TPoint;
+begin
+  Result := FRect.TopLeft;
+end;
+
+function TItemImageModel.GetWidth: Integer;
+begin
+  Result := FRect.Width;
+end;
+
+procedure TItemImageModel.SetHeight(const Value: Integer);
+begin
+  FRect.Height := Value;
+  RaiseUpdateEvent;
+end;
+
 procedure TItemImageModel.SetOriginalImage(const Value: TImage);
 begin
   FOriginalImage := Value;
   RaiseUpdateEvent;
 end;
 
+procedure TItemImageModel.SetPosition(const Value: TPoint);
+begin
+  FRect.SetLocation(Value);
+//  FRect.TopLeft:= Value;
+
+  RaiseUpdateEvent;
+end;
+
 procedure TItemImageModel.SetRect(const Value: TRect);
 begin
   FRect := Value;
+  RaiseUpdateEvent;
+end;
+
+procedure TItemImageModel.SetWidth(const Value: Integer);
+begin
+  FRect.Width := Value;
   RaiseUpdateEvent;
 end;
 

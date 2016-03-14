@@ -26,7 +26,7 @@ type
   protected
     FView: IView;
   public
-    procedure OnModelUpdate(ASender: TObject); virtual;
+//    procedure OnModelUpdate(ASender: TObject); virtual;
     constructor Create(const AView: IView); virtual;
     destructor Destroy; override;
   end;
@@ -46,10 +46,10 @@ begin
   inherited;
 end;
 
-procedure TPresenter.OnModelUpdate(ASender: TObject);
+{procedure TPresenter.OnModelUpdate(ASender: TObject);
 begin
 
-end;
+end;   }
 
 { IModel }
 

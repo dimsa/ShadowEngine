@@ -54,6 +54,7 @@ var
   vViewItem: IItemView;
 //  vItemPresenter: TItemPresenterProxy;
   vItemPresenter: TItemImagerPresenter;
+  vModel: TItemImageModel;
   vImg: TImage;
 begin
   vFileName := View.FilenameFromDlg;
@@ -64,26 +65,22 @@ begin
 
     // Creating View
     vViewItem := View.AddElement;
-    vViewItem.Left := 0;
-    vViewItem.Top := 0;
-    vViewItem.Width := Round(vImg.Width);
-    vViewItem.Height:= Round(vImg.Height);
+
+    // Creating Model
+    vModel := Model.AddImageElement;
 
     // Creating Presenter
-    vItemPresenter := TItemImagerPresenter.Create(vViewItem, Model.AddImageElement);//TItemPresenterProxy.Create(vViewItem, sPicture);
+    vItemPresenter := TItemImagerPresenter.Create(vViewItem, vModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
     vViewItem.Presenter := vItemPresenter;
+
+    vModel.OriginalImage := vImg;
+    vModel.Rect := Rect(0, 0, Round(vImg.Bitmap.Width), Round(vImg.Bitmap.Height)) ;
 
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
 
     FItems.Add(TItemImagerPresenter(vItemPresenter), vViewItem);
-    try
-      vViewItem.AssignBitmap(vImg.Bitmap);
-    except
-      vImg.Free;
-      View.RemoveElement(vViewItem);
-    end;
   end;
 end;
 

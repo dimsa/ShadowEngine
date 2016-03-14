@@ -41,7 +41,7 @@ constructor TItemImagerPresenter.Create(const AItemView: IItemView;
 begin
   inherited Create(AItemView);
   FItemImageModel := AItemImageModel;
-  FItemImageModel.UpdateHander := OnModelUpdate;
+  FItemImageModel.UpdateHander := OnUpdateModel;
 end;
 
 procedure TItemImagerPresenter.Delete;
@@ -51,22 +51,24 @@ end;
 
 function TItemImagerPresenter.GetHeight: Integer;
 begin
-  Result := FView.Height;
+  Result := FItemImageModel.Height;
 end;
 
 function TItemImagerPresenter.GetImage: TImage;
 begin
-
+  Result := FItemImageModel.OriginalImage;
 end;
 
 function TItemImagerPresenter.GetPosition: TPoint;
 begin
-  Result := Point(FView.Left, FView.Top);
+  Result := FItemImageModel.Position;
+//  Result := Point(FView.Left, FView.Top);
 end;
 
 function TItemImagerPresenter.GetWidth: Integer;
 begin
-  Result := FView.Width;
+  Result := FItemImageModel.Width;
+ //FView.Width;
 end;
 
 procedure TItemImagerPresenter.MouseDown;
@@ -92,28 +94,32 @@ end;
 
 procedure TItemImagerPresenter.OnUpdateModel(ASender: TObject);
 begin
+  FView.AssignBitmap(FItemImageModel.OriginalImage.Bitmap);
+  FView.Width := FItemImageModel.Width;
+  FView.Height := FItemImageModel.Height;
+  FView.Left := FItemImageModel.Position.X;
+  FView.Top := FItemImageModel.Position.Y;
 
 end;
 
 procedure TItemImagerPresenter.SetHeight(const Value: Integer);
 begin
-  FView.Height := Value;
+  FItemImageModel.Height := Value;
 end;
 
 procedure TItemImagerPresenter.SetImage(const Value: TImage);
 begin
-
+  FItemImageModel.OriginalImage := Value;
 end;
 
 procedure TItemImagerPresenter.SetPosition(const Value: TPoint);
 begin
-  FView.Left := Value.X;
-  FView.Top := Value.Y;
+  FItemImageModel.Position := Value;
 end;
 
 procedure TItemImagerPresenter.SetWidth(const Value: Integer);
 begin
-  FView.Width := Value;
+  FItemImageModel.Width := Value;
 end;
 
 {procedure TImagerItemPresenter.Capture;

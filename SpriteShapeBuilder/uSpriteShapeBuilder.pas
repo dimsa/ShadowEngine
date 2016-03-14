@@ -200,7 +200,7 @@ end;
 
 procedure TSpriteShapeBuilder.OnModelUpdate(ASender: TObject);
 begin
-  FImager.OnModelUpdate(ASender);
+//  FImager.OnModelUpdate(ASender);
 end;
 
 procedure TSpriteShapeBuilder.SaveForEngine(const AFileName: string);

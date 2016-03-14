@@ -72,6 +72,7 @@ begin
   inherited Create(AItemView);
 
   FItemObjectModel := AItemObjectModel;
+  FItemObjectModel.UpdateHander := OnModelUpdate;
   FShapes := TList<TItemShaperPresenterFriend>.Create;
 end;
 
@@ -93,17 +94,17 @@ end;
 
 function TItemObjecterPresenter.GetHeight: Integer;
 begin
-  Result := FView.Height;
+  Result := FItemObjectModel.Height;
 end;
 
 function TItemObjecterPresenter.GetPosition: TPoint;
 begin
-  Result := Point(FView.Left, FView.Top);
+  Result := FItemObjectModel.Position;
 end;
 
 function TItemObjecterPresenter.GetWidth: Integer;
 begin
-  Result := FView.Width;
+  Result := FItemObjectModel.Width;
 end;
 
 procedure TItemObjecterPresenter.HideShapes;
@@ -158,23 +159,25 @@ end;
 
 procedure TItemObjecterPresenter.OnModelUpdate(ASender: TObject);
 begin
-
+  FView.Width := FItemObjectModel.Width;
+  FView.Height:= FItemObjectModel.Height;
+  FView.Left:= FItemObjectModel.Position.X;
+  FView.Top := FItemObjectModel.Position.Y;
 end;
 
 procedure TItemObjecterPresenter.SetHeight(const Value: Integer);
 begin
-  FView.Height := Value;
+  FItemObjectModel.Height := Value;
 end;
 
 procedure TItemObjecterPresenter.SetPosition(const Value: TPoint);
 begin
-  FView.Left := Value.X;
-  FView.Top := Value.Y;
+  FItemObjectModel.Position := Value;
 end;
 
 procedure TItemObjecterPresenter.SetWidth(const Value: Integer);
 begin
-  FView.Width := Value;
+  FItemObjectModel.Width:= Value;
 end;
 
 procedure TItemObjecterPresenter.ShowShapes;

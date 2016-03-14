@@ -65,6 +65,7 @@ var
   vImg: TImage;
   vViewItem: IItemView;
   vItemPresenter: TItemObjecterPresenter;
+  vModel: TItemObjectModel;
 //  vItemPresenter: TItemPresenterProxy;
 begin
     vImg := TImage.Create(nil);
@@ -79,16 +80,20 @@ begin
     vImg.Bitmap.Canvas.FillRect(
     RectF(0, 0, vImg.Width, vImg.Height), 0, 0, [], 1, FMX.Types.TCornerType.ctBevel);
     vImg.Bitmap.Canvas.EndScene;
+
     // Creating View
     vViewItem := View.AddElement;
-    vViewItem.Left := 0;
-    vViewItem.Top := 0;
-    vViewItem.Width := 50;//Round(vImg.Width);
-    vViewItem.Height:= 50; //Round(vImg.Height);
     vViewItem.AssignBitmap(vImg.Bitmap);
 
+    // Creating Model
+    vModel := Model.AddElement;
+
     // Creating Presenter
-    vItemPresenter := TItemObjecterPresenter.Create(vViewItem, Model.AddElement);
+    vItemPresenter := TItemObjecterPresenter.Create(vViewItem, vModel);
+
+    vModel.Width := 50;
+    vModel.Height:= 50;
+
     vViewItem.Presenter := vItemPresenter;
 
     vItemPresenter.OnMouseDown := DoMouseDown;
