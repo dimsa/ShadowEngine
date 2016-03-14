@@ -4,7 +4,7 @@ interface
 
 uses
   System.Generics.Collections, FMX.Objects, System.Types,
-  uIView, uItemPresenterProxy, uMVPFrameWork, uSSBModels, uSSBTypes,
+  uIView, uMVPFrameWork, uSSBModels, uSSBTypes,
   uIItemView, uItemObjecterPresenter,
   uBasePresenterIncapsulator;
 
@@ -64,7 +64,8 @@ procedure TObjecterPresenter.AddObj;
 var
   vImg: TImage;
   vViewItem: IItemView;
-  vItemPresenter: TItemPresenterProxy;
+  vItemPresenter: TItemObjecterPresenter;
+//  vItemPresenter: TItemPresenterProxy;
 begin
     vImg := TImage.Create(nil);
     vImg.Width := 50;
@@ -87,14 +88,14 @@ begin
     vViewItem.AssignBitmap(vImg.Bitmap);
 
     // Creating Presenter
-    vItemPresenter := TItemPresenterProxy.Create(vViewItem, sObject);
+    vItemPresenter := TItemObjecterPresenter.Create(vViewItem, Model.AddElement);
     vViewItem.Presenter := vItemPresenter;
 
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
 
-    FItems.Add(TItemObjecterPresenter(vItemPresenter.Instance), vViewItem);
+    FItems.Add(TItemObjecterPresenter(vItemPresenter), vViewItem);
     try
       vViewItem.AssignBitmap(vImg.Bitmap);
     except
@@ -111,6 +112,7 @@ end;
 
 constructor TObjecterPresenter.Create(AView: IView; AModel: TSSBModel);
 begin
+  inherited Create(AView, AModel);
   FItems := TDictionary<TItemObjecterPresenter, IItemView>.Create;
   FView := AView;
 end;

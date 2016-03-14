@@ -4,12 +4,12 @@ interface
 
 uses
   System.Classes, System.Types, FMX.Objects,
-  uIItemView, uIItemPresenter, uSSBTypes, uItemBasePresenter;
+  uIItemView, uIItemPresenter, uSSBTypes, uItemBasePresenter, uSSBModels;
 
 type
-  TImagerItemPresenter = class(TItemBasePresenter)
+  TItemImagerPresenter = class(TItemBasePresenter)
   private
-    FCaptured: Boolean;
+    FItemImageModel: TItemImageModel;
     function GetHeight: Integer;
     function GetImage: TImage;
     function GetPosition: TPoint;
@@ -18,6 +18,7 @@ type
     procedure SetImage(const Value: TImage);
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
+    procedure OnUpdateModel(ASender: TObject);
   public
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
@@ -28,75 +29,89 @@ type
     procedure MouseDown; override;
     procedure MouseUp; override;
     procedure MouseMove; override;
+    constructor Create(const AItemView: IItemView; const AItemImageModel: TItemImageModel);
   end;
 
 implementation
 
 { TImagerItemPresenter }
 
-procedure TImagerItemPresenter.Delete;
+constructor TItemImagerPresenter.Create(const AItemView: IItemView;
+  const AItemImageModel: TItemImageModel);
+begin
+  inherited Create(AItemView);
+  FItemImageModel := AItemImageModel;
+  FItemImageModel.UpdateHander := OnModelUpdate;
+end;
+
+procedure TItemImagerPresenter.Delete;
 begin
 
 end;
 
-function TImagerItemPresenter.GetHeight: Integer;
+function TItemImagerPresenter.GetHeight: Integer;
 begin
   Result := FView.Height;
 end;
 
-function TImagerItemPresenter.GetImage: TImage;
+function TItemImagerPresenter.GetImage: TImage;
 begin
 
 end;
 
-function TImagerItemPresenter.GetPosition: TPoint;
+function TItemImagerPresenter.GetPosition: TPoint;
 begin
   Result := Point(FView.Left, FView.Top);
 end;
 
-function TImagerItemPresenter.GetWidth: Integer;
+function TItemImagerPresenter.GetWidth: Integer;
 begin
   Result := FView.Width;
 end;
 
-procedure TImagerItemPresenter.MouseDown;
+procedure TItemImagerPresenter.MouseDown;
 begin
   inherited;
   if Assigned(FOnMouseDown) then
     FOnMouseDown(Self);
 end;
 
-procedure TImagerItemPresenter.MouseMove;
+procedure TItemImagerPresenter.MouseMove;
 begin
   inherited;
   if Assigned(FOnMouseMove) then
     FOnMouseMove(Self);
 end;
 
-procedure TImagerItemPresenter.MouseUp;
+procedure TItemImagerPresenter.MouseUp;
 begin
   inherited;
   if Assigned(FOnMouseUp) then
     FOnMouseUp(Self)
 end;
 
-procedure TImagerItemPresenter.SetHeight(const Value: Integer);
+procedure TItemImagerPresenter.OnUpdateModel(ASender: TObject);
+begin
+
+end;
+
+procedure TItemImagerPresenter.SetHeight(const Value: Integer);
 begin
   FView.Height := Value;
 end;
 
-procedure TImagerItemPresenter.SetImage(const Value: TImage);
+procedure TItemImagerPresenter.SetImage(const Value: TImage);
 begin
 
 end;
 
-procedure TImagerItemPresenter.SetPosition(const Value: TPoint);
+procedure TItemImagerPresenter.SetPosition(const Value: TPoint);
 begin
   FView.Left := Value.X;
   FView.Top := Value.Y;
 end;
 
-procedure TImagerItemPresenter.SetWidth(const Value: Integer);
+procedure TItemImagerPresenter.SetWidth(const Value: Integer);
 begin
   FView.Width := Value;
 end;

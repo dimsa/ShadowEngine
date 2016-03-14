@@ -10,7 +10,7 @@ type
   TItemBasePresenter = class abstract(TPresenter, IItemPresenter, IPresenterEvent)
   protected
     FView: IItemView;
-    FModel: TSSBModel;
+   // FModel: TSSBModel;
     FOnMouseDown, FOnMouseUp, FOnMouseMove: TNotifyEvent;
     procedure SetOnMouseDown(AHandler: TNotifyEvent); virtual;
     function GetOnMouseDown: TNotifyEvent; virtual;
@@ -27,17 +27,23 @@ type
     procedure MouseDown; virtual; abstract;
     procedure MouseUp; virtual; abstract;
     procedure MouseMove; virtual; abstract;
-    constructor Create(const AItemView: IItemView; const AModel: TSSBModel); virtual;
+    constructor Create(const AItemView: IItemView); virtual;
+//    constructor Create(const AItemView: IItemView; const AModel: TSSBModel); virtual;
   end;
 
 implementation
 
 { TBaseItemPresenter }
 
-constructor TItemBasePresenter.Create(const AItemView: IItemView; const AModel: TSSBModel);
+{constructor TItemBasePresenter.Create(const AItemView: IItemView; const AModel: TSSBModel);
 begin
   FView := AItemView;
   FModel := AModel;
+end;             }
+
+constructor TItemBasePresenter.Create(const AItemView: IItemView);
+begin
+  FView := AItemView;
 end;
 
 function TItemBasePresenter.GetOnMouseDown: TNotifyEvent;

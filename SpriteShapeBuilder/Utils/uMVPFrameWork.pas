@@ -13,8 +13,11 @@ type
   TModel = class(TInterfacedObject)
   protected
     FUpdateHandler: TNotifyEvent;
+    procedure EmptyHandler(ASender: TObject);
   public
-    constructor Create(const AUpdateHandler: TNotifyEvent); virtual;
+    property UpdateHander: TNotifyEvent read FUpdateHandler write FUpdateHandler;
+    constructor Create; overload; virtual;
+    constructor Create(const AUpdateHandler: TNotifyEvent); overload; virtual;
     destructor Destroy; override;
   end;
 
@@ -54,10 +57,20 @@ begin
   FUpdateHandler := AUpdateHandler;
 end;
 
+constructor TModel.Create;
+begin
+  FUpdateHandler := EmptyHandler;
+end;
+
 destructor TModel.Destroy;
 begin
   FUpdateHandler := nil;
   inherited;
+end;
+
+procedure TModel.EmptyHandler(ASender: TObject);
+begin
+
 end;
 
 end.

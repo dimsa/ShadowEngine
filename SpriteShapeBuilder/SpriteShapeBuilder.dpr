@@ -26,7 +26,6 @@ uses
   uItemBasePresenter in 'Presenters\Item\uItemBasePresenter.pas',
   uItemImagerPresenter in 'Presenters\Item\uItemImagerPresenter.pas',
   uItemObjecterPresenter in 'Presenters\Item\uItemObjecterPresenter.pas',
-  uItemPresenterProxy in 'Presenters\Item\uItemPresenterProxy.pas',
   uImagerPresenter in 'Presenters\Main\uImagerPresenter.pas',
   uObjecterPresenter in 'Presenters\Main\uObjecterPresenter.pas',
   uBasePresenterIncapsulator in 'Presenters\Main\uBasePresenterIncapsulator.pas',

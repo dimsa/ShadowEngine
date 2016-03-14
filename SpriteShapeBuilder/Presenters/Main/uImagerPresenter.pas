@@ -5,7 +5,7 @@ interface
 uses
   System.Types, System.SysUtils, System.Generics.Collections, FMX.Objects,
   uBasePresenterIncapsulator,
-  uIView, uItemPresenterProxy, uSSBTypes, uItemBasePresenter,
+  uIView, uSSBTypes, uItemBasePresenter,
   uIItemView, uItemImagerPresenter, uSSBModels, uMVPFrameWork,
   uEasyDevice;
 
@@ -13,24 +13,24 @@ uses
 type
   TImagerPresenterIncapsulator = class(TBasePresenterIncapsulator)
   strict private
-    FCaptured: TImagerItemPresenter;
-    procedure SetCaptured(const Value: TImagerItemPresenter);
+    FCaptured: TItemImagerPresenter;
+    procedure SetCaptured(const Value: TItemImagerPresenter);
     procedure SetElementStart(const ARect: TRect); override;
   protected
-    property Captured: TImagerItemPresenter read FCaptured write SetCaptured;
+    property Captured: TItemImagerPresenter read FCaptured write SetCaptured;
   end;
 
   TImagerPresenter = class(TImagerPresenterIncapsulator)
   private
-    FSelected: TImagerItemPresenter;
+    FSelected: TItemImagerPresenter;
     FCaptureMode: TCaptureMode; 
 
-    FItems: TDictionary<TImagerItemPresenter, IItemView>;  
+    FItems: TDictionary<TItemImagerPresenter, IItemView>;
     // Методы на клик
     procedure DoMouseDown(ASender: TObject);
     procedure DoMouseUp(ASender: TObject);
     procedure DoMouseMove(ASender: TObject);
-    function ResizeType(const AItem: TImagerItemPresenter): TResizeType;
+    function ResizeType(const AItem: TItemImagerPresenter): TResizeType;
     function GetView: IMainView;
   public
     procedure AddImg;
@@ -52,7 +52,8 @@ procedure TImagerPresenter.AddImg;
 var
   vFileName: string;
   vViewItem: IItemView;
-  vItemPresenter: TItemPresenterProxy;
+//  vItemPresenter: TItemPresenterProxy;
+  vItemPresenter: TItemImagerPresenter;
   vImg: TImage;
 begin
   vFileName := View.FilenameFromDlg;
@@ -69,14 +70,14 @@ begin
     vViewItem.Height:= Round(vImg.Height);
 
     // Creating Presenter
-    vItemPresenter := TItemPresenterProxy.Create(vViewItem, sPicture);
+    vItemPresenter := TItemImagerPresenter.Create(vViewItem, Model.AddImageElement);//TItemPresenterProxy.Create(vViewItem, sPicture);
     vViewItem.Presenter := vItemPresenter;
 
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
 
-    FItems.Add(TImagerItemPresenter(vItemPresenter.Instance), vViewItem);
+    FItems.Add(TItemImagerPresenter(vItemPresenter), vViewItem);
     try
       vViewItem.AssignBitmap(vImg.Bitmap);
     except
@@ -88,8 +89,8 @@ end;
 
 constructor TImagerPresenter.Create(AView: IView; AModel: TSSBModel);
 begin
-  inherited;
-  FItems := TDictionary<TImagerItemPresenter, IItemView>.Create;
+  inherited Create(AView, AModel);
+  FItems := TDictionary<TItemImagerPresenter, IItemView>.Create;
   FCaptureMode := cmNone;
 end;
 
@@ -106,9 +107,9 @@ end;
 
 procedure TImagerPresenter.DoMouseDown(ASender: TObject);
 begin
-  if (ASender is TImagerItemPresenter) then
+  if (ASender is TItemImagerPresenter) then
   begin
-    FSelected := TImagerItemPresenter(ASender);
+    FSelected := TItemImagerPresenter(ASender);
     View.SelectElement(FItems[FSelected]);
     MouseDown;
   end;
@@ -157,7 +158,7 @@ end;
 
 procedure TImagerPresenter.MouseMove;
 var
-  vItem: TImagerItemPresenter;
+  vItem: TItemImagerPresenter;
   vPoint: TPoint;
   vD: Integer;
   vTmp: Integer;
@@ -202,7 +203,7 @@ begin
 end;
 
 function TImagerPresenter.ResizeType(
-  const AItem: TImagerItemPresenter): TResizeType;
+  const AItem: TItemImagerPresenter): TResizeType;
 var
   vPoint: TPoint;
   vD: Integer;
@@ -252,7 +253,7 @@ begin
 end;
 
 procedure TImagerPresenterIncapsulator.SetCaptured(
-  const Value: TImagerItemPresenter);
+  const Value: TItemImagerPresenter);
 var
   vRect: TRect;
 begin

@@ -9,7 +9,15 @@ uses
 
 type
 
-  TItemShapeModel = class(TNewFigure);
+  TItemShapeModel = class(TModel)
+  private
+    FFigure: TNewFigure;
+  public
+    property Figure: TNewFigure read FFigure;
+    constructor CreateCircle(const AUpdateHandler: TNotifyEvent);
+    constructor CreatePoly(const AUpdateHandler: TNotifyEvent);
+    destructor Destroy; override;
+  end;
 
   TItemObjectModel = class(TModel)
   private
@@ -61,6 +69,8 @@ type
     property Elements[AIndex: Integer]: TItemObjectModel read GetElement write SetElement;
     property ImageElements[AIndex: Integer]: TItemImageModel read GetImageElement write SetImageElement;
     property Image: TBitmap read FBitmap;
+    function AddImageElement: TItemImageModel;
+    function AddElement: TItemObjectModel;
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
     destructor Destroy; override;
 end;
@@ -68,6 +78,24 @@ end;
 implementation
 
 { TSSBModel }
+
+function TSSBModel.AddElement: TItemObjectModel;
+var
+  vModel: TItemObjectModel;
+begin
+  vModel := TItemObjectModel.Create;
+  FElements.Add(vModel);
+  Result := vModel;
+end;
+
+function TSSBModel.AddImageElement: TItemImageModel;
+var
+  vModel: TItemImageModel;
+begin
+  vModel := TItemImageModel.Create;
+  FImageElements.Add(vModel);
+  Result := vModel;
+end;
 
 constructor TSSBModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
@@ -170,6 +198,26 @@ constructor TItemImageModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
   inherited;
 
+end;
+
+{ TItemShapeModel }
+
+constructor TItemShapeModel.CreateCircle(const AUpdateHandler: TNotifyEvent);
+begin
+  inherited Create(AUpdateHandler);
+  FFigure := TNewFigure.Create(TNewFigure.cfCircle);
+end;
+
+constructor TItemShapeModel.CreatePoly(const AUpdateHandler: TNotifyEvent);
+begin
+  inherited Create(AUpdateHandler);
+  FFigure := TNewFigure.Create(TNewFigure.cfPoly);
+end;
+
+destructor TItemShapeModel.Destroy;
+begin
+  FFigure.Free;
+  inherited;
 end;
 
 end.

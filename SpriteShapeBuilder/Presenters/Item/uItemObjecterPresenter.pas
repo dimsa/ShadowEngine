@@ -12,6 +12,7 @@ type
   TItemObjecterPresenter = class(TItemBasePresenter)
   private
     FShapes: TList<TItemShaperPresenterFriend>;
+    FItemObjectModel: TItemObjectModel;
     FIsShapeVisible: Boolean;
     FCapturedShape: TItemShaperPresenterFriend;
     FSelectedShaper: TItemShaperPresenterFriend;
@@ -21,6 +22,7 @@ type
     procedure SetHeight(const Value: Integer);
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
+    procedure OnModelUpdate(ASender: TObject);
   public
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
@@ -33,7 +35,7 @@ type
     procedure MouseUp; override;
     procedure MouseMove; override;
     procedure Delete; override;
-    constructor Create(const AItemView: IItemView; const AModel: TSSBModel); override;
+    constructor Create(const AItemView: IItemView; const AItemObjectModel: TItemObjectModel);
     destructor Destroy; override;
   end;
 
@@ -44,9 +46,11 @@ implementation
 procedure TItemObjecterPresenter.AddCircle;
 var
   vShape: TItemShaperPresenterFriend;
+  vShapeModel: TItemShapeModel;
 begin
-  vShape := TItemShaperPresenterFriend.Create(FView, FModel);
-  vShape.MakeCircle;
+  vShapeModel := TItemShapeModel.CreateCircle(OnModelUpdate);
+  vShape := TItemShaperPresenterFriend.Create(FView, vShapeModel);
+  FItemObjectModel.Shapes.Add(vShapeModel);
   FShapes.Add(vShape);
   vShape.Repaint;
 end;
@@ -54,16 +58,20 @@ end;
 procedure TItemObjecterPresenter.AddPoly;
 var
   vShape: TItemShaperPresenterFriend;
+  vShapeModel: TItemShapeModel;
 begin
-  vShape := TItemShaperPresenterFriend.Create(FView, FModel);
-  vShape.MakePoly;
+  vShapeModel := TItemShapeModel.CreatePoly(OnModelUpdate);
+  vShape := TItemShaperPresenterFriend.Create(FView, vShapeModel);
+  FItemObjectModel.Shapes.Add(vShapeModel);
   FShapes.Add(vShape);
   vShape.Repaint;
 end;
 
-constructor TItemObjecterPresenter.Create(const AItemView: IItemView; const AModel: TSSBModel);
+constructor TItemObjecterPresenter.Create(const AItemView: IItemView; const AItemObjectModel: TItemObjectModel);
 begin
-  inherited;
+  inherited Create(AItemView);
+
+  FItemObjectModel := AItemObjectModel;
   FShapes := TList<TItemShaperPresenterFriend>.Create;
 end;
 
@@ -146,6 +154,11 @@ begin
 
   if Assigned(FOnMouseUp) then
     FOnMouseUp(Self)
+end;
+
+procedure TItemObjecterPresenter.OnModelUpdate(ASender: TObject);
+begin
+
 end;
 
 procedure TItemObjecterPresenter.SetHeight(const Value: Integer);

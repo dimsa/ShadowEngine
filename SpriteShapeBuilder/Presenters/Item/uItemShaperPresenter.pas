@@ -4,12 +4,13 @@ interface
 
 uses
   System.Types, FMX.Graphics, System.UITypes,
-  uItemBasePresenter, uIItemView, uNewFigure;
+  uItemBasePresenter, uIItemView, uNewFigure, uSSBModels;
 
 type
   TItemShaperPresenter = class(TItemBasePresenter)
   private
     FShape: TNewFigure;
+    FItemShapeModel: TItemShapeModel;
     function GetHeight: Integer;
     function GetPosition: TPoint;
     function GetWidth: Integer;
@@ -22,14 +23,13 @@ type
     property Position: TPoint read GetPosition write SetPosition;
     function IsPointIn(const APoint: TPointF): Boolean;
   public
-    procedure MakeCircle;
-    procedure MakePoly;
     procedure AddPoint;
     procedure Repaint;
     procedure MouseDown; override;
     procedure MouseUp; override;
     procedure MouseMove; override;
     procedure Delete; override;
+    constructor Create(const AItemView: IItemView; const AItemShapeModel: TItemShapeModel);
     destructor Destroy; override;
   end;
 
@@ -46,6 +46,13 @@ begin
     FShape.AddPoint(TPoint.Zero);
 end;
 
+constructor TItemShaperPresenter.Create(const AItemView: IItemView;
+  const AItemShapeModel: TItemShapeModel);
+begin
+  inherited Create(AItemView);
+  FItemShapeModel := AItemShapeModel;
+end;
+
 procedure TItemShaperPresenter.Delete;
 begin
   inherited;
@@ -54,6 +61,7 @@ end;
 
 destructor TItemShaperPresenter.Destroy;
 begin
+  FItemShapeModel := nil;
   if FShape <> nil then
     FShape.Free;
 
@@ -78,18 +86,6 @@ end;
 function TItemShaperPresenter.IsPointIn(const APoint: TPointF): Boolean;
 begin
 
-end;
-
-procedure TItemShaperPresenter.MakeCircle;
-begin
-  if FShape = nil then
-    FShape := TNewFigure.CreateCircle;
-end;
-
-procedure TItemShaperPresenter.MakePoly;
-begin
-  if FShape = nil then
-    FShape := TNewFigure.CreatePoly;
 end;
 
 procedure TItemShaperPresenter.MouseDown;

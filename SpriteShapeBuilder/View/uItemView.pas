@@ -4,8 +4,8 @@ interface
 
 uses
   System.UITypes, System.Classes, System.Types,
-  FMX.Types, FMX.Objects, FMX.Graphics, FMX.Controls,
-  uIItemView, uItemImagerPresenter, uItemPresenterProxy, uIItemPresenter,
+  FMX.Types, FMX.Objects, FMX.Graphics, FMX.Controls, uSSBTypes,
+  uIItemView, uItemImagerPresenter, uIItemPresenter,
   uEasyDevice;
 
 type
@@ -58,8 +58,6 @@ constructor TItemView.Create(AOwner: TControl);
 begin
   FImage := TImage.Create(AOwner);
   FImage.Parent := AOwner;
-
-  FPresenter := TItemPresenterProxy.Create(Self);
 
   FImage.OnMouseDown := MouseDown;
   FImage.OnMouseUp:= MouseUp;

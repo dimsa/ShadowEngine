@@ -21,6 +21,7 @@ type
     property ElementStart: TRect read FElementStart;
     property MouseStart: TPoint read FMouseStartPoint;
     property IsMouseDowned: Boolean read FIsMouseDowned write SetIsMouseDowned;
+    property Model: TSSBModel read FModel;
 
     constructor Create(AView: IView; AModel: TSSBModel); virtual;
     destructor Destroy; override;
