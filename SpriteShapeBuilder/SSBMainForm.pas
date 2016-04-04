@@ -63,6 +63,7 @@ type
     procedure BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
     procedure AddCircleBtnClick(Sender: TObject);
+    procedure AddPolyBtnClick(Sender: TObject);
   private
     SSB: TSpriteShapeBuilder;
     { Private declarations }
@@ -90,6 +91,11 @@ end;
 procedure TSSBForm.AddPictureBtnClick(Sender: TObject);
 begin
   SSB.Imager.AddImg;
+end;
+
+procedure TSSBForm.AddPolyBtnClick(Sender: TObject);
+begin
+  SSB.Objecter.AddPoly;
 end;
 
 procedure TSSBForm.BackgroundMouseDown(Sender: TObject; Button: TMouseButton;

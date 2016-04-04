@@ -54,12 +54,6 @@ uses
 
 { TObjecterPresenter }
 
-procedure TObjecterPresenter.AddCircle;
-begin
-  if FSelected <> nil then
-    FSelected.AddCircle;
-end;
-
 procedure TObjecterPresenter.AddObj;
 var
   vImg: TImage;
@@ -113,6 +107,12 @@ procedure TObjecterPresenter.AddPoly;
 begin
   if FSelected <> nil then
     FSelected.AddPoly;
+end;
+
+procedure TObjecterPresenter.AddCircle;
+begin
+  if FSelected <> nil then
+    FSelected.AddCircle;
 end;
 
 constructor TObjecterPresenter.Create(AView: IView; AModel: TSSBModel);

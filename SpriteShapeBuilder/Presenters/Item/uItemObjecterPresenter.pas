@@ -4,7 +4,8 @@ interface
 
 uses
   System.Types, System.Generics.Collections, uIntersectorClasses, FMX.Graphics,
-  System.UITypes, FMX.Types,
+  System.UITypes, FMX.Types, {$IFDEF VER290} System.Math.Vectors,
+  {$ENDIF} System.Math,
   uItemBasePresenter, uItemShaperPresenter, uIItemView, uSSBModels;
 
 type
@@ -56,7 +57,7 @@ begin
 
   vCircle.X := 0;
   vCircle.Y := 0;
-  vCircle.Radius := FItemObjectModel.Width / 2;
+  vCircle.Radius := FItemObjectModel.Width / 4;
   vShapeModel.SetData(vCircle);
 
   vShape := TItemShaperPresenterFriend.Create(FView, vShapeModel);
@@ -71,11 +72,21 @@ procedure TItemObjecterPresenter.AddPoly;
 var
   vShape: TItemShaperPresenterFriend;
   vShapeModel: TItemShapeModel;
+  vPoly: TPolygon;
 begin
   vShapeModel := TItemShapeModel.CreatePoly(OnModelUpdate);
+
+  SetLength(vPoly, 3);
+  vPoly[0] := PointF(0, -FItemObjectModel.Height / 4);
+  vPoly[1] := PointF(-FItemObjectModel.Width / 4, FItemObjectModel.Height / 4);
+  vPoly[2] := PointF(FItemObjectModel.Width / 4, FItemObjectModel.Height / 4);
+
+  vShapeModel.SetData(vPoly);
+
   vShape := TItemShaperPresenterFriend.Create(FView, vShapeModel);
   FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
+  FBmp := Bitmap;
   vShape.Repaint(FBmp);
   FView.AssignBitmap(FBmp);
 end;

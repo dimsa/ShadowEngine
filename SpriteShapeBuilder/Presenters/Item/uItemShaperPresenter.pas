@@ -71,12 +71,6 @@ end;
 function TItemShaperPresenter.GetHeight: Integer;
 begin
   Result := FItemShapeModel.MaxRadius;
-{  case FShape.Kind of
-    TNewFigure.cfCircle: FShape.AsCircle.Radius;
-    TNewFigure.cfPoly: Round(FShape.TempMaxRadius);
-    else 
-      raise Exception.Create('Unsuported figure');  
-  end;}
 end;
 
 function TItemShaperPresenter.GetPosition: TPoint;
@@ -118,24 +112,25 @@ end;
 procedure TItemShaperPresenter.Repaint(ABmp: TBitmap);
 begin
   ABmp.Canvas.BeginScene();
+  FItemShapeModel.Figure.TempTranslate(PointF(Abmp.Width / 2, ABmp.Height / 2));
   FItemShapeModel.Figure.Draw(ABmp.Canvas, TAlphaColorRec.Aqua);
+  FItemShapeModel.Figure.Reset;
   ABmp.Canvas.EndScene;
 end;
 
 procedure TItemShaperPresenter.SetHeight(const Value: Integer);
 begin
-  FView.Height := Value;
+
 end;
 
 procedure TItemShaperPresenter.SetPosition(const Value: TPoint);
 begin
-  FView.Left := Value.X;
-  FView.Top := Value.Y;
+
 end;
 
 procedure TItemShaperPresenter.SetWidth(const Value: Integer);
 begin
-  FView.Width := Value;
+
 end;
 
 end.
