@@ -3,17 +3,23 @@ unit uSSBModels;
 interface
 
 uses
-  System.Generics.Collections, System.Classes,
+  System.Generics.Collections, System.Classes, {$IFDEF VER290} System.Math.Vectors,
+  {$ENDIF} System.Math,
   FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, FMX.Graphics,
-  uNamedList, uClasses, uSSBTypes, uMVPFrameWork, uNewFigure;
+  uNamedList, uClasses, uSSBTypes, uMVPFrameWork, uNewFigure, uIntersectorClasses;
 
 type
 
   TItemShapeModel = class(TModel)
   private
     FFigure: TNewFigure;
+    function GetMaxRadius: Integer;
   public
     property Figure: TNewFigure read FFigure;
+    property MaxRadius: Integer read GetMaxRadius;
+    procedure SetData(const AData: TPolygon); overload;// Трактует данные в зависимости от своего типа
+    procedure SetData(const AData: TRectF); overload;// Быстрое задание ректангла
+    procedure SetData(const AData: uIntersectorClasses.TCircle); overload;// Трактует данные в зависимости от своего типа
     constructor CreateCircle(const AUpdateHandler: TNotifyEvent);
     constructor CreatePoly(const AUpdateHandler: TNotifyEvent);
     destructor Destroy; override;
@@ -79,6 +85,9 @@ type
     function GetImageElementCount: Integer;
     procedure SetElement(AIndex: Integer; const Value: TItemObjectModel);
     procedure SetImageElement(AIndex: Integer; const Value: TItemImageModel);
+    procedure OnUpdateItemObject(Sender: TObject);
+    procedure OnUpdateImageObject(Sender: TObject);
+    procedure OnUpdateShapeObject(Sender: TObject);
   public
     function ToJson: string;
     procedure FromJson(const AJson: string);
@@ -101,7 +110,7 @@ function TSSBModel.AddElement: TItemObjectModel;
 var
   vModel: TItemObjectModel;
 begin
-  vModel := TItemObjectModel.Create;
+  vModel := TItemObjectModel.Create(OnUpdateItemObject);
   FElements.Add(vModel);
   Result := vModel;
   RaiseUpdateEvent;
@@ -111,7 +120,7 @@ function TSSBModel.AddImageElement: TItemImageModel;
 var
   vModel: TItemImageModel;
 begin
-  vModel := TItemImageModel.Create;
+  vModel := TItemImageModel.Create(OnUpdateImageObject);
   FImageElements.Add(vModel);
   Result := vModel;
   RaiseUpdateEvent;
@@ -163,6 +172,21 @@ end;
 function TSSBModel.GetImageElementCount: Integer;
 begin
   Result := FImageElements.Count;
+end;
+
+procedure TSSBModel.OnUpdateImageObject(Sender: TObject);
+begin
+
+end;
+
+procedure TSSBModel.OnUpdateItemObject(Sender: TObject);
+begin
+
+end;
+
+procedure TSSBModel.OnUpdateShapeObject(Sender: TObject);
+begin
+
 end;
 
 procedure TSSBModel.SetElement(AIndex: Integer; const Value: TItemObjectModel);
@@ -282,6 +306,26 @@ destructor TItemShapeModel.Destroy;
 begin
   FFigure.Free;
   inherited;
+end;
+
+function TItemShapeModel.GetMaxRadius: Integer;
+begin
+  Result := Round(FFigure.TempMaxRadius);
+end;
+
+procedure TItemShapeModel.SetData(const AData: TPolygon);
+begin
+  FFigure.SetData(AData);
+end;
+
+procedure TItemShapeModel.SetData(const AData: TRectF);
+begin
+  FFigure.SetData(AData);
+end;
+
+procedure TItemShapeModel.SetData(const AData: uIntersectorClasses.TCircle);
+begin
+  FFigure.SetData(AData);
 end;
 
 function TItemImageModel.GetHeight: Integer;

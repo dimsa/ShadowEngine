@@ -9,7 +9,7 @@ uses
 type
   TItemShaperPresenter = class(TItemBasePresenter)
   private
-    FShape: TNewFigure;
+//    FShape: TNewFigure;
     FItemShapeModel: TItemShapeModel;
     function GetHeight: Integer;
     function GetPosition: TPoint;
@@ -22,9 +22,9 @@ type
     property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
     function IsPointIn(const APoint: TPointF): Boolean;
+    procedure Repaint(ABmp: TBitmap);
   public
     procedure AddPoint;
-    procedure Repaint;
     procedure MouseDown; override;
     procedure MouseUp; override;
     procedure MouseMove; override;
@@ -39,11 +39,11 @@ implementation
 
 procedure TItemShaperPresenter.AddPoint;
 begin
-  if FShape = nil then
-    Exit;
-
-  if FShape.Kind = TNewFigure.cfPoly then
-    FShape.AddPoint(TPoint.Zero);
+//  if FShape = nil then
+//    Exit;
+//
+//  if FShape.Kind = TNewFigure.cfPoly then
+//    FShape.AddPoint(TPoint.Zero);
 end;
 
 constructor TItemShaperPresenter.Create(const AItemView: IItemView;
@@ -62,15 +62,21 @@ end;
 destructor TItemShaperPresenter.Destroy;
 begin
   FItemShapeModel := nil;
-  if FShape <> nil then
-    FShape.Free;
+//  if FShape <> nil then
+//    FShape.Free;
 
   inherited;
 end;
 
 function TItemShaperPresenter.GetHeight: Integer;
 begin
-//  Result := FShape.Boun
+  Result := FItemShapeModel.MaxRadius;
+{  case FShape.Kind of
+    TNewFigure.cfCircle: FShape.AsCircle.Radius;
+    TNewFigure.cfPoly: Round(FShape.TempMaxRadius);
+    else 
+      raise Exception.Create('Unsuported figure');  
+  end;}
 end;
 
 function TItemShaperPresenter.GetPosition: TPoint;
@@ -80,7 +86,7 @@ end;
 
 function TItemShaperPresenter.GetWidth: Integer;
 begin
-  Result := FView.Width;
+  Result := FItemShapeModel.MaxRadius;
 end;
 
 function TItemShaperPresenter.IsPointIn(const APoint: TPointF): Boolean;
@@ -109,17 +115,11 @@ begin
     FOnMouseUp(Self)
 end;
 
-procedure TItemShaperPresenter.Repaint;
-var
-  vBmp: TBitmap;
+procedure TItemShaperPresenter.Repaint(ABmp: TBitmap);
 begin
-  vBmp := TBitmap.Create(Width, Height);
-
-  FShape.Draw(vBmp.Canvas, TAlphaColorRec.Aqua);
-
-  FView.AssignBitmap(vBmp);
-
-  vBmp.Free;
+  ABmp.Canvas.BeginScene();
+  FItemShapeModel.Figure.Draw(ABmp.Canvas, TAlphaColorRec.Aqua);
+  ABmp.Canvas.EndScene;
 end;
 
 procedure TItemShaperPresenter.SetHeight(const Value: Integer);

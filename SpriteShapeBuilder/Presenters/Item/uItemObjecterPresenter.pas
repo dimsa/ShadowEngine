@@ -3,7 +3,8 @@ unit uItemObjecterPresenter;
 interface
 
 uses
-  System.Types, System.Generics.Collections,
+  System.Types, System.Generics.Collections, uIntersectorClasses, FMX.Graphics,
+  System.UITypes, FMX.Types,
   uItemBasePresenter, uItemShaperPresenter, uIItemView, uSSBModels;
 
 type
@@ -11,6 +12,7 @@ type
 
   TItemObjecterPresenter = class(TItemBasePresenter)
   private
+    FBmp: TBitmap; // Picture of object with Shapes
     FShapes: TList<TItemShaperPresenterFriend>;
     FItemObjectModel: TItemObjectModel;
     FIsShapeVisible: Boolean;
@@ -23,6 +25,7 @@ type
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
     procedure OnModelUpdate(ASender: TObject);
+    function Bitmap: TBitmap;
   public
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
@@ -47,12 +50,21 @@ procedure TItemObjecterPresenter.AddCircle;
 var
   vShape: TItemShaperPresenterFriend;
   vShapeModel: TItemShapeModel;
+  vCircle: TCircle;
 begin
   vShapeModel := TItemShapeModel.CreateCircle(OnModelUpdate);
+
+  vCircle.X := 0;
+  vCircle.Y := 0;
+  vCircle.Radius := FItemObjectModel.Width / 2;
+  vShapeModel.SetData(vCircle);
+
   vShape := TItemShaperPresenterFriend.Create(FView, vShapeModel);
   FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
-  vShape.Repaint;
+  FBmp := Bitmap;
+  vShape.Repaint(FBmp);
+  FView.AssignBitmap(FBmp);
 end;
 
 procedure TItemObjecterPresenter.AddPoly;
@@ -64,13 +76,31 @@ begin
   vShape := TItemShaperPresenterFriend.Create(FView, vShapeModel);
   FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
-  vShape.Repaint;
+  vShape.Repaint(FBmp);
+  FView.AssignBitmap(FBmp);
+end;
+
+function TItemObjecterPresenter.Bitmap: TBitmap;
+begin
+  FBmp.Width := Width;
+  FBmp.Height := Height;
+
+    FBmp.Canvas.BeginScene();
+    FBmp.Canvas.StrokeThickness := 5;
+    FBmp.Canvas.Stroke.Color := TAlphaColorRec.Red;
+    FBmp.Canvas.Fill.Color := TAlphaColorRec.Blue;
+    FBmp.Canvas.FillRect(
+    RectF(0, 0, Width, Height), 0, 0, [], 1, FMX.Types.TCornerType.ctBevel);
+    FBmp.Canvas.EndScene;
+
+  Result := FBmp;
 end;
 
 constructor TItemObjecterPresenter.Create(const AItemView: IItemView; const AItemObjectModel: TItemObjectModel);
 begin
   inherited Create(AItemView);
 
+  FBmp := TBitmap.Create;
   FItemObjectModel := AItemObjectModel;
   FItemObjectModel.UpdateHander := OnModelUpdate;
   FShapes := TList<TItemShaperPresenterFriend>.Create;
@@ -187,7 +217,7 @@ begin
   FIsShapeVisible := True;
 
   for i := 0 to FShapes.Count - 1 do
-    FShapes[i].Repaint;
+    FShapes[i].Repaint(FBmp);
 end;
 
 end.
