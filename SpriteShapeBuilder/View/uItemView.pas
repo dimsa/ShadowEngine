@@ -14,6 +14,8 @@ type
   private
     FPresenter: IItemPresenter;
     FImage: TImage;
+    FParentTopLeft: TPointFunction;
+    FLastMousePos: TPointF;
     function GetWidth: Integer;
     procedure SetWidth(AValue: Integer);
     function GetHeight: Integer;
@@ -33,7 +35,7 @@ type
     property Image: TImage read FImage write FImage;
     function MousePos: TPointF;
     procedure AssignBitmap(ABmp: TBitmap);
-    constructor Create(AOwner: TControl);
+    constructor Create(AOwner: TControl; AParentTopLeft: TPointFunction);
     destructor Destroy; override;
   end;
 
@@ -54,10 +56,11 @@ begin
   FImage.Cursor := ACursor;
 end;
 
-constructor TItemView.Create(AOwner: TControl);
+constructor TItemView.Create(AOwner: TControl; AParentTopLeft: TPointFunction);
 begin
   FImage := TImage.Create(AOwner);
   FImage.Parent := AOwner;
+  FParentTopLeft := AParentTopLeft;
 
   FImage.OnMouseDown := MouseDown;
   FImage.OnMouseUp:= MouseUp;
@@ -97,18 +100,27 @@ end;
 procedure TItemView.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
+  FLastMousePos.X := X;
+  FLastMousePos.Y := Y;
   FPresenter.MouseDown;
 end;
 
 procedure TItemView.MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Single);
 begin
+  FLastMousePos.X := X;
+  FLastMousePos.Y := Y;
   FPresenter.MouseMove;
 end;
 
 function TItemView.MousePos: TPointF;
+var
+  a,b,c: TPointF;
 begin
-  Result := uEasyDevice.MousePos;//(FFormPosition(vPoint) - FPanel.Position.Point).Round;
+  a := uEasyDevice.MousePos;
+  b := FParentTopLeft;
+  c := FImage.Position.Point;
+  Result := uEasyDevice.MousePos - FParentTopLeft - FImage.Position.Point;
 end;
 
 procedure TItemView.MouseUp(Sender: TObject; Button: TMouseButton;

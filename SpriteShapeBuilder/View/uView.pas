@@ -14,6 +14,7 @@ type
     FChangeblePanel: TLayout;
     FElements: TDictionary<IItemView, TItemView>;
     FEffect: TGlowEffect;
+    FParentTopLeft: TPointFunction;
     FPanel: TPanel;
     FFormPosition: TPositionFunc;
     FBackground: TImage;
@@ -21,6 +22,8 @@ type
     FOpenDialog: TOpenDialog;
     procedure CopyEvents(const AFromControl: TControl; AToControl: TControl);
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    function PanelTopLeft: TPointF;
+//    function ParentScreenToClient(const APoint: TPointF): TPointF;
   public
 
    { property Selected: TImage read FSelected;
@@ -30,7 +33,7 @@ type
     property Model: TSSBModel read FModel write SetModel;
     procedure Update(Sender: TObject);
     procedure Init(const AProgForm: TForm); // Инициализируем где будут размещатсья элементы   }
-    constructor Create(APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog; AFormPosition: TPositionFunc);
+    constructor Create(APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
     destructor Destroy; override;
     procedure ClearAndFreeImg;
     function GetMousePos: TPoint;
@@ -46,12 +49,23 @@ implementation
 
 { TSSBView }
 
+function TView.PanelTopLeft: TPointF;
+begin
+  Result := (FPanel.Position.Point + FParentTopLeft);
+//  FPanel. (FPanel.Position.Point - FParentTopLeft);
+end;
+
+{function TView.ParentScreenToClient(const APoint: TPointF): TPointF;
+begin
+  Result := (FFormPosition(APoint) - FPanel.Position.Point);
+end;  }
+
 function TView.AddElement: IItemView;
 var
   vImg: TItemView;
   vi: TImage;
 begin
-  vImg := TItemView.Create(FPanel);
+  vImg := TItemView.Create(FPanel, PanelTopLeft);
   FElements.Add(vImg, vImg);
   vImg.Image.WrapMode := TImageWrapMode.Stretch;
   Result := vImg;
@@ -101,14 +115,15 @@ begin
 end;
 
 constructor TView.Create(APanel: TPanel; ABackground, ASelected: TImage;
-  AOpenDialog: TOpenDialog; AFormPosition: TPositionFunc);
+  AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
 begin
   FElements := TDictionary<IItemView, TItemView>.Create;
   FPanel := APanel;
   FBackground := ABackground;
   FSelected := ASelected;
   FOpenDialog := AOpenDialog;
-  FFormPosition := AFormPosition;
+  FParentTopLeft := AParentTopLeft;
+//  FFormPosition := AFormPosition;
   FEffect := TGlowEffect.Create(nil);
 end;
 
@@ -153,11 +168,8 @@ begin
 end;
 
 function TView.GetMousePos: TPoint;
-var
-  vPoint: TPointF;
 begin
-  vPoint := uEasyDevice.MousePos;
-  Result := (FFormPosition(vPoint) - FPanel.Position.Point).Round;
+  Result := (uEasyDevice.MousePos - FPanel.Position.Point - FParentTopLeft).Round;
 end;
 
 procedure TView.MouseDown(Sender: TObject; Button: TMouseButton;

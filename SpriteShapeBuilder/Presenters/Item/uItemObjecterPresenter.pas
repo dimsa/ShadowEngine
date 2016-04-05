@@ -96,13 +96,13 @@ begin
   FBmp.Width := Width;
   FBmp.Height := Height;
 
-    FBmp.Canvas.BeginScene();
-    FBmp.Canvas.StrokeThickness := 5;
-    FBmp.Canvas.Stroke.Color := TAlphaColorRec.Red;
-    FBmp.Canvas.Fill.Color := TAlphaColorRec.Blue;
-    FBmp.Canvas.FillRect(
-    RectF(0, 0, Width, Height), 0, 0, [], 1, FMX.Types.TCornerType.ctBevel);
-    FBmp.Canvas.EndScene;
+  FBmp.Canvas.BeginScene();
+  FBmp.Canvas.StrokeThickness := 5;
+  FBmp.Canvas.Stroke.Color := TAlphaColorRec.Red;
+  FBmp.Canvas.Fill.Color := TAlphaColorRec.Blue;
+  FBmp.Canvas.FillRect(
+  RectF(0, 0, Width, Height), 0, 0, [], 1, FMX.Types.TCornerType.ctBevel);
+  FBmp.Canvas.EndScene;
 
   Result := FBmp;
 end;
@@ -156,13 +156,20 @@ end;
 procedure TItemObjecterPresenter.MouseDown;
 var
   i: Integer;
+  vPoint: TPointF;
 begin
   inherited;
 
+  vPoint := FView.MousePos;
   if FIsShapeVisible then
     for i := 0 to FShapes.Count - 1 do
-      if FShapes[i].IsPointIn(FView.MousePos) then
+      if FShapes[i].IsPointIn(vPoint - PointF(FView.Width / 2, FView.Height / 2)) then
+      begin
         FShapes[i].MouseDown;
+        FBmp := Bitmap;
+        FShapes[i].Repaint(FBmp);
+        FView.AssignBitmap(FBmp);
+      end;
 
   if Assigned(FOnMouseDown) then
     FOnMouseDown(Self);

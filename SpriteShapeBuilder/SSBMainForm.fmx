@@ -1,7 +1,7 @@
 object SSBForm: TSSBForm
   Left = 0
   Top = 0
-  Caption = 'Form1'
+  Caption = 'SSBForm'
   ClientHeight = 549
   ClientWidth = 640
   FormFactor.Width = 320
@@ -518,7 +518,7 @@ object SSBForm: TSSBForm
     Top = 8
   end
   object GlowEffect1: TGlowEffect
-    Softness = 0.400000005960464400
+    Softness = 0.400000005960464500
     GlowColor = claGold
     Opacity = 0.899999976158142100
   end

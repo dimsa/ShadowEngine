@@ -11,6 +11,7 @@ type
   private
 //    FShape: TNewFigure;
     FItemShapeModel: TItemShapeModel;
+    FColor: TColor;
     function GetHeight: Integer;
     function GetPosition: TPoint;
     function GetWidth: Integer;
@@ -51,6 +52,7 @@ constructor TItemShaperPresenter.Create(const AItemView: IItemView;
 begin
   inherited Create(AItemView);
   FItemShapeModel := AItemShapeModel;
+  FColor := TAlphaColorRec.Aliceblue;
 end;
 
 procedure TItemShaperPresenter.Delete;
@@ -85,12 +87,13 @@ end;
 
 function TItemShaperPresenter.IsPointIn(const APoint: TPointF): Boolean;
 begin
-
+  Result := FItemShapeModel.Figure.BelongPointLocal(APoint);
 end;
 
 procedure TItemShaperPresenter.MouseDown;
 begin
   inherited;
+  FColor := Random(MaxLongInt);
   if Assigned(FOnMouseDown) then
     FOnMouseDown(Self);
 end;
@@ -113,7 +116,7 @@ procedure TItemShaperPresenter.Repaint(ABmp: TBitmap);
 begin
   ABmp.Canvas.BeginScene();
   FItemShapeModel.Figure.TempTranslate(PointF(Abmp.Width / 2, ABmp.Height / 2));
-  FItemShapeModel.Figure.Draw(ABmp.Canvas, TAlphaColorRec.Aqua);
+  FItemShapeModel.Figure.Draw(ABmp.Canvas, FColor{TAlphaColorRec.Aqua});
   FItemShapeModel.Figure.Reset;
   ABmp.Canvas.EndScene;
 end;

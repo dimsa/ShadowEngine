@@ -16,6 +16,8 @@ type
 
   TPositionFunc = Function(const APoint: TPointF) : TPointF of Object;
 
+  TPointFunction = Function : TPointF of Object;
+
   TAct = (Subscribe, Unsubscribe);
 
 implementation

@@ -41,7 +41,7 @@ type
     procedure Deserialize(const AJson: TJSONObject);
     procedure SetStatus(const Value: TSSBStatus);
     function GetController: TImagerPresenter;
-    function FormScreenToClient(const APoint: TPointF): TPointF;
+    function FormTopLeft: TPointF;
     procedure OnModelUpdate(ASender: TObject);
   public
     property Status: TSSBStatus read FStatus write SetStatus;
@@ -78,7 +78,7 @@ constructor TSpriteShapeBuilder.Create(AForm: TForm; APanel: TPanel; ABackground
   ASelected: TImage; AOpenDialog: TOpenDialog);
 begin
   FForm := AForm;
-  FView := TView.Create(APanel, ABackground, ASelected, AOpenDialog, FormScreenToClient);
+  FView := TView.Create(APanel, ABackground, ASelected, AOpenDialog, FormTopLeft);
   FModel := TSSBModel.Create(OnModelUpdate);
   FImager := TImagerPresenter.Create(FView, FModel);
   FObjecter := TObjecterPresenter.Create(FView, FModel);
@@ -126,9 +126,9 @@ begin
   SaveProject('JSONoutput.txt');
 end;
 
-function TSpriteShapeBuilder.FormScreenToClient(const APoint: TPointF): TPointF;
+function TSpriteShapeBuilder.FormTopLeft: TPointF;
 begin
-  Result := FForm.ScreenToClient(APoint);
+  Result := FForm.ClientToScreen(TPoint.Zero);
 end;
 
 function TSpriteShapeBuilder.GetController: TImagerPresenter;
