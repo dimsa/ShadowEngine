@@ -17,6 +17,7 @@ type
   public
     property Figure: TNewFigure read FFigure;
     property MaxRadius: Integer read GetMaxRadius;
+
     procedure SetData(const AData: TPolygon); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const AData: TRectF); overload;// Быстрое задание ректангла
     procedure SetData(const AData: uIntersectorClasses.TCircle); overload;// Трактует данные в зависимости от своего типа

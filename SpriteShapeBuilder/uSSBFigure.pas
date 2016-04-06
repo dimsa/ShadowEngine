@@ -49,11 +49,7 @@ begin
       end;
 
     end;
-
-
-
   end;
-
 end;
 
 constructor TSSBFigure.Create(const AKind: Byte);

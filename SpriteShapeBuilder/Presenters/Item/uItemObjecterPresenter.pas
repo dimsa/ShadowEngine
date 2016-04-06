@@ -18,7 +18,7 @@ type
     FItemObjectModel: TItemObjectModel;
     FIsShapeVisible: Boolean;
     FCapturedShape: TItemShaperPresenterFriend;
-    FSelectedShaper: TItemShaperPresenterFriend;
+    FSelectedShape: TItemShaperPresenterFriend;
     function GetHeight: Integer;
     function GetPosition: TPoint;
     function GetWidth: Integer;
@@ -27,6 +27,7 @@ type
     procedure SetWidth(const Value: Integer);
     procedure OnModelUpdate(ASender: TObject);
     function Bitmap: TBitmap;
+    procedure RepaintShapes;
   public
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
@@ -86,9 +87,7 @@ begin
   vShape := TItemShaperPresenterFriend.Create(FView, vShapeModel);
   FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
-  FBmp := Bitmap;
-  vShape.Repaint(FBmp);
-  FView.AssignBitmap(FBmp);
+  RepaintShapes;
 end;
 
 function TItemObjecterPresenter.Bitmap: TBitmap;
@@ -165,6 +164,7 @@ begin
     for i := 0 to FShapes.Count - 1 do
       if FShapes[i].IsPointIn(vPoint - PointF(FView.Width / 2, FView.Height / 2)) then
       begin
+        FSelectedShape := FShapes[i];
         FShapes[i].MouseDown;
         FBmp := Bitmap;
         FShapes[i].Repaint(FBmp);
@@ -175,16 +175,31 @@ begin
     FOnMouseDown(Self);
 end;
 
+
+
 procedure TItemObjecterPresenter.MouseMove;
 var
   i: Integer;
+  vPoint, vKeyPoint: TPointF;
+  vNeedRepaint: Boolean;
 begin
   inherited;
 
+  vNeedRepaint := False;
+   vPoint := FView.MousePos - PointF(FView.Width / 2, FView.Height / 2);
   if FIsShapeVisible then
     for i := 0 to FShapes.Count - 1 do
-      if FShapes[i].IsPointIn(FView.MousePos) then
+      if FShapes[i].IsPointIn(vPoint) then
+      begin
+        vNeedRepaint := True;
+       // FSelectedShape := FShapes[i];
+        FShapes[i].KeyPointLocal(vPoint, vKeyPoint, 3, True);
+      //  vKeyPoint := vKeyPoint + PointF(FView.Width / 2, FView.Height / 2);
         FShapes[i].MouseMove;
+      end;
+
+   if vNeedRepaint then
+     RepaintShapes;
 
   if Assigned(FOnMouseMove) then
     FOnMouseMove(Self);
@@ -213,6 +228,17 @@ begin
   FView.Top := FItemObjectModel.Position.Y;
 end;
 
+procedure TItemObjecterPresenter.RepaintShapes;
+var
+  i: Integer;
+begin
+  FBmp := Bitmap;
+  for i := 0 to FShapes.Count - 1 do
+    FShapes[i].Repaint(FBmp);
+
+  FView.AssignBitmap(FBmp);
+end;
+
 procedure TItemObjecterPresenter.SetHeight(const Value: Integer);
 begin
   FItemObjectModel.Height := Value;
@@ -233,9 +259,8 @@ var
   i: Integer;
 begin
   FIsShapeVisible := True;
+  RepaintShapes;
 
-  for i := 0 to FShapes.Count - 1 do
-    FShapes[i].Repaint(FBmp);
 end;
 
 end.

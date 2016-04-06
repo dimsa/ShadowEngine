@@ -22,6 +22,8 @@ type
   TCircle = packed record
     X, Y: Single;
     Radius: Single;
+  public
+    function Center: TPointF;
   end;
 
   TEllipse = packed record
@@ -74,6 +76,13 @@ procedure TPosition.XY(const AX, AY: Single);
 begin
   X := AX;
   Y := AY;
+end;
+
+{ TCircle }
+
+function TCircle.Center: TPointF;
+begin
+  Result := PointF(X, Y);
 end;
 
 end.

@@ -3,8 +3,9 @@ unit uItemShaperPresenter;
 interface
 
 uses
-  System.Types, FMX.Graphics, System.UITypes,
-  uItemBasePresenter, uIItemView, uNewFigure, uSSBModels;
+  System.Types, FMX.Graphics, System.UITypes, {$IFDEF VER290} System.Math.Vectors,
+  {$ENDIF} System.Math,
+  uItemBasePresenter, uIntersectorClasses, uIntersectorMethods, uIItemView, uNewFigure, uSSBModels;
 
 type
   TItemShaperPresenter = class(TItemBasePresenter)
@@ -12,6 +13,9 @@ type
 //    FShape: TNewFigure;
     FItemShapeModel: TItemShapeModel;
     FColor: TColor;
+    FCapturedPoint: TPointF;
+    FLockedIndex: Integer;
+    FLockedPoint: TPointF;
     function GetHeight: Integer;
     function GetPosition: TPoint;
     function GetWidth: Integer;
@@ -23,6 +27,9 @@ type
     property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
     function IsPointIn(const APoint: TPointF): Boolean;
+    function KeyPointLocal(const ATestPosition: TPointF; out AKeyPoint: TPointF;
+      const ADistance: Double; const ALock: Boolean): Boolean;
+    procedure ChangeLockedPoint(const ANewPoint: TPointF);
     procedure Repaint(ABmp: TBitmap);
   public
     procedure AddPoint;
@@ -45,6 +52,43 @@ begin
 //
 //  if FShape.Kind = TNewFigure.cfPoly then
 //    FShape.AddPoint(TPoint.Zero);
+end;
+
+procedure TItemShaperPresenter.ChangeLockedPoint(const ANewPoint: TPointF);
+var
+  vD: single;
+  vFigure: TNewFigure;
+  vPoly: TPolygon;
+  vCircle: TCircle;
+begin
+  if FLockedIndex <> -1 then
+  begin
+    vFigure := FItemShapeModel.Figure;
+    if vFigure.Kind = TNewFigure.cfPoly then
+    begin
+      vPoly := vFigure.AsPoly;
+      vPoly[FLockedIndex] := ANewPoint;
+      vFigure.SetData(vPoly);
+    end;
+    if vFigure.Kind = TNewFigure.cfCircle then
+    begin
+      vCircle := vFigure.AsCircle;
+      if FLockedIndex = 0 then
+      begin
+        vCircle.X := ANewPoint.X;
+        vCircle.Y := ANewPoint.Y;
+      end;
+
+      if FLockedIndex = 1 then
+      begin
+        vD := Distance(vCircle.Center, ANewPoint); //Distance(FData[0], FLockedPoint) - Distance(FData[0], ANewPoint);
+        vCircle.Radius := vD;
+        vFigure.SetData(vCircle);
+//        FData[FLockedIndex] := PointF(vD, vD);
+      end;
+
+    end;
+  end;
 end;
 
 constructor TItemShaperPresenter.Create(const AItemView: IItemView;
@@ -90,10 +134,85 @@ begin
   Result := FItemShapeModel.Figure.BelongPointLocal(APoint);
 end;
 
+function TItemShaperPresenter.KeyPointLocal(const ATestPosition: TPointF;
+  out AKeyPoint: TPointF; const ADistance: Double;
+  const ALock: Boolean): Boolean;
+var
+  vCenterToPoint, vCenterToRadius: Double;
+  vArcTan: Double;
+  vPoly: TPolygon;
+  i: Integer;
+  vFigure: TNewFigure;
+  vCircle: TCircle;
+begin
+   vFigure := FItemShapeModel.Figure;
+   case vFigure.Kind of
+    TNewFigure.cfCircle:
+      begin
+        vCircle := vFigure.AsCircle;
+        vCenterToPoint := Distance(ATestPosition, vCircle.Center);
+        vCenterToRadius := vCircle.Radius;// FData[1].X;//Distance(PointF(0,0), FData[1]);
+        if (vCircle.Radius - vCenterToPoint) < vCenterToPoint then
+        begin
+          if (vCenterToPoint <= vCircle.Radius + (ADistance)) and
+           (vCenterToPoint >= vCircle.Radius - (ADistance))
+          then
+          begin
+            vArcTan := ArcTan2(ATestPosition.Y - vCircle.Y, ATestPosition.X - vCircle.X );
+            AKeyPoint := PointF(vCircle.X + vCenterToRadius * Cos(vArcTan), vCenterToRadius * Sin(vArcTan) + vCircle.Y);
+
+            if ALock then
+            begin
+              FLockedIndex := 1;
+              FLockedPoint := AKeyPoint;
+            end;
+
+            Exit(True);
+          end;
+        end else
+        begin
+          if vCenterToPoint <= (ADistance) then
+          begin
+            AKeyPoint := vCircle.Center;
+            if ALock then
+            begin
+              FLockedIndex := 0;
+              FLockedPoint := AKeyPoint;
+            end;
+
+            Exit(True);
+          end;
+        end;
+      end;
+    TNewFigure.cfPoly:
+      begin
+        vPoly := vFigure.AsPoly;
+        for i := 0 to Length(vPoly) - 1 do
+        begin
+          if Distance(vPoly[i], ATestPosition) <= ADistance then
+          begin
+            AKeyPoint := vPoly[i];
+            if ALock then
+            begin
+              FLockedIndex := i;
+              FLockedPoint := AKeyPoint
+            end;
+
+            Exit(True);
+          end;
+        end;
+
+      end;
+  end;
+  Result := False;
+end;
+
 procedure TItemShaperPresenter.MouseDown;
 begin
   inherited;
   FColor := Random(MaxLongInt);
+
+
   if Assigned(FOnMouseDown) then
     FOnMouseDown(Self);
 end;
@@ -117,6 +236,9 @@ begin
   ABmp.Canvas.BeginScene();
   FItemShapeModel.Figure.TempTranslate(PointF(Abmp.Width / 2, ABmp.Height / 2));
   FItemShapeModel.Figure.Draw(ABmp.Canvas, FColor{TAlphaColorRec.Aqua});
+
+  if FLockedIndex >= 0 then
+    FItemShapeModel.Figure.DrawPoint(ABmp.Canvas, FLockedPoint, TAlphaColorRec.Red);
   FItemShapeModel.Figure.Reset;
   ABmp.Canvas.EndScene;
 end;

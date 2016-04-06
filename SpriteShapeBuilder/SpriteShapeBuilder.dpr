@@ -29,8 +29,7 @@ uses
   uImagerPresenter in 'Presenters\Main\uImagerPresenter.pas',
   uObjecterPresenter in 'Presenters\Main\uObjecterPresenter.pas',
   uBasePresenterIncapsulator in 'Presenters\Main\uBasePresenterIncapsulator.pas',
-  uItemShaperPresenter in 'Presenters\Item\uItemShaperPresenter.pas',
-  uShaperPresenter in 'Presenters\Main\uShaperPresenter.pas';
+  uItemShaperPresenter in 'Presenters\Item\uItemShaperPresenter.pas';
 
 {$R *.res}
 

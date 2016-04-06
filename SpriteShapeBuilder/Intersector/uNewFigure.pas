@@ -18,9 +18,7 @@ type
     function GetCircle: uIntersectorClasses.TCircle;
     function GetPoly: TPolygon; // Вызывается в SetData
   protected
-    [SvSerializer]
     FKind: Byte;
-    [SvSerializer]
     FData: TPolygon; // Оригинальная фигура. Задается через SetData
   public
     property Kind: Byte read FKind; // Тип. Круг или полигон пока что
@@ -95,6 +93,8 @@ begin
 end;
 
 procedure TNewFigure.Draw(ACanvas: TCanvas; AColor: TColor);
+var
+  i: Integer;
 begin
    ACanvas.Fill.Color := AColor;
    case FKind of
@@ -111,6 +111,8 @@ begin
     end;
     cfPoly:
     begin
+//      for i := 0 to High(FTemp) do
+//        FTemp[i] :
       ACanvas.FillPolygon(AsPoly, 0.75);
     end;
   end;
@@ -140,17 +142,39 @@ procedure TNewFigure.DrawPoint(ACanvas: TCanvas; const APoint: TPointF;
   AColor: TColor);
 var
   vPr: Single;
+
 begin
    vPr := 5;
    ACanvas.Fill.Color := AColor;
+
    ACanvas.FillEllipse(
      RectF(
-     APoint.X - vPr,
-     APoint.Y - vPr,
-     APoint.X + vPr,
-     APoint.Y + vPr),
+     FTempCenter.X + APoint.X - vPr,
+     FTempCenter.Y + APoint.Y - vPr,
+     FTempCenter.X + APoint.X + vPr,
+     FTempCenter.Y + APoint.Y + vPr),
      0.75
    );
+
+//   case FKind  of
+//    cfCircle:
+//   ACanvas.FillEllipse(
+//     RectF(
+//     FTempCenter.X - APoint.X - vPr,
+//     FTempCenter.Y - APoint.Y - vPr,
+//     FTempCenter.X - APoint.X + vPr,
+//     FTempCenter.Y - APoint.Y + vPr),
+//     0.75
+//   );
+//    cfPoly: ACanvas.FillEllipse(
+//     RectF(
+//       APoint.X - vPr,
+//       APoint.Y - vPr,
+//       APoint.X + vPr,
+//       APoint.Y + vPr),
+//     0.75
+//   );
+//   end;
 end;
 
 function TNewFigure.FastIntersectWith(const AFigure: TNewFigure): Boolean;
