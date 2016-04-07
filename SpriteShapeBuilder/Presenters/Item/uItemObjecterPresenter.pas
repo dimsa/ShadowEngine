@@ -163,17 +163,14 @@ begin
   vPoint := FView.MousePos - PointF(FView.Width / 2, FView.Height / 2);
   if FIsShapeVisible then
     for i := 0 to FShapes.Count - 1 do
-      if FShapes[i].IsPointIn(vPoint) then
+      if FShapes[i].KeyPointLocal(vPoint, vKeyPoint, 5, True) then
+//      if FShapes[i].IsPointIn(vPoint) then
       begin
         FSelectedShape := FShapes[i];
         FShapes[i].MouseDown;
-
-        if FShapes[i].KeyPointLocal(vPoint, vKeyPoint, 5, True) then
-        begin
-          FStartShapePos := vPoint;
-          FStartKeyPoint := vKeyPoint;
-          FCapturedShape := FShapes[i];
-        end;
+        FStartShapePos := vPoint;
+        FStartKeyPoint := vKeyPoint;
+        FCapturedShape := FShapes[i];
 
         RepaintShapes;
         Exit;
@@ -199,19 +196,16 @@ begin
   begin
     if FCapturedShape = nil then
       for i := 0 to FShapes.Count - 1 do
-        if FShapes[i].IsPointIn(vPoint) then
+        //if FShapes[i].IsPointIn(vPoint) then
+        if FShapes[i].KeyPointLocal(vPoint, vKeyPoint, 5, True) then
         begin
           vNeedRepaint := True;
-         // FSelectedShape := FShapes[i];
-          FShapes[i].KeyPointLocal(vPoint, vKeyPoint, 5, True);
-
-        //  vKeyPoint := vKeyPoint + PointF(FView.Width / 2, FView.Height / 2);
           FShapes[i].MouseMove;
         end;
 
      if FCapturedShape <> nil then
-     begin
-       FCapturedShape.ChangeLockedPoint(vPoint - FStartShapePos + FStartKeyPoint);
+     begin                                        //- FStartShapePos + FStartKeyPoint
+       FCapturedShape.ChangeLockedPoint(vPoint);
        vNeedRepaint := True;
      end;
   end;
@@ -243,7 +237,7 @@ procedure TItemObjecterPresenter.OnModelUpdate(ASender: TObject);
 begin
   FView.Width := FItemObjectModel.Width;
   FView.Height:= FItemObjectModel.Height;
-  FView.Left:= FItemObjectModel.Position.X;
+  FView.Left := FItemObjectModel.Position.X;
   FView.Top := FItemObjectModel.Position.Y;
 end;
 

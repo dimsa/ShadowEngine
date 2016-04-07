@@ -157,13 +157,13 @@ begin
            (vCenterToPoint >= vCircle.Radius - (ADistance))
           then
           begin
-            vArcTan := ArcTan2(-ATestPosition.Y + vCircle.Y, - ATestPosition.X + vCircle.X );
+            vArcTan := ArcTan2(ATestPosition.Y - vCircle.Y, ATestPosition.X - vCircle.X );
             AKeyPoint := PointF(vCircle.X + vCenterToRadius * Cos(vArcTan), vCenterToRadius * Sin(vArcTan) + vCircle.Y);
 
             if ALock then
             begin
               FLockedIndex := 1;
-              FLockedPoint := AKeyPoint;
+              FLockedPoint := AKeyPoint - vCircle.Center;
             end;
 
             Exit(True);
@@ -176,7 +176,7 @@ begin
             if ALock then
             begin
               FLockedIndex := 0;
-              FLockedPoint := AKeyPoint;
+              FLockedPoint := AKeyPoint - vCircle.Center;
             end;
 
             Exit(True);
@@ -233,7 +233,7 @@ end;
 procedure TItemShaperPresenter.Repaint(ABmp: TBitmap);
 begin
   ABmp.Canvas.BeginScene();
-  FItemShapeModel.Figure.TempTranslate(PointF(Abmp.Width / 2, ABmp.Height / 2));
+  FItemShapeModel.Figure.TempTranslate(PointF(ABmp.Width / 2, ABmp.Height / 2));
   FItemShapeModel.Figure.Draw(ABmp.Canvas, FColor{TAlphaColorRec.Aqua});
 
   if FLockedIndex >= 0 then

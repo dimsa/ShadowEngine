@@ -147,34 +147,45 @@ begin
    vPr := 5;
    ACanvas.Fill.Color := AColor;
 
+   ACanvas.FillEllipse(
+     RectF(
+     FTempCenter.X + APoint.X - vPr,
+     FTempCenter.Y + APoint.Y - vPr,
+     FTempCenter.X + APoint.X + vPr,
+     FTempCenter.Y + APoint.Y + vPr),
+     0.75
+   );
 
-//   ACanvas.FillEllipse(
+//    ACanvas.FillEllipse(
 //     RectF(
-//     FTempCenter.X + APoint.X - vPr,
-//     FTempCenter.Y + APoint.Y - vPr,
-//     FTempCenter.X + APoint.X + vPr,
-//     FTempCenter.Y + APoint.Y + vPr),
-//     0.75
+//       APoint.X - vPr,
+//       APoint.Y - vPr,
+//       APoint.X + vPr,
+//       APoint.Y + vPr),
+//       0.75
 //   );
 
-   case FKind  of
-    cfCircle: ACanvas.FillEllipse(
-     RectF(
-       FTempCenter.X + FData[0].X - APoint.X - vPr,
-       FTempCenter.Y + FData[0].Y - APoint.Y - vPr,
-       FTempCenter.X + FData[0].X - APoint.X + vPr,
-       FTempCenter.Y + FData[0].Y - APoint.Y + vPr),
-       0.75
-   );
-    cfPoly: ACanvas.FillEllipse(
-     RectF(
-       FTempCenter.X + APoint.X - vPr,
-       FTempCenter.Y + APoint.Y - vPr,
-       FTempCenter.X + APoint.X + vPr,
-       FTempCenter.Y + APoint.Y + vPr),
-       0.75
-   );
-   end;
+//   case FKind  of
+//    cfCircle: ACanvas.FillEllipse(
+//     RectF(
+//       APoint.X - vPr,
+//       APoint.Y - vPr,
+//       APoint.X + vPr,
+//       APoint.Y + vPr),
+//       0.75
+//   );
+//    cfPoly: ACanvas.FillEllipse(
+//     RectF(
+//       FTempCenter.X + APoint.X - vPr,
+//       FTempCenter.Y + APoint.Y - vPr,
+//       FTempCenter.X + APoint.X + vPr,
+//       FTempCenter.Y + APoint.Y + vPr),
+//       0.75
+//   );
+//   end;
+
+//   + FData[0].X
+//    + FData[0].Y
 end;
 
 function TNewFigure.FastIntersectWith(const AFigure: TNewFigure): Boolean;
