@@ -11,15 +11,18 @@ uses
 type
   TItemShaperPresenterFriend = class(TItemShaperPresenter);
 
+  TCaptureType = (ctNone, ctFigure, ctKeyPoint);
+
   TItemObjecterPresenter = class(TItemBasePresenter)
   private
     FBmp: TBitmap; // Picture of object with Shapes
     FShapes: TList<TItemShaperPresenterFriend>;
     FItemObjectModel: TItemObjectModel;
     FIsShapeVisible: Boolean;
+    FCaptureType: TCaptureType;
+    FStartCapturePoint: TPointF;
+    FLastTranslate: TPointF;
     FCapturedShape: TItemShaperPresenterFriend;
-    FStartShapePos: TPointF;
-    FStartKeyPoint: TPointF;
     FSelectedShape: TItemShaperPresenterFriend;
     function GetHeight: Integer;
     function GetPosition: TPoint;
@@ -110,6 +113,7 @@ constructor TItemObjecterPresenter.Create(const AItemView: IItemView; const AIte
 begin
   inherited Create(AItemView);
 
+  FCaptureType := ctNone;
   FBmp := TBitmap.Create;
   FItemObjectModel := AItemObjectModel;
   FItemObjectModel.UpdateHander := OnModelUpdate;
@@ -162,21 +166,42 @@ begin
 
   vPoint := FView.MousePos - PointF(FView.Width / 2, FView.Height / 2);
   if FIsShapeVisible then
+  begin
+    // Test on capturing KeyPoints of figures
     for i := 0 to FShapes.Count - 1 do
       if FShapes[i].KeyPointLocal(vPoint, vKeyPoint, 5, True) then
-//      if FShapes[i].IsPointIn(vPoint) then
       begin
         FSelectedShape := FShapes[i];
         FShapes[i].MouseDown;
-        FStartShapePos := vPoint;
-        FStartKeyPoint := vKeyPoint;
         FCapturedShape := FShapes[i];
+        FCaptureType := ctKeyPoint;
+        FStartCapturePoint := vPoint;
 
         RepaintShapes;
         Exit;
       end;
 
+    // Test on capturing Figure
+    for i := 0 to FShapes.Count - 1 do
+      if FShapes[i].IsPointIn(vPoint) then
+      begin
+        FSelectedShape := FShapes[i];
+        FShapes[i].MouseDown;
+        FCapturedShape := FShapes[i];
+        FCaptureType := ctFigure;
+        FStartCapturePoint := vPoint;
+
+        RepaintShapes;
+        Exit;
+      end;
+
+      FLastTranslate := TPointF.Zero;
+      FStartCapturePoint := TPointF.Zero;
+  end;
+
   FCapturedShape := nil;
+  FSelectedShape := nil;
+  FCaptureType := ctNone;
   if Assigned(FOnMouseDown) then
     FOnMouseDown(Self);
 end;
@@ -192,9 +217,9 @@ begin
   vNeedRepaint := False;
   vPoint := FView.MousePos - PointF(FView.Width / 2, FView.Height / 2);
 
-  if FIsShapeVisible then
-  begin
-    if FCapturedShape = nil then
+  case FCaptureType of
+    ctNone:
+    begin
       for i := 0 to FShapes.Count - 1 do
         //if FShapes[i].IsPointIn(vPoint) then
         if FShapes[i].KeyPointLocal(vPoint, vKeyPoint, 5, True) then
@@ -202,12 +227,18 @@ begin
           vNeedRepaint := True;
           FShapes[i].MouseMove;
         end;
-
-     if FCapturedShape <> nil then
-     begin                                        //- FStartShapePos + FStartKeyPoint
-       FCapturedShape.ChangeLockedPoint(vPoint);
-       vNeedRepaint := True;
-     end;
+    end;
+    ctFigure:
+    begin
+      FCapturedShape.TranslateFigure(- FLastTranslate + vPoint - FStartCapturePoint );
+      FLastTranslate := vPoint - FStartCapturePoint;
+      vNeedRepaint := True;
+    end;
+    ctKeyPoint:
+    begin
+      FCapturedShape.ChangeLockedPoint(vPoint);
+      vNeedRepaint := True;
+    end;
   end;
 
   if vNeedRepaint then
@@ -229,6 +260,11 @@ begin
         FShapes[i].MouseUp;
 
   FCapturedShape := nil;
+  FCaptureType := ctNone;
+  FLastTranslate := TPointF.Zero;
+
+  RepaintShapes;
+
   if Assigned(FOnMouseUp) then
     FOnMouseUp(Self)
 end;

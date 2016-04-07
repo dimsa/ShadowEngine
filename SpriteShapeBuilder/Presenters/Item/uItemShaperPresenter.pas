@@ -30,6 +30,7 @@ type
     function KeyPointLocal(const ATestPosition: TPointF; out AKeyPoint: TPointF;
       const ADistance: Double; const ALock: Boolean): Boolean;
     procedure ChangeLockedPoint(const ANewPoint: TPointF);
+    procedure TranslateFigure(const ATranslate: TPointF);
     procedure Repaint(ABmp: TBitmap);
   public
     procedure AddPoint;
@@ -255,6 +256,29 @@ end;
 procedure TItemShaperPresenter.SetWidth(const Value: Integer);
 begin
 
+end;
+
+procedure TItemShaperPresenter.TranslateFigure(const ATranslate: TPointF);
+var
+  vFigure: TNewFigure;
+  vCircle: TCircle;
+  vPoly: TPolygon;
+begin
+   vFigure := FItemShapeModel.Figure;
+   case vFigure.Kind of
+     TNewFigure.cfCircle:
+     begin
+       vCircle := vFigure.AsCircle;
+       Translate(vCircle, ATranslate);
+       vFigure.SetData(vCircle);
+     end;
+     TNewFigure.cfPoly:
+     begin
+       vPoly := vFigure.AsPoly;
+       Translate(vPoly, ATranslate);
+       vFigure.SetData(vPoly);
+     end;
+   end;
 end;
 
 end.
