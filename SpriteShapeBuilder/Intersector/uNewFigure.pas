@@ -26,7 +26,7 @@ type
     property TempMaxRadius: Single read FTempMaxRadius; // Временный радиус. Т.е. с учетом масштаба
     property AsCircle: uIntersectorClasses.TCircle read GetCircle;
     property AsPoly: TPolygon read GetPoly;
-    property TempCenter: TPointF read FTempCenter write FTempCenter;
+    property TempCenter: TPointF read FTempCenter;
 
     procedure Reset; // Сбрасывает темповые координат на начальные.
 //    procedure SetData(const vData: TArray<TPointF>); overload;// Трактует данные в зависимости от своего типа
@@ -147,34 +147,34 @@ begin
    vPr := 5;
    ACanvas.Fill.Color := AColor;
 
-   ACanvas.FillEllipse(
-     RectF(
-     FTempCenter.X + APoint.X - vPr,
-     FTempCenter.Y + APoint.Y - vPr,
-     FTempCenter.X + APoint.X + vPr,
-     FTempCenter.Y + APoint.Y + vPr),
-     0.75
-   );
 
-//   case FKind  of
-//    cfCircle:
 //   ACanvas.FillEllipse(
 //     RectF(
-//     FTempCenter.X - APoint.X - vPr,
-//     FTempCenter.Y - APoint.Y - vPr,
-//     FTempCenter.X - APoint.X + vPr,
-//     FTempCenter.Y - APoint.Y + vPr),
+//     FTempCenter.X + APoint.X - vPr,
+//     FTempCenter.Y + APoint.Y - vPr,
+//     FTempCenter.X + APoint.X + vPr,
+//     FTempCenter.Y + APoint.Y + vPr),
 //     0.75
 //   );
-//    cfPoly: ACanvas.FillEllipse(
-//     RectF(
-//       APoint.X - vPr,
-//       APoint.Y - vPr,
-//       APoint.X + vPr,
-//       APoint.Y + vPr),
-//     0.75
-//   );
-//   end;
+
+   case FKind  of
+    cfCircle: ACanvas.FillEllipse(
+     RectF(
+       FTempCenter.X + FData[0].X - APoint.X - vPr,
+       FTempCenter.Y + FData[0].Y - APoint.Y - vPr,
+       FTempCenter.X + FData[0].X - APoint.X + vPr,
+       FTempCenter.Y + FData[0].Y - APoint.Y + vPr),
+       0.75
+   );
+    cfPoly: ACanvas.FillEllipse(
+     RectF(
+       FTempCenter.X + APoint.X - vPr,
+       FTempCenter.Y + APoint.Y - vPr,
+       FTempCenter.X + APoint.X + vPr,
+       FTempCenter.Y + APoint.Y + vPr),
+       0.75
+   );
+   end;
 end;
 
 function TNewFigure.FastIntersectWith(const AFigure: TNewFigure): Boolean;

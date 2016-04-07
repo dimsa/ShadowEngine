@@ -83,10 +83,9 @@ begin
       begin
         vD := Distance(vCircle.Center, ANewPoint); //Distance(FData[0], FLockedPoint) - Distance(FData[0], ANewPoint);
         vCircle.Radius := vD;
-        vFigure.SetData(vCircle);
-//        FData[FLockedIndex] := PointF(vD, vD);
       end;
 
+      vFigure.SetData(vCircle);
     end;
   end;
 end;
@@ -158,7 +157,7 @@ begin
            (vCenterToPoint >= vCircle.Radius - (ADistance))
           then
           begin
-            vArcTan := ArcTan2(ATestPosition.Y - vCircle.Y, ATestPosition.X - vCircle.X );
+            vArcTan := ArcTan2(-ATestPosition.Y + vCircle.Y, - ATestPosition.X + vCircle.X );
             AKeyPoint := PointF(vCircle.X + vCenterToRadius * Cos(vArcTan), vCenterToRadius * Sin(vArcTan) + vCircle.Y);
 
             if ALock then
@@ -210,7 +209,7 @@ end;
 procedure TItemShaperPresenter.MouseDown;
 begin
   inherited;
-  FColor := Random(MaxLongInt);
+//  FColor := Random(MaxLongInt*2);
 
 
   if Assigned(FOnMouseDown) then
