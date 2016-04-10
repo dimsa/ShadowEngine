@@ -4,8 +4,8 @@ interface
 
 uses
   System.Types, System.UITypes, System.Math,  System.Generics.Collections,
-  {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.SysUtils, System.Classes,
-  FMX.Dialogs,
+  {$I 'Utils\DelphiCompatability.inc'}
+  System.SysUtils, System.Classes, FMX.Dialogs,
   uEngine2DObject, uEngine2DText, uEngine2DSprite, uEngineFormatter, uEngine2DShape,
   uIntersectorMethods, uClasses, uEngine2DClasses;
 

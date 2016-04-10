@@ -3,8 +3,7 @@ unit uIntersectorMethods;
 interface
 
 uses
-  System.Types, System.Math,
-  {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
+  System.Types, System.Math, {$I 'Utils\DelphiCompatability.inc'}
   uIntersectorClasses;
 
   function SqrDistance(const APoint1, APoint2: TPointF): Double; overload; // Находит сумму квадратов

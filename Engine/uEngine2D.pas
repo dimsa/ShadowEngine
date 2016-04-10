@@ -12,8 +12,7 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Platform,
-  FMX.Objects, Math, System.SyncObjs,
-  {$IFDEF VER290} System.Math.Vectors, {$ENDIF}
+  FMX.Objects, Math, System.SyncObjs, {$I 'Utils\DelphiCompatability.inc'}
   uClasses, uEngine2DThread, uEngine2DObject, uEngine2DUnclickableObject,
   uEngine2DSprite, uEngine2DText, uEngine2DClasses, uFormatterList, uEngineFormatter,
   uSpriteList, uEngine2DObjectCreator,

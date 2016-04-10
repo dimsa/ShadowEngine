@@ -3,9 +3,9 @@ unit uNewFigure;
 interface
 
 uses
-  System.Generics.Collections, System.Types, System.Classes,
-  {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math,
-  uIntersectorClasses, uIntersectorMethods, FMX.Objects, System.UITypes, FMX.Graphics;
+  System.Generics.Collections, System.Types, System.Classes, {$I 'Utils\DelphiCompatability.inc'}
+  System.Math, uIntersectorClasses, uIntersectorMethods, FMX.Objects,
+  System.UITypes, FMX.Graphics;
 
 type
   TNewFigure = class
