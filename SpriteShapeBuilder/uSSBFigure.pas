@@ -3,7 +3,7 @@ unit uSSBFigure;
 interface
 
 uses
-  System.Types, {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math,
+  System.Types, System.Math, {$I 'Utils\DelphiCompatability.inc'}
   uNewFigure, uIntersectorMethods, System.JSON, System.SysUtils,
   uClasses;
 

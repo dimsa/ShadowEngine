@@ -4,7 +4,7 @@ interface
 
 uses
   System.Generics.Collections, System.Types, System.Classes,
-  {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math,
+  System.Math, {$I 'Utils\DelphiCompatability.inc'}
   uIntersectorClasses, uIntersectorMethods, FMX.Objects, System.UITypes, FMX.Graphics,
   uClasses;
 

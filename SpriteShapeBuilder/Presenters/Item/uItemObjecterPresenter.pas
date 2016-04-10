@@ -4,9 +4,8 @@ interface
 
 uses
   System.Types, System.Generics.Collections, uIntersectorClasses, FMX.Graphics,
-  System.UITypes, FMX.Types, {$IFDEF VER290} System.Math.Vectors,
-  {$ENDIF} System.Math,
-  uItemBasePresenter, uItemShaperPresenter, uIItemView, uSSBModels;
+  System.UITypes, FMX.Types, {$I 'Utils\DelphiCompatability.inc'}
+  System.Math, uItemBasePresenter, uItemShaperPresenter, uIItemView, uSSBModels;
 
 type
   TItemShaperPresenterFriend = class(TItemShaperPresenter);

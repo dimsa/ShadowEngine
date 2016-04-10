@@ -3,9 +3,9 @@ unit uItemShaperPresenter;
 interface
 
 uses
-  System.Types, FMX.Graphics, System.UITypes, {$IFDEF VER290} System.Math.Vectors,
-  {$ENDIF} System.Math,
-  uItemBasePresenter, uIntersectorClasses, uIntersectorMethods, uIItemView, uNewFigure, uSSBModels;
+  System.Types, FMX.Graphics, System.UITypes,  {$I 'Utils\DelphiCompatability.inc'}
+  System.Math, uItemBasePresenter, uIntersectorClasses, uIntersectorMethods,
+  uIItemView, uNewFigure, uSSBModels;
 
 type
   TItemShaperPresenter = class(TItemBasePresenter)

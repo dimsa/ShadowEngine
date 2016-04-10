@@ -3,10 +3,13 @@ unit uClasses;
 interface
 
 uses
-  System.SysUtils, System.Types, {$IFDEF VER290} System.Math.Vectors, {$ENDIF} System.Math, System.UITypes, FMX.Controls,
+  System.SysUtils, System.Types, System.Math, {$I 'Utils\DelphiCompatability.inc'}
+  System.UITypes, FMX.Controls,
   System.JSON;
 
 type
+
+
   TProcedure = procedure of Object;
   TVCLProcedure = procedure(ASender: TObject) of object;
   TItemSelectEvent = procedure (Sender: TObject) of object;
@@ -43,6 +46,7 @@ type
     function Count: Integer;
     procedure Add(const APoint: TPointF);
   end;
+
 
 
   function Random64: Int64;

@@ -3,8 +3,8 @@ unit uSSBModels;
 interface
 
 uses
-  System.Generics.Collections, System.Classes, {$IFDEF VER290} System.Math.Vectors,
-  {$ENDIF} System.Math,
+  System.Generics.Collections, System.Classes, {$I 'Utils\DelphiCompatability.inc'}
+  System.Math,
   FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, FMX.Graphics,
   uNamedList, uClasses, uSSBTypes, uMVPFrameWork, uNewFigure, uIntersectorClasses;
 
