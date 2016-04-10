@@ -13,7 +13,6 @@ type
 //    FShape: TNewFigure;
     FItemShapeModel: TItemShapeModel;
     FColor: TColor;
-    FCapturedPoint: TPointF;
     FLockedIndex: Integer;
     FLockedPoint: TPointF;
     function GetHeight: Integer;

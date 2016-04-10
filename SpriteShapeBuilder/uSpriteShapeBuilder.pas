@@ -4,7 +4,7 @@ interface
 
 uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
-  FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types,
+  FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types, FMX.Graphics,
   System.JSON, FMX.Controls, FMX.Layouts,
   uNamedList, uEasyDevice, uClasses,
   uSSBModels, uView, uSSBTypes, uImagerPresenter, uObjecterPresenter;
@@ -24,10 +24,7 @@ type
     FView: TView;
     FModel: TSSBModel;
     FControllers: array[TSSBStatus] of TImagerPresenter;
-    FSelectedImage: TImage;
-    FLockPoint: Boolean;
     FIsMouseDown: Boolean;
-//    FShaper: TSSBShaperPresenter;
     FObjecter: TObjecterPresenter;
     FImager: TImagerPresenter;
 
@@ -133,10 +130,6 @@ begin
 end;
 
 procedure TSpriteShapeBuilder.Init(const AProgForm: TForm);
-var
-  vDelBtn, vAddCircle, vAddPoly, vSavePrjBtn, vLoadPrjBtn: TCornerButton;
-  i: Integer;
-  iStatus: TSSBStatus;
 begin
   FPanel := TPanel(AProgForm.FindComponent('MainPanel'));
   with FPanel do
@@ -172,15 +165,14 @@ end;
 procedure TSpriteShapeBuilder.LoadProject(const AFileName: string);
 var
   vList: TStringList;
-  vItem: TJSONValue;
-  vObj: TJSONObject;
-  vArr: TJSONArray;
+ // vObj: TJSONObject;
+//  vArr: TJSONArray;
 begin
   vList := TStringList.Create;
   vList.LoadFromFile(AFileName);
 
-  vObj := TJSONObject(TJSONObject.ParseJSONValue(vList.Text));
-  vArr := TJSONArray(vObj.GetValue('Elements'));
+//  vObj := TJSONObject(TJSONObject.ParseJSONValue(vList.Text));
+//  vArr := TJSONArray(vObj.GetValue('Elements'));
 
   vList.Free;
 end;
@@ -207,9 +199,8 @@ end;
 
 function TSpriteShapeBuilder.Serialize: TJSONObject;
 var
-  vObj, vElem: TJSONObject;
+  vObj: TJSONObject;
   vArr: TJSONArray;
-  i: Integer;
 begin
   vObj := TJSONObject.Create;
   vArr := TJSONArray.Create;

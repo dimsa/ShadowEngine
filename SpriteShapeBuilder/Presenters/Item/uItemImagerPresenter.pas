@@ -29,7 +29,7 @@ type
     procedure MouseDown; override;
     procedure MouseUp; override;
     procedure MouseMove; override;
-    constructor Create(const AItemView: IItemView; const AItemImageModel: TItemImageModel);
+    constructor Create(const AItemView: IItemView; const AItemImageModel: TItemImageModel); reintroduce;
   end;
 
 implementation

@@ -93,8 +93,6 @@ begin
 end;
 
 procedure TNewFigure.Draw(ACanvas: TCanvas; AColor: TColor);
-var
-  i: Integer;
 begin
    ACanvas.Fill.Color := AColor;
    case FKind of
@@ -111,8 +109,6 @@ begin
     end;
     cfPoly:
     begin
-//      for i := 0 to High(FTemp) do
-//        FTemp[i] :
       ACanvas.FillPolygon(AsPoly, 0.75);
     end;
   end;

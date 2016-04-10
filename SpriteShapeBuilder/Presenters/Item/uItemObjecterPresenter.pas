@@ -303,12 +303,9 @@ begin
 end;
 
 procedure TItemObjecterPresenter.ShowShapes;
-var
-  i: Integer;
 begin
   FIsShapeVisible := True;
   RepaintShapes;
-
 end;
 
 end.

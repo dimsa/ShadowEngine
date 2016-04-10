@@ -11,28 +11,17 @@ uses
 type
   TView = class(TInterfacedObject, IMainView, IView)
   private
-    FChangeblePanel: TLayout;
     FElements: TDictionary<IItemView, TItemView>;
     FEffect: TGlowEffect;
     FParentTopLeft: TPointFunction;
     FPanel: TPanel;
-    FFormPosition: TPositionFunc;
     FBackground: TImage;
     FSelected: TImage;
     FOpenDialog: TOpenDialog;
-    procedure CopyEvents(const AFromControl: TControl; AToControl: TControl);
+//    procedure CopyEvents(const AFromControl: TControl; AToControl: TControl);
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     function PanelTopLeft: TPointF;
-//    function ParentScreenToClient(const APoint: TPointF): TPointF;
   public
-
-   { property Selected: TImage read FSelected;
-    property Elements: TList<TLinkedImage> read FElements;
-    property ChangeblePanel: TLayout read FChangeblePanel;
-    property Background: TImage read FBackground;
-    property Model: TSSBModel read FModel write SetModel;
-    procedure Update(Sender: TObject);
-    procedure Init(const AProgForm: TForm); // Инициализируем где будут размещатсья элементы   }
     constructor Create(APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
     destructor Destroy; override;
     procedure ClearAndFreeImg;
@@ -63,7 +52,6 @@ end;  }
 function TView.AddElement: IItemView;
 var
   vImg: TItemView;
-  vi: TImage;
 begin
   vImg := TItemView.Create(FPanel, PanelTopLeft);
   FElements.Add(vImg, vImg);
@@ -83,7 +71,7 @@ begin
 
 end;
 
-procedure TView.CopyEvents(const AFromControl: TControl;
+{procedure TView.CopyEvents(const AFromControl: TControl;
   AToControl: TControl);
 begin
   AToControl.OnDragEnter := AFromControl.OnDragEnter;
@@ -112,7 +100,7 @@ begin
   AToControl.OnApplyStyleLookup := AFromControl.OnApplyStyleLookup;
   AToControl.OnGesture := AFromControl.OnGesture;
   AToControl.OnTap := AFromControl.OnTap;
-end;
+end;}
 
 constructor TView.Create(APanel: TPanel; ABackground, ASelected: TImage;
   AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
@@ -129,7 +117,6 @@ end;
 
 destructor TView.Destroy;
 var
-  i: Integer;
   vItem: TPair<IItemView, TItemView>;
 begin
   FEffect.Free;
@@ -179,21 +166,9 @@ begin
 end;
 
 procedure TView.RemoveElement(const AElement: IItemView);
-var
-  i: Integer;
-  vElem: TItemView;
 begin
-//  vElem := ElementByInterface(AElement);
-  FElements.Remove(vElem);
-  vElem.Free;
-  {for i := 0 to FElements.Count - 1 do
-    if IItemView(FElements[i]) = AElement then
-    begin
-      vElem := FElements[i];
-      FElements.Remove(vElem);
-      vElem.Free;
-    end;}
- end;
+  FElements.Remove(AElement);
+end;
 
 procedure TView.SelectElement(const AElement: IItemView);
 begin

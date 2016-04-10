@@ -154,11 +154,6 @@ begin
 end;
 
 procedure TImagerPresenter.MouseMove;
-var
-  vItem: TItemImagerPresenter;
-  vPoint: TPoint;
-  vD: Integer;
-  vTmp: Integer;
 begin
   if (FSelected <> nil) then
       ResizeType(FSelected);

@@ -26,7 +26,6 @@ type
   protected
     FView: IView;
   public
-//    procedure OnModelUpdate(ASender: TObject); virtual;
     constructor Create(const AView: IView); virtual;
     destructor Destroy; override;
   end;

@@ -27,7 +27,7 @@ type
     procedure MouseDown; virtual; abstract;
     procedure MouseUp; virtual; abstract;
     procedure MouseMove; virtual; abstract;
-    constructor Create(const AItemView: IItemView); virtual;
+    constructor Create(const AItemView: IItemView); reintroduce; virtual;
   end;
 
 implementation

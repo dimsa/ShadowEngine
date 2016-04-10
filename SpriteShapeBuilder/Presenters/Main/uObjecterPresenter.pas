@@ -21,7 +21,6 @@ type
   TObjecterPresenter = class(TObjecterPresenterIncapsulator)
   private
     FSelected: TItemObjecterPresenter;
-    FCaptured: TItemObjecterPresenter;
     FCaptureMode: TCaptureMode;
     FIsShapeVisible: Boolean;
     function ResizeType(const AItem: TItemObjecterPresenter): TResizeType;
@@ -183,11 +182,6 @@ begin
 end;
 
 procedure TObjecterPresenter.MouseMove;
-var
-  vItem: TItemObjecterPresenter;
-  vPoint: TPoint;
-  vD: Integer;
-  vTmp: Integer;
 begin
   if (FSelected <> nil) then
       ResizeType(FSelected);
