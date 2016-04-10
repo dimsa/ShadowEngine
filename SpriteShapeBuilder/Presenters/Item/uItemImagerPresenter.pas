@@ -62,13 +62,11 @@ end;
 function TItemImagerPresenter.GetPosition: TPoint;
 begin
   Result := FItemImageModel.Position;
-//  Result := Point(FView.Left, FView.Top);
 end;
 
 function TItemImagerPresenter.GetWidth: Integer;
 begin
   Result := FItemImageModel.Width;
- //FView.Width;
 end;
 
 procedure TItemImagerPresenter.MouseDown;

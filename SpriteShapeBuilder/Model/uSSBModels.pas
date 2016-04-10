@@ -4,7 +4,7 @@ interface
 
 uses
   System.Generics.Collections, System.Classes, {$I 'Utils\DelphiCompatability.inc'}
-  System.Math,
+  System.Math, System.JSON, System.SysUtils,
   FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, FMX.Graphics,
   uNamedList, uClasses, uSSBTypes, uMVPFrameWork, uNewFigure, uIntersectorClasses;
 
@@ -21,6 +21,8 @@ type
     procedure SetData(const AData: TPolygon); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const AData: TRectF); overload;// Быстрое задание ректангла
     procedure SetData(const AData: uIntersectorClasses.TCircle); overload;// Трактует данные в зависимости от своего типа
+    function AsJson: TJSONObject;
+
     constructor CreateCircle(const AUpdateHandler: TNotifyEvent);
     constructor CreatePoly(const AUpdateHandler: TNotifyEvent);
     destructor Destroy; override;
@@ -48,6 +50,7 @@ type
     property Group: string read FGroup write SetGroup;
     property ShapesList: TList<TItemShapeModel> write SetShapesList;
     procedure AddShape(const AShape: TItemShapeModel);
+    function AsJson: TJSONObject;
     function ToJson: string;
     procedure FromJson(const AJson: string);
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
@@ -204,8 +207,24 @@ begin
 end;
 
 function TSSBModel.ToJson: string;
+var
+  vJson: TJSONObject;
+  vObjects: TJSONPair;
+  vObjArr: TJSONArray;
+  i: Integer;
 begin
+  vJson := TJSONObject.Create;
+  vJson.AddPair('ImageFile', 'test.txt');
+  vObjArr := TJSONArray.Create;
 
+  for i := 0 to FElements.Count - 1 do
+  begin
+    vObjArr.AddElement(FElements[i].AsJson);
+  end;
+
+  vJson.AddPair('Objects', vObjArr);
+
+  Result := vJson.ToJSON;
 end;
 
 { TElement }
@@ -214,6 +233,34 @@ procedure TItemObjectModel.AddShape(const AShape: TItemShapeModel);
 begin
   FShapes.Add(AShape);
   RaiseUpdateEvent;
+end;
+
+function TItemObjectModel.AsJson: TJSONObject;
+var
+  i: Integer;
+  vObj,vBody: TJSONObject;
+  vShapes: TJSONArray;
+begin
+  vBody := TJSONObject.Create;
+
+
+  vBody.AddPair('Position',
+    IntToStr(Self.Position.X) + ',' + IntToStr(Self.Position.Y) + ';' +
+    IntToStr(Self.Position.X + Self.Width) + ',' + IntToStr(Self.Position.Y + Self.Height)
+  );
+
+  vShapes := TJSONArray.Create;
+  for i := 0 to FShapes.Count - 1 do
+    vShapes.AddElement(FShapes[i].AsJson);
+
+  vBody.AddPair('Figures', vShapes);
+
+  vObj := TJSONObject.Create;
+  vObj.AddPair('Name', Self.Name);
+  vObj.AddPair('Group', Self.Group);
+  vObj.AddPair('Body', vBody);
+
+  Result := vObj;
 end;
 
 constructor TItemObjectModel.Create(const AUpdateHandler: TNotifyEvent);
@@ -290,6 +337,43 @@ begin
 end;
 
 { TItemShapeModel }
+
+function TItemShapeModel.AsJson: TJSONObject;
+var
+  vObj: TJSONObject;
+  vType: string;
+  vFigure: TNewFigure;
+  i: Integer;
+  vPoly: TPolygon;
+  vArr: TJSONArray;
+  vVal: TJSONString;
+begin
+  vObj := TJSONObject.Create;
+
+  vFigure := Self.FFigure;
+  case vFigure.Kind of
+    TNewFigure.cfCircle: begin
+      vType := 'Circle';
+      vObj.AddPair('Type', vType);
+      vObj.AddPair('Center', Round(vFigure.AsCircle.X).ToString() + ',' + Round(vFigure.AsCircle.Y).ToString());
+      vObj.AddPair('Radius', Round(vFigure.AsCircle.Radius).ToString());
+    end;
+    TNewFigure.cfPoly: begin
+     vType := 'Poly';
+     vObj.AddPair('Type', vType);
+     vArr := TJSONArray.Create;
+     vPoly := vFigure.AsPoly;
+     for i := 0 to High(vPoly) do
+     begin
+       vVal := TJSONString.Create(Round(vPoly[i].X).ToString() + ',' + Round(vPoly[i].Y).ToString());
+       vArr.AddElement(vVal);
+     end;
+     vObj.AddPair('Points', vArr);
+    end;
+  end;
+
+  Result := vObj;
+end;
 
 constructor TItemShapeModel.CreateCircle(const AUpdateHandler: TNotifyEvent);
 begin

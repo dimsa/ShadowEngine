@@ -10,7 +10,6 @@ type
   TItemBasePresenter = class abstract(TPresenter, IItemPresenter, IPresenterEvent)
   protected
     FView: IItemView;
-   // FModel: TSSBModel;
     FOnMouseDown, FOnMouseUp, FOnMouseMove: TNotifyEvent;
     procedure SetOnMouseDown(AHandler: TNotifyEvent); virtual;
     function GetOnMouseDown: TNotifyEvent; virtual;

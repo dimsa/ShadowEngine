@@ -115,8 +115,12 @@ begin
 end;
 
 procedure TSpriteShapeBuilder.DoSaveProject(ASender: TObject);
+var
+  s: string;
 begin
+  s := FModel.ToJson;
   SaveProject('JSONoutput.txt');
+
 end;
 
 function TSpriteShapeBuilder.FormTopLeft: TPointF;
@@ -183,18 +187,22 @@ begin
 end;
 
 procedure TSpriteShapeBuilder.SaveForEngine(const AFileName: string);
+var
+  vS: String;
+  vList: TStringList;
 begin
-
+  vList := TStringList.Create;
+  vS := FModel.ToJson;
+  vList.Add(vS);
+  vList.SaveToFile(AFileName);
+  vList.Free;
 end;
 
 procedure TSpriteShapeBuilder.SaveProject(const AFileName: string);
 var
   vList: TStringList;
 begin
-  vList := TStringList.Create;
-  vList.Add(Self.Serialize.ToJSON);
-  vList.SaveToFile(AFileName);
-  vList.Free;
+
 end;
 
 function TSpriteShapeBuilder.Serialize: TJSONObject;
