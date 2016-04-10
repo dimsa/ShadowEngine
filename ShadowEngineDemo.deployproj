@@ -3,407 +3,133 @@
     <ProjectExtensions>
         <ProjectFileVersion>12</ProjectFileVersion>
     </ProjectExtensions>
-    <ItemGroup Condition="'$(Platform)'=='iOSDevice32'"/>
-    <ItemGroup Condition="'$(Platform)'=='Android'">
-        <DeployFile Include="Source\icons\96.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-xhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\icons\96.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-xhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\release\mips\libnative-activity.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\library\lib\mips\</RemoteDir>
-            <RemoteName>libShadowEngineDemo.so</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
-            <RemoteName>images.load</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\release\x86\libnative-activity.so" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\library\lib\x86\</RemoteDir>
-            <RemoteName>libShadowEngineDemo.so</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\splashes\splash640x480.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-large\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\splashes\splash470x320.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-normal\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\splashes\splash640x480.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-large\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\splashes\splash470x320.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-normal\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\release\armeabi\libnative-activity.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\library\lib\armeabi\</RemoteDir>
-            <RemoteName>libShadowEngineDemo.so</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\icons\144.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-xxhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\library\lib\armeabi\</RemoteDir>
-            <RemoteName>libShadowEngineDemo.so</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\splashes\splash960x720.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-xlarge\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="D:\Dropbox\ShadowEngine\Android\Release\classes.dex" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\classes\</RemoteDir>
-            <RemoteName>classes.dex</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\icons\48.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-mdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Android\Debug\libShadowEngineDemo.so" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>libShadowEngineDemo.so</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-            <Required>True</Required>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\debug\mips\libnative-activity.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\library\lib\mips\</RemoteDir>
-            <RemoteName>ShadowEngineDemo.exe</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\debug\mips\libnative-activity.so" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\library\lib\mips\</RemoteDir>
-            <RemoteName>libShadowEngineDemo.so</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Android\Release\styles.xml" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\values\</RemoteDir>
-            <RemoteName>styles.xml</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
+    <ItemGroup Condition="'$(Platform)'=='iOSDevice64'"/>
+    <ItemGroup Condition="'$(Platform)'=='Win64'">
         <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>res.png</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\release\armeabi\libnative-activity.so" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\library\lib\armeabi\</RemoteDir>
-            <RemoteName>libShadowEngineDemo.so</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\debug\x86\libnative-activity.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\library\lib\x86\</RemoteDir>
-            <RemoteName>ShadowEngineDemo.exe</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\release\mips\libnative-activity.so" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\library\lib\mips\</RemoteDir>
-            <RemoteName>libShadowEngineDemo.so</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Android\Debug\AndroidManifest.xml" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>AndroidManifest.xml</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\splashes\splash960x720.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-xlarge\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Android\Debug\styles.xml" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\res\values\</RemoteDir>
-            <RemoteName>styles.xml</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Android\Release\AndroidManifest.xml" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>AndroidManifest.xml</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
-            <RemoteName>back.jpg</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Android\Release\splash_image_def.xml" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\drawable\</RemoteDir>
-            <RemoteName>splash_image_def.xml</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\icons\36.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-ldpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\splashes\splash426x320.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-small\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
-            <RemoteName>formatters.secss</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Android\Debug\splash_image_def.xml" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\res\drawable\</RemoteDir>
-            <RemoteName>splash_image_def.xml</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="D:\Dropbox\ShadowEngine\Android\Debug\classes.dex" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\classes\</RemoteDir>
-            <RemoteName>classes.dex</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
-            <RemoteName>back.jpg</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\icons\48.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-mdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>formatters.secss</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\icons\36.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-ldpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>res.png</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\release\x86\libnative-activity.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\library\lib\x86\</RemoteDir>
-            <RemoteName>libShadowEngineDemo.so</RemoteName>
-            <Operation>1</Operation>
+        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>back.jpg</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\library\lib\armeabi\</RemoteDir>
-            <RemoteName>ShadowEngineDemo.exe</RemoteName>
-            <Operation>1</Operation>
+        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>images.load</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Source\splashes\splash426x320.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-small\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <Operation>1</Operation>
+        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>formatters.secss</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\debug\x86\libnative-activity.so" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\library\lib\x86\</RemoteDir>
-            <RemoteName>libShadowEngineDemo.so</RemoteName>
-            <Operation>1</Operation>
+        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>back.jpg</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\icons\144.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-xxhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Android\Release\libShadowEngineDemo.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>libShadowEngineDemo.so</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-            <Required>True</Required>
         </DeployFile>
         <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>images.load</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="D:\Dropbox\enigineDemo\Android\Debug\classes.dex" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\classes\</RemoteDir>
-            <RemoteName>classes.dex</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\icons\72.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-hdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\icons\72.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-hdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
     </ItemGroup>
+    <ItemGroup Condition="'$(Platform)'=='iOSDevice32'"/>
     <ItemGroup Condition="'$(Platform)'=='Win32'">
-        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>images.load</RemoteName>
+            <RemoteName>res.png</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Utils\DelphiCompatability.inc" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>DelphiCompatability.inc</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>formatters.secss</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Win32\Debug\ShadowEngineDemo.exe" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>ShadowEngineDemo.exe</RemoteName>
+            <DeployClass>ProjectOutput</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
+        </DeployFile>
+        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>res.png</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>back.jpg</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -412,99 +138,17 @@
         <DeployFile Include="Win32\Release\ShadowEngineDemo.exe" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>ShadowEngineDemo.exe</RemoteName>
+            <DeployClass>ProjectOutput</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="Win32\Debug\ShadowEngineDemo.exe" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>ShadowEngineDemo.exe</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-            <Required>True</Required>
-        </DeployFile>
-        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>res.png</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>back.jpg</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>formatters.secss</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>back.jpg</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>formatters.secss</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>res.png</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>images.load</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-    </ItemGroup>
-    <ItemGroup Condition="'$(Platform)'=='iOSDevice64'"/>
-    <ItemGroup Condition="'$(Platform)'=='Win64'">
         <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>images.load</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>res.png</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>back.jpg</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -513,6 +157,7 @@
         <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>formatters.secss</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -521,22 +166,7 @@
         <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>back.jpg</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>formatters.secss</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>res.png</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -545,6 +175,7 @@
         <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>images.load</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -552,57 +183,19 @@
         </DeployFile>
     </ItemGroup>
     <ItemGroup Condition="'$(Platform)'=='OSX32'">
-        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
-            <RemoteName>images.load</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
+            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
             <RemoteName>res.png</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
-            <RemoteName>back.jpg</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
-            <RemoteName>formatters.secss</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
-            <RemoteName>back.jpg</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
+            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
             <RemoteName>formatters.secss</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
-            <RemoteName>res.png</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -611,64 +204,535 @@
         <DeployFile Include="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib">
             <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
             <RemoteName>libcgunwind.1.0.dylib</RemoteName>
+            <DeployClass>DependencyModule</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
-            <RemoteName>images.load</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-    </ItemGroup>
-    <ItemGroup Condition="'$(Platform)'=='iOSSimulator'">
-        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
-            <RemoteName>images.load</RemoteName>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
             <RemoteName>res.png</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\Redist\iossim32\libcgunwind.1.0.dylib">
-            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
-            <RemoteName>libcgunwind.1.0.dylib</RemoteName>
-            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
             <RemoteName>back.jpg</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
+            <RemoteName>images.load</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
             <RemoteName>formatters.secss</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
             <RemoteName>back.jpg</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
+            <RemoteName>images.load</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+    </ItemGroup>
+    <ItemGroup Condition="'$(Platform)'=='Android'">
+        <DeployFile Include="D:\Dropbox\ShadowEngine\Android\Release\classes.dex" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\classes\</RemoteDir>
+            <RemoteName>classes.dex</RemoteName>
+            <DeployClass>AndroidClassesDexFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\icons\48.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-mdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon48</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android\Release\splash_image_def.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\drawable\</RemoteDir>
+            <RemoteName>splash_image_def.xml</RemoteName>
+            <DeployClass>AndroidSplashImageDef</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>res.png</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\release\mips\libnative-activity.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\library\lib\mips\</RemoteDir>
+            <RemoteName>libShadowEngineDemo.so</RemoteName>
+            <DeployClass>AndroidLibnativeMipsFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\icons\72.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-hdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon72</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\icons\144.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-xxhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon144</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\splashes\splash470x320.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-normal\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage470</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="D:\Dropbox\enigineDemo\Android\Debug\classes.dex" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\classes\</RemoteDir>
+            <RemoteName>classes.dex</RemoteName>
+            <DeployClass>AndroidClassesDexFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\splashes\splash640x480.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-large\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage640</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>formatters.secss</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Utils\DelphiCompatability.inc" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>DelphiCompatability.inc</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\debug\mips\libnative-activity.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\library\lib\mips\</RemoteDir>
+            <RemoteName>libShadowEngineDemo.so</RemoteName>
+            <DeployClass>AndroidLibnativeMipsFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\icons\36.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-ldpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon36</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android\Debug\splash_image_def.xml" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\res\drawable\</RemoteDir>
+            <RemoteName>splash_image_def.xml</RemoteName>
+            <DeployClass>AndroidSplashImageDef</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\release\armeabi\libnative-activity.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\library\lib\armeabi\</RemoteDir>
+            <RemoteName>libShadowEngineDemo.so</RemoteName>
+            <DeployClass>AndroidLibnativeArmeabiFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\icons\72.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-hdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon72</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\splashes\splash960x720.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-xlarge\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage960</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android\Debug\AndroidManifest.xml" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>AndroidManifest.xml</RemoteName>
+            <DeployClass>ProjectAndroidManifest</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\library\lib\armeabi\</RemoteDir>
+            <RemoteName>libShadowEngineDemo.so</RemoteName>
+            <DeployClass>AndroidLibnativeArmeabiFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\debug\mips\libnative-activity.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\library\lib\mips\</RemoteDir>
+            <RemoteName>ShadowEngineDemo.exe</RemoteName>
+            <DeployClass>AndroidLibnativeMipsFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>res.png</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\debug\x86\libnative-activity.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\library\lib\x86\</RemoteDir>
+            <RemoteName>ShadowEngineDemo.exe</RemoteName>
+            <DeployClass>AndroidLibnativeX86File</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>back.jpg</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\splashes\splash426x320.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-small\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage426</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>images.load</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android\Release\styles.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\values\</RemoteDir>
+            <RemoteName>styles.xml</RemoteName>
+            <DeployClass>AndroidSplashStyles</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\splashes\splash426x320.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-small\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage426</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\library\lib\armeabi\</RemoteDir>
+            <RemoteName>ShadowEngineDemo.exe</RemoteName>
+            <DeployClass>AndroidLibnativeArmeabiFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>formatters.secss</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>back.jpg</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android\Release\libShadowEngineDemo.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\library\lib\armeabi-v7a\</RemoteDir>
+            <RemoteName>libShadowEngineDemo.so</RemoteName>
+            <DeployClass>ProjectOutput</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\release\x86\libnative-activity.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\library\lib\x86\</RemoteDir>
+            <RemoteName>libShadowEngineDemo.so</RemoteName>
+            <DeployClass>AndroidLibnativeX86File</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\release\mips\libnative-activity.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\library\lib\mips\</RemoteDir>
+            <RemoteName>libShadowEngineDemo.so</RemoteName>
+            <DeployClass>AndroidLibnativeMipsFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android\Debug\libShadowEngineDemo.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\library\lib\armeabi-v7a\</RemoteDir>
+            <RemoteName>libShadowEngineDemo.so</RemoteName>
+            <DeployClass>ProjectOutput</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
+        </DeployFile>
+        <DeployFile Include="Android\Debug\classes.dex" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\classes\</RemoteDir>
+            <RemoteName>classes.dex</RemoteName>
+            <DeployClass>AndroidClassesDexFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\icons\96.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-xhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon96</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\release\armeabi\libnative-activity.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\library\lib\armeabi\</RemoteDir>
+            <RemoteName>libShadowEngineDemo.so</RemoteName>
+            <DeployClass>AndroidLibnativeArmeabiFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android\Debug\styles.xml" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\res\values\</RemoteDir>
+            <RemoteName>styles.xml</RemoteName>
+            <DeployClass>AndroidSplashStyles</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\icons\48.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-mdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon48</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\splashes\splash470x320.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-normal\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage470</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\release\x86\libnative-activity.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\library\lib\x86\</RemoteDir>
+            <RemoteName>libShadowEngineDemo.so</RemoteName>
+            <DeployClass>AndroidLibnativeX86File</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="D:\Dropbox\ShadowEngine\Android\Debug\classes.dex" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\classes\</RemoteDir>
+            <RemoteName>classes.dex</RemoteName>
+            <DeployClass>AndroidClassesDexFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\icons\144.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-xxhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon144</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\splashes\splash960x720.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-xlarge\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage960</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>images.load</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\debug\x86\libnative-activity.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\library\lib\x86\</RemoteDir>
+            <RemoteName>libShadowEngineDemo.so</RemoteName>
+            <DeployClass>AndroidLibnativeX86File</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\splashes\splash640x480.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-large\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage640</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\icons\96.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-xhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon96</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android\Release\AndroidManifest.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>AndroidManifest.xml</RemoteName>
+            <DeployClass>ProjectAndroidManifest</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Source\icons\36.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-ldpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon36</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+    </ItemGroup>
+    <ItemGroup Condition="'$(Platform)'=='iOSSimulator'">
+        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>res.png</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -677,7 +741,26 @@
         <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
             <RemoteName>formatters.secss</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\Redist\iossim32\libcgunwind.1.0.dylib">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>libcgunwind.1.0.dylib</RemoteName>
+            <DeployClass>DependencyModule</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\Redist\iossimulator\libcgunwind.1.0.dylib">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>libcgunwind.1.0.dylib</RemoteName>
+            <DeployClass>DependencyModule</DeployClass>
+            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -685,7 +768,53 @@
         <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
             <RemoteName>res.png</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>back.jpg</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>images.load</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>formatters.secss</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>back.jpg</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\Redist\iossimulator\libPCRE.dylib">
+            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
+            <RemoteName>libPCRE.dylib</RemoteName>
+            <DeployClass>DependencyModule</DeployClass>
+            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -693,6 +822,7 @@
         <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
             <RemoteName>images.load</RemoteName>
+            <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>

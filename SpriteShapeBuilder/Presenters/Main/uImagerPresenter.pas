@@ -24,7 +24,7 @@ type
   private
     FSelected: TItemImagerPresenter;
     FCaptureMode: TCaptureMode; 
-
+    FResizeType: TResizeType;
     FItems: TDictionary<TItemImagerPresenter, IItemView>;
     // Методы на клик
     procedure DoMouseDown(ASender: TObject);
@@ -147,9 +147,14 @@ begin
 
     Captured := FSelected;
     if ResizeType(FSelected) = TResizeType.rtCenter then
-      FCaptureMode := TCaptureMode.cmMove
-    else
-      FCaptureMode := TCaptureMode.cmResize
+    begin
+      FCaptureMode := TCaptureMode.cmMove;
+      FResizeType := rtCenter;
+    end
+    else begin
+      FCaptureMode := TCaptureMode.cmResize ;
+      FResizeType := ResizeType(Captured);
+    end;
   end;
 end;
 
@@ -165,7 +170,7 @@ begin
         Captured.Position := ElementStart.TopLeft - MouseStart + View.GetMousePos;
       if FCaptureMode = TCaptureMode.cmResize then
       begin
-        case ResizeType(Captured) of
+        case FResizeType of
           TResizeType.rtEW: begin
             Captured.Width := ElementStart.Width - MouseStart.X + View.GetMousePos.X;
           end;
@@ -191,6 +196,7 @@ procedure TImagerPresenter.MouseUp;
 begin
   Captured := nil;
   FCaptureMode := cmNone;
+  FResizeType := rtNone;
   IsMouseDowned := False;
 end;
 

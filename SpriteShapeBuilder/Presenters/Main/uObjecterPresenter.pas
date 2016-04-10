@@ -22,6 +22,7 @@ type
   private
     FSelected: TItemObjecterPresenter;
     FCaptureMode: TCaptureMode;
+    FResizeType: TResizeType;
     FIsShapeVisible: Boolean;
     function ResizeType(const AItem: TItemObjecterPresenter): TResizeType;
   protected
@@ -175,9 +176,14 @@ begin
 
     Captured := FSelected;
     if ResizeType(FSelected) = TResizeType.rtCenter then
-      FCaptureMode := TCaptureMode.cmMove
-    else
-      FCaptureMode := TCaptureMode.cmResize
+    begin
+      FCaptureMode := TCaptureMode.cmMove;
+      FResizeType := TResizeType.rtCenter;
+    end
+    else begin
+      FCaptureMode := TCaptureMode.cmResize;
+      FResizeType := ResizeType(Captured);
+    end;
   end;
 end;
 
@@ -193,7 +199,7 @@ begin
         Captured.Position := ElementStart.TopLeft - MouseStart + View.GetMousePos;
       if FCaptureMode = TCaptureMode.cmResize then
       begin
-        case ResizeType(Captured) of
+        case FResizeType of
           TResizeType.rtEW: begin
             Captured.Width := ElementStart.Width - MouseStart.X + View.GetMousePos.X;
           end;
@@ -218,6 +224,7 @@ procedure TObjecterPresenter.MouseUp;
 begin
   Captured := nil;
   FCaptureMode := cmNone;
+  FResizeType := rtNone;
   IsMouseDowned := False;
 end;
 
