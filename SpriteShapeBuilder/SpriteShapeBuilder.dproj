@@ -285,14 +285,12 @@
             <FormType>fmx</FormType>
         </DCCReference>
         <DCCReference Include="uSpriteShapeBuilder.pas"/>
-        <DCCReference Include="uSSBElement.pas"/>
         <DCCReference Include="Utils\uNamedList.pas"/>
         <DCCReference Include="Utils\uClasses.pas"/>
         <DCCReference Include="Utils\uEasyDevice.pas"/>
         <DCCReference Include="Intersector\uIntersectorClasses.pas"/>
         <DCCReference Include="Intersector\uIntersectorMethods.pas"/>
         <DCCReference Include="Intersector\uNewFigure.pas"/>
-        <DCCReference Include="uSSBFigure.pas"/>
         <DCCReference Include="SSBOptionsForm.pas">
             <Form>OptionsForm</Form>
             <FormType>fmx</FormType>

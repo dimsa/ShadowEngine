@@ -6,7 +6,7 @@ uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types,
   System.JSON, FMX.Controls, FMX.Layouts,
-  uSSBElement, uNamedList, uEasyDevice, uSSBFigure, uClasses,
+  uNamedList, uEasyDevice, uClasses,
   uSSBModels, uView, uSSBTypes, uImagerPresenter, uObjecterPresenter;
 
 type
@@ -24,7 +24,6 @@ type
     FView: TView;
     FModel: TSSBModel;
     FControllers: array[TSSBStatus] of TImagerPresenter;
-    FSelectedElement: TSSBElement;
     FSelectedImage: TImage;
     FLockPoint: Boolean;
     FIsMouseDown: Boolean;
@@ -90,9 +89,6 @@ begin
 end;
 
 destructor TSpriteShapeBuilder.Destroy;
-var
-  vSSBElement: TSSBElement;
-  vImg: TImage;
 begin
   FView.Free;
   FImager.Free;
@@ -179,21 +175,12 @@ var
   vItem: TJSONValue;
   vObj: TJSONObject;
   vArr: TJSONArray;
-  vSSB: TSSBElement;
 begin
   vList := TStringList.Create;
   vList.LoadFromFile(AFileName);
 
   vObj := TJSONObject(TJSONObject.ParseJSONValue(vList.Text));
-
   vArr := TJSONArray(vObj.GetValue('Elements'));
-
-  for vItem in vArr do
-  begin
-    vSSB := TSSBElement.Create(FPanel);
-    vSSB.Deserialize(TJSONObject(vItem));
-    //AddElement(vSSB);
-  end;
 
   vList.Free;
 end;
