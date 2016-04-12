@@ -5,7 +5,7 @@ interface
 uses
   System.Types, System.SysUtils, System.Generics.Collections, FMX.Objects,
   uBasePresenterIncapsulator,
-  uIView, uSSBTypes, uItemBasePresenter,
+  uIView, uSSBTypes, uItemBasePresenter, uClasses,
   uIItemView, uItemImagerPresenter, uSSBModels, uMVPFrameWork,
   uEasyDevice;
 
@@ -41,6 +41,8 @@ type
     procedure Init;                        
     constructor Create(AView: IView; AModel: TSSBModel); override;
     destructor Destroy; override;
+  const
+    CPrec = 3;
   end;
 
 implementation
@@ -159,6 +161,11 @@ begin
 end;
 
 procedure TImagerPresenter.MouseMove;
+var
+  vItem: TItemImagerPresenter;
+  vX, vY: Integer;
+  vRect: TRectF;
+  vW, vH: Single;
 begin
   if (FSelected <> nil) then
       ResizeType(FSelected);
@@ -167,7 +174,32 @@ begin
     if Captured <> nil then
     begin
       if FCaptureMode = TCaptureMode.cmMove then
+      begin
         Captured.Position := ElementStart.TopLeft - MouseStart + View.GetMousePos;
+
+        for vItem in FItems.Keys do
+        begin
+         if vItem <> Captured then
+         begin
+           vRect := RectF(Captured.Rect.TopLeft.X, Captured.Rect.TopLeft.Y, Captured.Rect.BottomRight.X, Captured.Rect.BottomRight.Y);
+           with vRect do
+           begin
+              for vX := 0 to 3 do
+               for vY := 0 to 3 do
+               begin
+                 if (Points[vX].X <= vItem.Rect.Points[vY].X + CPrec) and
+                    (Points[vX].X >= vItem.Rect.Points[vY].X - CPrec) then
+                    Anchors[vX] := PointF(vItem.Rect.Points[vY].X, Points[vX].Y) ;
+
+                 if (Points[vX].Y <= vItem.Rect.Points[vY].Y + CPrec) and
+                    (Points[vX].Y >= vItem.Rect.Points[vY].Y - CPrec)   then
+                    Anchors[vX] := PointF(Points[vX].X, vItem.Rect.Points[vY].Y) ;
+              end;
+           end;
+           Captured.Rect := vRect;
+         end;
+        end;
+      end;
       if FCaptureMode = TCaptureMode.cmResize then
       begin
         case FResizeType of

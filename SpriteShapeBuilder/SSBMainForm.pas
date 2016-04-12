@@ -45,7 +45,6 @@ type
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
     procedure SaveForEngineBtnClick(Sender: TObject);
-    procedure Shape_edtClick(Sender: TObject);
     procedure DelPictureBtnClick(Sender: TObject);
     procedure BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean);
@@ -186,11 +185,6 @@ procedure TSSBForm.SaveProjectBtnClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
     SSB.SaveProject(SaveDialog.FileName);
-end;
-
-procedure TSSBForm.Shape_edtClick(Sender: TObject);
-begin
-  ShowMessage('11');
 end;
 
 procedure TSSBForm.Shape_imgClick(Sender: TObject);

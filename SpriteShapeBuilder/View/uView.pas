@@ -18,7 +18,6 @@ type
     FBackground: TImage;
     FSelected: TImage;
     FOpenDialog: TOpenDialog;
-//    procedure CopyEvents(const AFromControl: TControl; AToControl: TControl);
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     function PanelTopLeft: TPointF;
   public

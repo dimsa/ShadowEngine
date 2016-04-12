@@ -3,7 +3,7 @@ unit uItemImagerPresenter;
 interface
 
 uses
-  System.Classes, System.Types, FMX.Objects,
+  System.Classes, System.Types, FMX.Objects, System.SysUtils, uClasses,
   uIItemView, uIItemPresenter, uSSBTypes, uItemBasePresenter, uSSBModels;
 
 type
@@ -19,10 +19,13 @@ type
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
     procedure OnUpdateModel(ASender: TObject);
+    function GetRect: TRectF;
+    procedure SetRect(const Value: TRectF);
   public
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
+    property Rect: TRectF read GetRect write SetRect;
     property Image: TImage read GetImage write SetImage;
 
     procedure Delete; override;
@@ -64,6 +67,15 @@ begin
   Result := FItemImageModel.Position;
 end;
 
+function TItemImagerPresenter.GetRect: TRectF;
+begin
+  Result := System.Types.RectF(
+    FItemImageModel.Position.X,
+    FItemImageModel.Position.Y,
+    FItemImageModel.Position.X + FItemImageModel.Width,
+    FItemImageModel.Position.Y + FItemImageModel.Height);
+end;
+
 function TItemImagerPresenter.GetWidth: Integer;
 begin
   Result := FItemImageModel.Width;
@@ -97,7 +109,6 @@ begin
   FView.Height := FItemImageModel.Height;
   FView.Left := FItemImageModel.Position.X;
   FView.Top := FItemImageModel.Position.Y;
-
 end;
 
 procedure TItemImagerPresenter.SetHeight(const Value: Integer);
@@ -113,6 +124,13 @@ end;
 procedure TItemImagerPresenter.SetPosition(const Value: TPoint);
 begin
   FItemImageModel.Position := Value;
+end;
+
+procedure TItemImagerPresenter.SetRect(const Value: TRectF);
+begin
+    Position := Value.TopLeft.Round;
+    Width := Round(Value.Width);
+    Height := Round(Value.Height);
 end;
 
 procedure TItemImagerPresenter.SetWidth(const Value: Integer);

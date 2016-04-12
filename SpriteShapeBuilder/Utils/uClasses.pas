@@ -21,14 +21,18 @@ type
 
   TAdvancedRectF = record helper for TRectF
   private
+//    FIsHard: Boolean; // If it is hard, when you setting the point width and height are not changing
     function GetPoint(Index: Integer): TPointF;
     procedure SetPoint(Index: Integer; AValue: TPointF);
     function GetBottomLeft: TPointF;
     function GetTopRight: TPointF;
     procedure SetBottomLeft(const Value: TPointF);
     procedure SetTopRight(const Value: TPointF);
+    procedure SetAnchor(Index: Integer; const AValue: TPointF);
   public
+//    property IsHard: Boolean read FIsHard write FIsHard;
     property Points[Index: Integer]: TPointF read GetPoint write SetPoint; default;
+    property Anchors[Index: Integer]: TPointF write SetAnchor;
     property TopRight: TPointF read GetTopRight write SetTopRight;
     property BottomLeft: TPointF read GetBottomLeft write SetBottomLeft;
   end;
@@ -46,8 +50,6 @@ type
     function Count: Integer;
     procedure Add(const APoint: TPointF);
   end;
-
-
 
   function Random64: Int64;
   procedure NormalizeAngle(var AAngle: Single);
@@ -109,6 +111,19 @@ begin
   Result := PointF(Right, Top);
 end;
 
+procedure TAdvancedRectF.SetAnchor(Index: Integer; const AValue: TPointF);
+var
+  vTmp: TPointF;
+begin
+  vTmp := PointF(Width, Height);
+  case Index of
+    0: begin Self := RectF(AValue.X,          AValue.Y,          AValue.X + vTmp.X, AValue.Y + vTmp.Y); end; // TopLeft  TopLeft := AValue; BottomRight := AValue + vTmp;
+    1: begin Self := RectF(AValue.X - vTmp.X, AValue.Y,          AValue.X,          AValue.Y + vTmp.Y); end;// TopRight TopRight := AValue; BottomLeft := PointF(AValue.X - vTmp.X, AValue.Y + vTmp.Y);
+    2: begin Self := RectF(AValue.X - vTmp.X, AValue.Y - vTmp.Y, AValue.X,          AValue.Y); end;// BottomRight BottomRight := AValue; TopLeft := AValue - vTmp;
+    3: begin Self := RectF(AValue.X,          AValue.Y - vTmp.Y, AValue.X + vTmp.X, AValue.Y); end; //BottomLeft BottomLeft := AValue; TopRight := PointF(AValue.X + vTmp.X, AValue.Y - vTmp.Y);
+  end;
+end;
+
 procedure TAdvancedRectF.SetBottomLeft(const Value: TPointF);
 begin
   Left := Value.X;
@@ -146,7 +161,7 @@ end;
 procedure TAdvancedControl.SetPoint(Index: Integer; AValue: TPointF);
 begin
   case Index of
-    0: Position.Point := AValue;
+    0: Position.Point := PointF(AValue.X, AValue.Y);
     1: Position.Point := PointF(AValue.X - Width, AValue.Y);
     2: Position.Point := PointF(AValue.X - Width, AValue.Y - Height);
     3: Position.Point := PointF(AValue.X, AValue.Y - Height);
