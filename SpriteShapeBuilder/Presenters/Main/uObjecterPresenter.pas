@@ -60,28 +60,13 @@ uses
 
 procedure TObjecterPresenter.AddObj;
 var
-  vImg: TImage;
   vViewItem: IItemView;
   vItemPresenter: TItemObjecterPresenter;
   vModel: TItemObjectModel;
 //  vItemPresenter: TItemPresenterProxy;
 begin
-    vImg := TImage.Create(nil);
-    vImg.Width := 50;
-    vImg.Height := 50;
-    vImg.Bitmap.Width := 50;
-    vImg.Bitmap.Height := 50;
-    vImg.Bitmap.Canvas.BeginScene();
-    vImg.Bitmap.Canvas.StrokeThickness := 5;
-    vImg.Bitmap.Canvas.Stroke.Color := TAlphaColorRec.Red;
-    vImg.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Blue;
-    vImg.Bitmap.Canvas.FillRect(
-    RectF(0, 0, vImg.Width, vImg.Height), 0, 0, [], 1, FMX.Types.TCornerType.ctBevel);
-    vImg.Bitmap.Canvas.EndScene;
-
     // Creating View
     vViewItem := View.AddElement;
-    vViewItem.AssignBitmap(vImg.Bitmap);
 
     // Creating Model
     vModel := Model.AddElement;
@@ -93,16 +78,14 @@ begin
     vModel.Height:= 50;
 
     vViewItem.Presenter := vItemPresenter;
-
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
 
     FItems.Add(TItemObjecterPresenter(vItemPresenter), vViewItem);
     try
-      vViewItem.AssignBitmap(vImg.Bitmap);
+      vItemPresenter.Repaint;
     except
-      vImg.Free;
       View.RemoveElement(vViewItem);
     end;
 end;

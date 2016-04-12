@@ -44,6 +44,7 @@ type
     procedure HideShapes;
     procedure AddPoly;
     procedure AddCircle;
+    procedure Repaint;
     procedure MouseDown; override;
     procedure MouseUp; override;
     procedure MouseMove; override;
@@ -100,13 +101,15 @@ function TItemObjecterPresenter.Bitmap: TBitmap;
 begin
   FBmp.Width := Width;
   FBmp.Height := Height;
-
-  FBmp.Canvas.BeginScene();
-  FBmp.Canvas.StrokeThickness := 5;
+  FBmp.ClearRect(RectF(0, 0, Width, Height));
+  FBmp.Canvas.BeginScene;
+  FBmp.Canvas.StrokeThickness := 1;
   FBmp.Canvas.Stroke.Color := TAlphaColorRec.Red;
-  FBmp.Canvas.Fill.Color := TAlphaColorRec.Blue;
+  FBmp.Canvas.Fill.Color := $339999ff;
   FBmp.Canvas.FillRect(
-  RectF(0, 0, Width, Height), 0, 0, [], 1, FMX.Types.TCornerType.ctBevel);
+      RectF(0, 0, Width, Height), 0, 0, [], 1, FMX.Types.TCornerType.ctBevel);
+  FBmp.Canvas.DrawRect(
+      RectF(0, 0, Width, Height), 0, 0, [], 1, FMX.Types.TCornerType.ctBevel);
   FBmp.Canvas.EndScene;
 
   Result := FBmp;
@@ -287,6 +290,11 @@ begin
   FView.Height:= FItemObjectModel.Height;
   FView.Left := FItemObjectModel.Position.X;
   FView.Top := FItemObjectModel.Position.Y;
+end;
+
+procedure TItemObjecterPresenter.Repaint;
+begin
+  RepaintShapes;
 end;
 
 procedure TItemObjecterPresenter.RepaintShapes;
