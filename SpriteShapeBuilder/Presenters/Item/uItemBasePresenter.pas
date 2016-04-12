@@ -3,7 +3,7 @@ unit uItemBasePresenter;
 interface
 
 uses
-  System.Classes,
+  System.Classes, System.Types,
   uIItemPresenter, uIItemPresenterEvent, uMVPFrameWork, uIItemView, uSSBModels;
 
 type
@@ -17,11 +17,13 @@ type
     function GetOnMouseUp: TNotifyEvent; virtual;
     procedure SetOnMouseMove(AHandler: TNotifyEvent); virtual;
     function GetOnMouseMove: TNotifyEvent; virtual;
+    function GetRect: TRectF; virtual; abstract;
+    procedure SetRect(const Value: TRectF); virtual; abstract;
   public
     property OnMouseDown: TNotifyEvent read GetOnMouseDown write SetOnMouseDown;
     property OnMouseUp: TNotifyEvent read GetOnMouseUp write SetOnMouseUp;
     property OnMouseMove: TNotifyEvent read GetOnMouseMove write SetOnMouseMove;
-
+    property Rect: TRectF read GetRect write SetRect;
     procedure Delete; virtual; abstract;
     procedure MouseDown; virtual; abstract;
     procedure MouseUp; virtual; abstract;

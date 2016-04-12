@@ -3,7 +3,7 @@ unit uObjecterPresenter;
 interface
 
 uses
-  System.Generics.Collections, FMX.Objects, System.Types,
+  System.Generics.Collections, FMX.Objects, System.Types, uClasses,
   uIView, uMVPFrameWork, uSSBModels, uSSBTypes,
   uIItemView, uItemObjecterPresenter,
   uBasePresenterIncapsulator;
@@ -16,6 +16,8 @@ type
     procedure SetElementStart(const ARect: TRect); override;
   protected
     property Captured: TItemObjecterPresenter read FCaptured write SetCaptured;
+  const
+    CPrec = 3;
   end;
 
   TObjecterPresenter = class(TObjecterPresenterIncapsulator)
@@ -24,6 +26,8 @@ type
     FCaptureMode: TCaptureMode;
     FResizeType: TResizeType;
     FIsShapeVisible: Boolean;
+    procedure JustifyPoints(AItem: TItemObjecterPresenter);
+    procedure JustifyAnchors(AItem: TItemObjecterPresenter);
     function ResizeType(const AItem: TItemObjecterPresenter): TResizeType;
   protected
     FModel: TSSBModel;
@@ -162,6 +166,39 @@ begin
     vItem.HideShapes;
 end;
 
+procedure TObjecterPresenter.JustifyAnchors(AItem: TItemObjecterPresenter);
+var
+  vX: Integer;
+  vY: Integer;
+  vItem: TItemObjecterPresenter;
+  vRect: TRectF;
+begin
+  vRect := RectF(AItem.Rect.TopLeft.X, AItem.Rect.TopLeft.Y, AItem.Rect.BottomRight.X, AItem.Rect.BottomRight.Y);
+  for vItem in FItems.Keys do
+  begin
+    if vItem <> AItem then
+    begin
+      with vRect do
+      begin
+        for vX := 0 to 3 do
+          for vY := 0 to 3 do
+          begin
+            if (Points[vX].X <= vItem.Rect.Points[vY].X + CPrec) and (Points[vX].X >= vItem.Rect.Points[vY].X - CPrec) then
+              Anchors[vX] := PointF(vItem.Rect.Points[vY].X, Points[vX].Y);
+            if (Points[vX].Y <= vItem.Rect.Points[vY].Y + CPrec) and (Points[vX].Y >= vItem.Rect.Points[vY].Y - CPrec) then
+              Anchors[vX] := PointF(Points[vX].X, vItem.Rect.Points[vY].Y);
+          end;
+      end;
+      AItem.Rect := vRect;
+    end;
+  end;
+end;
+
+procedure TObjecterPresenter.JustifyPoints(AItem: TItemObjecterPresenter);
+begin
+
+end;
+
 procedure TObjecterPresenter.MouseDown;
 begin
   IsMouseDowned := True;
@@ -196,7 +233,10 @@ begin
     if Captured <> nil then
     begin
       if FCaptureMode = TCaptureMode.cmMove then
+      begin
         Captured.Position := ElementStart.TopLeft - MouseStart + View.GetMousePos;
+        JustifyAnchors(Captured);
+      end;
       if FCaptureMode = TCaptureMode.cmResize then
       begin
         case FResizeType of
@@ -215,7 +255,7 @@ begin
             Captured.Height := ElementStart.Height + MouseStart.Y - View.GetMousePos.Y;
           end;
         end;
-
+        JustifyPoints(Captured);
       end;
     end;
 end;

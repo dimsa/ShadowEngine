@@ -19,8 +19,9 @@ type
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
     procedure OnUpdateModel(ASender: TObject);
-    function GetRect: TRectF;
-    procedure SetRect(const Value: TRectF);
+  protected
+    function GetRect: TRectF; override;
+    procedure SetRect(const Value: TRectF); override;
   public
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;

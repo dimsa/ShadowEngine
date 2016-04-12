@@ -32,10 +32,14 @@ type
     procedure OnModelUpdate(ASender: TObject);
     function Bitmap: TBitmap;
     procedure RepaintShapes;
+  protected
+    function GetRect: TRectF; override;
+    procedure SetRect(const Value: TRectF); override;
   public
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
+    property Rect: TRectF read GetRect write SetRect;
     procedure ShowShapes;
     procedure HideShapes;
     procedure AddPoly;
@@ -143,6 +147,15 @@ end;
 function TItemObjecterPresenter.GetPosition: TPoint;
 begin
   Result := FItemObjectModel.Position;
+end;
+
+function TItemObjecterPresenter.GetRect: TRectF;
+begin
+  Result := System.Types.RectF(
+    FItemObjectModel.Position.X,
+    FItemObjectModel.Position.Y,
+    FItemObjectModel.Position.X + FItemObjectModel.Width,
+    FItemObjectModel.Position.Y + FItemObjectModel.Height);
 end;
 
 function TItemObjecterPresenter.GetWidth: Integer;
@@ -295,6 +308,13 @@ end;
 procedure TItemObjecterPresenter.SetPosition(const Value: TPoint);
 begin
   FItemObjectModel.Position := Value;
+end;
+
+procedure TItemObjecterPresenter.SetRect(const Value: TRectF);
+begin
+  Position := Value.TopLeft.Round;
+  Width := Round(Value.Width);
+  Height := Round(Value.Height);
 end;
 
 procedure TItemObjecterPresenter.SetWidth(const Value: Integer);
