@@ -6,7 +6,7 @@ uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types, FMX.Graphics,
   System.JSON, FMX.Controls, FMX.Layouts,
-  uNamedList, uEasyDevice, uClasses,
+  uNamedList, uEasyDevice, uClasses, uStreamUtil,
   uSSBModels, uView, uSSBTypes, uImagerPresenter, uObjecterPresenter;
 
 type
@@ -28,6 +28,8 @@ type
     FObjecter: TObjecterPresenter;
     FImager: TImagerPresenter;
 
+    FResourceFileName: string;
+
     procedure DoChangeStatus(ASender: TObject);
 
     procedure DoSaveProject(ASender: TObject);
@@ -45,17 +47,11 @@ type
     property Controller: TImagerPresenter read GetController;
     property Imager: TImagerPresenter read FImager;
     property Objecter: TObjecterPresenter read FObjecter;
-//    property Shaper: TSSBShaperPresenter read FShaper;
-//    property Elements: TNamedList<TSSBElement> read FElements write FElements;
-//    property Elements[Index: Integer]: read GetElements write SetElements;
-//    property SelectedElement: TSSBElement read FSelectedElement write SetSelectedElement;
-{    procedure AddElement(const AFileName: string); overload;
-    procedure AddElement(const AElement: TSSBElement); overload;    }
     procedure LoadProject(const AFileName: string);
     procedure SaveProject(const AFileName: string);
     procedure SaveForEngine(const AFileName: string);
     constructor Create(AForm: TForm; APanel: TPanel; ABackground, ASelected: TImage;
-  AOpenDialog: TOpenDialog);
+      AOpenDialog: TOpenDialog);
     procedure Init(const AProgForm: TForm);
     destructor Destroy; override;
   const
@@ -200,9 +196,49 @@ end;
 
 procedure TSpriteShapeBuilder.SaveProject(const AFileName: string);
 var
-  vList: TStringList;
+  vStream: TStreamUtil;
+  vS: string;
+  vInt: Integer;
+  i: Integer;
 begin
 
+//  vStream := TFileStream.Create(AFileName, fmOpenWrite);
+//  vStream.Seek(0, TSeekOrigin.soBeginning);
+//  vS := 'SpriteShapeBuilderProjectFile';
+//  vStream.WriteBuffer(vStream, SizeOf(vS));
+//  vS := 'Version';
+//  vStream.WriteBuffer(vStream, SizeOf(vS));
+//  vInt := 1;
+//  vStream.WriteBuffer(vInt, SizeOf(vInt));
+//  vS := 'Resource';
+//  vStream.WriteBuffer(vStream, SizeOf(vS));
+
+  vStream := TStreamUtil.Create(AFileName);
+  with vStream do
+  begin
+    StartWrite;
+    WriteStrOnly('SpriteShapeBuilderProjectFile');
+    WriteStr('Version');
+    WriteInt(1);
+    WriteStr('Resources');
+    WriteInt(FModel.ImageElementCount);
+    for i := 0 to FModel.ImageElementCount - 1 do
+      FModel.ImageElements[i].WriteToStream(vStream);
+
+    WriteStr('ResourceFileName');
+    WriteStr(FResourceFileName);
+    WriteStr('Objects');
+    WriteInt(FModel.ElementCount);
+
+    for i := 0 to FModel.ElementCount - 1 do
+      FModel.Elements[i].WriteToStream(vStream);
+
+    Stop;
+  end;
+
+  vStream.Free;
+
+  {Look at SSBProjectFormatDescription.txt !!!}
 end;
 
 function TSpriteShapeBuilder.Serialize: TJSONObject;

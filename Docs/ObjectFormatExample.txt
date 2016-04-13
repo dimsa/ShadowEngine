@@ -43,10 +43,19 @@
 		"Group": "Group1",
 		"Parts": [{
 			"Name": "Object1",
-			"RightCenter": "-10,-20"
+			"HorizontalAlign": "Left",
+			"VerticalAlign": "Center",
+			"Position": "-10,-20"
 		}, {
 			"Name": "Object2",
-			"LeftCenter": "30,30"
+			"HorizontalAlign": "Right",
+			"VerticalAlign": "Bottom",
+			"Position": "-10,-20"
+		},{
+			"Name": "Object3",
+			"HorizontalAlign": "Center",
+			"VerticalAlign": "Top",
+			"Position": "50,50"
 		}]
 	}]
 }

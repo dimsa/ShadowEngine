@@ -1,0 +1,52 @@
+{
+  Description of format. Important! There is no linebreaks and spaces! it's only for easy reading!
+  SpriteShapeBuilderProjectFile
+  Version<VersionInt>
+  <ParameterSizeInt>Resources
+  <ResourcesQuantityInt>
+  ...
+	<ParameterSizeInt>ResourceExtension
+	<ResourceExtensionSizeInt><ResourceExtensionString> 
+	<ResourceSizeInt><ResourceBinary>
+  ...
+  <ParameterSizeInt>ResourceFileName
+  <ResourceNameSizeInt><ResourceNameString>
+  
+  <ParameterSizeInt>Objects
+  <ObjectQuantityInt>
+  ...
+	<ParameterSizeInt>ObjectName
+	<ObjectNameSizeInt><ObjectNameString>
+	<ParameterSizeInt>ObjectGroup
+	<ObjectGroupSizeInt><ObjectGorupString>
+	<ParameterSizeInt>ObjectBody
+	<ParameterSizeInt>ObjectPosition
+	<X1Int><Y1Int><X2Int><Y2Int>
+
+	<ParameterSizeInt>ObjectFigures
+	<ObjectFiguresQuantityInt>
+	...
+		<ParameterSizeInt>FigureType
+		<FigureTypeSizeInt><FigureTypeString>
+		<ParameterSizeInt>FigureCenter
+		<FigureTypeCenterXInt><FigureTypeCenterYInt>
+		<ParameterSizeInt>FigureRadius
+		<FigureRadiusInt>
+
+		<ParameterSizeInt>FigureType
+		<FigureTypeSizeInt><FigureTypeString>
+		<PointsQuantityInt>
+		<Point1X><Point1Y>
+		<Point2X><Point2Y>
+		<Point3X><Point3Y>
+		<Point...X><Point...Y>
+	...
+	<ParameterSizeInt>ObjectParts
+	<ObjectPartsQuantityInt>
+	...
+		<PartNameSizeInt><PartNameString>
+		<PartAlignSizeInt><PartAlignString>
+		<PartAlignCoordXInt><PartAlignCoordYInt>
+	...
+  ...
+  }

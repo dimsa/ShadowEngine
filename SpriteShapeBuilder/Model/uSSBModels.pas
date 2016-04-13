@@ -5,7 +5,7 @@ interface
 uses
   System.Generics.Collections, System.Classes, {$I 'Utils\DelphiCompatability.inc'}
   System.Math, System.JSON, System.SysUtils,
-  FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, FMX.Graphics,
+  FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, FMX.Graphics, uStreamUtil,
   uNamedList, uClasses, uSSBTypes, uMVPFrameWork, uNewFigure, uIntersectorClasses;
 
 type
@@ -50,6 +50,7 @@ type
     property Group: string read FGroup write SetGroup;
     property ShapesList: TList<TItemShapeModel> write SetShapesList;
     procedure AddShape(const AShape: TItemShapeModel);
+    procedure WriteToStream(AStream: TStreamUtil);
     function AsJson: TJSONObject;
     function ToJson: string;
     procedure FromJson(const AJson: string);
@@ -75,6 +76,7 @@ type
     property Position: TPoint read GetPosition write SetPosition;
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
+    procedure WriteToStream(AStream: TStreamUtil);
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
   end;
 
@@ -328,6 +330,11 @@ begin
 
 end;
 
+procedure TItemObjectModel.WriteToStream(AStream: TStreamUtil);
+begin
+
+end;
+
 { TImageElement }
 
 constructor TItemImageModel.Create(const AUpdateHandler: TNotifyEvent);
@@ -458,6 +465,11 @@ procedure TItemImageModel.SetWidth(const Value: Integer);
 begin
   FRect.Width := Value;
   RaiseUpdateEvent;
+end;
+
+procedure TItemImageModel.WriteToStream(AStream: TStreamUtil);
+begin
+
 end;
 
 end.
