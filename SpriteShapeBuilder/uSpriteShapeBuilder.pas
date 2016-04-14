@@ -10,7 +10,7 @@ uses
   uSSBModels, uView, uSSBTypes, uImagerPresenter, uObjecterPresenter;
 
 type
-  TSpriteShapeBuilder = class(TInterfacedObject, ISerializable)
+  TSpriteShapeBuilder = class
   private
     FStatus: TSSBStatus;
     FPanel: TPanel;
@@ -32,11 +32,6 @@ type
 
     procedure DoChangeStatus(ASender: TObject);
 
-    procedure DoSaveProject(ASender: TObject);
-    procedure DoLoadProject(ASender: TObject);
-
-    function Serialize: TJSONObject;
-    procedure Deserialize(const AJson: TJSONObject);
     procedure SetStatus(const Value: TSSBStatus);
     function GetController: TImagerPresenter;
     function FormTopLeft: TPointF;
@@ -76,11 +71,6 @@ begin
   FObjecter := TObjecterPresenter.Create(FView, FModel);
 end;
 
-procedure TSpriteShapeBuilder.Deserialize(const AJson: TJSONObject);
-begin
-
-end;
-
 destructor TSpriteShapeBuilder.Destroy;
 begin
   FView.Free;
@@ -103,20 +93,6 @@ begin
 
   if vName.Contains('shape') then
     Status := sShape;
-end;
-
-procedure TSpriteShapeBuilder.DoLoadProject(ASender: TObject);
-begin
-  LoadProject('JSONoutput.txt');
-end;
-
-procedure TSpriteShapeBuilder.DoSaveProject(ASender: TObject);
-var
-  s: string;
-begin
-  s := FModel.ToJson;
-  SaveProject('JSONoutput.txt');
-
 end;
 
 function TSpriteShapeBuilder.FormTopLeft: TPointF;
@@ -164,22 +140,67 @@ end;
 
 procedure TSpriteShapeBuilder.LoadProject(const AFileName: string);
 var
-  vList: TStringList;
- // vObj: TJSONObject;
-//  vArr: TJSONArray;
+  vStream: TStreamUtil;
+  i, vInt: Integer;
+  vS, vSTmp, vPar: string;
+  vN: Integer;
+  vImageElement: TItemImageModel;
 begin
-  vList := TStringList.Create;
-  vList.LoadFromFile(AFileName);
+  vStream := TStreamUtil.Create(AFileName);
+  with vStream do
+  begin
+    StartRead;
+    vS := 'SpriteShapeBuilderProjectFile';
+    vSTmp := ReadStrWithLength(Length(vS));
+    if vS <> vSTmp then
+    begin
+      ShowMessage('This file format not supported!');
+      vStream.Free;
+      Exit;
+    end;
 
-//  vObj := TJSONObject(TJSONObject.ParseJSONValue(vList.Text));
-//  vArr := TJSONArray(vObj.GetValue('Elements'));
+    ReadStr('Version');
+    vInt := ReadInt;
 
-  vList.Free;
+    if vInt <> 1 then
+    begin
+      ShowMessage('This version of SpriteShapeBuilderProjectFile not supported!');
+      vStream.Free;
+      Exit;
+    end;
+    ReadStr('Resources');
+    vN := ReadInt;
+
+    for i := 0 to vN - 1 do
+    begin
+      ReadStr('Resource');
+     // FModel := TSSBModel.Create(OnModelUpdate);
+      vImageElement := FModel.AddImageElement;
+  //    FImager.AddImg(vImageElement);
+//      vItemPresenter := TItemImagerPresenter.Create(vViewItem, vModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
+     // vImageElement := TItemImageModel.Create(nil);
+      vImageElement.ReadFromStream(vStream);
+    end;
+
+    ReadStr('ResourceFileName');
+    FResourceFileName := ReadStr;
+    ReadStr('Objects');
+    vN := ReadInt;
+
+    for i := 0 to vN - 1 do
+      FModel.Elements[i].ReadFromStream(vStream);
+
+    Stop;
+  end;
+
+  vStream.Free;
+
+  {Look at SSBProjectFormatDescription.txt !!!}
 end;
 
 procedure TSpriteShapeBuilder.OnModelUpdate(ASender: TObject);
 begin
-//  FImager.OnModelUpdate(ASender);
+
 end;
 
 procedure TSpriteShapeBuilder.SaveForEngine(const AFileName: string);
@@ -197,23 +218,34 @@ end;
 procedure TSpriteShapeBuilder.SaveProject(const AFileName: string);
 var
   vStream: TStreamUtil;
-  vS: string;
-  vInt: Integer;
   i: Integer;
+  vBmp: TBitmap;
+  vTmp: TStream;
 begin
-
-//  vStream := TFileStream.Create(AFileName, fmOpenWrite);
-//  vStream.Seek(0, TSeekOrigin.soBeginning);
-//  vS := 'SpriteShapeBuilderProjectFile';
-//  vStream.WriteBuffer(vStream, SizeOf(vS));
-//  vS := 'Version';
-//  vStream.WriteBuffer(vStream, SizeOf(vS));
-//  vInt := 1;
-//  vStream.WriteBuffer(vInt, SizeOf(vInt));
-//  vS := 'Resource';
-//  vStream.WriteBuffer(vStream, SizeOf(vS));
-
   vStream := TStreamUtil.Create(AFileName);
+//  vBmp := TBitmap.Create;
+//  vBmp.LoadFromFile(AFileName);
+//  vTmp := TMemoryStream.Create;
+//  vBmp.SaveToStream(vTmp);
+//  vStream.StartWrite;
+//  vStream.WriteStr('123abc');
+//  vStream.WriteInt(vTmp.Size);
+//  vStream.WriteStream(vTmp);
+//  vStream.Stop;
+//  vBmp.Free;
+//  vTmp.Free;
+//
+//  vStream.StartRead;
+//  vStream.ReadStr('123abc');
+//  i := vStream.ReadInt;
+//  vTmp := vStream.ReadStream(i);
+//  vTmp.Position := 0;
+//  vBmp := TBitmap.Create;
+//  vBmp.LoadFromStream(vTmp);
+//  vBmp.SaveToFile(AFileName+'123.bmp');
+//  vStream.Free;
+//
+// Exit;
   with vStream do
   begin
     StartWrite;
@@ -223,7 +255,10 @@ begin
     WriteStr('Resources');
     WriteInt(FModel.ImageElementCount);
     for i := 0 to FModel.ImageElementCount - 1 do
+    begin
+      WriteStr('Resource');
       FModel.ImageElements[i].WriteToStream(vStream);
+    end;
 
     WriteStr('ResourceFileName');
     WriteStr(FResourceFileName);
@@ -231,7 +266,9 @@ begin
     WriteInt(FModel.ElementCount);
 
     for i := 0 to FModel.ElementCount - 1 do
+    begin
       FModel.Elements[i].WriteToStream(vStream);
+    end;
 
     Stop;
   end;
@@ -239,24 +276,6 @@ begin
   vStream.Free;
 
   {Look at SSBProjectFormatDescription.txt !!!}
-end;
-
-function TSpriteShapeBuilder.Serialize: TJSONObject;
-var
-  vObj: TJSONObject;
-  vArr: TJSONArray;
-begin
-  vObj := TJSONObject.Create;
-  vArr := TJSONArray.Create;
-
-{  for i := 0 to FElements.Count - 1 do
-  begin
-    vElem := FElements[i].Serialize;
-    vArr.AddElement(vElem);
-  end;  }
-  vObj.AddPair('Elements', vArr);
-
-  Result := vObj;
 end;
 
 procedure TSpriteShapeBuilder.SetStatus(const Value: TSSBStatus);

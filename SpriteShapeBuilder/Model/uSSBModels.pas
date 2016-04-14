@@ -3,9 +3,9 @@ unit uSSBModels;
 interface
 
 uses
-  System.Generics.Collections, System.Classes, {$I 'Utils\DelphiCompatability.inc'}
+   FMX.Graphics, System.Generics.Collections, System.Classes, {$I 'Utils\DelphiCompatability.inc'}
   System.Math, System.JSON, System.SysUtils,
-  FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, FMX.Graphics, uStreamUtil,
+  FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, uStreamUtil,
   uNamedList, uClasses, uSSBTypes, uMVPFrameWork, uNewFigure, uIntersectorClasses;
 
 type
@@ -22,6 +22,7 @@ type
     procedure SetData(const AData: TRectF); overload;// Ѕыстрое задание ректангла
     procedure SetData(const AData: uIntersectorClasses.TCircle); overload;// “рактует данные в зависимости от своего типа
     function AsJson: TJSONObject;
+    procedure WriteToStream(AStream: TStreamUtil);
 
     constructor CreateCircle(const AUpdateHandler: TNotifyEvent);
     constructor CreatePoly(const AUpdateHandler: TNotifyEvent);
@@ -51,6 +52,7 @@ type
     property ShapesList: TList<TItemShapeModel> write SetShapesList;
     procedure AddShape(const AShape: TItemShapeModel);
     procedure WriteToStream(AStream: TStreamUtil);
+    procedure ReadFromStream(AStream: TStreamUtil);
     function AsJson: TJSONObject;
     function ToJson: string;
     procedure FromJson(const AJson: string);
@@ -77,6 +79,7 @@ type
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     procedure WriteToStream(AStream: TStreamUtil);
+    procedure ReadFromStream(AStream: TStreamUtil);
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
   end;
 
@@ -135,6 +138,7 @@ end;
 constructor TSSBModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
   inherited;
+
   FBitmap := TBitmap.Create;
   FElements := TList<TItemObjectModel>.Create;
   FImageElements := TList<TItemImageModel>.Create;
@@ -289,6 +293,11 @@ begin
   RaiseUpdateEvent;
 end;
 
+procedure TItemObjectModel.ReadFromStream(AStream: TStreamUtil);
+begin
+
+end;
+
 procedure TItemObjectModel.SetGroup(const Value: string);
 begin
   FGroup := Value;
@@ -331,16 +340,29 @@ begin
 end;
 
 procedure TItemObjectModel.WriteToStream(AStream: TStreamUtil);
+var
+  i: Integer;
 begin
+  with AStream do
+  begin
+    WriteStr('ObjectName');
+    WriteStr(FName);
+    WriteStr('ObjectGroup');
+    WriteStr(FGroup);
+    WriteStr('ObjectBody');
+    WriteStr('Position');
+    WriteInt(FPosition.X);
+    WriteInt(FPosition.Y);
+    WriteStr('Size');
+    WriteInt(FWidth);
+    WriteInt(FHeight);
 
-end;
+    WriteStr('ObjectFigures');
+    WriteInt(FShapes.Count);
+    for i := 0 to FShapes.Count - 1 do
+      FShapes[i].WriteToStream(AStream);
 
-{ TImageElement }
-
-constructor TItemImageModel.Create(const AUpdateHandler: TNotifyEvent);
-begin
-  inherited;
-
+  end;
 end;
 
 { TItemShapeModel }
@@ -415,9 +437,46 @@ begin
   FFigure.SetData(AData);
 end;
 
+procedure TItemShapeModel.WriteToStream(AStream: TStreamUtil);
+var
+  i: Integer;
+  vPoly: TPolygon;
+begin
+  with AStream do
+  begin
+    WriteStr('FigureType');
+    case FFigure.Kind of
+      TNewFigure.cfCircle: begin
+        WriteStr('Circle');
+        WriteStr('Center');
+        WriteInt(Round(FFigure.AsCircle.X));
+        WriteInt(Round(FFigure.AsCircle.Y));
+        WriteStr('Radius');
+        WriteInt(Round(FFigure.AsCircle.Radius));
+      end;
+      TNewFigure.cfPoly: begin
+        WriteStr('Poly');
+        vPoly := FFigure.AsPoly;
+        WriteInt(Length(vPoly));
+        for i := 0 to High(vPoly) do
+        begin
+          WriteInt(Round(vPoly[i].X));
+          WriteInt(Round(vPoly[i].Y));
+        end;
+      end;
+    end;
+  end;
+end;
+
 procedure TItemShapeModel.SetData(const AData: uIntersectorClasses.TCircle);
 begin
   FFigure.SetData(AData);
+end;
+
+constructor TItemImageModel.Create(const AUpdateHandler: TNotifyEvent);
+begin
+  inherited;
+
 end;
 
 function TItemImageModel.GetHeight: Integer;
@@ -433,6 +492,49 @@ end;
 function TItemImageModel.GetWidth: Integer;
 begin
   Result := FRect.Width;
+end;
+
+procedure TItemImageModel.ReadFromStream(AStream: TStreamUtil);
+var
+  vStream: TStream;
+  vInt: Int64;
+  vPos, vSize: TPoint;
+  vBmp123: TBitmap;
+  a: Integer;
+begin
+  with AStream do
+  begin
+    vInt := ReadInt;
+    vStream := AStream.ReadStream(vInt);
+    a := vStream.Position;
+    a := vStream.Size;
+
+    vStream.Position := 0;
+
+    //vBmp := TBitmap.Create;
+    //vBmp.LoadFromStream(vStream);
+//    vBmp := TBitmap.CreateFromStream(vStream);
+//    vBmp.LoadFromStream(vStream);
+//    FOriginalImage.Bitmap.Assign(vBmp);
+//    FOriginalImage.Width := FOriginalImage.Bitmap.Width;
+//    FOriginalImage.Height:= FOriginalImage.Bitmap.Height;
+//  ќЅЏ≈ “џ ”Ќ»„“ќ∆јё“—я!
+
+    ReadStr('Position');
+    vPos := Point(ReadInt, ReadInt);
+    ReadStr('Size');
+    vSize := Point(ReadInt, ReadInt);
+    FRect := System.Types.Rect(vPos.X, vPos.Y, vPos.X + vSize.X, vPos.Y + vSize.Y);
+  end;
+
+  try
+//   FOriginalImage := TImage.Create(nil);
+    vBmp123 := TBitmap.Create(10,10);
+    vBmp123.LoadFromStream(vStream);
+  except
+
+  end;
+
 end;
 
 procedure TItemImageModel.SetHeight(const Value: Integer);
@@ -468,8 +570,33 @@ begin
 end;
 
 procedure TItemImageModel.WriteToStream(AStream: TStreamUtil);
+var
+  vStream: TMemoryStream;
+  vBmp: TBitmap;
 begin
+  with AStream do
+  begin
+    vStream := TMemoryStream.Create;
 
+    vBmp := TBitmap.Create;
+    vBmp.Assign(Self.FOriginalImage.Bitmap);
+    vBmp.SaveToStream(vStream);
+    vBmp.Free;
+
+    vStream.Position := 0;
+
+    WriteInt(vStream.Size);
+    WriteStream(vStream);
+
+    vStream.Free;
+
+    WriteStr('Position');
+    WriteInt(Self.Position.X);
+    WriteInt(Self.Position.Y);
+    WriteStr('Size');
+    WriteInt(Self.Width);
+    WriteInt(Self.Height);
+  end;
 end;
 
 end.

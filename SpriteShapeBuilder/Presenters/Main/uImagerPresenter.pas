@@ -38,7 +38,8 @@ type
     procedure JustifyPoints(AItem: TItemImagerPresenter);
     procedure JustifyAnchors(AItem: TItemImagerPresenter);
   public
-    procedure AddImg;
+    procedure AddImg; overload;
+    procedure AddImg(const AModel: TItemImageModel); overload;
     procedure DelImg;
     procedure MouseMove;
     procedure MouseDown;
@@ -57,7 +58,6 @@ procedure TImagerPresenter.AddImg;
 var
   vFileName: string;
   vViewItem: IItemView;
-//  vItemPresenter: TItemPresenterProxy;
   vItemPresenter: TItemImagerPresenter;
   vModel: TItemImageModel;
   vImg: TImage;
@@ -87,6 +87,25 @@ begin
 
     FItems.Add(TItemImagerPresenter(vItemPresenter), vViewItem);
   end;
+end;
+
+procedure TImagerPresenter.AddImg(const AModel: TItemImageModel);
+var
+  vViewItem: IItemView;
+  vItemPresenter: TItemImagerPresenter;
+begin
+    // Creating View
+    vViewItem := View.AddElement;
+
+    // Creating Presenter
+    vItemPresenter := TItemImagerPresenter.Create(vViewItem, AModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
+    vViewItem.Presenter := vItemPresenter;
+
+    vItemPresenter.OnMouseDown := DoMouseDown;
+    vItemPresenter.OnMouseUp := DoMouseUp;
+    vItemPresenter.OnMouseMove := DoMouseMove;
+
+    FItems.Add(TItemImagerPresenter(vItemPresenter), vViewItem);
 end;
 
 constructor TImagerPresenter.Create(AView: IView; AModel: TSSBModel);

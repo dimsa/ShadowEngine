@@ -64,14 +64,15 @@ type
     procedure AddCircleBtnClick(Sender: TObject);
     procedure AddPolyBtnClick(Sender: TObject);
   private
-    SSB: TSpriteShapeBuilder;
     { Private declarations }
   public
+
     { Public declarations }
   end;
 
 var
   SSBForm: TSSBForm;
+    SSB: TSpriteShapeBuilder;
 
 implementation
 
