@@ -17,11 +17,12 @@ type
   public
     property UpdateHander: TNotifyEvent read FUpdateHandler write FUpdateHandler;
     procedure RaiseUpdateEvent;
-    constructor Create(const AUpdateHandler: TNotifyEvent); virtual;
+    constructor Create(const AUpdateHandler: TNotifyEvent); overload; virtual;
+    constructor Create; overload;
     destructor Destroy; override;
   end;
 
-  TPresenter = class(TInterfacedObject)
+  TPresenter = class(TInterfacedObject, IInterface)
   protected
     FView: IView;
   public
@@ -44,16 +45,16 @@ begin
   inherited;
 end;
 
-{procedure TPresenter.OnModelUpdate(ASender: TObject);
-begin
-
-end;   }
-
 { IModel }
 
 constructor TModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
   FUpdateHandler := AUpdateHandler;
+end;
+
+constructor TModel.Create;
+begin
+  FUpdateHandler := EmptyHandler;
 end;
 
 destructor TModel.Destroy;

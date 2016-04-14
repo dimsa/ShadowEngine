@@ -34,6 +34,7 @@ type
     procedure MouseUp; override;
     procedure MouseMove; override;
     constructor Create(const AItemView: IItemView; const AItemImageModel: TItemImageModel); reintroduce;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -51,6 +52,12 @@ end;
 procedure TItemImagerPresenter.Delete;
 begin
 
+end;
+
+destructor TItemImagerPresenter.Destroy;
+begin
+
+  inherited;
 end;
 
 function TItemImagerPresenter.GetHeight: Integer;

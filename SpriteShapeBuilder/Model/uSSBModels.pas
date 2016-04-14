@@ -81,6 +81,7 @@ type
     procedure WriteToStream(AStream: TStreamUtil);
     procedure ReadFromStream(AStream: TStreamUtil);
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
+    destructor Destroy; override;
   end;
 
   TSSBModel = class(TModel)
@@ -479,6 +480,12 @@ begin
 
 end;
 
+destructor TItemImageModel.Destroy;
+begin
+
+  inherited;
+end;
+
 function TItemImageModel.GetHeight: Integer;
 begin
   Result := FRect.Height;
@@ -499,40 +506,31 @@ var
   vStream: TStream;
   vInt: Int64;
   vPos, vSize: TPoint;
-  vBmp123: TBitmap;
-  a: Integer;
+  vBmp: TBitmap;
 begin
   with AStream do
   begin
     vInt := ReadInt;
     vStream := AStream.ReadStream(vInt);
-    a := vStream.Position;
-    a := vStream.Size;
-
     vStream.Position := 0;
 
-    //vBmp := TBitmap.Create;
-    //vBmp.LoadFromStream(vStream);
-//    vBmp := TBitmap.CreateFromStream(vStream);
-//    vBmp.LoadFromStream(vStream);
-//    FOriginalImage.Bitmap.Assign(vBmp);
-//    FOriginalImage.Width := FOriginalImage.Bitmap.Width;
-//    FOriginalImage.Height:= FOriginalImage.Bitmap.Height;
-//  Œ¡⁄≈ “€ ”Õ»◊“Œ∆¿ﬁ“—ﬂ!
+    vBmp := TBitmap.Create(500,500);
+    vBmp.LoadFromStream(vStream);
+
+    if FOriginalImage = nil then
+      FOriginalImage := TImage.Create(nil);
+
+    FOriginalImage.Bitmap.Assign(vBmp);
+    FOriginalImage.Width := FOriginalImage.Bitmap.Width;
+    FOriginalImage.Height:= FOriginalImage.Bitmap.Height;
+    vBmp.Free;
+    FreeAndNil(vStream);
 
     ReadStr('Position');
     vPos := Point(ReadInt, ReadInt);
     ReadStr('Size');
     vSize := Point(ReadInt, ReadInt);
     FRect := System.Types.Rect(vPos.X, vPos.Y, vPos.X + vSize.X, vPos.Y + vSize.Y);
-  end;
-
-  try
-//   FOriginalImage := TImage.Create(nil);
-    vBmp123 := TBitmap.Create(10,10);
-    vBmp123.LoadFromStream(vStream);
-  except
-
   end;
 
 end;

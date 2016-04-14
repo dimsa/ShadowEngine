@@ -7,12 +7,14 @@ uses
 
 type
 
+  TStreamString = AnsiString;
+
   TStreamUtilStatus = (usUnknown, usRead, usWrite);
 
   TStreamUtil = class
   private
     FFileStream: TFileStream;
-    FFileName: string;
+    FFileName: TStreamString;
     FStatus: TStreamUtilStatus;
     FEncoding: TEncoding;
     procedure TestCanWrite;
@@ -21,18 +23,18 @@ type
   public
       procedure Test(ABmp: TBitmap);
     destructor Destroy; override;
-    constructor Create(const AFileName: string);
+    constructor Create(const AFileName: TStreamString);
     procedure StartRead;
     procedure StartWrite;
     procedure Stop;
     property Status: TStreamUtilStatus read FStatus;
-    function ReadStr: string; overload; // Read string if Size is writed
-    function ReadStr(const ACheck: string): string; overload;// Read string if Size is writed and compares it with parameter ACheck
-    function ReadInt: Int64; // Read string if Size is writed
-    function ReadStream(const ASize: Int64): TStream;
-    function ReadStrWithLength(const ASize: Integer): string; // Read string if Size is writed
-    procedure WriteStr(const AText: string);
-    procedure WriteStrOnly(const AText: string);
+    function ReadStr: TStreamString; overload; // Read TStreamString if Size is writed
+    function ReadStr(const ACheck: TStreamString): TStreamString; overload;// Read TStreamString if Size is writed and compares it with parameter ACheck
+    function ReadInt: Int64; // Read TStreamString if Size is writed
+    function ReadStream(const ASize: Int64): TMemoryStream;
+    function ReadStrWithLength(const ASize: Integer): TStreamString; // Read TStreamString if Size is writed
+    procedure WriteStr(const AText: TStreamString);
+    procedure WriteStrOnly(const AText: TStreamString);
     procedure WriteInt(const AInt: Int64);
     procedure WriteStream(AStream: TStream);
   end;
@@ -41,7 +43,7 @@ implementation
 
 { TStreamUtil }
 
-constructor TStreamUtil.Create(const AFileName: string);
+constructor TStreamUtil.Create(const AFileName: TStreamString);
 begin
   FFileName := AFileName;
   FStatus := usUnknown;
@@ -59,13 +61,10 @@ end;
 function TStreamUtil.ReadInt: Int64;
 var
   vInt: Int64;
-  a,b: Int64;
 begin
   TestCanRead;
   try
-    a := FFileStream.Position;
     FFileStream.ReadBuffer(vInt, SizeOf(vInt));
-    b := FFileStream.Position;
     Result := vInt;
   except
     if FFileStream <> nil then
@@ -75,9 +74,9 @@ begin
   end;
 end;
 
-function TStreamUtil.ReadStr: string;
+function TStreamUtil.ReadStr: TStreamString;
 var
-  vStr: string;
+  vStr: TStreamString;
   vSize, vLength: Integer;
 begin
   TestCanRead;
@@ -86,16 +85,16 @@ begin
     vSize := vLength * SizeOf(Copy(vStr, 1, 1));
     SetLength(vStr, vLength);
     FFileStream.ReadBuffer(Pointer(vStr)^, vSize);
-    Result := vStr;//TEncoding.UTF8.GetString(Pointer(vStr));
+    Result := vStr;//TEncoding.UTF8.GetTStreamString(Pointer(vStr));
   except
     if FFileStream <> nil then
       FreeAndNil(FFileName);
 
-    raise Exception.Create('Can not read String with Size before It from stream');
+    raise Exception.Create('Can not read TStreamString with Size before It from stream');
   end;
 end;
 
-function TStreamUtil.ReadStr(const ACheck: string): string;
+function TStreamUtil.ReadStr(const ACheck: TStreamString): TStreamString;
 begin
   Result := ReadStr;
 
@@ -103,7 +102,7 @@ begin
     raise Exception.Create('Read parameter not equal to check parameter');
 end;
 
-function TStreamUtil.ReadStream(const ASize: Int64): TStream;
+function TStreamUtil.ReadStream(const ASize: Int64): TMemoryStream;
 var
   vStream: TMemoryStream;
   a: Integer;
@@ -119,19 +118,19 @@ begin
 
     vStream.Position := 0;
 //    FFileStream.ReadBuffer(vStream, ASize);
-    Result := vStream;//TEncoding.UTF8.GetString(Pointer(vStr));
+    Result := vStream;//TEncoding.UTF8.GetTStreamString(Pointer(vStr));
   except
     if FFileStream <> nil then
       FreeAndNil(FFileName);
     vStream.Free;
 
-    raise Exception.Create('Can not read String with Size before It from stream');
+    raise Exception.Create('Can not read TStreamString with Size before It from stream');
   end;
 end;
 
-function TStreamUtil.ReadStrWithLength(const ASize: Integer): string;
+function TStreamUtil.ReadStrWithLength(const ASize: Integer): TStreamString;
 var
-  vStr: string;
+  vStr: TStreamString;
   vSize: Integer;
 begin
   TestCanRead;
@@ -139,12 +138,12 @@ begin
     vSize := ASize * SizeOf(Copy(vStr, 1, 1));
     SetLength(vStr, ASize);
     FFileStream.ReadBuffer(Pointer(vStr)^, vSize);
-    Result := vStr;//TEncoding.UTF8.GetString(Pointer(vStr));
+    Result := vStr;//TEncoding.UTF8.GetTStreamString(Pointer(vStr));
   except
     if FFileStream <> nil then
       FreeAndNil(FFileName);
 
-    raise Exception.Create('Can not read String with Size before It from stream');
+    raise Exception.Create('Can not read TStreamString with Size before It from stream');
   end;
 end;
 
@@ -173,12 +172,16 @@ end;
 procedure TStreamUtil.Stop;
 begin
   if FFileStream <> nil then
-    FreeAndNil(FFileStream);
+  begin
+    FFileStream.Free;
+    FFileStream := nil;
+//  FreeAndNil(FFileStream);
+  end;
 
   FStatus := usUnknown;
 end;
 
-procedure TStreamUtil.Test(ABMp: TBitmap);
+procedure TStreamUtil.Test(ABmp: TBitmap);
 var
   vBmp: TBitmap;
 begin
@@ -211,7 +214,7 @@ begin
   FFileStream.WriteBuffer(AInt, SizeOf(AInt));
 end;
 
-procedure TStreamUtil.WriteStr(const AText: string);
+procedure TStreamUtil.WriteStr(const AText: TStreamString);
 var
   vInt: Integer;
 begin
@@ -228,7 +231,7 @@ begin
   FFileStream.CopyFrom(AStream, AStream.Size);
 end;
 
-procedure TStreamUtil.WriteStrOnly(const AText: string);
+procedure TStreamUtil.WriteStrOnly(const AText: TStreamString);
 var
   vInt: Integer;
 begin

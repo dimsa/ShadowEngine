@@ -25,8 +25,11 @@ type
     FModel: TSSBModel;
     FControllers: array[TSSBStatus] of TImagerPresenter;
     FIsMouseDown: Boolean;
-    FObjecter: TObjecterPresenter;
-    FImager: TImagerPresenter;
+
+    FObjecter: IInterface;
+    FImager: IInterface;
+//    FObjecter: TObjecterPresenter;
+//    FImager: TImagerPresenter;
 
     FResourceFileName: string;
 
@@ -36,12 +39,14 @@ type
     function GetController: TImagerPresenter;
     function FormTopLeft: TPointF;
     procedure OnModelUpdate(ASender: TObject);
+    function GetImager: TImagerPresenter;
+    function GetObjecter: TObjecterPresenter;
   public
     property Status: TSSBStatus read FStatus write SetStatus;
     property IsMouseDown: Boolean read FIsMouseDown write FIsMouseDown;
     property Controller: TImagerPresenter read GetController;
-    property Imager: TImagerPresenter read FImager;
-    property Objecter: TObjecterPresenter read FObjecter;
+    property Imager: TImagerPresenter read GetImager;
+    property Objecter: TObjecterPresenter read GetObjecter;
     procedure LoadProject(const AFileName: string);
     procedure SaveProject(const AFileName: string);
     procedure SaveForEngine(const AFileName: string);
@@ -69,12 +74,13 @@ begin
   FModel := TSSBModel.Create(OnModelUpdate);
   FImager := TImagerPresenter.Create(FView, FModel);
   FObjecter := TObjecterPresenter.Create(FView, FModel);
+  FResourceFileName := 'NoName';
 end;
 
 destructor TSpriteShapeBuilder.Destroy;
 begin
-  FView.Free;
-  FImager.Free;
+  FView := nil;//.Free;
+  FImager := nil; //.Free;
 
   inherited;
 end;
@@ -103,6 +109,16 @@ end;
 function TSpriteShapeBuilder.GetController: TImagerPresenter;
 begin
   Result := FControllers[FStatus];
+end;
+
+function TSpriteShapeBuilder.GetImager: TImagerPresenter;
+begin
+  Result := TImagerPresenter(FImager);
+end;
+
+function TSpriteShapeBuilder.GetObjecter: TObjecterPresenter;
+begin
+  Result := TObjecterPresenter(FObjecter);
 end;
 
 procedure TSpriteShapeBuilder.Init(const AProgForm: TForm);
@@ -145,6 +161,7 @@ var
   vS, vSTmp, vPar: string;
   vN: Integer;
   vImageElement: TItemImageModel;
+ // vTmp: IInterface;
 begin
   vStream := TStreamUtil.Create(AFileName);
   with vStream do
@@ -174,21 +191,22 @@ begin
     for i := 0 to vN - 1 do
     begin
       ReadStr('Resource');
-     // FModel := TSSBModel.Create(OnModelUpdate);
+
       vImageElement := FModel.AddImageElement;
-  //    FImager.AddImg(vImageElement);
-//      vItemPresenter := TItemImagerPresenter.Create(vViewItem, vModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
-     // vImageElement := TItemImageModel.Create(nil);
-      vImageElement.ReadFromStream(vStream);
+//      vTmp := vImageElement;
+//      vImageElement.ReadFromStream(vStream);
+  //    vTmp := nil;
+//      vTmp := FImager;
+     // Imager.AddImg(vImageElement);
     end;
 
-    ReadStr('ResourceFileName');
-    FResourceFileName := ReadStr;
-    ReadStr('Objects');
-    vN := ReadInt;
+//    ReadStr('ResourceFileName');
+//    FResourceFileName := ReadStr;
+//    ReadStr('Objects');
+//    vN := ReadInt;
 
-    for i := 0 to vN - 1 do
-      FModel.Elements[i].ReadFromStream(vStream);
+//    for i := 0 to vN - 1 do
+//      FModel.Elements[i].ReadFromStream(vStream);
 
     Stop;
   end;
@@ -223,29 +241,6 @@ var
   vTmp: TStream;
 begin
   vStream := TStreamUtil.Create(AFileName);
-//  vBmp := TBitmap.Create;
-//  vBmp.LoadFromFile(AFileName);
-//  vTmp := TMemoryStream.Create;
-//  vBmp.SaveToStream(vTmp);
-//  vStream.StartWrite;
-//  vStream.WriteStr('123abc');
-//  vStream.WriteInt(vTmp.Size);
-//  vStream.WriteStream(vTmp);
-//  vStream.Stop;
-//  vBmp.Free;
-//  vTmp.Free;
-//
-//  vStream.StartRead;
-//  vStream.ReadStr('123abc');
-//  i := vStream.ReadInt;
-//  vTmp := vStream.ReadStream(i);
-//  vTmp.Position := 0;
-//  vBmp := TBitmap.Create;
-//  vBmp.LoadFromStream(vTmp);
-//  vBmp.SaveToFile(AFileName+'123.bmp');
-//  vStream.Free;
-//
-// Exit;
   with vStream do
   begin
     StartWrite;
@@ -285,12 +280,41 @@ begin
   FPanels[FStatus].Visible := True;
 
   if Value = TSSBStatus.sShape then
-    FObjecter.ShowShapes
+    Objecter.ShowShapes
   else
-    FObjecter.HideShapes;
+    Objecter.HideShapes;
 //  FPanels[Value].Visible := True;
 end;
 
 end.
 
 
+{
+
+100% workable streamread
+
+//  vBmp := TBitmap.Create;
+//  vBmp.LoadFromFile(AFileName);
+//  vTmp := TMemoryStream.Create;
+//  vBmp.SaveToStream(vTmp);
+//  vStream.StartWrite;
+//  vStream.WriteStr('123abc');
+//  vStream.WriteInt(vTmp.Size);
+//  vStream.WriteStream(vTmp);
+//  vStream.Stop;
+//  vBmp.Free;
+//  vTmp.Free;
+//
+//  vStream.StartRead;
+//  vStream.ReadStr('123abc');
+//  i := vStream.ReadInt;
+//  vTmp := vStream.ReadStream(i);
+//  vTmp.Position := 0;
+//  vBmp := TBitmap.Create;
+//  vBmp.LoadFromStream(vTmp);
+//  vBmp.SaveToFile(AFileName+'123.bmp');
+//  vStream.Free;
+//
+// Exit;
+
+}
