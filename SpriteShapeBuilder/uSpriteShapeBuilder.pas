@@ -162,6 +162,7 @@ var
   vN: Integer;
   vImageElement: TItemImageModel;
  // vTmp: IInterface;
+  vBmp: TBitmap;
 begin
   vStream := TStreamUtil.Create(AFileName);
   with vStream do
@@ -192,7 +193,8 @@ begin
     begin
       ReadStr('Resource');
 
-      vImageElement := FModel.AddImageElement;
+//      vImageElement := FModel.AddImageElement;
+      vBmp := ReadBitmap;
 //      vTmp := vImageElement;
 //      vImageElement.ReadFromStream(vStream);
   //    vTmp := nil;

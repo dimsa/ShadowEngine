@@ -578,13 +578,14 @@ begin
 
     vBmp := TBitmap.Create;
     vBmp.Assign(Self.FOriginalImage.Bitmap);
-    vBmp.SaveToStream(vStream);
-    vBmp.Free;
+//    vBmp.SaveToStream(vStream);
+//    vBmp.Free;
 
     vStream.Position := 0;
 
-    WriteInt(vStream.Size);
-    WriteStream(vStream);
+//    WriteInt(vStream.Size);
+  //  WriteStream(vStream);
+    WriteBitmap(vBmp);
 
     vStream.Free;
 

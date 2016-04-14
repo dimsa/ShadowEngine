@@ -30,10 +30,12 @@ type
     property Status: TStreamUtilStatus read FStatus;
     function ReadStr: TStreamString; overload; // Read TStreamString if Size is writed
     function ReadStr(const ACheck: TStreamString): TStreamString; overload;// Read TStreamString if Size is writed and compares it with parameter ACheck
+    function ReadBitmap: TBitmap;
     function ReadInt: Int64; // Read TStreamString if Size is writed
     function ReadStream(const ASize: Int64): TMemoryStream;
     function ReadStrWithLength(const ASize: Integer): TStreamString; // Read TStreamString if Size is writed
     procedure WriteStr(const AText: TStreamString);
+    procedure WriteBitmap(const ABmp: TBitmap);
     procedure WriteStrOnly(const AText: TStreamString);
     procedure WriteInt(const AInt: Int64);
     procedure WriteStream(AStream: TStream);
@@ -56,6 +58,15 @@ begin
      FreeAndNil(FFileStream);
 
   inherited;
+end;
+
+function TStreamUtil.ReadBitmap: TBitmap;
+var
+  vBmp: TBitmap;
+begin
+  TestCanRead;
+  vBmp := TBitmap.Create;
+  vBmp.LoadFromStream(FFileStream);
 end;
 
 function TStreamUtil.ReadInt: Int64;
@@ -206,6 +217,12 @@ procedure TStreamUtil.TestCanWrite;
 begin
   if (FFileStream = nil) or (FStatus <> usWrite) then
     raise Exception.Create('TStreamUtil not ready for Write!');
+end;
+
+procedure TStreamUtil.WriteBitmap(const ABmp: TBitmap);
+begin
+  TestCanWrite;
+  ABmp.SaveToStream(FFileStream);
 end;
 
 procedure TStreamUtil.WriteInt(const AInt: Int64);
