@@ -78,14 +78,19 @@ function TStreamUtil.ReadStr: TStreamString;
 var
   vStr: TStreamString;
   vSize, vLength: Integer;
+  vPc: PChar;
 begin
   TestCanRead;
   try
     FFileStream.ReadBuffer(vLength, SizeOf(vLength));
     vSize := vLength * SizeOf(Copy(vStr, 1, 1));
     SetLength(vStr, vLength);
-    FFileStream.ReadBuffer(Pointer(vStr)^, vSize);
-    Result := vStr;//TEncoding.UTF8.GetTStreamString(Pointer(vStr));
+//    GetMem(vPc, vSize);
+//    GetMem(vPc, vLength);
+    FFileStream.ReadBuffer(Pointer(vStr)^, vLength);
+    Result := vStr;
+//    FFileStream.ReadBuffer(vPc^, vSize);
+  //  Result := vPc;//vStr;//TEncoding.UTF8.GetTStreamString(Pointer(vStr));
   except
     if FFileStream <> nil then
       FreeAndNil(FFileName);
@@ -132,13 +137,18 @@ function TStreamUtil.ReadStrWithLength(const ASize: Integer): TStreamString;
 var
   vStr: TStreamString;
   vSize: Integer;
+  vPc: PChar;
 begin
   TestCanRead;
   try
     vSize := ASize * SizeOf(Copy(vStr, 1, 1));
     SetLength(vStr, ASize);
-    FFileStream.ReadBuffer(Pointer(vStr)^, vSize);
-    Result := vStr;//TEncoding.UTF8.GetTStreamString(Pointer(vStr));
+//    GetMem(vPc, vSize);
+   // GetMem(vPc, ASize);
+     FFileStream.ReadBuffer(Pointer(vStr)^, ASize);
+     Result := vStr;
+  //  FFileStream.ReadBuffer(vPc^, vSize);
+  //  Result := vPc;//vStr;//TEncoding.UTF8.GetTStreamString(Pointer(vStr));
   except
     if FFileStream <> nil then
       FreeAndNil(FFileName);
@@ -217,11 +227,15 @@ end;
 procedure TStreamUtil.WriteStr(const AText: TStreamString);
 var
   vInt: Integer;
+//  vPc: PChar;
 begin
   TestCanWrite;
   vInt := Length(AText);
   FFileStream.WriteBuffer(vInt, SizeOf(vInt));
-  FFileStream.WriteBuffer(Pointer(AText)^, vInt * SizeOf(Copy(AText, 1, 1)));
+  //vPc := PChar(AText);
+//    FFileStream.WriteBuffer(vPc, vInt * SizeOf(Copy(AText, 1, 1)));
+    FFileStream.WriteBuffer(PChar(AText)^, Length(AText));
+//  FFileStream.WriteBuffer(Pointer(AText)^, vInt * SizeOf(Copy(AText, 1, 1)));
 end;
 
 procedure TStreamUtil.WriteStream(AStream: TStream);
@@ -237,7 +251,9 @@ var
 begin
   TestCanWrite;
   vInt := Length(AText) * SizeOf(Copy(AText, 1, 1));
-  FFileStream.WriteBuffer(Pointer(AText)^, vInt);
+//  FFileStream.WriteBuffer(Pointer(AText)^, vInt);
+//  FFileStream.WriteBuffer(vPc, vInt);
+  FFileStream.WriteBuffer(PChar(AText)^, Length(AText));
 end;
 
 end.

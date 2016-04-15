@@ -195,14 +195,14 @@ begin
 
       vImageElement := FModel.AddImageElement;
       vImageElement.ReadFromStream(vStream);
-   //   Imager.AddImg(vImageElement);
+      Imager.AddImg(vImageElement);
     end;
 
     ReadStr('ResourceFileName');
     FResourceFileName := ReadStr;
     ReadStr('Objects');
     vN := ReadInt;
-//
+
     for i := 0 to vN - 1 do
       FModel.Elements[i].ReadFromStream(vStream);
 
@@ -212,7 +212,6 @@ begin
   finally
     vStream.Free;
   end;
-
 
   {Look at SSBProjectFormatDescription.txt !!!}
 end;
