@@ -58,6 +58,7 @@ type
     function ToJson: string;
     procedure FromJson(const AJson: string);
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
+    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -285,6 +286,13 @@ begin
   vObj.AddPair('Body', vBody);
 
   Result := vObj;
+end;
+
+constructor TItemObjectModel.Create;
+begin
+  inherited;
+
+  FShapes := TList<TItemShapeModel>.Create;
 end;
 
 constructor TItemObjectModel.Create(const AUpdateHandler: TNotifyEvent);

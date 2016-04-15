@@ -18,7 +18,7 @@ type
     property UpdateHander: TNotifyEvent read FUpdateHandler write FUpdateHandler;
     procedure RaiseUpdateEvent;
     constructor Create(const AUpdateHandler: TNotifyEvent); overload; virtual;
-    constructor Create; overload;
+    constructor Create; overload; virtual;
     destructor Destroy; override;
   end;
 

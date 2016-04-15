@@ -32,6 +32,7 @@ type
   public
     property Model: TItemShapeModel read FItemShapeModel;
     procedure AddPoint;
+    procedure DelPoint;
     procedure MouseDown; override;
     procedure MouseUp; override;
     procedure MouseMove; override;
@@ -45,12 +46,19 @@ implementation
 { TObjecterItemPresenter }
 
 procedure TItemShaperPresenter.AddPoint;
+var
+  vPoly: TPolygon;
+  i: Integer;
 begin
-//  if FShape = nil then
-//    Exit;
-//
-//  if FShape.Kind = TNewFigure.cfPoly then
-//    FShape.AddPoint(TPoint.Zero);
+  if FItemShapeModel.Figure.Kind = TNewFigure.cfPoly then
+  begin
+    vPoly := FItemShapeModel.Figure.AsPoly;
+    SetLength(vPoly, Length(vPoly) + 1);
+    vPoly[High(vPoly)].X := 0;
+    vPoly[High(vPoly)].Y := 0;
+    FItemShapeModel.SetData(vPoly);
+    FItemShapeModel.RaiseUpdateEvent;
+  end;
 end;
 
 procedure TItemShaperPresenter.ChangeLockedPoint(const ANewPoint: TPointF);
@@ -103,12 +111,30 @@ begin
 
 end;
 
+procedure TItemShaperPresenter.DelPoint;
+var
+  vPoly: TPolygon;
+  i: Integer;
+begin
+  if FItemShapeModel.Figure.Kind = TNewFigure.cfPoly then
+  begin
+    vPoly := FItemShapeModel.Figure.AsPoly;
+    if (FLockedIndex >= 0) and (Length(vPoly) > 3) then
+    begin
+      for i := FLockedIndex to High(vPoly) - 1 do
+        vPoly[i] := vPoly[i + 1];
+      SetLength(vPoly, Length(vPoly) - 1);
+      FItemShapeModel.SetData(vPoly);
+      FItemShapeModel.RaiseUpdateEvent;
+      FLockedIndex := -1;
+    end;
+
+  end;
+end;
+
 destructor TItemShaperPresenter.Destroy;
 begin
   FItemShapeModel := nil;
-//  if FShape <> nil then
-//    FShape.Free;
-
   inherited;
 end;
 

@@ -81,7 +81,8 @@ end;
 
 procedure TItemObjecterPresenter.AddPoint;
 begin
-
+  if FSelectedShape <> nil then
+    FSelectedShape.AddPoint;
 end;
 
 procedure TItemObjecterPresenter.AddPoly;
@@ -146,7 +147,8 @@ end;
 
 procedure TItemObjecterPresenter.DelPoint;
 begin
-
+  if FSelectedShape <> nil then
+    FSelectedShape.DelPoint;
 end;
 
 destructor TItemObjecterPresenter.Destroy;
@@ -317,7 +319,7 @@ begin
   if ASender = nil then
     Exit;
 
-  vModel := TItemObjectModel(ASender);
+  vModel := FItemObjectModel;
 
   for i := 0 to FShapes.Count - 1 do
     FShapes[i].Free;
