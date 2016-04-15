@@ -5,7 +5,7 @@ interface
 uses
   System.Types, System.SysUtils, System.Generics.Collections, FMX.Objects,
   uBasePresenterIncapsulator,
-  uIView, uSSBTypes, uItemBasePresenter, uClasses,
+  uIView, uSSBTypes, uItemBasePresenter, uClasses, uIItemPresenter,
   uIItemView, uItemImagerPresenter, uSSBModels, uMVPFrameWork,
   uEasyDevice;
 
@@ -37,6 +37,7 @@ type
 //    procedure JustifyPoints(vItem: TItemImagerPresenter; var vRect: TRectF);
     procedure JustifyPoints(AItem: TItemImagerPresenter);
     procedure JustifyAnchors(AItem: TItemImagerPresenter);
+
   public
     procedure AddImg; overload;
     procedure AddImg(const AModel: TItemImageModel); overload;
@@ -94,7 +95,7 @@ var
   vViewItem: IItemView;
   vItemPresenter: TItemImagerPresenter;
 begin
-    // Creating View
+     Creating View
     vViewItem := View.AddElement;
 
     // Creating Presenter
@@ -105,13 +106,14 @@ begin
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
 
-    FItems.Add(TItemImagerPresenter(vItemPresenter), vViewItem);
+    FItems.Add(vItemPresenter, vViewItem);
 end;
 
 constructor TImagerPresenter.Create(AView: IView; AModel: TSSBModel);
 begin
   inherited Create(AView, AModel);
   FItems := TDictionary<TItemImagerPresenter, IItemView>.Create;
+//  FItems := TDictionary<IItemPresenter, IItemView>.Create;
   FCaptureMode := cmNone;
 end;
 
@@ -131,11 +133,13 @@ var
   vX: Integer;
   vY: Integer;
   vItem: TItemImagerPresenter;
+//  vIItem: IInterface;
   vRect: TRectF;
 begin
   vRect := RectF(AItem.Rect.TopLeft.X, AItem.Rect.TopLeft.Y, AItem.Rect.BottomRight.X, AItem.Rect.BottomRight.Y);
   for vItem in FItems.Keys do
   begin
+//    vItem := TItemImagerPresenter(vIItem);
     if vItem <> AItem then
     begin
       with vRect do
@@ -159,11 +163,13 @@ var
   vX: Integer;
   vY: Integer;
   vItem: TItemImagerPresenter;
+//  vIItem: IInterface;
   vRect: TRectF;
 begin
   vRect := RectF(AItem.Rect.TopLeft.X, AItem.Rect.TopLeft.Y, AItem.Rect.BottomRight.X, AItem.Rect.BottomRight.Y);
   for vItem in FItems.Keys do
   begin
+   // vItem := TItemImagerPresenter(vIItem);
     if vItem <> AItem then
     begin
       with vRect do

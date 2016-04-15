@@ -8,6 +8,7 @@ uses
 
 type
   IMainView = interface(IView)
+    ['{4A49079D-0CC3-4390-91DC-480467A01B3F}']
     function AddElement: IItemView;
     procedure RemoveElement(const AElement: IItemView);
     procedure SelectElement(const AElement: IItemView);

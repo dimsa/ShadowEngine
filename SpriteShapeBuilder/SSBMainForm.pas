@@ -72,7 +72,7 @@ type
 
 var
   SSBForm: TSSBForm;
-    SSB: TSpriteShapeBuilder;
+  SSB: TSpriteShapeBuilder;
 
 implementation
 

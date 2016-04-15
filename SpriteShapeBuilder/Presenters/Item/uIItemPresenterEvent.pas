@@ -7,6 +7,7 @@ uses
 
 type
   IPresenterEvent = interface
+    ['{EB8751E5-2A39-4696-9A52-A65A8F8420AC}']
     function GetOnMouseDown: TNotifyEvent;
     procedure SetOnMouseDown(AHandler: TNotifyEvent);
     function GetOnMouseUp: TNotifyEvent;

@@ -163,6 +163,7 @@ var
   vImageElement: TItemImageModel;
  // vTmp: IInterface;
 begin
+  try
   vStream := TStreamUtil.Create(AFileName);
   with vStream do
   begin
@@ -193,25 +194,25 @@ begin
       ReadStr('Resource');
 
       vImageElement := FModel.AddImageElement;
-//      vTmp := vImageElement;
-//      vImageElement.ReadFromStream(vStream);
-  //    vTmp := nil;
-//      vTmp := FImager;
-     // Imager.AddImg(vImageElement);
+      vImageElement.ReadFromStream(vStream);
+   //   Imager.AddImg(vImageElement);
     end;
 
-//    ReadStr('ResourceFileName');
-//    FResourceFileName := ReadStr;
-//    ReadStr('Objects');
-//    vN := ReadInt;
-
-//    for i := 0 to vN - 1 do
-//      FModel.Elements[i].ReadFromStream(vStream);
+    ReadStr('ResourceFileName');
+    FResourceFileName := ReadStr;
+    ReadStr('Objects');
+    vN := ReadInt;
+//
+    for i := 0 to vN - 1 do
+      FModel.Elements[i].ReadFromStream(vStream);
 
     Stop;
   end;
 
-  vStream.Free;
+  finally
+    vStream.Free;
+  end;
+
 
   {Look at SSBProjectFormatDescription.txt !!!}
 end;

@@ -7,6 +7,7 @@ uses
 
 type
   IItemView = interface
+    ['{155BC853-07A4-437B-B35D-0071D84083B7}']
     procedure AssignBitmap(ABmp: TBitmap);
     function GetWidth: Integer;
     procedure SetWidth(AValue: Integer);

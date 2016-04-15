@@ -132,8 +132,8 @@ var
 begin
   vModel := TItemImageModel.Create(OnUpdateImageObject);
   FImageElements.Add(vModel);
-  Result := vModel;
   RaiseUpdateEvent;
+  Result := vModel;
 end;
 
 constructor TSSBModel.Create(const AUpdateHandler: TNotifyEvent);
@@ -507,15 +507,19 @@ var
   vInt: Int64;
   vPos, vSize: TPoint;
   vBmp: TBitmap;
+  vX, vY: Integer;
 begin
   with AStream do
   begin
     vInt := ReadInt;
+    vX := ReadInt;
+    vY := ReadInt;
     vStream := AStream.ReadStream(vInt);
     vStream.Position := 0;
 
-    vBmp := TBitmap.Create(500,500);
+    vBmp := TBitmap.Create(vX,vY);
     vBmp.LoadFromStream(vStream);
+    vBmp.SaveToFile('c:\oracle\whatigot.bmp');
 
     if FOriginalImage = nil then
       FOriginalImage := TImage.Create(nil);
@@ -584,6 +588,8 @@ begin
     vStream.Position := 0;
 
     WriteInt(vStream.Size);
+    WriteInt(vBmp.Width);
+    WriteInt(vBmp.Height);
     WriteStream(vStream);
 
     vStream.Free;

@@ -7,7 +7,7 @@ uses
 
 type
 
-  TStreamString = AnsiString;
+  TStreamString = Utf8String;
 
   TStreamUtilStatus = (usUnknown, usRead, usWrite);
 
@@ -21,7 +21,7 @@ type
     procedure TestCanRead;
 
   public
-      procedure Test(ABmp: TBitmap);
+    procedure Test(ABmp: TBitmap);
     destructor Destroy; override;
     constructor Create(const AFileName: TStreamString);
     procedure StartRead;
@@ -173,9 +173,9 @@ procedure TStreamUtil.Stop;
 begin
   if FFileStream <> nil then
   begin
-    FFileStream.Free;
-    FFileStream := nil;
-//  FreeAndNil(FFileStream);
+   // FFileStream.Free;
+ //   FFileStream := nil;
+    FreeAndNil(FFileStream);
   end;
 
   FStatus := usUnknown;
