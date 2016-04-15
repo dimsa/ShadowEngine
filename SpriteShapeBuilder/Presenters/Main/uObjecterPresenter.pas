@@ -44,7 +44,8 @@ type
     procedure HideShapes;
     procedure AddPoly;
     procedure AddCircle;
-    procedure AddObj;
+    procedure AddObj; overload;
+    procedure AddObj(const AObject: TItemObjectModel); overload;
     procedure DelObj;
     procedure MouseMove;
     procedure MouseUp;
@@ -63,7 +64,6 @@ var
   vViewItem: IItemView;
   vItemPresenter: TItemObjecterPresenter;
   vModel: TItemObjectModel;
-//  vItemPresenter: TItemPresenterProxy;
 begin
     // Creating View
     vViewItem := View.AddElement;
@@ -76,6 +76,30 @@ begin
 
     vModel.Width := 50;
     vModel.Height:= 50;
+
+    vViewItem.Presenter := vItemPresenter;
+    vItemPresenter.OnMouseDown := DoMouseDown;
+    vItemPresenter.OnMouseUp := DoMouseUp;
+    vItemPresenter.OnMouseMove := DoMouseMove;
+
+    FItems.Add(TItemObjecterPresenter(vItemPresenter), vViewItem);
+    try
+      vItemPresenter.Repaint;
+    except
+      View.RemoveElement(vViewItem);
+    end;
+end;
+
+procedure TObjecterPresenter.AddObj(const AObject: TItemObjectModel);
+var
+  vViewItem: IItemView;
+  vItemPresenter: TItemObjecterPresenter;
+begin
+    // Creating View
+    vViewItem := View.AddElement;
+
+    // Creating Presenter
+    vItemPresenter := TItemObjecterPresenter.Create(vViewItem, AObject);
 
     vViewItem.Presenter := vItemPresenter;
     vItemPresenter.OnMouseDown := DoMouseDown;

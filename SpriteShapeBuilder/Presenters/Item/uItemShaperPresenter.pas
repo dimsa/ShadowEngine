@@ -209,9 +209,6 @@ end;
 procedure TItemShaperPresenter.MouseDown;
 begin
   inherited;
-//  FColor := Random(MaxLongInt*2);
-
-
   if Assigned(FOnMouseDown) then
     FOnMouseDown(Self);
 end;

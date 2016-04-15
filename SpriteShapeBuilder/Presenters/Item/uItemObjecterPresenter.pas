@@ -285,15 +285,39 @@ begin
 end;
 
 procedure TItemObjecterPresenter.OnModelUpdate(ASender: TObject);
+var
+  vModel: TItemObjectModel;
+  vShape: TItemShaperPresenterFriend;
+  i: Integer;
 begin
   FView.Width := FItemObjectModel.Width;
   FView.Height:= FItemObjectModel.Height;
   FView.Left := FItemObjectModel.Position.X;
   FView.Top := FItemObjectModel.Position.Y;
+
+
+  if ASender = nil then
+    Exit;
+
+  vModel := TItemObjectModel(ASender);
+
+  for i := 0 to FShapes.Count - 1 do
+    FShapes[i].Free;
+
+  FShapes.Clear;
+
+  for i := 0 to vModel.ShapesList.Count - 1 do
+  begin
+    vShape := TItemShaperPresenterFriend.Create(FView, vModel.ShapesList[i]);
+    FShapes.Add(vShape);
+  end;
+
+  RepaintShapes;
 end;
 
 procedure TItemObjecterPresenter.Repaint;
 begin
+  OnModelUpdate(nil);
   RepaintShapes;
 end;
 

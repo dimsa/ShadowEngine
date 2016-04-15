@@ -102,13 +102,9 @@ begin
     vItemPresenter := TItemImagerPresenter.Create(vViewItem, AModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
     vViewItem.Presenter := vItemPresenter;
 
-    AModel.OriginalImage := AModel.OriginalImage;
-
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
-
-
 
     FItems.Add(vItemPresenter, vViewItem);
 end;

@@ -3,8 +3,8 @@ unit uSSBModels;
 interface
 
 uses
-   FMX.Graphics, System.Generics.Collections, System.Classes, {$I 'Utils\DelphiCompatability.inc'}
-  System.Math, System.JSON, System.SysUtils,
+  FMX.Graphics, System.Generics.Collections, System.Classes, {$I 'Utils\DelphiCompatability.inc'}
+  System.Math, System.JSON, System.SysUtils, FMX.Types,
   FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, uStreamUtil,
   uNamedList, uClasses, uSSBTypes, uMVPFrameWork, uNewFigure, uIntersectorClasses;
 
@@ -23,7 +23,7 @@ type
     procedure SetData(const AData: uIntersectorClasses.TCircle); overload;// Трактует данные в зависимости от своего типа
     function AsJson: TJSONObject;
     procedure WriteToStream(AStream: TStreamUtil);
-
+    procedure ReadFromStream(AStream: TStreamUtil);
     constructor CreateCircle(const AUpdateHandler: TNotifyEvent);
     constructor CreatePoly(const AUpdateHandler: TNotifyEvent);
     destructor Destroy; override;
@@ -49,7 +49,7 @@ type
     property Height: Integer read FHeight write SetHeight;
     property Position: TPoint read FPosition write SetPosition;
     property Group: string read FGroup write SetGroup;
-    property ShapesList: TList<TItemShapeModel> write SetShapesList;
+    property ShapesList: TList<TItemShapeModel> read FShapes write SetShapesList;
     procedure AddShape(const AShape: TItemShapeModel);
     procedure WriteToStream(AStream: TStreamUtil);
     procedure ReadFromStream(AStream: TStreamUtil);
@@ -295,8 +295,35 @@ begin
 end;
 
 procedure TItemObjectModel.ReadFromStream(AStream: TStreamUtil);
+var
+  i: Integer;
+  vN: Int64;
+  vShape: TItemShapeModel;
 begin
+  with AStream do
+  begin
+    ReadStr('ObjectName');
+    FName := ReadStr;
+    ReadStr('ObjectGroup');
+    FGroup := ReadStr;
+    ReadStr('ObjectBody');
+    ReadStr('Position');
+    FPosition.X := ReadInt;
+    FPosition.Y := ReadInt;
+    ReadStr('Size');
+    FWidth := ReadInt;
+    FHeight := ReadInt;
 
+    ReadStr('ObjectFigures');
+    vN := ReadInt;
+    for i := 0 to vN - 1 do
+    begin
+      vShape := TItemShapeModel.Create();
+      vShape.ReadFromStream(AStream);
+      FShapes.Add(vShape);
+    end;
+    RaiseUpdateEvent;
+  end;
 end;
 
 procedure TItemObjectModel.SetGroup(const Value: string);
@@ -428,6 +455,47 @@ begin
   Result := Round(FFigure.TempMaxRadius);
 end;
 
+procedure TItemShapeModel.ReadFromStream(AStream: TStreamUtil);
+var
+  i: Integer;
+  vPoly: TPolygon;
+  vS: String;
+  vCircle: TCircle;
+  vN: Int64;
+begin
+  with AStream do
+  begin
+    ReadStr('FigureType');
+    vS := ReadStr;
+
+    if LowerCase(vS) = 'circle' then
+    begin
+      FFigure := TNewFigure.Create(TNewFigure.cfCircle);
+      ReadStr('Center');
+      vCircle.X := ReadInt;
+      vCircle.Y := ReadInt;
+      ReadStr('Radius');
+      vCircle.Radius := ReadInt;
+      FFigure.SetData(vCircle);
+    end;
+
+    if LowerCase(vS) = 'poly' then
+    begin
+      FFigure := TNewFigure.Create(TNewFigure.cfPoly);
+      vN := ReadInt;
+      SetLength(vPoly, vN);
+
+      for i := 0 to High(vPoly) do
+      begin
+        vPoly[i].X := ReadInt;
+        vPoly[i].Y := ReadInt;
+      end;
+      FFigure.SetData(vPoly);
+    end;
+  end;
+  RaiseUpdateEvent;
+end;
+
 procedure TItemShapeModel.SetData(const AData: TPolygon);
 begin
   FFigure.SetData(AData);
@@ -519,7 +587,6 @@ begin
 
     vBmp := TBitmap.Create(vX,vY);
     vBmp.LoadFromStream(vStream);
-    vBmp.SaveToFile('c:\oracle\whatigot.bmp');
 
     if FOriginalImage = nil then
       FOriginalImage := TImage.Create(nil);
@@ -535,6 +602,8 @@ begin
     ReadStr('Size');
     vSize := Point(ReadInt, ReadInt);
     FRect := System.Types.Rect(vPos.X, vPos.Y, vPos.X + vSize.X, vPos.Y + vSize.Y);
+
+    RaiseUpdateEvent;
   end;
 
 end;
@@ -575,6 +644,7 @@ procedure TItemImageModel.WriteToStream(AStream: TStreamUtil);
 var
   vStream: TMemoryStream;
   vBmp: TBitmap;
+  a: TPixelFormat;
 begin
   with AStream do
   begin

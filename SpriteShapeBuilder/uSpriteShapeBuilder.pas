@@ -161,7 +161,7 @@ var
   vS, vSTmp, vPar: string;
   vN: Integer;
   vImageElement: TItemImageModel;
- // vTmp: IInterface;
+  vElement: TItemObjectModel;
 begin
   try
   vStream := TStreamUtil.Create(AFileName);
@@ -196,6 +196,7 @@ begin
       vImageElement := FModel.AddImageElement;
       vImageElement.ReadFromStream(vStream);
       Imager.AddImg(vImageElement);
+      vImageElement.RaiseUpdateEvent;
     end;
 
     ReadStr('ResourceFileName');
@@ -204,7 +205,13 @@ begin
     vN := ReadInt;
 
     for i := 0 to vN - 1 do
-      FModel.Elements[i].ReadFromStream(vStream);
+    begin
+      vElement := FModel.AddElement;
+      vElement.ReadFromStream(vStream);
+      Objecter.AddObj(vElement);
+      Objecter.ShowShapes;
+      vElement.RaiseUpdateEvent;
+    end;
 
     Stop;
   end;
@@ -283,38 +290,6 @@ begin
     Objecter.ShowShapes
   else
     Objecter.HideShapes;
-//  FPanels[Value].Visible := True;
 end;
 
 end.
-
-
-{
-
-100% workable streamread
-
-//  vBmp := TBitmap.Create;
-//  vBmp.LoadFromFile(AFileName);
-//  vTmp := TMemoryStream.Create;
-//  vBmp.SaveToStream(vTmp);
-//  vStream.StartWrite;
-//  vStream.WriteStr('123abc');
-//  vStream.WriteInt(vTmp.Size);
-//  vStream.WriteStream(vTmp);
-//  vStream.Stop;
-//  vBmp.Free;
-//  vTmp.Free;
-//
-//  vStream.StartRead;
-//  vStream.ReadStr('123abc');
-//  i := vStream.ReadInt;
-//  vTmp := vStream.ReadStream(i);
-//  vTmp.Position := 0;
-//  vBmp := TBitmap.Create;
-//  vBmp.LoadFromStream(vTmp);
-//  vBmp.SaveToFile(AFileName+'123.bmp');
-//  vStream.Free;
-//
-// Exit;
-
-}
