@@ -10,9 +10,7 @@ uses
 type
   TItemShaperPresenter = class(TItemBasePresenter)
   private
-//    FShape: TNewFigure;
     FItemShapeModel: TItemShapeModel;
-    FColor: TColor;
     FLockedIndex: Integer;
     FLockedPoint: TPointF;
     function GetHeight: Integer;
@@ -30,8 +28,9 @@ type
       const ADistance: Double; const ALock: Boolean): Boolean;
     procedure ChangeLockedPoint(const ANewPoint: TPointF);
     procedure TranslateFigure(const ATranslate: TPointF);
-    procedure Repaint(ABmp: TBitmap);
+    procedure Repaint(ABmp: TBitmap; const AColor: TColor = TAlphaColorRec.Aliceblue);
   public
+    property Model: TItemShapeModel read FItemShapeModel;
     procedure AddPoint;
     procedure MouseDown; override;
     procedure MouseUp; override;
@@ -95,7 +94,7 @@ constructor TItemShaperPresenter.Create(const AItemView: IItemView;
 begin
   inherited Create(AItemView);
   FItemShapeModel := AItemShapeModel;
-  FColor := TAlphaColorRec.Aliceblue;
+  //FColor := TAlphaColorRec.Aliceblue;
 end;
 
 procedure TItemShaperPresenter.Delete;
@@ -227,11 +226,11 @@ begin
     FOnMouseUp(Self)
 end;
 
-procedure TItemShaperPresenter.Repaint(ABmp: TBitmap);
+procedure TItemShaperPresenter.Repaint(ABmp: TBitmap; const AColor: TColor = TAlphaColorRec.Aliceblue);
 begin
   ABmp.Canvas.BeginScene();
   FItemShapeModel.Figure.TempTranslate(PointF(ABmp.Width / 2, ABmp.Height / 2));
-  FItemShapeModel.Figure.Draw(ABmp.Canvas, FColor{TAlphaColorRec.Aqua});
+  FItemShapeModel.Figure.Draw(ABmp.Canvas, AColor{TAlphaColorRec.Aqua});
 
   if FLockedIndex >= 0 then
     FItemShapeModel.Figure.DrawPoint(ABmp.Canvas, FLockedPoint, TAlphaColorRec.Red);

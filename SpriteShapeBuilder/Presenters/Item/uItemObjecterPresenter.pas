@@ -14,9 +14,9 @@ type
 
   TItemObjecterPresenter = class(TItemBasePresenter)
   private
+    FItemObjectModel: TItemObjectModel;
     FBmp: TBitmap; // Picture of object with Shapes
     FShapes: TList<TItemShaperPresenterFriend>;
-    FItemObjectModel: TItemObjectModel;
     FIsShapeVisible: Boolean;
     FCaptureType: TCaptureType;
     FStartCapturePoint: TPointF;
@@ -40,10 +40,13 @@ type
     property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
     property Rect: TRectF read GetRect write SetRect;
+    property Model: TItemObjectModel read FItemObjectModel;
     procedure ShowShapes;
     procedure HideShapes;
     procedure AddPoly;
     procedure AddCircle;
+    procedure AddPoint;
+    procedure DelPoint;
     procedure Repaint;
     procedure MouseDown; override;
     procedure MouseUp; override;
@@ -74,6 +77,11 @@ begin
   FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
   RepaintShapes;
+end;
+
+procedure TItemObjecterPresenter.AddPoint;
+begin
+
 end;
 
 procedure TItemObjecterPresenter.AddPoly;
@@ -128,7 +136,16 @@ end;
 
 procedure TItemObjecterPresenter.Delete;
 begin
-  inherited;
+  if FSelectedShape <> nil then
+  begin
+    FShapes.Remove(FSelectedShape);
+    Model.DelShape(FSelectedShape.Model);
+    FSelectedShape := nil;
+  end;
+end;
+
+procedure TItemObjecterPresenter.DelPoint;
+begin
 
 end;
 
@@ -139,6 +156,7 @@ begin
   for i := 0 to FShapes.Count - 1 do
     FShapes[i].Free;
   FShapes.Free;
+
   inherited;
 end;
 
@@ -327,6 +345,9 @@ var
 begin
   FBmp := Bitmap;
   for i := 0 to FShapes.Count - 1 do
+  if FShapes[i] = FSelectedShape then
+    FShapes[i].Repaint(FBmp, TAlphaColorRec.Aqua)
+  else
     FShapes[i].Repaint(FBmp);
 
   FView.AssignBitmap(FBmp);

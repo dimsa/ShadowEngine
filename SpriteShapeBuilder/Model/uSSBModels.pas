@@ -51,6 +51,7 @@ type
     property Group: string read FGroup write SetGroup;
     property ShapesList: TList<TItemShapeModel> read FShapes write SetShapesList;
     procedure AddShape(const AShape: TItemShapeModel);
+    procedure DelShape(const AShape: TItemShapeModel);
     procedure WriteToStream(AStream: TStreamUtil);
     procedure ReadFromStream(AStream: TStreamUtil);
     function AsJson: TJSONObject;
@@ -108,6 +109,8 @@ type
     property Image: TBitmap read FBitmap;
     function AddImageElement: TItemImageModel;
     function AddElement: TItemObjectModel;
+    procedure DelElement(const AElement: TItemObjectModel);
+    procedure DelImage(const AImageElement: TItemImageModel);
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
     destructor Destroy; override;
 end;
@@ -143,6 +146,20 @@ begin
   FBitmap := TBitmap.Create;
   FElements := TList<TItemObjectModel>.Create;
   FImageElements := TList<TItemImageModel>.Create;
+end;
+
+procedure TSSBModel.DelElement(const AElement: TItemObjectModel);
+begin
+  FElements.Remove(AElement);
+  AElement.Free;
+  RaiseUpdateEvent;
+end;
+
+procedure TSSBModel.DelImage(const AImageElement: TItemImageModel);
+begin
+  FImageElements.Remove(AImageElement);
+  AImageElement.Free;
+  RaiseUpdateEvent;
 end;
 
 destructor TSSBModel.Destroy;
@@ -275,6 +292,13 @@ begin
   inherited;
 
   FShapes := TList<TItemShapeModel>.Create;
+end;
+
+procedure TItemObjectModel.DelShape(const AShape: TItemShapeModel);
+begin
+  FShapes.Remove(AShape);
+  AShape.Free;
+  RaiseUpdateEvent;
 end;
 
 destructor TItemObjectModel.Destroy;

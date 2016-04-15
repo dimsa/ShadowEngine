@@ -41,6 +41,8 @@ type
     EdtShapeBtn: TCornerButton;
     Background: TImage;
     GlowEffect1: TGlowEffect;
+    DelPointBtn: TCornerButton;
+    AddPointBtn: TCornerButton;
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
@@ -63,6 +65,9 @@ type
       Shift: TShiftState; X, Y: Single);
     procedure AddCircleBtnClick(Sender: TObject);
     procedure AddPolyBtnClick(Sender: TObject);
+    procedure DelShapeBtnClick(Sender: TObject);
+    procedure AddPointBtnClick(Sender: TObject);
+    procedure DelPointBtnClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -91,6 +96,11 @@ end;
 procedure TSSBForm.AddPictureBtnClick(Sender: TObject);
 begin
   SSB.Imager.AddImg;
+end;
+
+procedure TSSBForm.AddPointBtnClick(Sender: TObject);
+begin
+  SSB.Objecter.AddPoint;
 end;
 
 procedure TSSBForm.AddPolyBtnClick(Sender: TObject);
@@ -143,6 +153,16 @@ end;
 procedure TSSBForm.DelPictureBtnClick(Sender: TObject);
 begin
   SSB.Imager.DelImg;
+end;
+
+procedure TSSBForm.DelPointBtnClick(Sender: TObject);
+begin
+  SSB.Objecter.DelPoint;
+end;
+
+procedure TSSBForm.DelShapeBtnClick(Sender: TObject);
+begin
+  SSB.Objecter.DelShape;
 end;
 
 procedure TSSBForm.FormCreate(Sender: TObject);

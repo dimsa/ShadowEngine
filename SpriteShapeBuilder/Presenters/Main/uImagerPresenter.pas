@@ -118,8 +118,17 @@ begin
 end;
 
 procedure TImagerPresenter.DelImg;
+var
+  vView: IItemView;
 begin
-
+  if FSelected <> nil then
+  begin
+    Model.DelImage(FSelected.Model);
+    vView := FItems[FSelected];
+    View.RemoveElement(vView);
+    FItems.Remove(FSelected);
+    FSelected := nil;
+  end;
 end;
 
 destructor TImagerPresenter.Destroy;

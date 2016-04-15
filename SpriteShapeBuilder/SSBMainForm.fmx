@@ -2,7 +2,7 @@ object SSBForm: TSSBForm
   Left = 0
   Top = 0
   Caption = 'SSBForm'
-  ClientHeight = 549
+  ClientHeight = 576
   ClientWidth = 640
   FormFactor.Width = 320
   FormFactor.Height = 480
@@ -12,7 +12,7 @@ object SSBForm: TSSBForm
   object MenuPanel: TPanel
     Align = MostLeft
     Size.Width = 117.791412353515600000
-    Size.Height = 549.000000000000000000
+    Size.Height = 576.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 3
     object Selected: TImage
@@ -26,10 +26,11 @@ object SSBForm: TSSBForm
       Size.PlatformDefault = False
     end
     object InfoLbl: TLabel
+      Anchors = [akLeft, akBottom]
       Position.X = 8.000000000000000000
-      Position.Y = 320.000000000000000000
+      Position.Y = 364.000000000000000000
       Size.Width = 98.000000000000000000
-      Size.Height = 97.000000000000000000
+      Size.Height = 87.000000000000000000
       Size.PlatformDefault = False
       Text = 
         'Double Click on Element to Edit and Double Click to Poly Point t' +
@@ -39,7 +40,7 @@ object SSBForm: TSSBForm
   object SaveProjectBtn: TCornerButton
     Anchors = [akLeft, akBottom]
     Position.X = 8.000000000000000000
-    Position.Y = 509.000000000000000000
+    Position.Y = 536.000000000000000000
     Sides = [Top, Left, Bottom, Right]
     Size.Width = 97.000000000000000000
     Size.Height = 33.000000000000000000
@@ -53,7 +54,7 @@ object SSBForm: TSSBForm
   object LoadProjectBtn: TCornerButton
     Anchors = [akLeft, akBottom]
     Position.X = 8.000000000000000000
-    Position.Y = 468.000000000000000000
+    Position.Y = 495.000000000000000000
     Sides = [Top, Left, Bottom, Right]
     Size.Width = 97.000000000000000000
     Size.Height = 33.000000000000000000
@@ -69,14 +70,14 @@ object SSBForm: TSSBForm
     Anchors = [akLeft, akTop, akRight, akBottom]
     Position.X = 117.791412353515600000
     Size.Width = 523.000000000000000000
-    Size.Height = 549.000000000000000000
+    Size.Height = 576.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 4
     object Instruments: TPanel
       Position.X = -110.000000000000000000
       Position.Y = 113.000000000000000000
       Size.Width = 96.000000000000000000
-      Size.Height = 193.000000000000000000
+      Size.Height = 232.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
       object InsrumentTabs: TLayout
@@ -403,7 +404,7 @@ object SSBForm: TSSBForm
           Size.Height = 33.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 3
-          Text = 'Add Object'
+          Text = 'Del Object'
           XRadius = 3.000000000000000000
           YRadius = 3.000000000000000000
           OnClick = DelObjectBtnClick
@@ -425,7 +426,7 @@ object SSBForm: TSSBForm
         Position.X = 192.000000000000000000
         Position.Y = 32.000000000000000000
         Size.Width = 96.000000000000000000
-        Size.Height = 161.000000000000000000
+        Size.Height = 200.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 4
         object AddCircleBtn: TCornerButton
@@ -435,7 +436,7 @@ object SSBForm: TSSBForm
           Size.Width = 96.000000000000000000
           Size.Height = 33.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 6
+          TabOrder = 8
           Text = 'Add Circle'
           XRadius = 3.000000000000000000
           YRadius = 3.000000000000000000
@@ -448,7 +449,7 @@ object SSBForm: TSSBForm
           Size.Width = 96.000000000000000000
           Size.Height = 33.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 5
+          TabOrder = 7
           Text = 'Add Poly'
           XRadius = 3.000000000000000000
           YRadius = 3.000000000000000000
@@ -456,7 +457,7 @@ object SSBForm: TSSBForm
         end
         object DelShapeBtn: TCornerButton
           Align = Horizontal
-          Position.Y = 123.000000000000000000
+          Position.Y = 160.000000000000000000
           Sides = [Top, Left, Bottom, Right]
           Size.Width = 96.000000000000000000
           Size.Height = 33.000000000000000000
@@ -465,6 +466,7 @@ object SSBForm: TSSBForm
           Text = 'Delete Shape'
           XRadius = 3.000000000000000000
           YRadius = 3.000000000000000000
+          OnClick = DelShapeBtnClick
         end
         object EdtShapeBtn: TCornerButton
           Align = Horizontal
@@ -473,10 +475,35 @@ object SSBForm: TSSBForm
           Size.Width = 96.000000000000000000
           Size.Height = 33.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 4
+          TabOrder = 6
           Text = 'Edit Shape'
           XRadius = 3.000000000000000000
           YRadius = 3.000000000000000000
+        end
+        object DelPointBtn: TCornerButton
+          Position.Y = 122.000000000000000000
+          Sides = [Top, Left, Bottom, Right]
+          Size.Width = 45.000000000000000000
+          Size.Height = 33.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 5
+          Text = '- Pnt'
+          XRadius = 3.000000000000000000
+          YRadius = 3.000000000000000000
+          OnClick = DelPointBtnClick
+        end
+        object AddPointBtn: TCornerButton
+          Position.X = 51.000000000000000000
+          Position.Y = 122.000000000000000000
+          Sides = [Top, Left, Bottom, Right]
+          Size.Width = 45.000000000000000000
+          Size.Height = 33.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 4
+          Text = '+ Pnt'
+          XRadius = 3.000000000000000000
+          YRadius = 3.000000000000000000
+          OnClick = AddPointBtnClick
         end
       end
     end
@@ -486,7 +513,7 @@ object SSBForm: TSSBForm
         end>
       Align = Client
       Size.Width = 523.000000000000000000
-      Size.Height = 549.000000000000000000
+      Size.Height = 576.000000000000000000
       Size.PlatformDefault = False
       OnMouseDown = BackgroundMouseDown
       OnMouseMove = BackgroundMouseMove
@@ -502,7 +529,7 @@ object SSBForm: TSSBForm
   object SaveForEngineBtn: TCornerButton
     Anchors = [akLeft, akBottom]
     Position.X = 8.000000000000000000
-    Position.Y = 428.000000000000000000
+    Position.Y = 455.000000000000000000
     Sides = [Top, Left, Bottom, Right]
     Size.Width = 97.000000000000000000
     Size.Height = 33.000000000000000000
@@ -518,7 +545,7 @@ object SSBForm: TSSBForm
     Top = 8
   end
   object GlowEffect1: TGlowEffect
-    Softness = 0.400000005960464400
+    Softness = 0.400000005960464500
     GlowColor = claGold
     Opacity = 0.899999976158142100
   end

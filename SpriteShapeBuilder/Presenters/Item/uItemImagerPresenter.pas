@@ -28,6 +28,7 @@ type
     property Position: TPoint read GetPosition write SetPosition;
     property Rect: TRectF read GetRect write SetRect;
     property Image: TImage read GetImage write SetImage;
+    property Model: TItemImageModel read FItemImageModel;
 
     procedure Delete; override;
     procedure MouseDown; override;

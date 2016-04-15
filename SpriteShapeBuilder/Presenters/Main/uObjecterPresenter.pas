@@ -34,6 +34,7 @@ type
     FItems: TDictionary<TItemObjecterPresenter, IItemView>;
     function GetView: IMainView;
     property View: IMainView read GetView;
+
     // Методы на клик
     procedure DoMouseUp(ASender: TObject);
     procedure DoMouseDown(ASender: TObject);
@@ -45,8 +46,11 @@ type
     procedure AddPoly;
     procedure AddCircle;
     procedure AddObj; overload;
-    procedure AddObj(const AObject: TItemObjectModel); overload;
+    procedure AddObj(const AObject: TItemObjectModel); overload; // Need to move to protected
     procedure DelObj;
+    procedure AddPoint;
+    procedure DelPoint;
+    procedure DelShape;
     procedure MouseMove;
     procedure MouseUp;
     procedure MouseDown;
@@ -114,6 +118,12 @@ begin
     end;
 end;
 
+procedure TObjecterPresenter.AddPoint;
+begin
+  if FSelected <> nil then
+    FSelected.AddPoint;
+end;
+
 procedure TObjecterPresenter.AddPoly;
 begin
   if FSelected <> nil then
@@ -134,7 +144,29 @@ begin
 end;
 
 procedure TObjecterPresenter.DelObj;
+var
+  vView: IItemView;
 begin
+  if FSelected <> nil then
+  begin
+    Model.DelElement(FSelected.Model);
+    vView := FItems[FSelected];
+    View.RemoveElement(vView);
+    FItems.Remove(FSelected);
+    FSelected := nil;
+  end;
+end;
+
+procedure TObjecterPresenter.DelPoint;
+begin
+  if FSelected <> nil then
+    FSelected.DelPoint;
+end;
+
+procedure TObjecterPresenter.DelShape;
+begin
+  if FSelected <> nil then
+    FSelected.Delete;
 
 end;
 

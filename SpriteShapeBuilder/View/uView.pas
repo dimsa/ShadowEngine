@@ -161,12 +161,17 @@ end;
 procedure TView.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
-//  Sender.
+
 end;
 
 procedure TView.RemoveElement(const AElement: IItemView);
+var
+  vItem: TItemView;
 begin
+  FEffect.Parent := nil;
   FElements.Remove(AElement);
+  vItem := TItemView(AElement);
+  vItem.Image.Free;
 end;
 
 procedure TView.SelectElement(const AElement: IItemView);
