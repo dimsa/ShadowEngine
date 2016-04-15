@@ -82,7 +82,10 @@ end;
 procedure TItemObjecterPresenter.AddPoint;
 begin
   if FSelectedShape <> nil then
+  begin
     FSelectedShape.AddPoint;
+    FSelectedShape := nil;
+  end;
 end;
 
 procedure TItemObjecterPresenter.AddPoly;
@@ -148,7 +151,10 @@ end;
 procedure TItemObjecterPresenter.DelPoint;
 begin
   if FSelectedShape <> nil then
+  begin
     FSelectedShape.DelPoint;
+    FSelectedShape := nil;
+  end;
 end;
 
 destructor TItemObjecterPresenter.Destroy;

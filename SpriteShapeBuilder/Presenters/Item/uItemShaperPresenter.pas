@@ -125,8 +125,8 @@ begin
         vPoly[i] := vPoly[i + 1];
       SetLength(vPoly, Length(vPoly) - 1);
       FItemShapeModel.SetData(vPoly);
-      FItemShapeModel.RaiseUpdateEvent;
       FLockedIndex := -1;
+      FItemShapeModel.RaiseUpdateEvent;
     end;
 
   end;
