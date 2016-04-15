@@ -167,7 +167,6 @@ procedure TObjecterPresenter.DelShape;
 begin
   if FSelected <> nil then
     FSelected.Delete;
-
 end;
 
 procedure TObjecterPresenter.DoMouseDown(ASender: TObject);

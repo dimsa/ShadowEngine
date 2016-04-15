@@ -199,7 +199,9 @@ end;
 procedure TSSBForm.SaveForEngineBtnClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
+  begin
     SSB.SaveForEngine(SaveDialog.FileName);
+  end;
 end;
 
 procedure TSSBForm.SaveProjectBtnClick(Sender: TObject);

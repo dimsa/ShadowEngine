@@ -232,12 +232,19 @@ procedure TSpriteShapeBuilder.SaveForEngine(const AFileName: string);
 var
   vS: String;
   vList: TStringList;
+  vBmp: TBitmap;
 begin
   vList := TStringList.Create;
   vS := FModel.ToJson;
   vList.Add(vS);
   vList.SaveToFile(AFileName);
   vList.Free;
+  vBmp := FModel.GenerateWholeBitmap;
+
+  vS := ExtractFileDir(AFileName) + '\' + Fmodel.ImageFileName;
+  if not FileExists(vS) then
+    vBmp.SaveToFile(vS);
+  vBmp.Free;
 end;
 
 procedure TSpriteShapeBuilder.SaveProject(const AFileName: string);
