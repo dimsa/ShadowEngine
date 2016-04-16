@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, System.RegularExpressions, System.Generics.Collections,
   uIntersectorClasses,
   uExpressionParser, uNamedList, uEngine2DClasses, uTextProc, uEngine2DObject,
-  uEngine2DUnclickableObject, uFastFields, uConstantGroup, uParserValue;
+  uEngine2DUnclickableObject, uFastFields, uConstantGroup, uParserValue, uClasses;
 
 type
 
@@ -90,7 +90,12 @@ type
   end;
 
   TIfHorCondition = class(TConditionalDirective)
+  strict private
+    FIsHor: TBooleanFunction;
+  public
     function IsSatisfy: Boolean; override;
+    constructor Create(const ADirective: TFormatterDirective; AIsHor: TBooleanFunction);
+
   end;
 
   TEngineFormatter = class
@@ -101,7 +106,7 @@ type
     FParent: Pointer;
 //    function CreateIfNil(var vExp: TExpression): TExpression;
     procedure SetText(const Value: String);
-    function CreateDirective(const AText: string;AExp: TExpression): TFormatterDirective;
+    function CreateDirective(const AText: string; AExp: TExpression): TFormatterDirective;
     function DefineSelf(const AText: String): String;
     function IsFunction(const AText: String): Boolean;
     function IsDotProperty(const AText: String): Boolean;
@@ -112,7 +117,7 @@ type
     property Subject: tEngine2DObject read FObject;
 
     procedure Format; virtual;
-    constructor Create(AObject: tEngine2DObject); virtual;
+    constructor Create(AObject: tEngine2DObject; AEngine: Pointer); virtual;
     destructor Destroy; override;
   end;
 
@@ -123,20 +128,12 @@ uses
 
 { TEngineFormatter }
 
-constructor TEngineFormatter.Create(AObject: tEngine2DObject);
+constructor TEngineFormatter.Create(AObject: tEngine2DObject; AEngine: Pointer);
 begin
+  FParent := AEngine;
   FObject := AObject;
   FList := TList<TFormatterDirective>.Create;
-  FParent := AObject.Parent;
 end;
-
-{function TEngineFormatter.CreateIfNil(var vExp: TExpression): TExpression;
-begin
-  if vExp = Nil then
-    vExp := TExpression.Create;
-
-  Result := vExp;
-end; }
 
 function TEngineFormatter.DefineSelf(const AText: String): String;
 var
@@ -323,6 +320,8 @@ function TEngineFormatter.CreateDirective(const AText: string; AExp: TExpression
 var
   vText: String;
   vHor: Boolean;
+  vIsHor: TBooleanFunction;
+  vEngine: tEngine2d;
 begin
   vText := LowerCase(AText);
   Result := Nil;
@@ -348,17 +347,10 @@ begin
   if (vText = 'scaley') or (vText = 'scy') then Result := TScaleYDir.Create(FObject, AExp);
 
   if vHor then
-    Result := TIfHorCondition.Create(Result);
+  begin
+    Result := TIfHorCondition.Create(Result, TEngine2D(FParent).IsHor);
+  end;
 
-{  if (vText = 'xifhor') or (vText = 'leftifhor') then Result := TIfHorCondition.Create(TXDir.Create(FObject, AExp));
-  if (vText = 'yifhor') or (vText = 'topifhor') then Result := TIfHorCondition.Create(TYDir.Create(FObject, AExp));
-  if (vText = 'rotateifhor') or (vText = 'angleifhor') then  TIfHorCondition.Create(TRotateDir.Create(FObject, AExp));
-  if (vText = 'widthifhor') or (vText = 'wifhor') then Result := TIfHorCondition.Create(TWidthDir.Create(FObject, AExp));
-  if (vText = 'heightifhor') or (vText = 'hifhor') then Result := TIfHorCondition.Create(THeightDir.Create(FObject, AExp));
-  if (vText = 'scalexifhor') or (vText = 'scalewifhor') or (vText = 'scwifhor') or (vText = 'scxifhor')   then Result := TIfHorCondition.Create(TScaleXDir.Create(FObject, AExp));
-  if (vText = 'scaleyifhor') or (vText = 'scalehifhor') or (vText = 'schifhor') or (vText = 'scyifhor')   then Result := TIfHorCondition.Create(TScaleYDir.Create(FObject, AExp));
-  if (vText = 'max-widthifhor') or (vText = 'maxwidthifhor') then Result := TIfHorCondition.Create(TMaxWidthDir.Create(FObject, AExp));
-  if (vText = 'max-heightifhor') or (vText = 'maxheighthifhor') then Result := TIfHorCondition.Create(TMaxHeightDir.Create(FObject, AExp));}
 end;
 
 { TFormatterDirective }
@@ -478,9 +470,16 @@ end;
 
 { TIfHorCondition }
 
+constructor TIfHorCondition.Create(const ADirective: TFormatterDirective;
+  AIsHor: TBooleanFunction);
+begin
+  FIsHor := AIsHor;
+  inherited Create(ADirective);
+end;
+
 function TIfHorCondition.IsSatisfy: Boolean;
 begin
-  Result := TEngine2D(FObject.Parent).IfHor;
+  Result := FIsHor;
 end;
 
 end.

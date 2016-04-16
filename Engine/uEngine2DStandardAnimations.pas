@@ -256,8 +256,6 @@ begin
   vObject.Position := FTempEndPos;
   FAway := False;
   FPressed := False;
-//  if FAway then
-
 end;
 
 procedure TMouseDownMigrationAnimation.Setup;
@@ -268,6 +266,3 @@ begin
 end;
 
 end.
-
-
-

@@ -26,7 +26,7 @@ type
     property Brush: TBrush read FBrush write FBrush;
     property FigureRect: TRectF read FFigureRect write SetFigureRect;
 
-    constructor Create(AParent: pointer); override;
+    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -44,7 +44,7 @@ implementation
 
 { TEngine2DShape }
 
-constructor TEngine2DShape.Create(AParent: pointer);
+constructor TEngine2DShape.Create;
 begin
   inherited;
   FigureRect := RectF(-50, -50, 50, 50);

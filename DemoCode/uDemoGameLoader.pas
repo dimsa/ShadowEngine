@@ -72,7 +72,6 @@ var
   vCircle: TCircle;
 begin
   vSpr := TAsteroid.Create(FEngine);
-  vSpr.Parent := FEngine;
   vSpr.Resources := FEngine.Resources;
   vSpr.CurRes := 1;
   vSpr.Group := 'activeobject';
@@ -85,7 +84,6 @@ begin
   vFigure.SetData(vCircle);
   vSpr.Shape.AddFigure(vFigure);
   vSpr.ScaleMod := RandomRange(60, 140) / 100;
-
 
   FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
 
@@ -114,7 +112,7 @@ var
 begin
   vGroup := 'comix1';
 
-  vFig := TFillRect.Create(FEngine);
+  vFig := TFillRect.Create;
   vFig.Group := vGroup;
   vFig.FigureRect := RectF(-200, -200, 200, 200);
   vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
@@ -152,7 +150,7 @@ var
   vTxt: TEngine2DText;
 begin
   vGroup := 'comix2';
-  vFig := TFillRect.Create(FEngine);
+  vFig := TFillRect.Create;
   vFig.Group := vGroup;
   vFig.FigureRect := RectF(-200, -200, 200, 200);
   vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
@@ -191,7 +189,7 @@ var
   vTxt: TEngine2DText;
 begin
   vGroup := 'comix3';
-  vFig := TFillRect.Create(FEngine);
+  vFig := TFillRect.Create;
   vFig.Group := vGroup;
   vFig.FigureRect := RectF(-200, -200, 200, 200);
   vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
@@ -237,7 +235,7 @@ var
 begin
   for i := FLifes.Count to ACount - 1 do
   begin
-    vSpr := TSprite.Create(FEngine);
+    vSpr := TSprite.Create;
     vSpr.Resources := FEngine.Resources;
     vSpr.Group := 'survival';
     vSpr.CurRes := FEngine.Resources.IndexOf('lifeicon');
@@ -389,7 +387,6 @@ var
   vAng: Double;
 begin
   vSpr := TAsteroid.Create(FEngine);
-  vSpr.Parent := FEngine;
   vSpr.Resources := FEngine.Resources;
   vSpr.CurRes := 1;
   vSpr.Group := 'activeobject';
@@ -472,8 +469,7 @@ function TLoader.Explosion(const AX, AY, AAng: Double): TExplosion;
 var
   vSpr: TExplosion;
 begin
-  vSpr := TExplosion.Create(FEngine);
-  vSpr.Parent := FEngine;
+  vSpr := TExplosion.Create;
   vSpr.Resources := FEngine.Resources;
   vSpr.CurRes := 9;
   vSpr.Group := 'activeobject';
@@ -509,7 +505,7 @@ end;
 function TLoader.FastText(const AName: string; AFont: TFont;
   const AColor: TAlphaColor; const AGroup: string; const AJustify: TObjectJustify): TEngine2DText;
 begin
-  Result := TEngine2DText.Create(FEngine);
+  Result := TEngine2DText.Create;
   Result.Group := AGroup;
   Result.Font := AFont;
   Result.Color := AColor;
@@ -521,7 +517,7 @@ end;
 function TLoader.Formatter(const ASubject: tEngine2DObject;
   const AText: String): TEngineFormatter;
 begin
-  Result := TEngineFormatter.Create(ASubject);
+  Result := TEngineFormatter.Create(ASubject, FEngine);
   Result.Text := AText;
   FEngine.FormatterList.Insert(0, Result);
 end;
@@ -544,7 +540,6 @@ var
   vSpr: TLittleAsteroid;
 begin
   vSpr := TLittleAsteroid.Create(FEngine);
-  vSpr.Parent := FEngine;
   vSpr.Resources := FEngine.Resources;
   vSpr.CurRes := vSpr.Tip + 5;
   vSpr.Group := 'backobjects';
@@ -654,7 +649,7 @@ end;
 
 function TLoader.Sprite(const AResource, AGroup, AName: string): TSprite;
 begin
-  Result := TSprite.Create(FEngine);
+  Result := TSprite.Create;
   Result.Resources := FEngine.Resources;
   if AResource <> '' then
     Result.CurRes := FEngine.Resources.IndexOf(AResource);

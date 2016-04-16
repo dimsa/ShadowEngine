@@ -3,7 +3,7 @@ unit uEngine2DSprite;
 interface
 
 uses
-  System.Types, FMX.Graphics, FMX.Objects, FMX.Types,
+  System.Types, FMX.Graphics, FMX.Objects, FMX.Types, System.Classes,
   uEngine2DClasses, uEngine2DObject, uEngine2DResources,
   uEngine2DUnclickableObject;
 
@@ -30,7 +30,7 @@ type
 
     procedure Repaint; override;
 
-    constructor Create(AParent: pointer); override;
+    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -42,10 +42,10 @@ uses
 
 { tSprite }
 
-constructor tSprite.Create(AParent: pointer);
+constructor tSprite.Create;
 begin
-  inherited Create(AParent);
-  fCreationNumber := tEngine2d(fParent).spriteCount;
+  inherited Create;
+//  fCreationNumber := tEngine2d(fParent).spriteCount;
 end;
 
 destructor tSprite.Destroy;

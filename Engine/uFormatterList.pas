@@ -34,18 +34,6 @@ uses
 
 { TFormatterList }
 
-{procedure TFormatterList.Add(AObject: tEngine2DObject; const AText: String);
-var
-  vTmp: TEngineFormatter;
-begin
-  tEngine2d(Parent).Critical.Enter;
-  vTmp := TEngineFormatter.Create(AObject);
-  vTmp.Parent := Parent;
-  vTmp.Text := AText;
-  Self.Add(vTmp);
-  tEngine2d(Parent).Critical.Leave;
-end; }
-
 procedure TFormatterList.ApplyForSubject(AObject: tEngine2DObject);
 var
   i, vN: Integer;
@@ -139,17 +127,13 @@ begin
 
   vEngine := Self.Parent;   }
 
-
-  //vEngine.addObject(vObj);
-
   vEngine := Self.Parent;
   vObj := vEngine.ShadowObject;
   vEngine.AssignShadowObject(ASpriteForClone);
   vObj.Visible := False;
 
-  vRes := TEngineFormatter.Create(vObj);
+  vRes := TEngineFormatter.Create(vObj, vEngine);
   vRes.Parent := Self.Parent;
-//  vRes.
   vRes.Text := AText;
   vRes.Format;
  // vEngine.FormatterList.Add(vRes);
@@ -169,13 +153,12 @@ var
 begin
   // Проверить механизм клонирования. Не уверен, что всё правильно
 
-
   vEngine := Self.Parent;
   vObj := vEngine.ShadowObject;
   vEngine.AssignShadowObject(ASpriteForClone);
   vObj.Visible := False;
 
-  vRes := TEngineFormatter.Create(vObj);
+  vRes := TEngineFormatter.Create(vObj, vEngine);
   vRes.Parent := Self.Parent;
   vRes.Text := AText;
   vRes.Format;

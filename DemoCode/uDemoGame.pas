@@ -341,7 +341,7 @@ begin
 
   FGP := TGameParam.Create(FLoader);
 
-  FGameOverText := TEngine2DText.Create(FEngine);
+  FGameOverText := TEngine2DText.Create;
   FGameOverText.FontSize := 56;
   FGameOverText.Group := 'gameover';
   FGameOverText.Color :=  TAlphaColorRec.White;

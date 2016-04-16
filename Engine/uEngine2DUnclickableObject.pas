@@ -19,9 +19,10 @@ type
     fVisible: Boolean; // Отрисовывать объект или нет
     fOpacity: Single; // Прозрачность
     fSelectable: Boolean; // Участвует ли в выделении
-    fParent: pointer; // Должен быть tEngine2d
+
+//    fParent: pointer; // Должен быть tEngine2d
     fImage: TImage;
-    fCreationNumber: integer; // Номер спрайта в массиве спрайтов
+//    fCreationNumber: integer; // Номер спрайта в массиве спрайтов
     fGroup: string;
     fClonedFrom: tEngine2DUnclickableObject;
     function GetW: single; virtual; abstract;
@@ -36,7 +37,7 @@ type
     procedure SetRotate(AValue: single); virtual;
   public
     // Связывающие свойства
-    property Parent: pointer read fParent write fParent; // Родитель спрайта. Обычно tEngine2d
+//    property Parent: pointer read fParent write fParent; // Родитель спрайта. Обычно tEngine2d
     property Image: TImage read fImage write fImage; // В этом имедже происходит отрисовка.
 
     // Геометрические свойства
@@ -60,7 +61,8 @@ type
 
     procedure Repaint; virtual; abstract; // Процедура отрисовки объекта, переписывается спрайтом или текстом и т.д.
 
-    constructor Create(AParent: pointer); virtual;
+//    constructor Create(AParent: pointer); virtual;
+    constructor Create; virtual;
     destructor Destroy; override;
   end;
 
@@ -71,11 +73,9 @@ uses
 
 { t2dEngineObject }
 
-constructor tEngine2DUnclickableObject.Create(AParent: pointer);
-var
-  vEngine: TEngine2D;
+constructor tEngine2DUnclickableObject.Create;
 begin
-  fParent := AParent;
+//  fParent := AParent;
   fPosition.ScaleX := 1;
   fPosition.ScaleY := 1;
   fPosition.rotate := 0;
@@ -84,8 +84,8 @@ begin
   Self.Opacity := 1;
   fVisible := true;
   fSelectable := true;
-  vEngine := TEngine2D(fParent);
-  fImage := vEngine.Image;
+//  vEngine := TEngine2D(fParent);
+//  fImage := vEngine.Image;
 end;
 
 destructor tEngine2DUnclickableObject.Destroy;

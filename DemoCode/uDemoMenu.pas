@@ -24,11 +24,11 @@ type
     FBack: TButtonBack;
     FText: TEngine2DText;
     FName: String;
-    FOnClick: TVCLProcedure;
+    FOnClick: TNotifyEvent;
     FGroup: string;
     function GetText: String;
     procedure SetText(const Value: String);
-    procedure SetOnClick(const Value: TVCLProcedure);
+    procedure SetOnClick(const Value: TNotifyEvent);
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure SetGroup(const Value: string);
     function GetFontSize: Single;
@@ -36,7 +36,7 @@ type
   public
     property BackSprite: TButtonBack read FBack;
     property FontSize: Single read GetFontSize write SetFontSize;
-    property OnClick: TVCLProcedure read FOnClick write SetOnClick;
+    property OnClick: TNotifyEvent read FOnClick write SetOnClick;
     property Group: string read FGroup write SetGroup;
     constructor Create(const AName: string; const AParent: Pointer; const ASpriteBackName: string = 'button');
     destructor Destroy; override;
@@ -54,13 +54,13 @@ type
     FId: string; // Если используется несколько меню, то это идентификатор
     function GetText: string;
     procedure SetText(const Value: string);
-    function GetOnNo: TVCLProcedure;
-    function GetOnYes: TVCLProcedure;
-    procedure SetOnNo(const Value: TVCLProcedure);
-    procedure SetOnYes(const Value: TVCLProcedure);
+    function GetOnNo: TNotifyEvent;
+    function GetOnYes: TNotifyEvent;
+    procedure SetOnNo(const Value: TNotifyEvent);
+    procedure SetOnYes(const Value: TNotifyEvent);
   public
-    property OnYes: TVCLProcedure read GetOnYes write SetOnYes;
-    property OnNo: TVCLProcedure read GetOnNo write SetOnNo;
+    property OnYes: TNotifyEvent read GetOnYes write SetOnYes;
+    property OnNo: TNotifyEvent read GetOnNo write SetOnNo;
     property Text: string read GetText write SetText;
     constructor Create(const AId, AGroup: string; AParent: Pointer);
     destructor Destroy; override;
@@ -79,7 +79,7 @@ type
     FLevelMenu: TList<TGameButton>; // Кнопки выбора уровня
     FNextPage, FPrevPage: TGameButton; // Листалка страниц выбора уровня
     FCurPage: Integer; // Текущая страница выбора уровня
-    FDoLevelSelect: TVCLProcedure;
+    FDoLevelSelect: TNotifyEvent;
     procedure CreateMenu1; // Первое меню из четырех кнопок
     procedure CreateMenu2; // Выбор типа игры
     procedure CreateMenu3; // Выбор уровня в сторимоде
@@ -88,31 +88,31 @@ type
     procedure CreateStatistics; // Создаёт статистику
     procedure NextLevelPage(ASender: TObject);
     procedure PrevLevelPage(ASender: TObject);
-    procedure SetAboutGame(const Value: TVCLProcedure);
-    procedure SetExitGame(const Value: TVCLProcedure);
-    procedure SetStartGame(const Value: TVCLProcedure);
-    procedure SetStatGame(const Value: TVCLProcedure);
-    procedure SetRelaxMode(const Value: TVCLProcedure);
-    procedure SetStoryMode(const Value: TVCLProcedure);
-    procedure SetSurvivalMode(const Value: TVCLProcedure);
-    procedure SetLevelSelect(const Value: TVCLProcedure);
-    procedure SetNextLevelNo(const Value: TVCLProcedure);
-    procedure SetNextLevelYes(const Value: TVCLProcedure);
-    procedure SetRetryLevelYes(const Value: TVCLProcedure);
+    procedure SetAboutGame(const Value: TNotifyEvent);
+    procedure SetExitGame(const Value: TNotifyEvent);
+    procedure SetStartGame(const Value: TNotifyEvent);
+    procedure SetStatGame(const Value: TNotifyEvent);
+    procedure SetRelaxMode(const Value: TNotifyEvent);
+    procedure SetStoryMode(const Value: TNotifyEvent);
+    procedure SetSurvivalMode(const Value: TNotifyEvent);
+    procedure SetLevelSelect(const Value: TNotifyEvent);
+    procedure SetNextLevelNo(const Value: TNotifyEvent);
+    procedure SetNextLevelYes(const Value: TNotifyEvent);
+    procedure SetRetryLevelYes(const Value: TNotifyEvent);
     procedure SetAstroidCount(const Value: Integer);
     procedure SetSecondsToFly(const Value: Integer);
   public
-    property StartGame: TVCLProcedure write SetStartGame;
-    property AboutGame: TVCLProcedure write SetAboutGame;
-    property StatGame: TVCLProcedure write SetStatGame;
-    property ExitGame: TVCLProcedure write SetExitGame;
-    property RelaxMode: TVCLProcedure write SetRelaxMode;
-    property StoryMode: TVCLProcedure write SetStoryMode;
-    property LevelSelect: TVCLProcedure write SetLevelSelect;
-    property SurvivalMode: TVCLProcedure write SetSurvivalMode;
-    property OnNextLevelYes: TVCLProcedure write SetNextLevelYes;
-    property OnRetryLevelYes: TVCLProcedure write SetRetryLevelYes;
-    property OnNextLevelNo: TVCLProcedure write SetNextLevelNo;
+    property StartGame: TNotifyEvent write SetStartGame;
+    property AboutGame: TNotifyEvent write SetAboutGame;
+    property StatGame: TNotifyEvent write SetStatGame;
+    property ExitGame: TNotifyEvent write SetExitGame;
+    property RelaxMode: TNotifyEvent write SetRelaxMode;
+    property StoryMode: TNotifyEvent write SetStoryMode;
+    property LevelSelect: TNotifyEvent write SetLevelSelect;
+    property SurvivalMode: TNotifyEvent write SetSurvivalMode;
+    property OnNextLevelYes: TNotifyEvent write SetNextLevelYes;
+    property OnRetryLevelYes: TNotifyEvent write SetRetryLevelYes;
+    property OnNextLevelNo: TNotifyEvent write SetNextLevelNo;
     property ComixText1: TEngine2DText read FComixText1 write FComixText1; // Текст комиксов
     property ComixText2: TEngine2DText read FComixText2 write FComixText2;
     property AsteroidCount: Integer write SetAstroidCount;
@@ -131,22 +131,6 @@ uses
 
 { TGameButton }
 
-{procedure TGameButton.AddToEngine(const AFormatterText: String);
-var
-  vEngine: tEngine2d;
-  vFormatter: TEngineFormatter;
-  vFigure: TNewFigure;
-  vPoly: TPolygon;
-  vFText: String;
-begin
-  vEngine := FParent;
-  vFormatter := TEngineFormatter.Create(FBack);
-  vFormatter.Parent := vEngine;
-  vFText := AFormatterText; //''ft: engine.width * 0.5; top: engine.height * 0.2; width: engine.width * 0.5';
-  vFormatter.Text := vFText;
-  vEngine.FormatterList.Add(vFormatter);
-end;}
-
 constructor TGameButton.Create(const AName: string; const AParent: Pointer; const ASpriteBackName: string = 'button');
 var
   vEngine: tEngine2d;
@@ -158,12 +142,11 @@ begin
   FName := AName;
 
   vEngine := AParent;
-  FBack := TButtonBack.Create(vEngine);
-  FBack.Parent := vEngine;
+  FBack := TButtonBack.Create;
   FBack.Resources := vEngine.Resources;
   FBack.CurRes := vEngine.Resources.IndexOf(ASpriteBackName);
 
-  FText := TEngine2DText.Create(vEngine);
+  FText := TEngine2DText.Create;
   FText.TextRect := RectF(-125, -50, 125, 50);
   FText.FontSize := 32;
   FText.Color := TAlphaColorRec.White;
@@ -178,11 +161,6 @@ begin
 
   vFText := 'left: ' + Self.FName + '.left; top: ' + Self.FName + '.top; min-width:'  + Self.FName + '.width * 0.8; width: ' + Self.FName + '.width; max-width: ' + Self.FName + '.width;';
   vEngine.New.Formatter(FText, vFText).Format;
-{  vFormatter := TEngineFormatter.Create(FText);
-  vFormatter.Parent := vEngine;
-
-  vFormatter.Text := vFText;
-  vEngine.FormatterList.Add(vFormatter); }
 
   vPoly := PolyFromRect(RectF(0, 0, FBack.w, FBack.h));
   Translate(vPoly, -PointF(FBack.wHalf, FBack.hHalf));
@@ -252,7 +230,7 @@ begin
   FText.Group := FGroup;
 end;
 
-procedure TGameButton.SetOnClick(const Value: TVCLProcedure);
+procedure TGameButton.SetOnClick(const Value: TNotifyEvent);
 begin
   FOnClick := Value;
   FBack.OnClick := FOnClick;
@@ -278,7 +256,7 @@ begin
   vEngine := FParent;
   FCurPage := 0;
 
-  FGameLogo := TSprite.Create(vEngine);
+  FGameLogo := TSprite.Create;
   FGameLogo.Resources := vEngine.Resources;
   FGameLogo.Group := 'menu';
   FGameLogo.CurRes := vEngine.Resources.IndexOf('gamelogo');
@@ -315,7 +293,7 @@ var
   vEngine: tEngine2d;
 begin
   vEngine := FParent;
-  vText := TEngine2DText.Create(vEngine);
+  vText := TEngine2DText.Create;
   vText.TextRect := RectF(-250, -100, 250, 100);
   vText.FontSize := 28;
   vText.Group := 'about';
@@ -328,7 +306,7 @@ begin
   vEngine.AddObject(vText, 'aboutcaption');
   vEngine.New.Formatter(vText, 'about1', []).Format;
 
-  vText := TEngine2DText.Create(vEngine);
+  vText := TEngine2DText.Create;
   vText.TextRect := RectF(-250, -150, 250, 150);
   vText.FontSize := 16;
   vText.Color :=  TAlphaColorRec.Gray;
@@ -456,7 +434,7 @@ var
   vEngine: tEngine2d;
 begin
   vEngine := FParent;
-  vText := TEngine2DText.Create(vEngine);
+  vText := TEngine2DText.Create;
   vText.TextRect := RectF(-200, -200, 200, 200);
   vText.FontSize := 26;
   vText.Group := 'statistics';
@@ -518,7 +496,7 @@ begin
     vBut.SendToFront;
 end;
 
-procedure TGameMenu.SetAboutGame(const Value: TVCLProcedure);
+procedure TGameMenu.SetAboutGame(const Value: TNotifyEvent);
 begin
   FList[2].OnClick := Value;
 end;
@@ -528,12 +506,12 @@ begin
   FComixText2.Text := 'Usually asteroids are at a very long distance from each other. But here are ' + IntToStr(Value) + ' of them within easy reach! And they are moving towards me at the different speed!'
 end;
 
-procedure TGameMenu.SetExitGame(const Value: TVCLProcedure);
+procedure TGameMenu.SetExitGame(const Value: TNotifyEvent);
 begin
   FList[3].OnClick := Value;
 end;
 
-procedure TGameMenu.SetLevelSelect(const Value: TVCLProcedure);
+procedure TGameMenu.SetLevelSelect(const Value: TNotifyEvent);
 var
   i: Integer;
 begin
@@ -544,23 +522,23 @@ begin
   //FList[4].OnClick := Value;
 end;
 
-procedure TGameMenu.SetNextLevelNo(const Value: TVCLProcedure);
+procedure TGameMenu.SetNextLevelNo(const Value: TNotifyEvent);
 begin
   FNextLevelMenu.OnNo := Value;
   FRetryLevelMenu.OnNo := Value;
 end;
 
-procedure TGameMenu.SetNextLevelYes(const Value: TVCLProcedure);
+procedure TGameMenu.SetNextLevelYes(const Value: TNotifyEvent);
 begin
   FNextLevelMenu.OnYes := Value;
 end;
 
-procedure TGameMenu.SetRelaxMode(const Value: TVCLProcedure);
+procedure TGameMenu.SetRelaxMode(const Value: TNotifyEvent);
 begin
   FList[6].OnClick := Value;
 end;
 
-procedure TGameMenu.SetRetryLevelYes(const Value: TVCLProcedure);
+procedure TGameMenu.SetRetryLevelYes(const Value: TNotifyEvent);
 begin
   FRetryLevelMenu.OnYes := Value;
 end;
@@ -570,22 +548,22 @@ begin
   FComixText1.Text := 'Great! I so close to the destination planet! I need only ' + IntToStr(Value) +  ' seconds to reach it.';
 end;
 
-procedure TGameMenu.SetStartGame(const Value: TVCLProcedure);
+procedure TGameMenu.SetStartGame(const Value: TNotifyEvent);
 begin
   FList[0].OnClick := Value;
 end;
 
-procedure TGameMenu.SetStatGame(const Value: TVCLProcedure);
+procedure TGameMenu.SetStatGame(const Value: TNotifyEvent);
 begin
   FList[1].OnClick := Value;
 end;
 
-procedure TGameMenu.SetStoryMode(const Value: TVCLProcedure);
+procedure TGameMenu.SetStoryMode(const Value: TNotifyEvent);
 begin
   FList[4].OnClick := Value;
 end;
 
-procedure TGameMenu.SetSurvivalMode(const Value: TVCLProcedure);
+procedure TGameMenu.SetSurvivalMode(const Value: TNotifyEvent);
 begin
   FList[5].OnClick := Value;
 end;
@@ -663,7 +641,7 @@ begin
   FId := AId;
   vGroup := AGroup;//'nextlevel';
 
-  FBack := TFillRect.Create(vEngine);
+  FBack := TFillRect.Create;
   FBack.Group := vGroup;
   FBack.FigureRect := RectF(-150, -100, 150, 100);
   FBack.Pen.Thickness := 4;
@@ -691,7 +669,7 @@ begin
 
   vEngine.New.Formatter(vBut.BackSprite, 'yesnono', [FId], 1).Format;
 
-  FText := TEngine2DText.Create(vEngine);
+  FText := TEngine2DText.Create;
   FText.Group := vGroup;
   FText.WordWrap := True;
   FText.TextRect :=  RectF(-90, -50, 90, 50);
@@ -723,12 +701,12 @@ begin
   inherited;
 end;
 
-function TYesNoMenu.GetOnNo: TVCLProcedure;
+function TYesNoMenu.GetOnNo: TNotifyEvent;
 begin
   Result := FNo.OnClick;
 end;
 
-function TYesNoMenu.GetOnYes: TVCLProcedure;
+function TYesNoMenu.GetOnYes: TNotifyEvent;
 begin
   Result := FYes.OnClick;
 end;
@@ -738,12 +716,12 @@ begin
   Result := FText.Text;
 end;
 
-procedure TYesNoMenu.SetOnNo(const Value: TVCLProcedure);
+procedure TYesNoMenu.SetOnNo(const Value: TNotifyEvent);
 begin
   FNo.OnClick := Value;
 end;
 
-procedure TYesNoMenu.SetOnYes(const Value: TVCLProcedure);
+procedure TYesNoMenu.SetOnYes(const Value: TNotifyEvent);
 begin
   FYes.OnClick := Value;
 end;

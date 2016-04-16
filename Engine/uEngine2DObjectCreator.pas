@@ -74,7 +74,7 @@ end;
 function TEngine2DObjectCreator.Formatter(const ASubject: tEngine2DObject;
   const AText: String; const AIndex: Integer): TEngineFormatter;
 begin
-  Result := TEngineFormatter.Create(ASubject);
+  Result := TEngineFormatter.Create(ASubject, FEngine);
   Result.Text := AText;
   if AIndex = -1 then
     tEngine2d(FEngine).FormatterList.Add(Result)
@@ -94,7 +94,7 @@ end;
 function TEngine2DObjectCreator.Sprite(const AResource: Integer; const AName,
   AGroup: string; const AJustify: TObjectJustify): TSprite;
 begin
-  Result := TSprite.Create(FEngine);
+  Result := TSprite.Create;
   Result.Resources := tEngine2d(FEngine).Resources;
   Result.CurRes := AResource;
   Result.Group := AGroup;
@@ -114,7 +114,7 @@ end;
 function TEngine2DObjectCreator.Text(const AText: string; const AColor: TAlphaColor; const AName,
   AGroup: string; const AJustify: TObjectJustify): TEngine2DText;
 begin
-  Result := TEngine2DText.Create(FEngine);
+  Result := TEngine2DText.Create;
   Result.Text := AText;
   Result.Group := AGroup;
   Result.Color := AColor;

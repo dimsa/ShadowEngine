@@ -21,8 +21,6 @@ uses
 
 type
 
-//  tSpriteArray = TNamedList<TEngine2DClickableObject>;//array of TEngine2DClickableObject;
-
   tEngine2d = class
   strict private
     fEngineThread: tEngineThread; // Поток в котором происходит отрисовка
@@ -70,8 +68,9 @@ type
     procedure InBeginPaintDefaultBehavior;
     procedure InEndPaintDefaultBehavior;
 
-    function GetIfHor: Boolean;
     procedure SetBackgroundBehavior(const Value: TProcedure);
+    procedure BringToBackHandler(ASender: TObject);
+    procedure SendToFrontHandler(ASender: TObject);
   public
     // Ключевые свойства движка
     property EngineThread: TEngineThread read fEngineThread;
@@ -106,7 +105,7 @@ type
     property Background: TBitmap read fBackGround write setBackGround;
     property Options: TEngine2dOptions read FOptions write FOptions;
 
-    property IfHor: Boolean read GetIfHor; // Сообщает True, если Width > Height
+    function IsHor: Boolean; // Return True, if Engine.Width > Engine.Height
 
     procedure SpriteToBack(const n: integer); // Передвигает в массиве отрисовки спрайт
     procedure SpriteToFront(const n: integer);// Передвигает в массиве отрисовки спрайт
@@ -182,10 +181,12 @@ begin
   begin
     fCritical.Enter;
     l := spriteCount;
-    AObject.Parent := Self;
+//    AObject.Parent := Self;
     fObjects.Add(vName, AObject);
     setLength(fSpriteOrder, l + 1);
     fObjects[l].Image := fImage;
+    AObject.OnBringToBack := BringToBackHandler;
+    AObject.OnSendToFront := SendToFrontHandler;
     fSpriteOrder[l] := l;
     fCritical.Leave;
   end;
@@ -240,6 +241,13 @@ begin
       Dec(iObject);
     end;
   end;
+end;
+
+procedure tEngine2d.BringToBackHandler(ASender: TObject);
+begin
+  SpriteToBack(
+    SpriteList.IndexOfItem(TEngine2DObject(ASender), FromBeginning)
+  );
 end;
 
 procedure tEngine2d.clearSprites;
@@ -349,14 +357,11 @@ procedure tEngine2d.Resize;
 var
   i: Integer;
 begin
+  fCritical.Enter;
   // Форматирвание
   for i := 0 to fFormatters.Count - 1 do
     fFormatters[i].Format;// then
-end;
-
-function tEngine2d.GetIfHor: Boolean;
-begin
-  Result := fWidth > fHeight;
+  fCritical.Leave;
 end;
 
 procedure tEngine2d.Repaint;
@@ -408,6 +413,10 @@ begin
             Bitmap.Canvas.SetMatrix(m);
 
             fObjects[fSpriteOrder[i]].Repaint;
+            {$IFDEF DEBUG}
+            if fOptions.ToDrawFigures then
+               fObjects[fSpriteOrder[i]].RepaintWithShapes;
+            {$ENDIF}
           end;
       finally
         FInEndPaintBehavior;
@@ -450,25 +459,12 @@ begin
   end;
 end;
 
-{function tEngine2d.ResToSF(const AId: Integer): TSpriteFrame;
-var
-  vTmp: TSpriteFrame;
+procedure tEngine2d.SendToFrontHandler(ASender: TObject);
 begin
-  vTmp.num := AId;
-  vTmp.w := fResources[AId].bmp.Width;
-  vTmp.h := fResources[AId].bmp.Height;
-
-  Result := vTmp;
-end;}
-
-{function tEngine2d.getBitmap(index: integer): tBitmap;
-var
-  temp: tBitmap;
-begin
-  temp := tBitmap.Create;
-  temp.Assign(fResources[index].bmp);
-  result := temp;
-end; }
+  SpriteToFront(
+    SpriteList.IndexOfItem(TEngine2DObject(ASender), FromBeginning)
+  );
+end;
 
 function tEngine2d.getObject(index: integer): tEngine2DObject;
 begin
@@ -576,6 +572,11 @@ begin
   fImage.Bitmap.Height := ROund(AImage.Height * getScreenScale);
 end;
 
+function tEngine2d.IsHor: Boolean;
+begin
+  Result := fWidth > fHeight;
+end;
+
 procedure tEngine2d.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; x, y: single);
 var
@@ -645,8 +646,8 @@ end;
 
 procedure tEngine2d.prepareShadowObject;
 begin
-  FShadowObject := tSprite.Create(Self);
-  FShadowObject.Parent := Self;
+  FShadowObject := tSprite.Create;//(Self);
+//  FShadowObject.Parent := Self;
   Self.AddObject(FShadowObject, 'shadow');
 end;
 

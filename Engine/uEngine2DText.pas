@@ -4,7 +4,7 @@ interface
 
 uses
   System.Types, System.UITypes, FMX.Graphics, FMX.Objects, FMX.Types,
-  System.Math, System.SysUtils,
+  System.Math, System.SysUtils, System.Classes,
   uEngine2DClasses, uEngine2DResources,
   uEngine2DObject;
 
@@ -48,7 +48,7 @@ type
     procedure AutoResizeFont(const ARatio: Single = 0); experimental; // Автоматически подбирает размер шрифта
     procedure Repaint; override;
 
-    constructor Create(AParent: pointer); override;
+    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -71,9 +71,9 @@ begin
    end;}
 end;
 
-constructor TEngine2DText.Create(AParent: pointer);
+constructor TEngine2DText.Create;
 begin
-  inherited Create(AParent);
+  inherited Create;
   FFont := tFont.Create; // Шрифт надписи
   FFont.Family := 'Arial';
   FFont.Size := 12;

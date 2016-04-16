@@ -7,7 +7,7 @@ uses
 
 type
   TProcedure = procedure of Object;
-  TVCLProcedure = procedure(ASender: TObject) of Object;
+  TBooleanFunction = function: Boolean of object;
 
   function Random64: Int64;
   procedure NormalizeAngle(var AAngle: Single);

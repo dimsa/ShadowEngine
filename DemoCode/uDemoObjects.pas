@@ -15,7 +15,7 @@ type
   public
     property Tip: Byte read FTip write FTip; // Тип огня
     procedure Repaint; override;
-    constructor Create(AParent: pointer); override;
+    constructor Create; override;
   end;
 
   TShipLight = class(TSprite)
@@ -40,6 +40,7 @@ type
 
   TShip = class(TMovingUnit)
   private
+    FParent: Pointer;
     FParts: TList<TSprite>;// array[0..5] of TSprite;
     FLeftFire: TShipFire;
     FRightFire: TShipFire;
@@ -61,13 +62,14 @@ type
     procedure Hide;
     procedure Show;
     procedure AddDestination(const APos: TPosition);
-    constructor Create(AParent: pointer); override;
+    constructor Create(AParent: Pointer);
     destructor Destroy; override;
   end;
 
   TAsteroid = class(TMovingUnit)
   private
 //    FNotChange: Integer; // Кол-во тиков, которое не будет изменяться направление при коллайдер
+    FParent: Pointer;
     FScaleMod: Single;
     FSize: Byte;
     FSpeed: Byte;
@@ -85,16 +87,17 @@ type
     property Size: Byte read FSize; // prSmall = 1; prMedium = 2; prBig = 3;
     property ScaleMod: Single read FScaleMod write SetScaleMod;
     function Collide(const AObject: TMovingUnit): Boolean;
-    constructor Create(AParent: pointer); override;
+    constructor Create(AParent: Pointer);
   end;
 
   TLittleAsteroid = class(TMovingUnit)
   private
+    FParent: Pointer;
     FTip: Byte;
   public
     property Tip: Byte read FTip write FTip; // Тип астеройда
     procedure Repaint; override;
-    constructor Create(AParent: pointer); override;
+    constructor Create(AParent: Pointer);
   end;
 
   TExplosion = class(TSprite)
@@ -118,15 +121,16 @@ begin
   FDestinations.Add(APos);
 end;
 
-constructor TShip.Create(AParent: pointer);
+constructor TShip.Create(AParent: Pointer);
 var
   vEngine: TEngine2D;
 begin
-  inherited;
+  inherited Create;
 
+  FParent := AParent;
   vEngine := AParent;
 
-  FLeftFire := TShipFire.Create(AParent);
+  FLeftFire := TShipFire.Create;
   FLeftFire.Resources := vEngine.Resources;
   FLeftFire.Group := 'ship';
   FLeftFire.Justify := BottomCenter;
@@ -135,7 +139,7 @@ begin
   FLeftFire.Opacity := 0.5;
   vEngine.AddObject(FLeftFire);
 
-  FRightFire := TShipFire.Create(AParent);
+  FRightFire := TShipFire.Create;
   FRightFire.Resources := vEngine.Resources;
   FRightFire.Group := 'ship';
   FRightFire.Justify := BottomCenter;
@@ -144,7 +148,7 @@ begin
   FRightFire.Opacity := 0.5;
   vEngine.AddObject(FRightFire);
 
-  FLeftFireCenter := TShipFire.Create(AParent);
+  FLeftFireCenter := TShipFire.Create;
   FLeftFireCenter.Resources := vEngine.Resources;
   FLeftFireCenter.Group := 'ship';
   FLeftFireCenter.Justify := BottomCenter;
@@ -153,7 +157,7 @@ begin
   FLeftFireCenter.Opacity := 0.5;
   vEngine.AddObject(FLeftFireCenter);
 
-  FRightFireCenter := TShipFire.Create(AParent);
+  FRightFireCenter := TShipFire.Create;
   FRightFireCenter.Resources := vEngine.Resources;
   FRightFireCenter.ScaleX := -Self.ScaleX;
   FRightFireCenter.Group := 'ship';
@@ -162,7 +166,7 @@ begin
   FRightFireCenter.Opacity := 0.5;
   vEngine.AddObject(FRightFireCenter);
 
-  FShipLight := TShipLight.Create(AParent);
+  FShipLight := TShipLight.Create;
   FShipLight.Resources := vEngine.Resources;
   FShipLight.Group := 'ship';
   FShipLight.ScaleX := Self.ScaleX;
@@ -222,7 +226,7 @@ var
   vFi, vEX, vEY, vDist: Double; // Координаты
   vAni: TAnimation;
 begin
-  vEngine := Parent;
+  vEngine := FParent;
 
   vEX := Self.x - X;
   vEY := Self.y - y;
@@ -259,7 +263,7 @@ var
   vNewX, vNewY: Single;
   vEngine: tEngine2d;
 begin
-  vEngine := Parent;
+  vEngine := FParent;
   curRes := 0;
 
   inherited;
@@ -332,17 +336,17 @@ begin
     Self.X := Self.X - (DX * Cos((Self.Rotate + 90) * pi180)) * 0.3 * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
     Self.Y := Self.Y - (DY * Sin((Self.Rotate + 90) * pi180)) * 0.3 * vKoef * vEngine.EngineThread.Speed * FSpeedModScale;
 
-  if Self.x >= tEngine2d(Parent).Width + Self.scW then
+  if Self.x >= vEngine.Width + Self.scW then
     Self.x := -Self.scW
   else
     if Self.x < 0 - Self.scW then
-      Self.x := tEngine2d(Parent).Width + Self.scW;
+      Self.x := vEngine.Width + Self.scW;
 
-  if Self.y >= tEngine2d(Parent).Height + Self.scH then
+  if Self.y >= vEngine.Height + Self.scH then
     Self.y := -Self.scH
   else
     if Self.y < 0 - Self.scH then
-     Self.y := tEngine2d(Parent).Height + Self.scH;
+     Self.y := vEngine.Height + Self.scH;
 
     FDestination.XY(Self.Center);
 
@@ -406,8 +410,8 @@ end;
 procedure TShip.Show;
 begin
   Self.SetOpacity(1);
-  Self.x := tEngine2d(Parent).Width * 0.5;
-  Self.y := tEngine2d(Parent).Height * 0.5;
+  Self.x := tEngine2d(FParent).Width * 0.5;
+  Self.y := tEngine2d(FParent).Height * 0.5;
   FIsPaint := True;
   tEngine2d(Self.fParent).ShowGroup('ship');
 end;
@@ -478,8 +482,8 @@ begin
  // FDx := - FDx;
  // FDy := - FDy;
 
-  AObject.x := AObject.x - FDx *  tEngine2d(Parent).EngineThread.Speed * 2 * FSpeedModScale;
-  AObject.y := AObject.y - FDy * tEngine2d(Parent).EngineThread.Speed * 2 * FSpeedModScale;
+  AObject.x := AObject.x - FDx *  tEngine2d(FParent).EngineThread.Speed * 2 * FSpeedModScale;
+  AObject.y := AObject.y - FDy * tEngine2d(FParent).EngineThread.Speed * 2 * FSpeedModScale;
 
   vLoader := TLoader.Create(FParent);
   vAng := vArcTan / pi180;
@@ -502,7 +506,8 @@ end;
 
 constructor TAsteroid.Create(AParent: pointer);
 begin
-  inherited;
+  inherited Create;
+  FParent := AParent;
 
   FMaxDx := 10;
   FMaxDy := 10;
@@ -537,27 +542,29 @@ end;
 procedure TAsteroid.Repaint;
 var
   vItem: TMovingUnit;
+  vEngine: tEngine2d;
 begin
   inherited;
+  vEngine := tEngine2d(FParent);
 
-  Self.x := Self.x + FDx * tEngine2d(Parent).EngineThread.Speed * FSpeedModScale;
-  Self.y := Self.y + FDy * tEngine2d(Parent).EngineThread.Speed * FSpeedModScale;
-  Self.Rotate := Self.Rotate + FDa * tEngine2d(Parent).EngineThread.Speed * FSpeedModScale;
+  Self.x := Self.x + FDx * vEngine.EngineThread.Speed * FSpeedModScale;
+  Self.y := Self.y + FDy * vEngine.EngineThread.Speed * FSpeedModScale;
+  Self.Rotate := Self.Rotate + FDa * vEngine.EngineThread.Speed * FSpeedModScale;
 
   if Self.Rotate >= 360 then
     Self.Rotate := 0;
 
-  if Self.x >= tEngine2d(Parent).Width + Self.scW then
+  if Self.x >= vEngine.Width + Self.scW then
     Self.x := -Self.scW
   else
     if Self.x < 0 - Self.scW then
-      Self.x := tEngine2d(Parent).Width + Self.scW;
+      Self.x := vEngine.Width + Self.scW;
 
-  if Self.y >= tEngine2d(Parent).Height + Self.scH then
+  if Self.y >= vEngine.Height + Self.scH then
     Self.y := -Self.scH
   else
     if Self.y < 0 - Self.scH then
-     Self.y := tEngine2d(Parent).Height + Self.scH;
+     Self.y := vEngine .Height + Self.scH;
 
   for vItem in FCollidedWith.Keys do
   begin
@@ -565,9 +572,6 @@ begin
     if FCollidedWith[vItem] <= 0 then
       FCollidedWith.Remove(vItem);
   end;
-
-{  if FNotChange > 0 then
-    Dec(FNotChange);}
 end;
 
 procedure TAsteroid.SetScale(AValue: single);
@@ -589,9 +593,10 @@ end;
 
 { TLittleAsteroid }
 
-constructor TLittleAsteroid.Create(AParent: pointer);
+constructor TLittleAsteroid.Create(AParent: Pointer);
 begin
-  inherited;
+  inherited Create;
+  FParent := AParent;
   FTip := Random(6);
   if FTip > 3 then
     FTip := 3; // Чтобы звезд побольше было
@@ -606,21 +611,25 @@ begin
 end;
 
 procedure TLittleAsteroid.Repaint;
+var
+  vEngine: TEngine2D;
 begin
   inherited;
 
-  Self.Rotate := Self.Rotate + FDa * tEngine2d(Parent).EngineThread.Speed * FSpeedModScale;
+  vEngine := tEngine2d(FParent);
+
+  Self.Rotate := Self.Rotate + FDa * vEngine.EngineThread.Speed * FSpeedModScale;
 
   if Self.Rotate >= 360 then
     Self.Rotate := 0;
 
-  Self.x := Self.x + FDx * tEngine2d(Parent).EngineThread.Speed * FSpeedModScale;
-  Self.y := Self.y + FDy * tEngine2d(Parent).EngineThread.Speed * FSpeedModScale;
+  Self.x := Self.x + FDx * vEngine.EngineThread.Speed * FSpeedModScale;
+  Self.y := Self.y + FDy * vEngine.EngineThread.Speed * FSpeedModScale;
 
-  if Self.x > tEngine2d(Parent).Width then
+  if Self.x > vEngine.Width then
     Self.x := -1;
 
-  if Self.y > tEngine2d(Parent).Height then
+  if Self.y > vEngine.Height then
     Self.y := -1;
 end;
 
@@ -634,7 +643,7 @@ end;
 
 { TShipFire }
 
-constructor TShipFire.Create(AParent: pointer);
+constructor TShipFire.Create;
 begin
   inherited;
   FTip := Random(3);
