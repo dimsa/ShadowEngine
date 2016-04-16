@@ -35,7 +35,6 @@ constructor tSpriteAnimation.Create;
 begin
   inherited;
   FFrames := TNamedList<TSpriteFrame>.Create{(Parent)};
-  FFrames.Parent := Parent;
 end;
 
 destructor tSpriteAnimation.Destroy;

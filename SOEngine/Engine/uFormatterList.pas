@@ -14,6 +14,7 @@ uses
 type
   TFormatterList = class(TEngine2DNamedList<TEngineFormatter>)
   private
+    FEngine: Pointer;
     FLoadedStyles: TNamedList<string>;
     function GetStyleByName(AName: string): string;
   public
@@ -23,7 +24,7 @@ type
     procedure ApplyForSubject(AObject: tEngine2DObject);
     function PseudoFormatter(const ASpriteForClone: TSprite; const AText: string): tEngine2DObject;
     function PseudoFormatterPosition(const ASpriteForClone: TSprite; const AText: string): TPosition;
-    constructor Create{(const AParent: Pointer)}; override;
+    constructor Create(const ACritical: TCriticalSection; const AEngine: Pointer); reintroduce; virtual;
     destructor Destroy; override;
   end;
 
@@ -38,7 +39,7 @@ procedure TFormatterList.ApplyForSubject(AObject: tEngine2DObject);
 var
   i, vN: Integer;
 begin
-  tEngine2d(Parent).Critical.Enter;
+  FCriticalSection.Enter;
   vN := Self.Count - 1;
   for i := 0 to vN do
     if Self[i].Subject = AObject then
@@ -46,7 +47,7 @@ begin
       Self[i].Format;
 
     end;
-  tEngine2d(Parent).Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
 procedure TFormatterList.ClearForSubject(AObject: tEngine2DObject);
@@ -54,20 +55,21 @@ var
   i, vN: Integer;
 
 begin
-  tEngine2d(Parent).Critical.Enter;
+  FCriticalSection.Enter;
   vN := Self.Count - 1;
   for i := vN downto 0 do
     if Self[i].Subject = AObject then
     begin
       Self.Delete(i);
     end;                      //тут есть вопрос. надо попробовать уничтожить форматтерсы
-  tEngine2d(Parent).Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
-constructor TFormatterList.Create{(const AParent: Pointer)};
+constructor TFormatterList.Create(const ACritical: TCriticalSection; const AEngine: Pointer);
 begin
-  inherited;
+  inherited Create(ACritical);
   FLoadedStyles := TNamedList<string>.Create;
+  FEngine := AEngine;
 end;
 
 destructor TFormatterList.Destroy;
@@ -127,13 +129,13 @@ begin
 
   vEngine := Self.Parent;   }
 
-  vEngine := Self.Parent;
+  vEngine := FEngine;
   vObj := vEngine.ShadowObject;
   vEngine.AssignShadowObject(ASpriteForClone);
   vObj.Visible := False;
 
   vRes := TEngineFormatter.Create(vObj, vEngine);
-  vRes.Parent := Self.Parent;
+  vRes.Parent := FEngine;
   vRes.Text := AText;
   vRes.Format;
  // vEngine.FormatterList.Add(vRes);
@@ -153,13 +155,13 @@ var
 begin
   // Проверить механизм клонирования. Не уверен, что всё правильно
 
-  vEngine := Self.Parent;
+  vEngine := FEngine;
   vObj := vEngine.ShadowObject;
   vEngine.AssignShadowObject(ASpriteForClone);
   vObj.Visible := False;
 
   vRes := TEngineFormatter.Create(vObj, vEngine);
-  vRes.Parent := Self.Parent;
+  vRes.Parent := FEngine;
   vRes.Text := AText;
   vRes.Format;
 

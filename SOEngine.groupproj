@@ -4,12 +4,12 @@
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="ShadowEngineDemo.dproj">
-            <Dependencies>C:\Users\dimsa\Desktop\SOEngine\SOEngine.dproj</Dependencies>
+            <Dependencies>SOEngine\SOEngine.dproj</Dependencies>
         </Projects>
         <Projects Include="SpriteShapeBuilder\SpriteShapeBuilder.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="C:\Users\dimsa\Desktop\SOEngine\SOEngine.dproj">
+        <Projects Include="SOEngine\SOEngine.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -39,13 +39,13 @@
         <MSBuild Projects="SpriteShapeBuilder\SpriteShapeBuilder.dproj" Targets="Make"/>
     </Target>
     <Target Name="SOEngine">
-        <MSBuild Projects="C:\Users\dimsa\Desktop\SOEngine\SOEngine.dproj"/>
+        <MSBuild Projects="SOEngine\SOEngine.dproj"/>
     </Target>
     <Target Name="SOEngine:Clean">
-        <MSBuild Projects="C:\Users\dimsa\Desktop\SOEngine\SOEngine.dproj" Targets="Clean"/>
+        <MSBuild Projects="SOEngine\SOEngine.dproj" Targets="Clean"/>
     </Target>
     <Target Name="SOEngine:Make">
-        <MSBuild Projects="C:\Users\dimsa\Desktop\SOEngine\SOEngine.dproj" Targets="Make"/>
+        <MSBuild Projects="SOEngine\SOEngine.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
         <CallTarget Targets="ShadowEngineDemo;SpriteShapeBuilder;SOEngine"/>

@@ -34,7 +34,7 @@ const
       (HorAlign: TTextAlign.Trailing; VerAlign: TTextAlign.Leading), (HorAlign: TTextAlign.Center; VerAlign: TTextAlign.Leading), (HorAlign: TTextAlign.Leading; VerAlign: TTextAlign.Leading),
       (HorAlign: TTextAlign.Trailing; VerAlign: TTextAlign.Center),  (HorAlign: TTextAlign.Center; VerAlign: TTextAlign.Center),  (HorAlign: TTextAlign.Leading; VerAlign: TTextAlign.Center),
       (HorAlign: TTextAlign.Trailing; VerAlign: TTextAlign.Trailing),  (HorAlign: TTextAlign.Center; VerAlign: TTextAlign.Trailing),  (HorAlign: TTextAlign.Leading; VerAlign: TTextAlign.Trailing));
-     {$IFEND}
+     {$ENDIF}
   {$ENDIF}
 
   {$IFDEF VER260}
@@ -71,6 +71,8 @@ type
 
   // Потокобезопасный класс именованных листов для енджайна. Обязательно должен быть указан Парент!
   TEngine2DNamedList<T> = class(TNamedList<T>)
+  protected
+    FCriticalSection: TCriticalSection;
   public
     function Add(const AName: String; Const AValue: T): Integer; override;
     function Add(AValue: T): Integer; override;
@@ -79,7 +81,7 @@ type
     procedure Delete(const AName: String); overload; override;
     procedure Delete(const AT: T); overload; override;
     procedure Delete(const AIndex: Integer); overload; override;
-    constructor Create; override;
+    constructor Create(const ACritical: TCriticalSection); reintroduce; virtual;
   end;
 
   {tClickProcedure = procedure(X, Y: Single) of object;
@@ -154,81 +156,60 @@ end;
 
 function TEngine2DNamedList<T>.Add(const AName: String;
   const AValue: T): Integer;
-var
-  vEngine: tEngine2d;
 begin
-  vEngine := Parent;
-  vEngine.Critical.Enter;
+  FCriticalSection.Enter;
   Result := inherited Add(AName, AValue);
-  vEngine.Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
 function TEngine2DNamedList<T>.Add(AValue: T): Integer;
-var
-  vEngine: tEngine2d;
 begin
-  vEngine := Parent;
-  vEngine.Critical.Enter;
+  FCriticalSection.Enter;
   Result := inherited Add(AValue);
-  vEngine.Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
-constructor TEngine2DNamedList<T>.Create;
+constructor TEngine2DNamedList<T>.Create(const ACritical: TCriticalSection);
 begin
-  inherited;
-
+  inherited Create;
+  FCriticalSection := ACritical;
 end;
 
 procedure TEngine2DNamedList<T>.Delete(const AName: String);
-var
-  vEngine: tEngine2d;
 begin
-  vEngine := Parent;
-  vEngine.Critical.Enter;
+  FCriticalSection.Enter;
   inherited Delete(AName);
-  vEngine.Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
 procedure TEngine2DNamedList<T>.Delete(const AT: T);
-var
-  vEngine: tEngine2d;
 begin
-  vEngine := Parent;
-  vEngine.Critical.Enter;
+  FCriticalSection.Enter;
   inherited Delete(AT);
-  vEngine.Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
 procedure TEngine2DNamedList<T>.Delete(const AIndex: Integer);
-var
-  vEngine: tEngine2d;
 begin
-  vEngine := Parent;
-  vEngine.Critical.Enter;
+  FCriticalSection.Enter;
   inherited Delete(AIndex);
-  vEngine.Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
 function TEngine2DNamedList<T>.Insert(const AIndex: Integer;
   const AName: String; const AValue: T): Integer;
-var
-  vEngine: tEngine2d;
 begin
-  vEngine := Parent;
-  vEngine.Critical.Enter;
+  FCriticalSection.Enter;
   Result := inherited Insert(AIndex, AName, AValue);
-  vEngine.Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
 function TEngine2DNamedList<T>.Insert(const AIndex: Integer;
   AValue: T): Integer;
-var
-  vEngine: tEngine2d;
 begin
-  vEngine := Parent;
-  vEngine.Critical.Enter;
+  FCriticalSection.Enter;
   Result := inherited Insert(AIndex, AValue);
-  vEngine.Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
 { tEngine2DOptions }

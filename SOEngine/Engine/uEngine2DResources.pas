@@ -19,7 +19,6 @@ type
     function AddFromRes(const x, y, w, h: integer; const AName: String): Integer; overload; // Добавляет ресурс из бмп с именем
     function AddResFromLoadFileRes(const AFileName: String): integer; // Добавляет ресурс из текстового файла особого формата
     function AddResource(const ABitmap: tBitmap): integer; // Добавляет битмап в массив ресурсов и говорит его номер
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -39,13 +38,6 @@ begin
   vTmp.rect := RectF(0, 0, vTmp.bmp.Width, vTmp.bmp.Height);
 
   Result := Self.Add(vTmp);
-end;
-
-constructor TEngine2DResources.Create{(const AParent: Pointer)};
-begin
-  inherited;
-  //FParent := AParent;
-//  FResources := TList<TSpriteResource>.Create;
 end;
 
 destructor TEngine2DResources.Destroy;
@@ -121,7 +113,7 @@ function TEngine2DResources.AddFromRes(const x, y, w, h: integer): integer;
 var
   bmp: tBitmap;
 begin
-  tEngine2d(Parent).Critical.Enter;
+  FCriticalSection.Enter;
   bmp := tBitmap.Create;
   bmp.Width := w;
   bmp.Height := h;
@@ -134,7 +126,7 @@ begin
   bmp.Canvas.EndScene;
   result := addResource(bmp);
   bmp.Free;
-  tEngine2d(Parent).Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
 function TEngine2DResources.AddFromRes(const x, y, w, h: integer; const AName: String): Integer;
@@ -143,7 +135,7 @@ var
   vSprRes: TSpriteResource;
   vN: Integer;
 begin
-  tEngine2d(Parent).Critical.Enter;
+  FCriticalSection.Enter;
   bmp := tBitmap.Create;
   bmp.Width := w;
   bmp.Height := h;
@@ -161,7 +153,7 @@ begin
   vN := Self.Add(AName, vSprRes);
 
   Result := vN;
-  tEngine2d(Parent).Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
 function TEngine2DResources.AddResFromLoadFileRes(const AFileName: String): integer;

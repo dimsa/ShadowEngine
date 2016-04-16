@@ -17,7 +17,7 @@ type
 
   TNamedList<T> = class(TEnumerable<T>)
   strict private
-    FParent: Pointer; // Pointer to master
+//    FParent: Pointer; // Pointer to master
   //  FNames: TList<TNameAndValue>;
     FAdded: Integer; // —читает количество добавленных всего элементов
     FDict: TDictionary<String,T>;
@@ -32,7 +32,7 @@ type
   protected
     function DoGetEnumerator: TEnumerator<T>; override;
   public
-    property Parent: Pointer read FParent write FParent;
+//    property Parent: Pointer read FParent write FParent;
 
     property Items[Index: Integer]: T read GetItemI write SetItemI; default;
     property Items[Name: String]: T read GetItemS write SetItemS; default;

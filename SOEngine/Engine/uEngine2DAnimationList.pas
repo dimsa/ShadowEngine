@@ -15,7 +15,6 @@ type
     procedure RecoverStartForSubject(const ASubject: Pointer);
 //    procedure ClearAndRecoverStartForSubject(const ASubject: Pointer); experimental;
     procedure ClearAndRecoverForSubject(const ASubject: Pointer); experimental; // ClearAndRecoverStartForSubject;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -40,7 +39,7 @@ var
   i, vN: Integer;
   vAni: TAnimation;
 begin
-  tEngine2d(Parent).Critical.Enter;
+  FCriticalSection.Enter;
   vN := Self.Count - 1;
   for i := vN downto 0 do
     if Items[i].Subject = ASubject then
@@ -51,7 +50,7 @@ begin
       Self.Delete(Items[i]);
       vAni.Free;
     end;
-  tEngine2d(Parent).Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
 procedure TEngine2DAnimationList.ClearForSubject(
@@ -60,7 +59,7 @@ var
   i, vN: Integer;
   vAni: TAnimation;
 begin
-  tEngine2d(Parent).Critical.Enter;
+  FCriticalSection.Enter;
   vN := Self.Count - 1;
   for i := vN downto 0 do
     if Items[i].Subject = ASubject then
@@ -70,13 +69,7 @@ begin
 //      Self.Delete(Items[i]);   l
       vAni.Free;
     end;
-  tEngine2d(Parent).Critical.Leave;
-end;
-
-constructor TEngine2DAnimationList.Create{(const AParent: Pointer)};
-begin
-  inherited;
-
+  FCriticalSection.Leave;
 end;
 
 destructor TEngine2DAnimationList.Destroy;
@@ -91,7 +84,7 @@ var
   i, vN: Integer;
   vAni: TAnimation;
 begin
-  tEngine2d(Parent).Critical.Enter;
+  FCriticalSection.Enter;
   vN := Self.Count - 1;
   for i := vN downto 0 do
     if Items[i].Subject = ASubject then
@@ -100,7 +93,7 @@ begin
       if vAni.Setupped then
         vAni.RecoverStart;
     end;
-  tEngine2d(Parent).Critical.Leave;
+  FCriticalSection.Leave;
 end;
 
 end.

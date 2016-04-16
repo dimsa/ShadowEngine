@@ -8,8 +8,6 @@ uses
 type
   TObjectsList = class(TEngine2dNamedList<tEngine2DObject>)
   public
-    constructor Create; override;
-    destructor Destroy; override;
 
   end;
 
@@ -17,17 +15,6 @@ implementation
 
 { TSpriteList }
 
-constructor TObjectsList.Create;
-begin
-  inherited;
-
-end;
-
-destructor TObjectsList.Destroy;
-begin
-
-  inherited;
-end;
 
 end.
 

@@ -96,9 +96,6 @@ type
     property Critical: TCriticalSection read FCritical;
     property New: TEngine2DObjectCreator read FObjectCreator; // Позволяет быстрее и проще создавать объекты
 
-//    property IsDrawFigures: Boolean read fOptions.IsDrawFigures write fOptions.IsDrawFigures;
-//    property IsAtFigures: Boolean read fOptions.IsDrawFigures write fOptions.IsDrawFigures;
-
     property SpriteCount: integer read getSpriteCount;
     property Sprites[index: integer]: tEngine2DObject read getObject write setObject;
 
@@ -127,6 +124,9 @@ type
     procedure ClearSprites; // Очищает массив спрайтов, т.е. является подготовкой к полной перерисовке
 //    procedure clearResources; // Очищает массив ресурсов, т.е. является подготовкой к завершению
     procedure ClearTemp; // Очищает массивы выбора и т.д. короче делает кучу полезных вещей.
+
+    procedure LoadSECSS(const AFileName: String);
+    procedure LoadSEJSON(const AFileName: String);
 
     procedure Init(AImage: tImage); // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
     procedure Repaint; virtual;
@@ -158,16 +158,10 @@ uses
 
 { tEngine2d }
 
-{procedure tEngine2d.addObject(const AObject: tEngine2DObject);
-begin
-  Inc(FAddedSprite);
-
-end;}
-
 procedure tEngine2d.addObject(const AObject: tEngine2DObject; const AName: String);
 var
   l: integer;
-  vName: String;
+  vName: string;
 begin
   Inc(FAddedSprite);
   if AName = '' then
@@ -181,7 +175,6 @@ begin
   begin
     fCritical.Enter;
     l := spriteCount;
-//    AObject.Parent := Self;
     fObjects.Add(vName, AObject);
     setLength(fSpriteOrder, l + 1);
     fObjects[l].Image := fImage;
@@ -267,18 +260,14 @@ end;
 
 constructor tEngine2d.Create; // (createSuspended: boolean);
 begin
+  fCritical := TCriticalSection.Create;
   fEngineThread := tEngineThread.Create;
-  fResources := TEngine2DResources.Create;
-  fResources.Parent := Self;
-  fAnimationList := TEngine2DAnimationList.Create;
-  fAnimationList.Parent := Self;
-  fFormatters := TFormatterList.Create;
-  fFormatters.Parent := Self;
-  fObjects := TObjectsList.Create;
-  fObjects.Parent := Self;
+  fResources := TEngine2DResources.Create(fCritical);
+  fAnimationList := TEngine2DAnimationList.Create(fCritical);
+  fFormatters := TFormatterList.Create(fCritical, Self);
+  fObjects := TObjectsList.Create(fCritical);
   fOptions.Up([EAnimateForever]);
   fOptions.Down([EClickOnlyTop]);
-  fCritical := TCriticalSection.Create;
   fObjectCreator := TEngine2DObjectCreator.Create(Self, fResources, fObjects, fAnimationList, fFormatters);
   FBackgroundBehavior := BackgroundDefaultBehavior;
   FInBeginPaintBehavior := InBeginPaintDefaultBehavior;
@@ -571,6 +560,16 @@ begin
   Result := fWidth > fHeight;
 end;
 
+procedure tEngine2d.LoadSECSS(const AFileName: String);
+begin
+  fFormatters.LoadSECSS(AFileName);
+end;
+
+procedure tEngine2d.LoadSEJson(const AFileName: String);
+begin
+
+end;
+
 procedure tEngine2d.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; x, y: single);
 var
@@ -631,7 +630,7 @@ var
   vTmp: TFastField;
 begin
   fFastFields := TFastFields.Create{(Self)};
-  fFastFields.Parent := Self;
+//  fFastFields.Parent := Self;
   vTmp := TFastEngineWidth.Create(Self);
   fFastFields.Add('engine.width', vTmp);
   vTmp := TFastEngineHeight.Create(Self);
@@ -640,8 +639,7 @@ end;
 
 procedure tEngine2d.prepareShadowObject;
 begin
-  FShadowObject := tSprite.Create;//(Self);
-//  FShadowObject.Parent := Self;
+  FShadowObject := tSprite.Create;
   Self.AddObject(FShadowObject, 'shadow');
 end;
 
