@@ -22,9 +22,6 @@ uses
 
 implementation
 
-uses
-  mainUnit;
-
 function MousePos: TPointF;
 var
   MouseService: IFMXMouseService;
@@ -96,8 +93,8 @@ begin
 
   {$IFDEF WIN32}
   // Это неправильно, но используется только для отладки в Виндоус и демонстрации форматтерсов
-  res.X := mainForm.ClientWidth;
-  res.Y := mainForm.ClientHeight;
+//  res.X := mainForm.ClientWidth;
+//  res.Y := mainForm.ClientHeight;
   {$ENDIF}
 
   result := res;

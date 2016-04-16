@@ -38,7 +38,7 @@ type
 implementation
 
 uses
-  uEngine2D, mainUnit;
+  uEngine2D;
 
 { tSprite }
 

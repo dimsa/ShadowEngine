@@ -4,9 +4,12 @@
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="ShadowEngineDemo.dproj">
-            <Dependencies/>
+            <Dependencies>C:\Users\dimsa\Desktop\SOEngine\SOEngine.dproj</Dependencies>
         </Projects>
         <Projects Include="SpriteShapeBuilder\SpriteShapeBuilder.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="C:\Users\dimsa\Desktop\SOEngine\SOEngine.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -17,13 +20,13 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="ShadowEngineDemo">
+    <Target Name="ShadowEngineDemo" DependsOnTargets="SOEngine">
         <MSBuild Projects="ShadowEngineDemo.dproj"/>
     </Target>
-    <Target Name="ShadowEngineDemo:Clean">
+    <Target Name="ShadowEngineDemo:Clean" DependsOnTargets="SOEngine:Clean">
         <MSBuild Projects="ShadowEngineDemo.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="ShadowEngineDemo:Make">
+    <Target Name="ShadowEngineDemo:Make" DependsOnTargets="SOEngine:Make">
         <MSBuild Projects="ShadowEngineDemo.dproj" Targets="Make"/>
     </Target>
     <Target Name="SpriteShapeBuilder">
@@ -35,14 +38,23 @@
     <Target Name="SpriteShapeBuilder:Make">
         <MSBuild Projects="SpriteShapeBuilder\SpriteShapeBuilder.dproj" Targets="Make"/>
     </Target>
+    <Target Name="SOEngine">
+        <MSBuild Projects="C:\Users\dimsa\Desktop\SOEngine\SOEngine.dproj"/>
+    </Target>
+    <Target Name="SOEngine:Clean">
+        <MSBuild Projects="C:\Users\dimsa\Desktop\SOEngine\SOEngine.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SOEngine:Make">
+        <MSBuild Projects="C:\Users\dimsa\Desktop\SOEngine\SOEngine.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ShadowEngineDemo;SpriteShapeBuilder"/>
+        <CallTarget Targets="ShadowEngineDemo;SpriteShapeBuilder;SOEngine"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ShadowEngineDemo:Clean;SpriteShapeBuilder:Clean"/>
+        <CallTarget Targets="ShadowEngineDemo:Clean;SpriteShapeBuilder:Clean;SOEngine:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ShadowEngineDemo:Make;SpriteShapeBuilder:Make"/>
+        <CallTarget Targets="ShadowEngineDemo:Make;SpriteShapeBuilder:Make;SOEngine:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

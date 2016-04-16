@@ -1,0 +1,69 @@
+package SOEngine;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  fmx;
+
+contains
+  uEasyDevice in 'Engine\uEasyDevice.pas',
+  uEngine2D in 'Engine\uEngine2D.pas',
+  uEngine2DAnimation in 'Engine\uEngine2DAnimation.pas',
+  uEngine2DAnimationList in 'Engine\uEngine2DAnimationList.pas',
+  uEngine2DClasses in 'Engine\uEngine2DClasses.pas',
+  uEngine2DExpression in 'Engine\uEngine2DExpression.pas',
+  uEngine2DObject in 'Engine\uEngine2DObject.pas',
+  uEngine2DObjectCreator in 'Engine\uEngine2DObjectCreator.pas',
+  uEngine2DObjectShape in 'Engine\uEngine2DObjectShape.pas',
+  uEngine2DResources in 'Engine\uEngine2DResources.pas',
+  uEngine2DShape in 'Engine\uEngine2DShape.pas',
+  uEngine2DShapedSprite in 'Engine\uEngine2DShapedSprite.pas',
+  uEngine2DSprite in 'Engine\uEngine2DSprite.pas',
+  uEngine2DSpriteAnimation in 'Engine\uEngine2DSpriteAnimation.pas',
+  uEngine2DStandardAnimations in 'Engine\uEngine2DStandardAnimations.pas',
+  uEngine2DText in 'Engine\uEngine2DText.pas',
+  uEngine2DThread in 'Engine\uEngine2DThread.pas',
+  uEngine2DUnclickableObject in 'Engine\uEngine2DUnclickableObject.pas',
+  uEngineFormatter in 'Engine\uEngineFormatter.pas',
+  uFormatterList in 'Engine\uFormatterList.pas',
+  uSpriteList in 'Engine\uSpriteList.pas',
+  uConstantGroup in 'ExpressionParser\uConstantGroup.pas',
+  uExpressionParser in 'ExpressionParser\uExpressionParser.pas',
+  uFastFields in 'ExpressionParser\uFastFields.pas',
+  uFunctionGroup in 'ExpressionParser\uFunctionGroup.pas',
+  uOperandGroup in 'ExpressionParser\uOperandGroup.pas',
+  uParserValue in 'ExpressionParser\uParserValue.pas',
+  uTextProc in 'ExpressionParser\uTextProc.pas',
+  uIntersectorClasses in 'Intersector\uIntersectorClasses.pas',
+  uIntersectorMethods in 'Intersector\uIntersectorMethods.pas',
+  uNewFigure in 'Intersector\uNewFigure.pas',
+  uClasses in 'Utils\uClasses.pas',
+  uNamedList in 'Utils\uNamedList.pas';
+
+end.

@@ -73,6 +73,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <DCC_UnitSearchPath>.\SOEngine;.\SOEngine\Engine;.\SOEngine\Utils;.\SOEngine\Intersector;.\SOEngine\ExpressionParser;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <AUP_READ_CALENDAR>true</AUP_READ_CALENDAR>
         <AUP_ACCESS_FINE_LOCATION>true</AUP_ACCESS_FINE_LOCATION>
@@ -252,44 +253,17 @@
         </DCCReference>
         <DCCReference Include="Utils\uClasses.pas"/>
         <DCCReference Include="Utils\uNamedList.pas"/>
-        <DCCReference Include="ExpressionParser\uConstantGroup.pas"/>
-        <DCCReference Include="ExpressionParser\uExpressionParser.pas"/>
-        <DCCReference Include="ExpressionParser\uFastFields.pas"/>
-        <DCCReference Include="ExpressionParser\uFunctionGroup.pas"/>
-        <DCCReference Include="ExpressionParser\uOperandGroup.pas"/>
-        <DCCReference Include="ExpressionParser\uParserValue.pas"/>
-        <DCCReference Include="ExpressionParser\uTextProc.pas"/>
-        <DCCReference Include="Engine\uEasyDevice.pas"/>
-        <DCCReference Include="Engine\uEngine2D.pas"/>
-        <DCCReference Include="Engine\uEngine2DAnimation.pas"/>
-        <DCCReference Include="Engine\uEngine2DAnimationList.pas"/>
-        <DCCReference Include="Engine\uEngine2DClasses.pas"/>
-        <DCCReference Include="Engine\uEngine2DObject.pas"/>
-        <DCCReference Include="Engine\uEngine2DResources.pas"/>
-        <DCCReference Include="Engine\uEngine2DSprite.pas"/>
-        <DCCReference Include="Engine\uEngine2DSpriteAnimation.pas"/>
-        <DCCReference Include="Engine\uEngine2DStandardAnimations.pas"/>
-        <DCCReference Include="Engine\uEngine2DText.pas"/>
-        <DCCReference Include="Engine\uEngine2DThread.pas"/>
-        <DCCReference Include="Engine\uEngine2DUnclickableObject.pas"/>
-        <DCCReference Include="Engine\uEngineFormatter.pas"/>
-        <DCCReference Include="Engine\uFormatterList.pas"/>
-        <DCCReference Include="Engine\uSpriteList.pas"/>
         <DCCReference Include="DemoCode\uDemoGame.pas"/>
         <DCCReference Include="DemoCode\uDemoEngine.pas"/>
         <DCCReference Include="DemoCode\uDemoGameLoader.pas"/>
         <DCCReference Include="DemoCode\uDemoObjects.pas"/>
-        <DCCReference Include="Intersector\uIntersectorMethods.pas"/>
-        <DCCReference Include="Intersector\uIntersectorClasses.pas"/>
-        <DCCReference Include="Engine\uEngine2DObjectShape.pas"/>
-        <DCCReference Include="Intersector\uNewFigure.pas"/>
         <DCCReference Include="DemoCode\uDemoMenu.pas"/>
-        <DCCReference Include="Engine\uEngine2DShape.pas"/>
         <DCCReference Include="Utils\inifile\FMX.IniFile.Android.pas"/>
         <DCCReference Include="Utils\inifile\FMX.IniFile.Apple.pas"/>
         <DCCReference Include="Utils\inifile\FMX.IniFile.pas"/>
-        <DCCReference Include="Engine\uEngine2DObjectCreator.pas"/>
-        <DCCReference Include="Utils\uBannerPanel.pas"/>
+        <DCCReference Include="Utils\uBannerPanel.pas">
+            <Form>$R *.res</Form>
+        </DCCReference>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
@@ -384,6 +358,18 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="Source\icons\72.png" Configuration="Release" Class="Android_LauncherIcon72">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\lib\android\release\mips\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeMipsFile">
+                    <Platform Name="Android">
+                        <RemoteName>libShadowEngineDemo.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Art\res.png" Configuration="Release" Class="File">
                     <Platform Name="Win32">
                         <RemoteName>res.png</RemoteName>
@@ -404,18 +390,6 @@
                     </Platform>
                     <Platform Name="iOSSimulator">
                         <RemoteName>res.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\lib\android\release\mips\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeMipsFile">
-                    <Platform Name="Android">
-                        <RemoteName>libShadowEngineDemo.so</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Source\icons\72.png" Configuration="Release" Class="Android_LauncherIcon72">
-                    <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -847,12 +821,27 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="ProjectiOSDeviceResourceRules">
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="ProjectOSXResource">
@@ -1206,27 +1195,12 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
+                <DeployClass Name="ProjectiOSDeviceResourceRules">
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <RemoteDir>Contents\MacOS</RemoteDir>
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
