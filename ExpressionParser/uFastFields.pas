@@ -184,10 +184,9 @@ end;
 
 destructor TFastFields.Destroy;
 var
-  i, vN: Integer;
+  i: Integer;
 begin
-  vN := Count - 1;
-  for i := 0 to vN do
+  for i := 0 to Count - 1 do
     Items[i].Free;
 
   inherited;

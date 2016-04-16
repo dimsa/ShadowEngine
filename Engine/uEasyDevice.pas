@@ -139,7 +139,6 @@ end;
 
 function getScreenScale: single;
 var
-//  screenSizeInDp: tPointF;
   ScreenSvc: IFMXScreenService;
 begin
   if TPlatformServices.Current.SupportsPlatformService(IFMXScreenService,

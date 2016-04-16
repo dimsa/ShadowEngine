@@ -71,7 +71,7 @@ type
     FParent: Pointer; // Engine2d
     FMaxLevel: Integer; // Максимальный уровень до которого дошел игрок
     FList: TList<TGameButton>; // Кнопки перехода по страницам меню
-    FSelectLevel: TList<TGameButton>;
+//    FSelectLevel: TList<TGameButton>;
     FGameLogo: TSprite;
     FComixText1, FComixText2: TEngine2DText;
     FNextLevelMenu, FRetryLevelMenu: TYesNoMenu;
@@ -164,7 +164,7 @@ begin
 
   vPoly := PolyFromRect(RectF(0, 0, FBack.w, FBack.h));
   Translate(vPoly, -PointF(FBack.wHalf, FBack.hHalf));
-  vFigure := TNewFigure.CreatePoly;
+  vFigure := TNewFigure.Create(TNewFigure.cfPoly);
   vFigure.SetData(vPoly);
   FBack.Shape.AddFigure(vFigure);
 

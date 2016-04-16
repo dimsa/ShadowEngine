@@ -43,8 +43,8 @@ type
     procedure Draw(ACanvas: TCanvas);
 
     constructor Create(const AKind: Byte);
-    constructor CreatePoly;
-    constructor CreateCircle;
+//    constructor CreatePoly;
+//    constructor CreateCircle;
   const
     cfCircle = 1;
     cfPoly = 2;
@@ -78,15 +78,15 @@ begin
   FTemp := Copy(FData);
 end;
 
-constructor TNewFigure.CreateCircle;
-begin
-  Self.Create(cfCircle);
-end;
-
-constructor TNewFigure.CreatePoly;
-begin
-  Self.Create(cfPoly);
-end;
+//constructor TNewFigure.CreateCircle;
+//begin
+//  Self.Create(cfCircle);
+//end;
+//
+//constructor TNewFigure.CreatePoly;
+//begin
+//  Self.Create(cfPoly);
+//end;
 
 procedure TNewFigure.Draw(ACanvas: TCanvas);
 begin

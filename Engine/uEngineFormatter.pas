@@ -320,8 +320,6 @@ function TEngineFormatter.CreateDirective(const AText: string; AExp: TExpression
 var
   vText: String;
   vHor: Boolean;
-  vIsHor: TBooleanFunction;
-  vEngine: tEngine2d;
 begin
   vText := LowerCase(AText);
   Result := Nil;
@@ -347,9 +345,7 @@ begin
   if (vText = 'scaley') or (vText = 'scy') then Result := TScaleYDir.Create(FObject, AExp);
 
   if vHor then
-  begin
     Result := TIfHorCondition.Create(Result, TEngine2D(FParent).IsHor);
-  end;
 
 end;
 

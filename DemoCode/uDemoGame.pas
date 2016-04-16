@@ -117,7 +117,10 @@ type
     FGameOverText: TEngine2DText;
     FGameStatus: TGameStatus;
     FGP: TGameParam;
+
+    {$IFDEF RELEASE}
     FBanners: TBannerPanel;
+    {$ENDIF}
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
     function GetSpeed: Single; // Берется из Engine2D чтобы на всех устройствах была одна скорость
@@ -153,7 +156,9 @@ type
     property Image: TImage read GetImage write SetImage;
     property Speed: Single read GetSpeed;
     property DrawFigures: Boolean read GetDrawFigures write SetDrawFigures;
+    {$IFDEF RELEASE}
     property Banners: TBannerPanel read FBanners write FBanners;
+    {$ENDIF}
 
     procedure Prepare;
     procedure Resize(const AWidth, AHeight: Integer);
@@ -293,8 +298,10 @@ procedure TDemoGame.MouseDown(Sender: TObject; Button: TMouseButton;
 var
   i: Integer;
 begin
+  {$IFDEF RELEASE}
   if Banners.Visible then
     Exit;
+  {$ENDIF}
 
   case GameStatus of
     gsGameOver: GameStatus := gsMenu1;
@@ -413,7 +420,7 @@ begin
       gsStoryMode: begin FGP.RestartGame(Value); HideGroup('menu3,menu,comix1,comix2,comix3'); end;
       gsGameOver: begin FLoader.ShipExplosionAnimation(FGP.Ship); {FGP.Ship.Visible := False;} ShowGroup('gameover'); FGameOverText.SendToFront; end;
       gsComix1: begin FMenu.AsteroidCount := FGP.AsteroidsForLevel(FGP.Level); FMenu.SecondsToFly := FGP.AsteroidsForLevel(FGP.Level) * 10; ShowGroup('comix1');  HideGroup('menu3,menu,nextlevel,retrylevel,ship'); SendToFrontGroup('comix1'); end;
-      gsComix2: begin ShowGroup('comix2'); SendToFrontGroup('comix2'); if FBanners <> nil then if FBanners.IsReadyToShow then FBanners.Show; end;
+      gsComix2: begin ShowGroup('comix2'); SendToFrontGroup('comix2'); {$IFDEF RELEASE} if FBanners <> nil then if FBanners.IsReadyToShow then FBanners.Show; {$ENDIF} end;
       gsComix3: begin ShowGroup('comix3'); SendToFrontGroup('comix3'); end;
       gsNextLevel: begin ShowGroup('nextlevel'); {HideGroup('ship');} SendToFrontGroup('nextlevel'); end;
       gsRetryLevel: begin FLoader.ShipExplosionAnimation(FGP.Ship); ShowGroup('retrylevel'); {HideGroup('ship');} SendToFrontGroup('retrylevel'); end;
@@ -540,6 +547,7 @@ procedure TGameParam.AddTime(const ADeltaTime: Double);
 var
   vDSec, vDSec2: Integer;
 begin
+  vDSec := 0;
   if FGameStatus = gsGameOver then
     Exit;
 

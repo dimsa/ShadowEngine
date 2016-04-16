@@ -62,7 +62,7 @@ type
     procedure Hide;
     procedure Show;
     procedure AddDestination(const APos: TPosition);
-    constructor Create(AParent: Pointer);
+    constructor Create(AParent: Pointer); reintroduce;
     destructor Destroy; override;
   end;
 
@@ -87,7 +87,7 @@ type
     property Size: Byte read FSize; // prSmall = 1; prMedium = 2; prBig = 3;
     property ScaleMod: Single read FScaleMod write SetScaleMod;
     function Collide(const AObject: TMovingUnit): Boolean;
-    constructor Create(AParent: Pointer);
+    constructor Create(AParent: Pointer); reintroduce;
   end;
 
   TLittleAsteroid = class(TMovingUnit)
@@ -97,7 +97,7 @@ type
   public
     property Tip: Byte read FTip write FTip; // Тип астеройда
     procedure Repaint; override;
-    constructor Create(AParent: Pointer);
+    constructor Create(AParent: Pointer); reintroduce;
   end;
 
   TExplosion = class(TSprite)
@@ -125,9 +125,9 @@ constructor TShip.Create(AParent: Pointer);
 var
   vEngine: TEngine2D;
 begin
+  FParent := AParent;
   inherited Create;
 
-  FParent := AParent;
   vEngine := AParent;
 
   FLeftFire := TShipFire.Create;
@@ -506,8 +506,8 @@ end;
 
 constructor TAsteroid.Create(AParent: pointer);
 begin
-  inherited Create;
   FParent := AParent;
+  inherited Create;
 
   FMaxDx := 10;
   FMaxDy := 10;
@@ -595,8 +595,8 @@ end;
 
 constructor TLittleAsteroid.Create(AParent: Pointer);
 begin
-  inherited Create;
   FParent := AParent;
+  inherited Create;
   FTip := Random(6);
   if FTip > 3 then
     FTip := 3; // Чтобы звезд побольше было

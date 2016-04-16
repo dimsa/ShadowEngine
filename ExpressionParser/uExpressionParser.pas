@@ -18,7 +18,7 @@ type
     function RightExp(APos: Integer): TValue; virtual;
     function OuterBrackets: TList<TStrAndPos>; virtual;
     function GetAllElements: TNamedList<TValue>;
-    function IsStartByFuncName(const AText: string): Boolean;
+//    function IsStartByFuncName(const AText: string): Boolean;
     function StartByBrackets(const AText: string): string;
   protected
     FParsed: Boolean; // Показывает, отпарсино ли выражение.
@@ -567,7 +567,7 @@ begin
   Result := False;
 end;
 
-function TExpression.IsStartByFuncName(const AText: string): Boolean;
+{function TExpression.IsStartByFuncName(const AText: string): Boolean;
 var
   i: Integer;
 begin
@@ -575,7 +575,7 @@ begin
     if Copy(AText, 1, Length(CFuncNames[i]) + 1) = (CFuncNames[i] + '(')  then
       Exit(True);
   Result := False;
-end;
+end;   }
 
 function TExpression.WhatBound(const APos: Integer): TValue;
 var

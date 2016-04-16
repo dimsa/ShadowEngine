@@ -116,7 +116,7 @@ begin
   vFig.Group := vGroup;
   vFig.FigureRect := RectF(-200, -200, 200, 200);
   vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
-  vFig.Brush.Kind := TBrushKind.bkBitmap;
+  vFig.Brush.Kind := TBrushKind.Bitmap;
   vFig.Pen.Thickness := 4;
   vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FEngine.AddObject(vFig);
@@ -154,7 +154,7 @@ begin
   vFig.Group := vGroup;
   vFig.FigureRect := RectF(-200, -200, 200, 200);
   vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
-  vFig.Brush.Kind := TBrushKind.bkBitmap;
+  vFig.Brush.Kind := TBrushKind.Bitmap;
   vFig.Pen.Thickness := 4;
   vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FEngine.AddObject(vFig);
@@ -193,7 +193,7 @@ begin
   vFig.Group := vGroup;
   vFig.FigureRect := RectF(-200, -200, 200, 200);
   vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
-  vFig.Brush.Kind := TBrushKind.bkBitmap;
+  vFig.Brush.Kind := TBrushKind.Bitmap;
   vFig.Pen.Thickness := 4;
   vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FEngine.AddObject(vFig);
@@ -251,7 +251,7 @@ procedure TLoader.CreateRelaxPanel(FPanel: TNamedList<tEngine2DText>);
 var
   vText: TEngine2DText;
   vFont: TFont;
-  vPrimaryColor, vSecondaryColor: TAlphaColor;
+  vPrimaryColor: TAlphaColor;
   i: Integer;
   vGroup: String;
 begin
@@ -261,8 +261,6 @@ begin
   vFont.Style := [TFontStyle.fsBold];
   vFont.Size := 14;
   vPrimaryColor := TAlphaColorRec.White;
-  vSecondaryColor := TAlphaColorRec.Lightgray;
-
 
   vText := FastText('time', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Time:';
@@ -342,7 +340,7 @@ procedure TLoader.CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
 var
   vText: TEngine2DText;
   vFont: TFont;
-  vPrimaryColor, vSecondaryColor: TAlphaColor;
+  vPrimaryColor: TAlphaColor;
 //  vLeft, vRight: String;
   i: Integer;
   vGroup: String;
@@ -353,7 +351,6 @@ begin
   vFont.Style := [TFontStyle.fsBold];
   vFont.Size := 14;
   vPrimaryColor := TAlphaColorRec.White;
-  vSecondaryColor := TAlphaColorRec.Lightgray;
 
   vText := FastText('time', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Time:';
@@ -423,7 +420,7 @@ begin
   vSpr.y := 200;//Random(FEngine.Height);
   vSpr.Rotate := Random(360);
 
-  vPoly1 := TNewFigure.CreatePoly;
+  vPoly1 := TNewFigure.Create(TNewFigure.cfPoly);
   Clear(vPoly);
   AddPoint(vPoly, PointF(0, -165));
   AddPoint(vPoly, PointF(-50, -55));
@@ -431,7 +428,7 @@ begin
   Scale(vPoly, PointF(0.9, 0.9));
   vPoly1.SetData(vPoly);
 
-  vPoly2 := TNewFigure.CreatePoly;
+  vPoly2 := TNewFigure.Create(TNewFigure.cfPoly);
   Clear(vPoly);
   AddPoint(vPoly, PointF(-95, -115));
   AddPoint(vPoly, PointF(-70, -85));
@@ -440,7 +437,7 @@ begin
   Scale(vPoly, PointF(0.9, 0.9));
   vPoly2.SetData(vPoly);
 
-  vPoly3 := TNewFigure.CreatePoly;
+  vPoly3 := TNewFigure.Create(TNewFigure.cfPoly);
   Clear(vPoly);
   AddPoint(vPoly, PointF(95, -115));
   AddPoint(vPoly, PointF(70, -85));
@@ -449,7 +446,7 @@ begin
   Scale(vPoly, PointF(0.9, 0.9));
   vPoly3.SetData(vPoly);
 
-  vShape := TNewFigure.CreateCircle;// TCircleFigure.Create;
+  vShape := TNewFigure.Create(TNewFigure.cfCircle);
   vCircle.X := 0;
   vCircle.Y := 50;
   vCircle.Radius := 115;

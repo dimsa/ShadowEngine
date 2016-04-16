@@ -252,17 +252,11 @@ end;
 
 procedure tEngine2d.clearSprites;
 var
-  i, l: integer;
+  i: integer;
 begin
-  l := spriteCount - 1;
-
-  for i := 0 to l do
-  begin
+ for i := 0 to spriteCount - 1 do
     fObjects[i].free;
-  end;
 
-//  fSprites.Count := 0;
-//  setLength(fSprites, 0);
   setLength(fSpriteOrder, 0);
 end;
 
@@ -360,7 +354,7 @@ begin
   fCritical.Enter;
   // Форматирвание
   for i := 0 to fFormatters.Count - 1 do
-    fFormatters[i].Format;// then
+    fFormatters[i].Format;
   fCritical.Leave;
 end;
 

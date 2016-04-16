@@ -5,7 +5,7 @@ interface
 uses
  FMX.Advertising, System.Types, System.Classes, FMX.Types, FMX.Controls, FMX.StdCtrls,
  System.Generics.Collections, FMX.Forms, System.UITypes, FMX.Layouts, FMX.Objects,
- System.SysUtils,
+ System.SysUtils, FMX.Dialogs,
  uEasyDevice;
 
 type
@@ -186,13 +186,11 @@ procedure TBannerPanel.ReArrange;
 var
   i: Integer;
   vSize: TPointF;
-  vScale: Double;
 begin
   if FList.Count <= 0 then
     Exit;
 
   vSize := uEasyDevice.getDisplaySizeInPx;
-  vScale := uEasyDevice.getScreenScale;
 
   for i := 0 to FList.Count - 1 do
   begin

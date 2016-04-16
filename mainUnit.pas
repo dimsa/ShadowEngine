@@ -19,7 +19,9 @@ type
       Shift: TShiftState);
   private
     Game: TDemoGame;
+    {$IFDEF RELEASE}
     BannerPanel: TBannerPanel;
+    {$ENDIF}
     { Private declarations }
   public
     { Public declarations }
@@ -33,6 +35,7 @@ implementation
 
 procedure TmainForm.FormCreate(Sender: TObject);
 begin
+  {$DEFINE DEBUG}
   Game := TDemoGame.Create;
   Game.Image := mainImage;
 
@@ -40,11 +43,12 @@ begin
   BorderStyle := TFmxFormBorderStyle.None;
   {$ENDIF}
 
+  {$IFDEF RELEASE}
   BannerPanel := TBannerPanel.Create(mainForm);
   {$I private/admob.inc} // Remove for your project.
   BannerPanel.Prepare;
-
   Game.Banners := BannerPanel;
+  {$ENDIF}
   Game.Prepare;
 end;
 
@@ -57,11 +61,13 @@ begin
 
   if ReturnPressed(Key) then
   begin
+    {$IFDEF RELEASE}
     if BannerPanel.Visible then
     begin
       BannerPanel.Visible := False;
       Exit;
     end;
+   {$ENDIF}
 
     case Game.GameStatus of
       gsMenu2: Game.GameStatus := gsMenu1;
@@ -83,7 +89,9 @@ end;
 procedure TmainForm.FormResize(Sender: TObject);
 begin
   Game.Resize(Round(mainImage.Width), Round(mainImage.Height));
+  {$IFDEF RELEASE}
   BannerPanel.Resize;
+  {$ENDIF}
 end;
 
 end.

@@ -49,11 +49,11 @@ begin
   inherited;
   FigureRect := RectF(-50, -50, 50, 50);
 
-  FPen := TStrokeBrush.Create(TBrushKind.bkSolid, TAlphaColorRec.Black);
+  FPen := TStrokeBrush.Create(TBrushKind.Solid, TAlphaColorRec.Black);
   FPen.Thickness := 1;
   FPen.Color := TAlphaColorRec.Black;
 
-  FBrush := TBrush.Create(TBrushKind.bkSolid, TAlphaColorRec.White);
+  FBrush := TBrush.Create(TBrushKind.Solid, TAlphaColorRec.White);
   FBrush.Color := TAlphaColorRec.White;
 end;
 
@@ -136,7 +136,7 @@ begin
     0,
     [],
     fOpacity,
-    FMX.Types.TCornerType.ctBevel
+    FMX.Types.TCornerType.Bevel
   );
 
   if FPen.Thickness > 0 then
@@ -150,7 +150,7 @@ begin
       0,
       [],
       fOpacity,
-      FMX.Types.TCornerType.ctBevel
+      FMX.Types.TCornerType.Bevel
     );
 
 
