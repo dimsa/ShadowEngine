@@ -13,7 +13,6 @@ type
   //  procedure AddDelayedAnimation(const ATime: Integer; AAnimation: tAnimation);
     procedure ClearForSubject(const ASubject: Pointer);
     procedure RecoverStartForSubject(const ASubject: Pointer);
-//    procedure ClearAndRecoverStartForSubject(const ASubject: Pointer); experimental;
     procedure ClearAndRecoverForSubject(const ASubject: Pointer); experimental; // ClearAndRecoverStartForSubject;
     destructor Destroy; override;
   end;
@@ -24,14 +23,6 @@ uses
   uEngine2D;
 
 { TEngineAnimationList }
-
-{procedure TEngine2DAnimationList.AddDelayedAnimation(const ATime: Integer;
-  AAnimation: tAnimation);
-var
-  vAni: TAnimation;
-begin
-  vAni := TAnimation.Create;
-end;}
 
 procedure TEngine2DAnimationList.ClearAndRecoverForSubject(
   const ASubject: Pointer);

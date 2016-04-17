@@ -5,7 +5,7 @@ interface
 uses
   System.Types, System.UITypes, FMX.Graphics, FMX.Objects, FMX.Types,
   System.Math, System.SysUtils, System.Classes,
-  uEngine2DClasses, uEngine2DResources,
+  uEngine2DClasses, uEngine2DResources, uEngine2DObjectShape,
   uEngine2DObject;
 
 type
@@ -45,6 +45,12 @@ type
     property FontSizeRatio: Single read FFontSizeRatio write FFontSizeRatio;
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
 
+    function Config(const AText: string = '';
+      const AColor: TAlphaColor = TAlphaColorRec.Black;
+      const AGroup: string = '';
+      const AJustify: TObjectJustify = Center;
+      const AShape: TObjectShape = nil): TEngine2DText;
+
     procedure AutoResizeFont(const ARatio: Single = 0); experimental; // Автоматически подбирает размер шрифта
     procedure Repaint; override;
 
@@ -60,15 +66,17 @@ procedure TEngine2DText.AutoResizeFont(const ARatio: Single);
 begin
   if FText <> '' then
    FFont.Size := FStartFont.Size {* Self.ScaleX} * ARatio;
-  {if FText <> '' then
+end;
 
-   with Image do
-   begin
-      vRect := FTextRect;
-      Bitmap.Canvas.MeasureText(vRect, fText, FWordWrap, [], TTextAlign.Leading, TTextAlign.Leading);
-      vRatio := Min(FTextRect.Height / vRect.Height, FTextRect.Width / vRect.Width);
+function TEngine2DText.Config(const AText: string; const AColor: TAlphaColor;
+  const AGroup: string; const AJustify: TObjectJustify;
+  const AShape: TObjectShape): TEngine2DText;
+begin
+  Result := Self;
+  Self.Text := Text;
+  Self.Color := AColor;
 
-   end;}
+  inherited Config(AGroup, AJustify, AShape);
 end;
 
 constructor TEngine2DText.Create;

@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, System.RegularExpressions, System.Generics.Collections,
-  uIntersectorClasses,
+  uIntersectorClasses, uSpriteList,
   uExpressionParser, uNamedList, uEngine2DClasses, uTextProc, uEngine2DObject,
   uEngine2DUnclickableObject, uFastFields, uConstantGroup, uParserValue, uClasses;
 
@@ -102,22 +102,19 @@ type
   private
     FObject: tEngine2DObject;
     FList: TList<TFormatterDirective>;
+    FObjects: TObjectsList;
+    FFastFields: TFastFields;
     FText: String;
-    FParent: Pointer;
-//    function CreateIfNil(var vExp: TExpression): TExpression;
     procedure SetText(const Value: String);
     function CreateDirective(const AText: string; AExp: TExpression): TFormatterDirective;
     function DefineSelf(const AText: String): String;
     function IsFunction(const AText: String): Boolean;
     function IsDotProperty(const AText: String): Boolean;
   public
-    property Parent: Pointer read FParent write FParent; // Ссылка на Engine2D
     property Text: String read FText write SetText;
-
     property Subject: tEngine2DObject read FObject;
-
     procedure Format; virtual;
-    constructor Create(AObject: tEngine2DObject; AEngine: Pointer); virtual;
+    constructor Create(AObject: tEngine2DObject; AObjects: TObjectsList; AFastFiels: TFastFields); virtual;
     destructor Destroy; override;
   end;
 
@@ -128,9 +125,10 @@ uses
 
 { TEngineFormatter }
 
-constructor TEngineFormatter.Create(AObject: tEngine2DObject; AEngine: Pointer);
+constructor TEngineFormatter.Create(AObject: tEngine2DObject; AObjects: TObjectsList; AFastFiels: TFastFields);
 begin
-  FParent := AEngine;
+  FObjects := AObjects;
+  FFastFields := AFastFiels;
   FObject := AObject;
   FList := TList<TFormatterDirective>.Create;
 end;
@@ -142,20 +140,17 @@ var
   vMatch: TMatch;
   vRes, vTmp, vName, vObjName: String;
   vOffset: Integer; // Сдвиг позиций при вставлении названия объекта и точки
-  vEngine: tEngine2d;
 begin
   vReg := TRegEx.Create('[a-zA-Z0-9]*[^0-9\*\+\-\/\^\)\(][a-zA-Z0-9]*');
   vMatches := vReg.Matches(AText);
   vRes := AText;
   vOffset := 0;
-  vEngine := tEngine2d(FParent);
 
-//  vEngine.SpriteList.NameIfHere(FObject);
   for vMatch in vMatches do
     if not IsFunction(vMatch.Value) and (not IsDotProperty(vMatch.Value)) then
     begin
       vTmp := Copy(vRes, vMatch.Index, vMatch.Length);
-      vObjName := vEngine.SpriteList.NameIfHere(FObject);
+      vObjName := FObjects.NameIfHere(FObject);
       if vObjName = '' then
         vObjName := 'shadow';
       vName := vObjName+'.'+vTmp;
@@ -164,7 +159,7 @@ begin
         Copy(vRes, 1, vMatch.Index + vOffset - 1) +
         vName +
         Copy(vRes, vMatch.Index + vOffset + Length(vTmp), Length(VRes));
-      vOffset := vOFfset + Length(vEngine.SpriteList.NameIfHere(FObject)+'.');
+      vOffset := vOFfset + Length(FObjects.NameIfHere(FObject)+'.');
     end;
 
   Result := vRes;
@@ -210,7 +205,6 @@ var
   j, vNj: Integer;
   vExp: TExpression;
   vFast: TFastField;
-  vEngine: tEngine2d; // Ссылка на движок
   vTmpObject: tEngine2DObject;
   vName, vNewName: String;
   vVarList: TNamedList<TValue>;
@@ -223,30 +217,24 @@ begin
    //  vText := DefineSelf(vText);
  // НАДО УЧЕСТЬ ПРОБЛЕМУ ДВОЕТОЧИЙ И ТОЧКИ С ЗАПЯТОЙ
 
-  vArr := Split(vText, ';');// ExplodeBy(vText, ';');
+  vArr := Split(vText, ';');
   vN := vArr.Count - 1;
 
   for i := 0 to vN do
   begin
-    vArrName := Split(vArr[i], ':');//ExplodeBy(vArr[i],':');
+    vArrName := Split(vArr[i], ':');
     vArrName[1] := DefineSelf(vArrName[1]);
-    if vArrName.Count{Length(vArrName)} = 2 then
+    if vArrName.Count = 2 then
     begin
-
-      vEngine := TEngine2D(FParent);
       vExp := TExpression.Create;
-      vExp.ValueStack := vEngine.FastFields;
+      vExp.ValueStack := FFastFields;
       vExp.Text := vArrName[1];
       FList.Add(CreateDirective(vArrName[0], vExp));
-//      vExp := ;
 
-
-//      vNj := vExp.Values.Count - 1;
       vVarList := vExp.AllElements;
 
 
       vNj := vVarList.Count - 1;
-//      vNj := vExp.VarNames.Count - 1;
 
       for j := 0 to vNj do
         if  vVarList[j]{ vExp.Values[j]} Is TVariable then
@@ -261,53 +249,16 @@ begin
           begin
             if LowerCase(vArrFast[0]) = 'self' then
             begin
-              vNewName := vEngine.SpriteList.NameOf(FObject);
+              vNewName := FObjects.NameOf(FObject);
               vName := vNewName + '.' + vName;
             end;
-            vTmpObject := vEngine.SpriteList[vArrFast[0]];
+            vTmpObject := FObjects[vArrFast[0]];
             vFast := TypeOfFast(vArrFast[1]).Create(vTmpObject);
-            vEngine.FastFields.AddIfNo(vName, vFast)
-          end;// else
+            FFastFields.AddIfNo(vName, vFast)
+          end;
 
-        {  if vArrFast.Count = 1 then
-          begin
-
-//            vNewName := vEngine.SpriteList.NameOf(FObject); //  -- косяк. не выдает нейм оф
-            vNewName := vEngine.SpriteList.NameIfHere(FObject); //  -- косяк. не выдает нейм оф
-            if (vNewName = '') and (FObject.ClonedFrom <> Nil) then
-              vNewName := vEngine.SpriteList.NameIfHere(tEngine2DObject(FObject.ClonedFrom)); //  -- косяк. не выдает нейм оф
-            if vNewName <> '' then
-            begin
-
-              vTest := vVarList[j].Name;
-              vName := vNewName + '.' + vName;
-            //Когда происходит эта штука, видимо сдвигаются парсинги
-            // Данное место работает криво. Когда допустим в форматтерсы попадает
-            // выражение вроде top:height+height; то возникает необходимость использовать
-            // название и заменить всё на top:randname3453.Height+randname3453.Height
-            // Но TNamedList не позволяет этого сделать. Потому что он заменяет
-            // значение первого найденного имени.
-            // Вывод: Не делайте выражение 2 одинквоых переменных!!!
-            vTestName := vVarList[j].Name;
-              vExp.Values[vTestName].Text := vName;
-                         //ыыы
-
-                        // Нужно поставить тут регулярку
-              vArrFast := Split(vName, '.');
-              if vArrFast.Count = 2 then
-              begin
-                vTmpObject := vEngine.SpriteList[vArrFast[0]];
-                vFast := TypeOfFast(vArrFast[1]).Create(vTmpObject);
-
-//      Было так          vEngine.FastFields.Add(vName, vFast)
-                vEngine.FastFields.AddIfNo(vName, vFast)
-              end;
-            end;
-          end else
-          begin
-            // Делаем что-то типа создания псевдооюъекта
-          end; }
-            if vArrFast <> Nil then vArrFast.Free;
+          if vArrFast <> Nil then
+            vArrFast.Free;
         end;
       end;
     end;
@@ -345,7 +296,7 @@ begin
   if (vText = 'scaley') or (vText = 'scy') then Result := TScaleYDir.Create(FObject, AExp);
 
   if vHor then
-    Result := TIfHorCondition.Create(Result, TEngine2D(FParent).IsHor);
+    Result := TIfHorCondition.Create(Result, FFastFields.IsHor);
 
 end;
 

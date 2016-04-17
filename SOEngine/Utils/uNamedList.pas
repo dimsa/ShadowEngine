@@ -17,8 +17,6 @@ type
 
   TNamedList<T> = class(TEnumerable<T>)
   strict private
-//    FParent: Pointer; // Pointer to master
-  //  FNames: TList<TNameAndValue>;
     FAdded: Integer; // Считает количество добавленных всего элементов
     FDict: TDictionary<String,T>;
     FList: TList<T>;
@@ -32,8 +30,6 @@ type
   protected
     function DoGetEnumerator: TEnumerator<T>; override;
   public
-//    property Parent: Pointer read FParent write FParent;
-
     property Items[Index: Integer]: T read GetItemI write SetItemI; default;
     property Items[Name: String]: T read GetItemS write SetItemS; default;
     property Count: Integer read GetCount;{ write SetCount;}
@@ -50,9 +46,6 @@ type
     procedure Delete(const AName: String); overload; virtual;
     procedure Delete(const AT: T); overload; virtual;
     procedure Delete(const AIndex: Integer); overload; virtual;
-   // procedure Remove(AT: T);
-
-//    function CountNames: Integer;
     function ByName(const AName: String): T;
     function NameOf(const AObject: T): String; overload; // Возвращает имя по объекту
     function NameOf(const AIndex: Integer): String; overload; // Возвращает имя по объекту
@@ -61,19 +54,15 @@ type
     function IsHere(const AObject: T): Boolean; overload;
     function IndexOf(const AName: String): Integer; overload;
     function IndexOfItem(const Value: T; Direction: TDirection): Integer; overload;
-//    function IndexOfItem(const AName: String): Integer; overload;
-//    function Count: Integer; reintroduce;
 
     procedure AddName(const AIndex: Integer; AName: String); overload;
     procedure AddName(const AValue: T; AName: String); overload;
-{    procedure DeleteName(const AIndex: Integer); overload;
-    procedure DeleteName(const AName: String); overload; }
 
     procedure AddList(const AList: TNamedList<T>);
     procedure AddListIfNo(const AList: TNamedList<T>);
     procedure Clear; reintroduce;
 
-    constructor Create{(const AParent: Pointer)}; virtual;
+    constructor Create; virtual;
     destructor Destroy; override;
 
     function GetEnumerator: TEnumerator<T>; reintroduce;
@@ -209,16 +198,11 @@ begin
   FLink.Clear;
 end;
 
-{function TNamedList<T>.CountNames: Integer;
-begin
-  Exit(FNames.Count);
-end;  }
-
 constructor TNamedList<T>.Create{(const AParent: Pointer)};
 begin
   FList := TList<T>.Create;
   FDict := TDictionary<String,T>.Create;
-  FLink := TList<String>.Create;//TDictionary<Integer,String>.Create;
+  FLink := TList<String>.Create;
   FAdded := 0;
 end;
 
@@ -237,7 +221,6 @@ begin
   FList.Delete(AIndex);
   FDict.Remove(FLink[AIndex]);
   FLink.Delete(AIndex);
- // EnsureIntegerity(AIndex);
 end;
 
 procedure TNamedList<T>.Delete(const AT: T);
@@ -262,28 +245,6 @@ function TNamedList<T>.DoGetEnumerator: TEnumerator<T>;
 begin
   Result := GetEnumerator;
 end;
-
-{procedure TNamedList<T>.EnsureIntegerity(const AIndex: Integer);
-var
-  i, vN: Integer;
-  vPair: TPair<Integer, T>;
-begin
-  vN := FList.Count - 1;
-  for i := AIndex to vN - 1 do
-  begin
-    FLink[i] := FLink[i+1];
-    //vPair := FLink.ExtractPair(i);
-  end;
-
-//vPair := FDict.ExtractPair(FLink[AIndex]);
- // FDict.Add(AName, vPair.Value);
-
-end;     }
-
-{function TNamedList<T>.GetItemInt(Index: Integer): T;
-begin
-  Result := (self as TList<T>).Items[Index];
-end;}
 
 function TNamedList<T>.GetCount: Integer;
 begin
@@ -342,7 +303,6 @@ var
   Guid: TGUID;
   i: Integer;
 begin
-
   // Почему-то андройд по-другому не создает уникальный ГУИД
   Guid := Guid.Empty;
   Guid.D1 := Random64;
@@ -375,12 +335,9 @@ end;
 
 function TNamedList<T>.NameIfHere(const AObject: T): String;
 var
-//  vN, i: Integer;
   vS: String;
   vA: Integer;
 begin
-//  vN := FList.Count - 1;
-
   vA := FList.IndexOfItem(AObject, TDirection.FromBeginning);
   if vA > -1 then
       Exit(Self.NameOf(vA));
@@ -409,16 +366,6 @@ begin
         '". in class "' + CClassName + '"';
   Raise Exception.Create(vS);
 end;
-
-{procedure TNamedList<T>.SetItemInt(Index: Integer; const Value: T);
-begin
-  (self as TList<T>).Items[Index] := Value;
-end;}
-
-{procedure TNamedList<T>.SetCount(const Value: Integer);
-begin
-  FList.Count := Value;
-end; }
 
 procedure TNamedList<T>.SetItemI(Index: Integer; const Value: T);
 begin

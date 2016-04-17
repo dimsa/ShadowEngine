@@ -16,7 +16,7 @@ type
 
   TAnimation = class
   strict private
-    FParent: Pointer; // Указатель на Engine
+    FParent: Pointer;
     FSubject: Pointer; // Указатель на объект анимации
     FNextAnimation: TAnimation;
     FSetupped: Boolean;
@@ -30,7 +30,7 @@ type
     FOnFinalize: TProcedure;
     procedure SetSubject(const Value: Pointer);
   public
-    property Parent: Pointer read FParent write FParent; // Указатель на Engine2d
+    property Parent: Pointer read FParent write FParent;
     property Stopped: Boolean read FStopped write FStopped; // Если анимация остановлена, она ничего не делает, что логично
     property Finalized: Boolean read FFinalized; // Финализирована ли анимация
     property Subject: Pointer read FSubject write SetSubject;//GetSubject write
@@ -51,7 +51,6 @@ type
     procedure DeleteSubject;
     procedure HideSubject;
     constructor Create; virtual;
-//    constructor DelayedCreate; virtual; // Создается без сетапа
     destructor Destroy; override;
   const
     CDefaultTotalTime = 500; // Время на анимацию, по умолчанию. Если хотите создать непрерывную, придется отнаследоваться и переписать метод Animate

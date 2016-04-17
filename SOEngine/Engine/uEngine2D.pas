@@ -71,6 +71,13 @@ type
     procedure SetBackgroundBehavior(const Value: TProcedure);
     procedure BringToBackHandler(ASender: TObject);
     procedure SendToFrontHandler(ASender: TObject);
+  protected
+      // Ключевые списки движка
+    property Resources: TEngine2DResources read FResources;
+    property AnimationList: TEngine2DAnimationList read fAnimationList;
+    property FormatterList: TFormatterList read fFormatters;
+    property SpriteList: TObjectsList read fObjects;
+    property FastFields: tFastFields read FFastFields; // Быстрый вызов для экспрешенсов
   public
     // Ключевые свойства движка
     property EngineThread: TEngineThread read fEngineThread;
@@ -78,17 +85,11 @@ type
     property BackgroundBehavior: TProcedure read FBackgroundBehavior write SetBackgroundBehavior;
     property InBeginPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
     property InEndPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
-    // Ключевые списки движка
-    property Resources: TEngine2DResources read FResources;
-    property AnimationList: TEngine2DAnimationList read fAnimationList;
-    property FormatterList: TFormatterList read fFormatters;
-    property SpriteList: TObjectsList read fObjects;
-    property FastFields: tFastFields read FFastFields; // Быстрый вызов для экспрешенсов
 
     property IsMouseDowned: Boolean read FIsMouseDowned;
     property Status: byte read fStatus write setStatus;
-    property Width: integer read {GetWidth} fWidth write setWidth;
-    property Height: integer read {GetHeight}fHeight write setHeight;
+    property Width: integer read fWidth write setWidth;
+    property Height: integer read fHeight write setHeight;
 
     property Clicked: tIntArray read fClicked;
     property Downed: TIntArray read fMouseDowned;
@@ -108,7 +109,6 @@ type
     procedure SpriteToFront(const n: integer);// Передвигает в массиве отрисовки спрайт
 
     procedure Resize;
-//    procedure Clear; // Удаляет все спрайты и после этого удаляет все ресурсы
 
     procedure MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; x, y: single); virtual;
@@ -122,9 +122,9 @@ type
     property ShadowObject: tEngine2DObject read FShadowObject;  // Указатель на Теневой объект.
 
     procedure ClearSprites; // Очищает массив спрайтов, т.е. является подготовкой к полной перерисовке
-//    procedure clearResources; // Очищает массив ресурсов, т.е. является подготовкой к завершению
     procedure ClearTemp; // Очищает массивы выбора и т.д. короче делает кучу полезных вещей.
 
+    procedure LoadResources(const AFileName: String);
     procedure LoadSECSS(const AFileName: String);
     procedure LoadSEJSON(const AFileName: String);
 
@@ -154,7 +154,7 @@ const
 implementation
 
 uses
-  System.RegularExpressions;
+  System.RegularExpressions, System.JSON, uNewFigure;
 
 { tEngine2d }
 
@@ -187,14 +187,11 @@ end;
 
 procedure tEngine2d.AssignShadowObject(ASpr: tEngine2DObject);
 begin
-
   //  В данном контексте следует различть наследников TEngine2DObject, т.к. может попасться текст
   FShadowObject.Position := ASpr.Position;
 {  FShadowObject.ScaleX := ASpr.ScaleX;
   FShadowObject.ScaleY := ASpr.ScaleY;  }
   tSprite(FShadowObject).Resources := tSprite(ASpr).Resources;
-
-
 end;
 
 procedure tEngine2d.BackGroundDefaultBehavior;
@@ -268,7 +265,7 @@ begin
   fObjects := TObjectsList.Create(fCritical);
   fOptions.Up([EAnimateForever]);
   fOptions.Down([EClickOnlyTop]);
-  fObjectCreator := TEngine2DObjectCreator.Create(Self, fResources, fObjects, fAnimationList, fFormatters);
+
   FBackgroundBehavior := BackgroundDefaultBehavior;
   FInBeginPaintBehavior := InBeginPaintDefaultBehavior;
   FInEndPaintBehavior := InEndPaintDefaultBehavior;
@@ -277,8 +274,9 @@ begin
   prepareFastFields;
   clearSprites;
   prepareShadowObject;
-
   fBackGround := tBitmap.Create;
+
+  fObjectCreator := TEngine2DObjectCreator.Create(Self, fResources, fObjects, fAnimationList, fFormatters, fFastFields, fEngineThread);
 end;
 
 procedure tEngine2d.deleteObject(const AObject: tEngine2DObject);
@@ -494,7 +492,8 @@ begin
         Bitmap.Canvas.Font.Size := 12;
         Bitmap.Canvas.Font.Style := [TFontStyle.fsBold];
         Bitmap.Canvas.Font.Family := 'arial';
-        {$IFDEF VER290}
+        {$IFDEF CONDITIONALEXPRESSIONS}
+         {$IF CompilerVersion >= 19.0}
         bitmap.Canvas.FillText(
           RectF(15, 15, 165, 125),
           'FPS=' + floattostr(fEngineThread.fps),
@@ -521,7 +520,7 @@ begin
           false, 1, [],
           TTextAlign.Leading
         );                  }
-        {$ENDIF}
+        {$ENDIF}{$ENDIF}
         {$IFDEF VER260}
         bitmap.Canvas.FillText(
           RectF(15, 15, 165, 125),
@@ -560,13 +559,61 @@ begin
   Result := fWidth > fHeight;
 end;
 
+procedure tEngine2d.LoadResources(const AFileName: String);
+begin
+  FResources.AddResFromLoadFileRes(AFileName);
+end;
+
 procedure tEngine2d.LoadSECSS(const AFileName: String);
 begin
   fFormatters.LoadSECSS(AFileName);
 end;
 
 procedure tEngine2d.LoadSEJson(const AFileName: String);
+var
+  vJSON, vObj, vObjBody: TJSONObject;
+  vObjects, vFigures: TJSONArray;
+  vValue, vTmp: TJSONValue;
+  vPos: TRect;
+  vFile: TStringList;
+  vImageFile, vObjName, vObjGroup: string;
+  i, j: Integer;
+  vS, vS1, vS2: string;
+  vArr, vArr1, vArr2: TArray<string>;
 begin
+  vFile := TStringList.Create;
+  vFile.LoadFromFile(AFileName);
+
+  vJSON := TJSONObject.ParseJSONValue(vFile.Text) as TJsonObject;
+  vImageFile := vJSON.GetValue('ImageFile').ToString;
+  VObjects := vJSON.GetValue('Objects') as TJSONArray;
+
+  for i := 0 to vObjects.Count - 1 do
+  begin
+    vObj := vObjects.Items[i] as TJSONObject;
+    vObjName := vObj.GetValue('Name').ToString;
+    vObjGroup:= vObj.GetValue('Group').ToString;
+    vObjBody := vObj.GetValue('Body') as TJSONObject;
+    if vObjBody <> nil then
+      with vObjBody do
+      begin
+        vArr := (GetValue('Position').ToString).Split([';']);
+        vArr1 := vArr[0].Split([',']);
+        vArr2 := vArr[1].Split([',']);
+        vPos := Rect(
+                vArr1[0].ToInteger, vArr1[1].ToInteger,
+                vArr2[0].ToInteger, vArr2[1].ToInteger);
+
+        vFigures := GetValue('Figures') as TJSONArray;
+        if vFigures <> nil then
+          for j := 0 to vFigures.Count - 1 do
+          begin
+
+          end;
+      end;
+  end;
+
+  vFile.Free;
 
 end;
 
@@ -629,7 +676,7 @@ procedure tEngine2d.prepareFastFields;
 var
   vTmp: TFastField;
 begin
-  fFastFields := TFastFields.Create{(Self)};
+  fFastFields := TFastFields.Create(IsHor);
 //  fFastFields.Parent := Self;
   vTmp := TFastEngineWidth.Create(Self);
   fFastFields.Add('engine.width', vTmp);
@@ -658,12 +705,6 @@ procedure tEngine2d.SetBackgroundBehavior(const Value: TProcedure);
 begin
   FBackgroundBehavior := Value;
 end;
-
-{procedure tEngine2d.setBitmap(index: integer; newBitmap: tBitmap);
-begin
-  fResources[index].bmp.Assign(newBitmap);
-  fResources[index].rect := RectF(0, 0, newBitmap.width, newBitmap.height);
-end; }
 
 procedure tEngine2d.setHeight(AHeight: integer);
 begin

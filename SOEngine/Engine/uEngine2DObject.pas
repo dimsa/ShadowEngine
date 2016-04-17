@@ -31,6 +31,8 @@ type
     function UnderTheMouse(const MouseX, MouseY: double): boolean; virtual; // Говорит, попала ли мышь в круг спрайта. Круг с диаметром - диагональю прямоугольника спрайта
     procedure BringToBack; // Ставит спрайт первым в списке отрисовки. Т.е. Переносит назад
     procedure SendToFront; // Ставит спрайт последним в списке отрисовки. Т.е. Переносит вперед
+    function Config(const AGroup: string = ''; const AJustify: TObjectJustify = Center; const AShape: TObjectShape = nil): TEngine2DObject; virtual;
+
 
     procedure Repaint; override;
     procedure RepaintWithShapes;
@@ -48,11 +50,20 @@ uses
 
 procedure tEngine2DObject.BringToBack;
 begin
-  //tEngine2d(fParent).SpriteList.IndexOfItem(Self)
     FBringToBack(Self);
-//  tEngine2d(fParent).spriteToBack(
-//    tEngine2d(fParent).SpriteList.IndexOfItem(Self, FromBeginning)
-//  );
+end;
+
+function tEngine2DObject.Config(const AGroup: string = ''; const AJustify: TObjectJustify =Center;  const AShape: TObjectShape = nil): TEngine2DObject;
+begin
+    FJustify := AJustify;
+
+  if AGroup <> '' then
+    FGroup := AGroup;
+
+  if AShape <> nil then
+    FShape := AShape;
+
+  Result := Self;
 end;
 
 constructor tEngine2DObject.Create;
@@ -88,12 +99,6 @@ begin
 
 end;
 
-//procedure tEngine2DObject.Repaint;
-//begin
-//  if TEngine2D(FParent).Options.ToDrawFigures then
-//    Shape.Draw;
-//end;
-
 procedure tEngine2DObject.Repaint;
 begin
   inherited;
@@ -108,9 +113,6 @@ end;
 procedure tEngine2DObject.SendToFront;
 begin
     FSendToFront(Self);
-//  tEngine2d(fParent).SpriteToFront(
-//    tEngine2d(fParent).SpriteList.IndexOfItem(Self, FromBeginning)
-//  );
 end;
 
 procedure tEngine2DObject.SetJustify(const Value: TObjectJustify);
@@ -121,7 +123,6 @@ end;
 procedure tEngine2DObject.ShapeCreating;
 begin
   FShape := TObjectShape.Create;
-//  FShape.Parent := fParent;
   FShape.Owner := Self;
 end;
 

@@ -204,7 +204,6 @@ begin
     if vFigure.TempMaxRadius > FMaxRadius then
       FMaxRadius := vFigure.TempMaxRadius;
   end;
-  //FMaxRadius := FMaxRadius * Max(tEngine2DObject(FOwner).ScaleX, tEngine2DObject(FOwner).ScaleY);
 end;
 
 procedure TObjectShape.ToLocal;
@@ -215,37 +214,6 @@ begin
   for i := 0 to vN do
     FFigures[i].Reset;
 end;
-
-(* function TObjectShape.ToWorldCoord(const AFigure: TFigure): TFigure;
-var
-  i, vN: Integer;
-begin
-
- { Result := AFigure.Clone.FastMigration(
-    PointF(TEngine2DObject(Owner).x,  TEngine2DObject(Owner).y),
-    PointF(TEngine2DObject(Owner).ScaleX,  TEngine2DObject(Owner).ScaleY),
-    TEngine2DObject(Owner).Rotate
-  );  }
-  vN := Length(FOriginFigures) - 1;
-  for i := 0 to vN do
-  begin
-    FCalcedFigures[i].Assign(FOriginFigures[i]);
-    FCalcedFigures[i].FastMigration(
-      PointF(TEngine2DObject(Owner).ScaleX,  TEngine2DObject(Owner).ScaleY),
-      TEngine2DObject(Owner).Rotate
-    );
-{    FFigures[i].Scale(PointF(tEngine2DObject(FOwner).ScaleX, tEngine2DObject(FOwner).ScaleY));
-    FFigures[i].Rotate(tEngine2DObject(FOwner).Rotate);
-    FFigures[i].Translate(PointF(tEngine2DObject(FOwner).X, tEngine2DObject(FOwner).Y));}
-  end;
-
-
-  {TEngine2DObject(Owner).x -  TEngine2DObject(Owner).w*0.5,
-    TEngine2DObject(Owner).y -  TEngine2DObject(Owner).h*0.5,
-    TEngine2DObject(Owner).x +  TEngine2DObject(Owner).w*0.5,
-    TEngine2DObject(Owner).y +  TEngine2DObject(Owner).h*0.5),   }
-
-end;   *)
 
 function TObjectShape.UnderTheMouse(const MouseX, MouseY: double): boolean;
 var

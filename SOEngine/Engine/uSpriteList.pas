@@ -6,10 +6,7 @@ uses
   uEngine2DClasses, uEngine2DResources, uEngine2DObject, uNamedList;
 
 type
-  TObjectsList = class(TEngine2dNamedList<tEngine2DObject>)
-  public
-
-  end;
+  TObjectsList = class(TEngine2dNamedList<tEngine2DObject>);
 
 implementation
 

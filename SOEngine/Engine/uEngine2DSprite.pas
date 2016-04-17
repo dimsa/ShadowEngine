@@ -4,7 +4,7 @@ interface
 
 uses
   System.Types, FMX.Graphics, FMX.Objects, FMX.Types, System.Classes,
-  uEngine2DClasses, uEngine2DObject, uEngine2DResources,
+  uEngine2DClasses, uEngine2DObject, uEngine2DResources, uEngine2DObjectShape,
   uEngine2DUnclickableObject;
 
 type
@@ -16,6 +16,7 @@ type
     fCurRes: Integer;
     function getScW: single;
     function getScH: single;
+    function Config(const AGroup: string = ''; const AJustify: TObjectJustify = Center; const AShape: TObjectShape = nil): TEngine2DObject; overload; override;
   protected
     function GetW: single; override;
     function GetH: single; override;
@@ -27,7 +28,8 @@ type
     property hHalf: single read fHHalf; // Служебное свойство - половина высоты
     property scW: single read getScW; // Даёт ширину с учетом масштаба
     property scH: single read getScH; // Даёт высоту с учетом масштаба
-
+    function Config(const ACurRes: Integer = -1; AGroup: string = ''; const AJustify: TObjectJustify =Center; const AShape: TObjectShape = nil): TSprite; overload;
+    function Config(const AResName: string; AGroup: string = ''; const AJustify: TObjectJustify =Center; const AShape: TObjectShape = nil): TSprite; overload;
     procedure Repaint; override;
 
     constructor Create; override;
@@ -41,6 +43,29 @@ uses
   uEngine2D;
 
 { tSprite }
+
+function TSprite.Config(const ACurRes: Integer; AGroup: string;
+  const AJustify: TObjectJustify; const AShape: TObjectShape): TSprite;
+begin
+  if ACurRes <> -1 then
+    CurRes := ACurRes;
+  inherited Config(AGroup, AJustify, AShape);
+  Result := Self;
+end;
+
+function TSprite.Config(const AResName: string; AGroup: string;
+  const AJustify: TObjectJustify; const AShape: TObjectShape): TSprite;
+begin 
+  CurRes := FResources.IndexOf(AResName);
+  inherited Config(AGroup, AJustify, AShape);
+  Result := Self;
+end;
+
+function TSprite.Config(const AGroup: string; const AJustify: TObjectJustify;
+  const AShape: TObjectShape): TEngine2DObject;
+begin
+  Result := inherited Config(AGroup, AJustify, AShape);
+end;
 
 constructor tSprite.Create;
 begin
@@ -90,8 +115,8 @@ end;
 procedure tSprite.SetCurRes(const Value: Integer);
 begin
   FCurRes := Value;
-  Self.fWhalf := (W / 2){ * fPosition.scaleX};
-  Self.fHhalf := (H / 2){ * fPosition.scaleY};
+  Self.fWhalf := (W / 2);
+  Self.fHhalf := (H / 2);
 end;
 
 end.

@@ -19,10 +19,7 @@ type
     fVisible: Boolean; // Отрисовывать объект или нет
     fOpacity: Single; // Прозрачность
     fSelectable: Boolean; // Участвует ли в выделении
-
-//    fParent: pointer; // Должен быть tEngine2d
     fImage: TImage;
-//    fCreationNumber: integer; // Номер спрайта в массиве спрайтов
     fGroup: string;
     fClonedFrom: tEngine2DUnclickableObject;
     function GetW: single; virtual; abstract;
@@ -37,7 +34,6 @@ type
     procedure SetRotate(AValue: single); virtual;
   public
     // Связывающие свойства
-//    property Parent: pointer read fParent write fParent; // Родитель спрайта. Обычно tEngine2d
     property Image: TImage read fImage write fImage; // В этом имедже происходит отрисовка.
 
     // Геометрические свойства
@@ -61,7 +57,6 @@ type
 
     procedure Repaint; virtual; abstract; // Процедура отрисовки объекта, переписывается спрайтом или текстом и т.д.
 
-//    constructor Create(AParent: pointer); virtual;
     constructor Create; virtual;
     destructor Destroy; override;
   end;

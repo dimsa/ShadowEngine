@@ -33,8 +33,7 @@ function TEngine2DResources.AddResource(const ABitmap: tBitmap): integer;
 var
   vTmp: TSpriteResource;
 begin
-  vTmp.bmp := ABitmap;//tBitmap.Create;
- // vTmp.bmp.Assign(ABitmap);
+  vTmp.bmp := ABitmap;
   vTmp.rect := RectF(0, 0, vTmp.bmp.Width, vTmp.bmp.Height);
 
   Result := Self.Add(vTmp);
@@ -46,46 +45,12 @@ begin
     FInputBmp.Free;
 
   inherited;
-//  FResources.Free;
 end;
-
-{function TEngine2DResources.GetCount: Integer;
-begin
-  Result := FResources.Count;
-end;
-
-function TEngine2DResources.getResource(index: integer): tSpriteResource;
-begin
-  Result := FResources[index];
-end;
-
-function TEngine2DResources.GetResourceID(AFind: string): Integer;
-var
-  i, l: Integer;
-begin
-
-  l := fResources.Count - 1;//Length(fResources) - 1;
-
-  for i := 0 to l do
-    if fResources[i].name = AFind then
-    begin
-      Result := i;
-      Exit;
-    end;
-  Result := -1;
-end;  }
-
-{function TEngine2DResources.getResourceS(AFind: string): tSpriteResource;
-begin
-  Result := FResources[resourcesID[AFind]];
-end;  }
 
 procedure TEngine2DResources.LoadBmp(const AFileName: String);
 begin
   RenewBitmap;
-  //owmessage('renew '+afilename);
   FInputBmp.LoadFromFile(AFileName);
- //howmessage('load filename'+afilename);
 end;
 
 procedure TEngine2DResources.RenewBitmap;
@@ -96,18 +61,6 @@ begin
   if fInputBmp = nil then
     FInputBmp := TBitmap.Create;
 end;
-
-{procedure TEngine2DResources.setResource(index: integer;
-  AValue: tSpriteResource);
-begin
-  FResources[index] := AValue;
-end;
-
-procedure TEngine2DResources.setResourceS(AFind: string;
-  AValue: tSpriteResource);
-begin
-  FResources[resourcesID[AFind]] := AValue;
-end;      }
 
 function TEngine2DResources.AddFromRes(const x, y, w, h: integer): integer;
 var

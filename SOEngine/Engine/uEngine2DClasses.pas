@@ -84,10 +84,6 @@ type
     constructor Create(const ACritical: TCriticalSection); reintroduce; virtual;
   end;
 
-  {tClickProcedure = procedure(X, Y: Single) of object;
-  tStandardProcedure = procedure(ASender: TObject) of object;
-  tSimpleProcedure = procedure of object; }
-
   tIntArray = array of integer;
 
   tPointArray = array of TPoint;
@@ -102,11 +98,6 @@ type
   tPositionArray = array of tPosition;
   tBitmapArray = array of tBitmap;
   tResourceArray = array of tSpriteResource;
-
-{  tLogicProcedure = record
-    proc: tClickProcedure;
-    data: tIntArray;
-  end;      }
 
   function IntArrInIntArr(Const AIntArr1, AIntArr2: TIntArray): TIntArray;
   function ClearPosition: TPosition;

@@ -22,8 +22,9 @@ type
     procedure LoadSECSS(const AFileName: string);
     procedure ClearForSubject(AObject: tEngine2DObject);
     procedure ApplyForSubject(AObject: tEngine2DObject);
-    function PseudoFormatter(const ASpriteForClone: TSprite; const AText: string): tEngine2DObject;
-    function PseudoFormatterPosition(const ASpriteForClone: TSprite; const AText: string): TPosition;
+    { TODO : Move it to Engine2D }
+//    function PseudoFormatter(const ASpriteForClone: TSprite; const AText: string): tEngine2DObject;
+//    function PseudoFormatterPosition(const ASpriteForClone: TSprite; const AText: string): TPosition;
     constructor Create(const ACritical: TCriticalSection; const AEngine: Pointer); reintroduce; virtual;
     destructor Destroy; override;
   end;
@@ -114,7 +115,7 @@ begin
   vFile.Free;
 end;
 
-function TFormatterList.PseudoFormatter(
+{function TFormatterList.PseudoFormatter(
   const ASpriteForClone: tSprite;
   const AText: String): tEngine2DObject;
 var
@@ -124,11 +125,6 @@ var
   vEngine: tEngine2D;
 begin
   // Проверить механизм клонирования. Не уверен, что всё правильно
-{  vObj := ASpriteForClone.Clone;
-  vObj.Visible := False;
-
-  vEngine := Self.Parent;   }
-
   vEngine := FEngine;
   vObj := vEngine.ShadowObject;
   vEngine.AssignShadowObject(ASpriteForClone);
@@ -138,15 +134,15 @@ begin
   vRes.Parent := FEngine;
   vRes.Text := AText;
   vRes.Format;
- // vEngine.FormatterList.Add(vRes);
+
   Result := vEngine.ShadowObject;// vRes;
-//  vEngine.deleteObject(vObj);
+
 
   // Не работает, потому что форматтер считает себя по Субъекту. А субхет уже убит
   //vObj.Free;
-end;
+end;    }
 
-function TFormatterList.PseudoFormatterPosition(const ASpriteForClone: tSprite;
+{function TFormatterList.PseudoFormatterPosition(const ASpriteForClone: tSprite;
   const AText: String): TPosition;
 var
   vRes: TEngineFormatter;
@@ -167,7 +163,7 @@ begin
 
   Result := vEngine.ShadowObject.Position;
   vRes.Free;
-end;
+end; }
 
 end.
 

@@ -18,7 +18,6 @@ type
     function RightExp(APos: Integer): TValue; virtual;
     function OuterBrackets: TList<TStrAndPos>; virtual;
     function GetAllElements: TNamedList<TValue>;
-//    function IsStartByFuncName(const AText: string): Boolean;
     function StartByBrackets(const AText: string): string;
   protected
     FParsed: Boolean; // Показывает, отпарсино ли выражение.
@@ -33,13 +32,10 @@ type
     procedure ParseAll; virtual;
     procedure SetText(const Value: String); override;
     function AddConstantValue(const AText: string; const ALeft, ARight: Integer): TValue; virtual; // Добавляет константу или переменную
-    //function IsOperand(ch: Char): Boolean; virtual;
-    //function DeepBrackets: TList<TStrAndPos>; virtual;
   public
     property Expression: string read FExpression; // Изменненый текст
     property ValueStack: TFastFields read FValueStack write FValueStack;
     property Values: TNamedList<TValue> read FValues write FValues; // Распарсенные значения, принадлежащие этому значению
-    //property Values: TNamedList<TValue> read FValues;
     property AllElements: TNamedList<TValue> read GetAllElements;
     function Value: Double; override;
     constructor Create; override;
@@ -71,30 +67,6 @@ begin
   vTmp.BoundLeft := ALeft;
   vTmp.BoundRight :=  ARight;
   Result := vTmp;
-
-  {  vType := TypeOfValue(AText);
-  if vType = TDouble then
-    vTmp := VType.Create
-  else
-  begin
-    if Self.FValues.IsHere(AText) then
-      vTmp := Self.FValues.Items[AText]
-    else
-      vTmp := vType.Create;
-  end;
-  vTmp.Text := AText;
-  // Если это переменная, необходимо пополнить стек имён
-  if vTmp is TVariable then
-  begin
-    // Можно добавлять имена сразу, чтобы не было эксепшина, но это не будет работать
-    // FValueStack.Add(vTmp.Text, 0);
-
-    TVariable(vTmp).ValueStack := FValueStack;
-    FVarNames.Add(LowerCase(vTmp.Text));
-  end;
-  vTmp.BoundLeft := ALeft;
-  vTmp.BoundRight :=  ARight;
-  Result := vTmp;}
 end;
 
 constructor TExpression.Create;
@@ -273,7 +245,7 @@ begin
          vTmp.BoundRight := vList[i].EndPos;
          vTmp.Text := Copy(Expression, vTmp.BoundLeft, vTmp.BoundRight - vTmp.BoundLeft + 1);
 
-         Values.Add({vTmp.Name,} vTmp);
+         Values.Add(vTmp);
        end;
     end;
 end;
@@ -304,21 +276,6 @@ begin
   Result := vRes; //FVarNames;
 end;
 
-{function TExpression.GetVarNames: TStringList;
-var
-  vV: TValue;
-begin
-  if not FParsed then
-    ParseAll;
-
-  for vV in FValues do
-  begin
-    if vV is TExpression then
-      Self.FVarNames.AddStrings(TExpression(vV).VarNames);
-  end;
-  Result := FVarNames;
-end;  }
-
 function TExpression.Value: Double;
 begin
   if Not FParsed then
@@ -326,28 +283,6 @@ begin
 
   Result := Self.Values[Self.Values.Count - 1].Value;
 end;
-
-{function TExpression.VariableNames: TStringList;
-var
-  vRes: TStringList;
-  vV: TValue;
-begin
-  vRes := TStringList.Create;
-//  if Values.Count > 0 then
-//  begin
-  if not FParsed then
-    ParseAll;
-    for vV in FValues  do
-    begin
-      if vV is TVariable then
-        vRes.Add(LowerCase(vV.Text));
-      if vV is TExpression then
-        vRes.AddStrings(TExpression(vV).VariableNames);
-    end;
- // end;
-
-  Result := vRes;
-end; }
 
 function TExpression.LeftExp(APos: Integer): TValue;
 var
@@ -560,22 +495,11 @@ var
   vN, I: Integer;
 begin
   vN := FValues.Count - 1;
-//                TExpression
   for i := vN downto 0 do
     if (APos >= FValues[i].BoundLeft) and (APos <= FValues[i].BoundRight) then
       Exit(True);
   Result := False;
 end;
-
-{function TExpression.IsStartByFuncName(const AText: string): Boolean;
-var
-  i: Integer;
-begin
-  for i := 0 to CFuncNamesCount - 1 do
-    if Copy(AText, 1, Length(CFuncNames[i]) + 1) = (CFuncNames[i] + '(')  then
-      Exit(True);
-  Result := False;
-end;   }
 
 function TExpression.WhatBound(const APos: Integer): TValue;
 var
@@ -588,82 +512,6 @@ begin
       Exit(FValues[i]);
   Result := Nil;
 end;
-
-{function TExpression.IsOperand(ch: Char): Boolean;
-var
-  i: Integer;
-begin
-  for i := 0 to OperandCharCount - 1 do
-    if ch = OperandChar[i] then exit(True);
-  Result := False;
-end;}
-
-{function TExpression.AddFunction(const AType: TValues; const ALeft, ARight: Integer): TValue;
-var
-  vTmp: TFunction;
-begin
-  vTmp := AType.Create;
-  vTmp.BoundLeft := ALeft;
-  vTmp.BoundRight := ARight;
-  vTmp.Text := Copy(Expression, ALeft, ARight - ALeft + 1);
-  Values.Add(vTmp);
-  Result := vTmp;
-end;}
-
-{function TExpression.DeepBrackets: TList<TStrAndPos>;
-var
-  vRes: TList<TStrAndPos>;
-  i, vN: Integer; // Номера символов
-  j, vNBr: Integer; // Номера скобок
-  vBrMax, vBrCur: Integer; // Максимальная глубина скобок и текущая
-  vStr: TStrAndPos;
-begin
-  vRes := TList<TStrAndPos>.Create;
-  vStr.Text := FExpression;
-  vStr.StartPos := 1;
-  vStr.EndPos := Length(FExpression);
-  vRes.Add(vStr);
-
-  vN := Length(FExpression);
-  vBrMax := 0;
-  vBrCur := 0;
-  for i := 1 to vN do
-  begin
-    // Если находим скобку, увеличиваем уровень вложенности
-    if FExpression[i] = '(' then
-    begin
-      vBrCur := vBrCur + 1;
-      // Если максимальный уровень меньше текущего, чистим все предыдушие записи
-      // и назначаем новый максимум
-      if vBrMax < vBrCur then
-      begin
-        vRes.Clear;
-        vBrMax := vBrCur;
-      end;
-      vStr.Text := '';
-      vStr.StartPos := i;
-    end;
-
-    // Если текущий уровень скобок равен максимальному, то сохраняем все что внутри скобок
-    if vBrMax = vBrCur then
-      vStr.Text := vStr.Text + FExpression[i];
-
-    // Если скобка закрывается, уменьшаем уровень вложенности
-    if FExpression[i] = ')' then
-    begin
-      vStr.EndPos := i;
-      if vBrMax = vBrCur then
-        vRes.Add(vStr);
-      vBrCur := vBrCur - 1;
-      if vBrCur < 0 then
-        raise Exception.Create('Ошибка обработки выражения «' + FExpression + '». Неправильное положение закрывающих скобок');
-    end;
-  end;
-
-  if vBrCur <> 0 then
-    raise Exception.Create('Ошибка обработки выражения «' + FExpression + '». Ошибка в количестве открывающихся и закрывающихся скобок');
-  Result := vRes;
-end;}
 
 end.
 

@@ -5,9 +5,9 @@ interface
 uses
   System.Types, System.UITypes, System.Math,  System.Generics.Collections,
   {$I 'Utils\DelphiCompatability.inc'}
-  System.SysUtils, System.Classes, FMX.Dialogs,
+  System.SysUtils, System.Classes, FMX.Dialogs, FMX.Graphics,
   uEngine2DObject, uEngine2DText, uEngine2DSprite, uEngineFormatter, uEngine2DShape,
-  uIntersectorMethods, uClasses, uEngine2DClasses;
+  uIntersectorMethods, uClasses, uEngine2DClasses, uEngine2DObjectCreator, uDemoGameLoader;
 
 type
 
@@ -20,7 +20,9 @@ type
 
   TGameButton = class
   private
-    FParent: Pointer; // Engine2d
+//    FParent: Pointer; // Engine2d
+    FManager: TEngine2DObjectCreator;
+    FLoader: TLoader;
     FBack: TButtonBack;
     FText: TEngine2DText;
     FName: String;
@@ -38,7 +40,7 @@ type
     property FontSize: Single read GetFontSize write SetFontSize;
     property OnClick: TNotifyEvent read FOnClick write SetOnClick;
     property Group: string read FGroup write SetGroup;
-    constructor Create(const AName: string; const AParent: Pointer; const ASpriteBackName: string = 'button');
+    constructor Create(const AName: string; const AManager: TEngine2DObjectCreator; const ALoader: TLoader; const ASpriteBackName: string = 'button');
     destructor Destroy; override;
     procedure SendToFront;
     property Text: String read GetText write SetText;
@@ -47,7 +49,9 @@ type
 
   TYesNoMenu = class
   private
-    FEngine: Pointer;
+//    FEngine: Pointer;
+    FManager: TEngine2DObjectCreator;
+    FLoader: TLoader;
     FYes, FNo: TGameButton;
     FText: TEngine2DText;
     FBack: TEngine2DShape;
@@ -62,15 +66,17 @@ type
     property OnYes: TNotifyEvent read GetOnYes write SetOnYes;
     property OnNo: TNotifyEvent read GetOnNo write SetOnNo;
     property Text: string read GetText write SetText;
-    constructor Create(const AId, AGroup: string; AParent: Pointer);
+    constructor Create(const AId, AGroup: string; const AManager: TEngine2DObjectCreator; const ALoader: TLoader);
     destructor Destroy; override;
   end;
 
   TGameMenu = class
   private
-    FParent: Pointer; // Engine2d
+//    FParent: Pointer; // Engine2d
     FMaxLevel: Integer; // Максимальный уровень до которого дошел игрок
     FList: TList<TGameButton>; // Кнопки перехода по страницам меню
+    FManager: TEngine2DObjectCreator;
+    FLoader: TLoader;
 //    FSelectLevel: TList<TGameButton>;
     FGameLogo: TSprite;
     FComixText1, FComixText2: TEngine2DText;
@@ -120,31 +126,27 @@ type
     procedure ShowLevels(const AMaxLevel: Integer; const APage: Integer = -1);
     procedure SendToFront;
     procedure Add(const AButton: TGameButton);
-    constructor Create(const AParent: Pointer);
+    constructor Create(const AManager: TEngine2DObjectCreator; const ALoader: TLoader);
     destructor Destroy; override;
   end;
 
 implementation
 
 uses
-  uEngine2D, uEngine2DObjectShape, uNewFigure, uDemoGameLoader;
+  uEngine2D, uEngine2DObjectShape, uNewFigure;
 
 { TGameButton }
 
-constructor TGameButton.Create(const AName: string; const AParent: Pointer; const ASpriteBackName: string = 'button');
+constructor TGameButton.Create(const AName: string; const AManager: TEngine2DObjectCreator; const ALoader: TLoader; const ASpriteBackName: string = 'button');
 var
-  vEngine: tEngine2d;
   vFText: string;
   vPoly: TPolygon;
   vFigure: TNewFigure;
 begin
-  FParent := AParent;
+  FManager := AManager;
   FName := AName;
-
-  vEngine := AParent;
+  FLoader := ALoader;
   FBack := TButtonBack.Create;
-  FBack.Resources := vEngine.Resources;
-  FBack.CurRes := vEngine.Resources.IndexOf(ASpriteBackName);
 
   FText := TEngine2DText.Create;
   FText.TextRect := RectF(-125, -50, 125, 50);
@@ -155,30 +157,26 @@ begin
 
   FBack.OnMouseDown := MouseDown;
 
-  vEngine.AddObject(FBack, FName);
-  vEngine.AddObject(FText);
+  FManager.Add(FBack, FName).Config(ASpriteBackName);
+
+  FManager.Add(FText);
   FBack.Link := FText;
 
   vFText := 'left: ' + Self.FName + '.left; top: ' + Self.FName + '.top; min-width:'  + Self.FName + '.width * 0.8; width: ' + Self.FName + '.width; max-width: ' + Self.FName + '.width;';
-  vEngine.New.Formatter(FText, vFText).Format;
+  FManager.Formatter(FText, vFText).Format;
 
   vPoly := PolyFromRect(RectF(0, 0, FBack.w, FBack.h));
   Translate(vPoly, -PointF(FBack.wHalf, FBack.hHalf));
   vFigure := TNewFigure.Create(TNewFigure.cfPoly);
   vFigure.SetData(vPoly);
   FBack.Shape.AddFigure(vFigure);
-
- // vFormatter.Format;
 end;
 
 destructor TGameButton.Destroy;
-var
-  vEngine: tEngine2d;
 begin
-  vEngine := FParent;
-  vEngine.DeleteObject(FText);
+  FManager.RemoveObject(FText);
   FText.Free;
-  vEngine.DeleteObject(FBack);
+  FManager.RemoveObject(FBack);
   FBack.Free;
   inherited;
 end;
@@ -195,21 +193,12 @@ end;
 
 procedure TGameButton.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
-var
-  vLoader: TLoader;
-
 begin
-  vLoader := TLoader.Create(FParent);
-  tEngine2d(FParent).AnimationList.ClearAndRecoverForSubject(FBack);
-  tEngine2d(FParent).AnimationList.Add(
-    vLoader.ButtonAnimation(FBack, FBack.ScaleX * 0.8)
-  );
+  FManager.AniClearAndRecover(FBack);
+  FManager.Add(FLoader.ButtonAnimation(FBack, FBack.ScaleX * 0.8));
 
-  tEngine2d(FParent).AnimationList.ClearForSubject(FText);
-  tEngine2d(FParent).AnimationList.Add(
-    vLoader.ButtonAnimation(FText, FText.ScaleX * 0.8)
-  );
-  vLoader.Free;
+  FManager.AniClear(FText);
+  FManager.Add(FLoader.ButtonAnimation(FText, FText.ScaleX * 0.8));
 end;
 
 procedure TGameButton.SendToFront;
@@ -234,7 +223,6 @@ procedure TGameButton.SetOnClick(const Value: TNotifyEvent);
 begin
   FOnClick := Value;
   FBack.OnClick := FOnClick;
-//  FText.OnClick := FOnClick;
 end;
 
 procedure TGameButton.SetText(const Value: String);
@@ -248,28 +236,21 @@ procedure TGameMenu.Add(const AButton: TGameButton);
 begin
 end;
 
-constructor TGameMenu.Create(const AParent: Pointer);
-var
-  vEngine: tEngine2d;
+constructor TGameMenu.Create(const AManager: TEngine2DObjectCreator; const ALoader: TLoader);
 begin
-  FParent := AParent;
-  vEngine := FParent;
+  FManager := AManager;
+  FLoader := ALoader;
   FCurPage := 0;
 
-  FGameLogo := TSprite.Create;
-  FGameLogo.Resources := vEngine.Resources;
-  FGameLogo.Group := 'menu';
-  FGameLogo.CurRes := vEngine.Resources.IndexOf('gamelogo');
-  vEngine.AddObject(FGameLogo, 'gamelogo');
+  FGameLogo := FManager.Sprite('gamelogo').Config('gamelogo', 'menu');;
+  FManager.Formatter(FGameLogo, 'gamelogo', []).Format;
 
-  vEngine.New.Formatter(FGameLogo, 'gamelogo', []).Format;
-
-  FNextLevelMenu := TYesNoMenu.Create('nextlevel', 'nextlevel', FParent);
+  FNextLevelMenu := TYesNoMenu.Create('nextlevel', 'nextlevel', AManager, ALoader);
   FNextLevelMenu.Text :=
     'Congratulations!' + #13 +
     'You have completed level!' + #13 + #13 +
     'Play Next Level?';
-  FRetryLevelMenu := TYesNoMenu.Create('retrylevel', 'retrylevel', FParent);
+  FRetryLevelMenu := TYesNoMenu.Create('retrylevel', 'retrylevel', AManager, ALoader);
   FRetryLevelMenu.Text :=
     'Regretulations! :-(' + #13 +
     'Your ship is destroyed!' + #13 + #13 +
@@ -290,9 +271,7 @@ end;
 procedure TGameMenu.CreateAbout;
 var
   vText: TEngine2DText;
-  vEngine: tEngine2d;
 begin
-  vEngine := FParent;
   vText := TEngine2DText.Create;
   vText.TextRect := RectF(-250, -100, 250, 100);
   vText.FontSize := 28;
@@ -303,8 +282,8 @@ begin
     'ver. 0.8.2' + #13 + #13 +
     'Game about confrontation of' + #13 + 'Humankind and Asteroids';
   vText.Group := 'about';
-  vEngine.AddObject(vText, 'aboutcaption');
-  vEngine.New.Formatter(vText, 'about1', []).Format;
+  FManager.Add(vText, 'aboutcaption');
+  FManager.Formatter(vText, 'about1', []).Format;
 
   vText := TEngine2DText.Create;
   vText.TextRect := RectF(-250, -150, 250, 150);
@@ -322,22 +301,20 @@ begin
   'Some illustrations made by Yunna Sorokina' + #13 + #13 +
   'Thanks to everyone who helped with Game and Engine!';
   vText.Group := 'about';
-  vEngine.AddObject(vText, 'aboutdescription');
+  FManager.Add(vText, 'aboutdescription');
 
-  vEngine.New.Formatter(vText, 'about2', []).Format;
-  vEngine.HideGroup('about');
+  FManager.Formatter(vText, 'about2', []).Format;
+  FManager.HideGroup('about');
 end;
 
 procedure TGameMenu.CreateMenu1;
 var
-  vEngine: tEngine2d;
   vBut: TGameButton;
   i: Integer;
 begin
-  vEngine := FParent;
   for i := 1 to 4 do
   begin
-    vBut := TGameButton.Create('button' + IntToStr(i), vEngine);
+    vBut := TGameButton.Create('button' + IntToStr(i), FManager, FLoader);
     case i of
       1: vBut.Text := 'Start Game';
       2: vBut.Text := 'Statistics';
@@ -347,20 +324,18 @@ begin
     vBut.Group := 'menu1';
     FList.Add(vBut);
 
-    vEngine.New.Formatter(vBut.BackSprite, 'menubuttons', [i], 0)
+    FManager.Formatter(vBut.BackSprite, 'menubuttons', [i], 0)
   end;
 end;
 
 procedure TGameMenu.CreateMenu2;
 var
-  vEngine: tEngine2d;
   vBut: TGameButton;
   i: Integer;
 begin
-  vEngine := FParent;
   for i := 1 to 3 do
   begin
-    vBut := TGameButton.Create('button' + IntToStr(i + 4), vEngine);
+    vBut := TGameButton.Create('button' + IntToStr(i + 4), FManager, FLoader);
     case i of
       1: vBut.Text := 'Story Mode';
       2: vBut.Text := 'Survival Mode';
@@ -369,7 +344,7 @@ begin
     vBut.Group := 'menu2';
     FList.Add(vBut);
 
-    vEngine.New.Formatter(vBut.BackSprite, 'menubuttons', [i], 0)
+    FManager.Formatter(vBut.BackSprite, 'menubuttons', [i], 0)
   end;
 end;
 
@@ -378,72 +353,60 @@ var
   i, vN: Integer;
   vBut: TGameButton;
   vX, vY: Integer;
-  vEngine: tEngine2d;
-  vLoader: TLoader;
 begin
-  vEngine := FParent;
-  vLoader := TLoader.Create(vEngine);
-
   FMaxLevel := 1;
 
-  //FLevelPage := Trunc((FMaxLevel + 1) / 16);
-
-  FNextPage := TGameButton.Create('nextpagebut', vEngine);
+  FNextPage := TGameButton.Create('nextpagebut', FManager, FLoader);
   FNextPage.Text := 'Next';
   FNextPage.Group := 'menu3';
   FNextPage.FontSize := 80;
 
   if FCurPage <  Trunc((FMaxLevel + 1) / 16) then
-    FNextPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutenabled')
+    FNextPage.FBack.Config('ltlbutenabled')
   else
-    FNextPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled') ;
+    FNextPage.FBack.Config('ltlbutdisabled');
 
-  FPrevPage := TGameButton.Create('prevpagebut', vEngine);
+  FPrevPage := TGameButton.Create('prevpagebut', FManager, FLoader);
   FPrevPage.Text := 'Prev';
   FPrevPage.Group := 'menu3';
   FPrevPage.FontSize := 80;
 
  if FCurPage > 0 then
-    FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutenabled')
+    FPrevPage.FBack.Config('ltlbutenabled')
   else
-    FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled');
+    FPrevPage.FBack.Config('ltlbutdisabled');
 
-  vEngine.New.Formatter(FPrevPage.FBack, 'levelmenu', [0,4], 0).Format;
-  vEngine.New.Formatter(FNextPage.FBack, 'levelmenu', [3,4], 0).Format;
+  FManager.Formatter(FPrevPage.FBack, 'levelmenu', [0,4], 0).Format;
+  FManager.Formatter(FNextPage.FBack, 'levelmenu', [3,4], 0).Format;
 
   vN := 16;
 
     for i := 0 to vN - 1 do
     begin
-      vBut := TGameButton.Create('levelbut' + IntToStr(i + 1), vEngine, 'ltlbutenabled');
+      vBut := TGameButton.Create('levelbut' + IntToStr(i + 1), FManager, FLoader, 'ltlbutenabled');
       vBut.Text := IntToStr((i + 1) + (vN * (FCurPage)));
       vBut.FontSize := 80;
       vBut.Group := 'menu3';
       FLevelMenu.Add(vBut);
       vX := i mod 4;
       vY := Trunc(i / 4);
-      vEngine.New.Formatter(vBut.BackSprite, 'levelmenu', [vX,vY], 0).Format;
+      FManager.Formatter(vBut.BackSprite, 'levelmenu', [vX,vY], 0).Format;
     end;
-
-  vLoader.Free;
 end;
 
 procedure TGameMenu.CreateStatistics;
 var
   vText: TEngine2DText;
-  vEngine: tEngine2d;
 begin
-  vEngine := FParent;
   vText := TEngine2DText.Create;
   vText.TextRect := RectF(-200, -200, 200, 200);
   vText.FontSize := 26;
   vText.Group := 'statistics';
   vText.Color :=  TAlphaColorRec.White;
   vText.Text := 'Statistics in progress';
-  vEngine.AddObject(vText, 'statisticscaption');
-  vEngine.New.Formatter(vText, 'statistics', []).Format;
-
-  vEngine.HideGroup('statistics');
+  FManager.Add(vText, 'statisticscaption');
+  FManager.Formatter(vText, 'statistics', []).Format;
+  FManager.HideGroup('statistics');
 end;
 
 destructor TGameMenu.Destroy;
@@ -464,11 +427,8 @@ begin
 end;
 
 procedure TGameMenu.NextLevelPage(ASender: TObject);
-var
-  vEngine: tEngine2d;
 begin
-  vEngine := FParent;
-  if TButtonBack(ASender).CurRes = vEngine.Resources.IndexOf('ltlbutenabled') then
+  if TButtonBack(ASender).CurRes = FManager.ResourceIndex('ltlbutenabled') then
     if FCurPage < Trunc(FMaxLevel / 16) then
       Inc(FCurPage);
 
@@ -476,11 +436,8 @@ begin
 end;
 
 procedure TGameMenu.PrevLevelPage(ASender: TObject);
-var
-  vEngine: tEngine2d;
 begin
-  vEngine := FParent;
-  if TButtonBack(ASender).CurRes = vEngine.Resources.IndexOf('ltlbutenabled') then
+  if TButtonBack(ASender).CurRes = FManager.ResourceIndex('ltlbutenabled') then
     if FCurPage > 0 then
       Dec(FCurPage);
 
@@ -570,30 +527,25 @@ end;
 
 procedure TGameMenu.ShowLevels(const AMaxLevel, APage: Integer);
 var
-  vEngine: tEngine2d;
   i: Integer;
 begin
-  vEngine := FParent;
-
   FMaxLevel := AMaxLevel;
   if APage = -1 then
     FCurPage := Trunc(AMaxLevel / 16);
 
 
   if FCurPage <  Trunc((FMaxLevel + 1) / 16) then
-    FNextPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutenabled')
+    FNextPage.FBack.CurRes := FManager.ResourceIndex('ltlbutenabled')
   else
   begin
-    FNextPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled') ;
- //   FNextPage.OnClick := DoNothing;
+    FNextPage.FBack.CurRes := FManager.ResourceIndex('ltlbutdisabled') ;
   end;
 
   if FCurPage > 0 then
-    FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutenabled')
+    FPrevPage.FBack.CurRes := FManager.ResourceIndex('ltlbutenabled')
   else
   begin
-    FPrevPage.FBack.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled');
-  //  FPrevPage.OnClick := DoNothing;
+    FPrevPage.FBack.CurRes := FManager.ResourceIndex('ltlbutdisabled');
   end;
 
     for i := 0 to 16 - 1 do
@@ -601,45 +553,28 @@ begin
       FLevelMenu[i].Text := IntToStr((i + 1) + (16 * (FCurPage)));
       if (i + FCurPage * 16) < AMaxLevel+1 then
       begin
-        FLevelMenu[i].BackSprite.CurRes := vEngine.Resources.IndexOf('ltlbutenabled');
+        FLevelMenu[i].BackSprite.CurRes := FManager.ResourceIndex('ltlbutenabled');
         FLevelMenu[i].BackSprite.OnClick := FDoLevelSelect;
       end
       else
       begin
-        FLevelMenu[i].BackSprite.CurRes := vEngine.Resources.IndexOf('ltlbutdisabled');
+        FLevelMenu[i].BackSprite.CurRes := FManager.ResourceIndex('ltlbutdisabled');
         FLevelMenu[i].BackSprite.OnClick := DoNothing;
       end;
     end;
 end;
 
-{ TMenuSpriteElement }
-
-{procedure TMenuSpriteElement.Repaint;
-begin
-  Self.SendToFront;
-  inherited;
-end; }
-
-{ TMenuTextElement }
-
-{procedure TMenuTextElement.Repaint;
-begin
-  Self.SendToFront;
-  inherited;
-end; }
-
 { TYesNoMenu }
 
-constructor TYesNoMenu.Create(const AId, AGroup: string; AParent: Pointer);
+constructor TYesNoMenu.Create(const AId, AGroup: string; const AManager: TEngine2DObjectCreator; const ALoader: TLoader);
 var
-  vEngine: tEngine2d;
   vBut: TGameButton;
   vGroup: string;
 begin
-  FEngine := AParent;
-  vEngine := FEngine;
+  FManager := AManager;
+  FLoader := ALoader;
   FId := AId;
-  vGroup := AGroup;//'nextlevel';
+  vGroup := AGroup;
 
   FBack := TFillRect.Create;
   FBack.Group := vGroup;
@@ -647,27 +582,28 @@ begin
   FBack.Pen.Thickness := 4;
   FBack.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
   FBack.Brush.Color := TAlphaColorRec.White;
-  vEngine.AddObject(FBack, FId + 'back');
 
-  vEngine.New.Formatter(FBack, 'yesnoback', [], 0).Format;
+  FManager.Add(FBack, FId + 'back');
 
-  vBut := TGameButton.Create(FId + 'yes', vEngine);
+  FManager.Formatter(FBack, 'yesnoback', [], 0).Format;
+
+  vBut := TGameButton.Create(FId + 'yes', FManager, ALoader);
   vBut.Text := 'Yes';
   vBut.FontSize := 64;
-  vBut.BackSprite.CurRes := vEngine.Resources.IndexOf('ltlbutenabled');
+  vBut.BackSprite.CurRes := FManager.ResourceIndex('ltlbutenabled');
   vBut.Group := vGroup;
   FYes := vBut;
 
-  vEngine.New.Formatter(vBut.BackSprite, 'yesnoyes', [FId], 1).Format;
+  FManager.Formatter(vBut.BackSprite, 'yesnoyes', [FId], 1).Format;
 
-  vBut := TGameButton.Create(FId + 'no', vEngine);
+  vBut := TGameButton.Create(FId + 'no', FManager, FLoader);
   vBut.Text := 'No';
   vBut.FontSize := 64;
-  vBut.BackSprite.CurRes := vEngine.Resources.IndexOf('ltlbutenabled');
+  vBut.BackSprite.CurRes := FManager.ResourceIndex('ltlbutenabled');
   vBut.Group := vGroup;
   FNo := vBut;
 
-  vEngine.New.Formatter(vBut.BackSprite, 'yesnono', [FId], 1).Format;
+  FManager.Formatter(vBut.BackSprite, 'yesnono', [FId], 1).Format;
 
   FText := TEngine2DText.Create;
   FText.Group := vGroup;
@@ -676,26 +612,22 @@ begin
   FText.FontSize := 14;
   FText.Color := RGBColor(62 , 6, 30, 255).Color;
   FText.Text := '';
-  vEngine.AddObject(FText);
+  FManager.Add(FText);
 
-  vEngine.New.Formatter(FText, 'yesnotext', [FID]).Format;
+  FManager.Formatter(FText, 'yesnotext', [FID]).Format;
 
-  vEngine.HideGroup(vGroup);
+  FManager.HideGroup(vGroup);
 end;
 
 destructor TYesNoMenu.Destroy;
-var
-  vEngine: tEngine2d;
 begin
-  vEngine := FEngine;
-
   FYes.Free;
   FNo.Free;
 
-  vEngine.DeleteObject(FBack);
+  FManager.RemoveObject(FBack);
   FBack.Free;
 
-  vEngine.DeleteObject(FText);
+  FManager.RemoveObject(FText);
   FText.Free;
 
   inherited;

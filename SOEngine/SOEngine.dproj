@@ -138,13 +138,11 @@
         <DCCReference Include="Engine\uEngine2DAnimation.pas"/>
         <DCCReference Include="Engine\uEngine2DAnimationList.pas"/>
         <DCCReference Include="Engine\uEngine2DClasses.pas"/>
-        <DCCReference Include="Engine\uEngine2DExpression.pas"/>
         <DCCReference Include="Engine\uEngine2DObject.pas"/>
         <DCCReference Include="Engine\uEngine2DObjectCreator.pas"/>
         <DCCReference Include="Engine\uEngine2DObjectShape.pas"/>
         <DCCReference Include="Engine\uEngine2DResources.pas"/>
         <DCCReference Include="Engine\uEngine2DShape.pas"/>
-        <DCCReference Include="Engine\uEngine2DShapedSprite.pas"/>
         <DCCReference Include="Engine\uEngine2DSprite.pas"/>
         <DCCReference Include="Engine\uEngine2DSpriteAnimation.pas"/>
         <DCCReference Include="Engine\uEngine2DStandardAnimations.pas"/>
@@ -189,7 +187,7 @@
                 </Source>
             </Delphi.Personality>
             <Deployment Version="2">
-                <DeployFile LocalName="..\..\..\Public\Documents\Embarcadero\Studio\17.0\Bpl\SOEngine.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\17.0\Bpl\SOEngine.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>SOEngine.bpl</RemoteName>
                         <Overwrite>true</Overwrite>

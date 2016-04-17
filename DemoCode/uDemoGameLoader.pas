@@ -7,13 +7,14 @@ uses
   FMX.Graphics, {$I 'Utils\DelphiCompatability.inc'}
   uEngine2D, uEngine2DSprite, uEngine2DObject, uDemoObjects, uIntersectorClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses, uEngineFormatter,
-  uEngine2DText, uNamedList, uEngine2DShape,
+  uEngine2DText, uNamedList, uEngine2DShape, uEngine2DObjectCreator,
   uNewFigure, uIntersectorMethods, uEasyDevice, uClasses;
 
 type
   TLoader = class
   private
-    FEngine: TEngine2D;
+    FCreator: tEngine2DObjectCreator;
+    FBackground: TBitmap;
   protected
     function FastText(const AName: string; AFont: TFont; const AColor: TAlphaColor = TAlphaColorRec.White; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TEngine2DText;
     procedure ClearAndDestroyPanel(FPanel: TNamedList<tEngine2DText>);
@@ -33,7 +34,6 @@ type
     procedure ShipExplosionAnimation(ASubject: TShip);
     function ButtonAnimation(ASubject: TEngine2dObject; const AEndScale: Double):  TMouseDownMigrationAnimation;
     function Formatter(const ASubject: tEngine2DObject; const AText: String): TEngineFormatter;
-    function Sprite(const AResource: string = ''; const AGroup: string = ''; const AName: string = ''): TSprite;
     procedure CreateLifes(FLifes: TList<TSprite>; const ACount: Integer);
     procedure CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
     procedure CreateRelaxPanel(FPanel: TNamedList<tEngine2DText>);
@@ -41,9 +41,7 @@ type
     procedure CreateComix(var AText1, AText2: TEngine2dText); // Во входных параметрах тексты с комиксов, чтобы изменять их
     class function ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
 
-    property Parent: tEngine2d read FEngine;
-
-    constructor Create(AEngine: TEngine2D);
+    constructor Create(ACreator: TEngine2DObjectCreator; ABackGround: TBitmap);
   end;
 
   function MonitorScale: Single;
@@ -71,12 +69,10 @@ var
   vFigure: TNewFigure;
   vCircle: TCircle;
 begin
-  vSpr := TAsteroid.Create(FEngine);
-  vSpr.Resources := FEngine.Resources;
-  vSpr.CurRes := 1;
+  vSpr := TAsteroid.Create(FCreator);
   vSpr.Group := 'activeobject';
-  vSpr.x := Random(FEngine.Width);
-  vSpr.y := Random(FEngine.Height);
+  vSpr.x := Random(FCreator.EngineWidth);
+  vSpr.y := Random(FCreator.EngineHeight);
   vFigure := TNewFigure.Create(TNewFigure.cfCircle);
   vCircle.X := 0;
   vCircle.Y := 0;
@@ -85,7 +81,8 @@ begin
   vSpr.Shape.AddFigure(vFigure);
   vSpr.ScaleMod := RandomRange(60, 140) / 100;
 
-  FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
+  vSpr := TAsteroid(FCreator.Add(vSpr)); // Добавлять можно только так спрайты
+  vSpr.CurRes := 1;
 
   Result := vSpr;
 end;
@@ -98,7 +95,7 @@ begin
   for i := 0 to FPanel.Count - 1 do
   begin
     vObj := FPanel[i];
-    FEngine.DeleteObject(vObj);
+    FCreator.RemoveObject(vObj);
     vObj.Free;
   end;
   FPanel.Clear;
@@ -115,30 +112,29 @@ begin
   vFig := TFillRect.Create;
   vFig.Group := vGroup;
   vFig.FigureRect := RectF(-200, -200, 200, 200);
-  vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
+  vFig.Brush.Bitmap.Bitmap.Assign(FBackground);
   vFig.Brush.Kind := TBrushKind.Bitmap;
   vFig.Pen.Thickness := 4;
   vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
-  FEngine.AddObject(vFig);
+  FCreator.Add(vFig);
 
-  FEngine.New.Formatter(vFig, 'comix1back', [], 0);
+  FCreator.Formatter(vFig, 'comix1back', [], 0);
   vFig.Visible := True;
   vFig.Opacity := 1;
 
-  FEngine.New.AutoSprite('planetcomix', 'comix1planet', [], vGroup);
-  FEngine.New.AutoSprite('shipcomix', 'comix1ship', [], vGroup);
-  FEngine.New.AutoSprite('captain1', 'comix1captain', [], vGroup);
+  FCreator.AutoSprite('planetcomix', 'comix1planet', [], vGroup);
+  FCreator.AutoSprite('shipcomix', 'comix1ship', [], vGroup);
+  FCreator.AutoSprite('captain1', 'comix1captain', [], vGroup);
 
-  vTxt := FEngine.New.Text(
+  vTxt := FCreator.Text('monolog1').Config(
     'Great! I so close to the destination planet! I need only 3 minutes to reach it.',
     TAlphaColorRec.White,
-    'monolog1',
     vGroup,
     CenterRight);
   vTxt.WordWrap := True;
   vTxt.TextRect := RectF(-200, -100, 200, 100);
   vTxt.FontSize := 36;
-  FEngine.New.Formatter(vTxt, 'comix1text', [], 0).Format;
+  FCreator.Formatter(vTxt, 'comix1text', [], 0).Format;
 
   AComixText := vTxt;
 end;
@@ -153,32 +149,31 @@ begin
   vFig := TFillRect.Create;
   vFig.Group := vGroup;
   vFig.FigureRect := RectF(-200, -200, 200, 200);
-  vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
+  vFig.Brush.Bitmap.Bitmap.Assign(FBackground);
   vFig.Brush.Kind := TBrushKind.Bitmap;
   vFig.Pen.Thickness := 4;
   vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
-  FEngine.AddObject(vFig);
+  FCreator.Add(vFig);
 
-  FEngine.New.Formatter(vFig, 'comix2back', [], 0);
+  FCreator.Formatter(vFig, 'comix2back', [], 0);
   vFig.Visible := True;
   vFig.Opacity := 1;
 
-  FEngine.New.AutoSprite('planetcomix', 'comix2planet', [], vGroup);
-  FEngine.New.AutoSprite('shipcomix', 'comix2ship', [], vGroup);
-  FEngine.New.AutoSprite('captain2', 'comix2captain', [], vGroup);
-  FEngine.New.AutoSprite('asteroidcomix', 'comix2asteroids', [], vGroup);
+  FCreator.AutoSprite('planetcomix', 'comix2planet', [], vGroup);
+  FCreator.AutoSprite('shipcomix', 'comix2ship', [], vGroup);
+  FCreator.AutoSprite('captain2', 'comix2captain', [], vGroup);
+  FCreator.AutoSprite('asteroidcomix', 'comix2asteroids', [], vGroup);
 
-  vTxt := FEngine.New.Text(
+  vTxt := FCreator.Text('monolog2').Config(
     'Usually asteroids are at a very long distance from each other. But here are 5 of them within easy reach! And they are moving towards me at the high speed!',
     TAlphaColorRec.White,
-    'monolog2',
     vGroup,
     CenterRight);
   vTxt.WordWrap := True;
   vTxt.TextRect := RectF(-260, -150, 260, 150);
   vTxt.FontSize := 36;
 
-  FEngine.New.Formatter(vTxt, 'comix2text', [], 0).Format;;
+  FCreator.Formatter(vTxt, 'comix2text', [], 0).Format;;
   AComixText := vTxt;
 end;
 
@@ -192,32 +187,33 @@ begin
   vFig := TFillRect.Create;
   vFig.Group := vGroup;
   vFig.FigureRect := RectF(-200, -200, 200, 200);
-  vFig.Brush.Bitmap.Bitmap.Assign(FEngine.Background);
+  vFig.Brush.Bitmap.Bitmap.Assign(FBackground);
   vFig.Brush.Kind := TBrushKind.Bitmap;
   vFig.Pen.Thickness := 4;
   vFig.Pen.Color := RGBColor(62 , 6, 30, 255).Color;
-  FEngine.AddObject(vFig);
+  FCreator.Add(vFig);
 
-   FEngine.New.Formatter(vFig, 'comix3back', [], 0);
+  FCreator.Formatter(vFig, 'comix3back', [], 0);
   vFig.Visible := True;
   vFig.Opacity := 1;
 
-  FEngine.New.AutoSprite('planetcomix', 'comix3planet', [], vGroup);
-  FEngine.New.AutoSprite('shipcomix', 'comix3ship', [], vGroup);
-  FEngine.New.AutoSprite('captain3', 'comix3captain', [], vGroup);
-  FEngine.New.AutoSprite('asteroidcomix', 'comix3asteroids', [], vGroup);
-  FEngine.New.AutoSprite('arrow', 'comix3arrow', [], vGroup);
+  FCreator.AutoSprite('planetcomix', 'comix3planet', [], vGroup);
+  FCreator.AutoSprite('shipcomix', 'comix3ship', [], vGroup);
+  FCreator.AutoSprite('captain3', 'comix3captain', [], vGroup);
+  FCreator.AutoSprite('asteroidcomix', 'comix3asteroids', [], vGroup);
+  FCreator.AutoSprite('arrow', 'comix3arrow', [], vGroup);
 
-  vTxt := FEngine.New.Text('Your destination', TAlphaColorRec.White, 'monolog3', vGroup);
+  vTxt := FCreator.Text('monolog3').Config('Your destination', TAlphaColorRec.White, vGroup);
   vTxt.WordWrap := True;
   vTxt.TextRect := RectF(-150, -50, 150, 50);
   vTxt.FontSize := 36;
-  FEngine.New.Formatter(vTxt, 'comix3text', [], 0).Format;
+  FCreator.Formatter(vTxt, 'comix3text', [], 0).Format;
 end;
 
-constructor TLoader.Create(AEngine: TEngine2D);
+constructor TLoader.Create(ACreator: TEngine2DObjectCreator; ABackGround: TBitmap);
 begin
-  FEngine := AEngine;
+  FBackground := ABackground;
+  FCreator := ACreator;
 end;
 
 procedure TLoader.CreateComix(var AText1, AText2: TEngine2dText);
@@ -225,7 +221,7 @@ begin
   Comix1Create(AText1);
   Comix2Create(AText2);
   Comix3Create;
-  FEngine.HideGroup('comix1, comix2, comix3');
+  FCreator.HideGroup('comix1, comix2, comix3');
 end;
 
 procedure TLoader.CreateLifes(FLifes: TList<TSprite>; const ACount: Integer);
@@ -235,14 +231,9 @@ var
 begin
   for i := FLifes.Count to ACount - 1 do
   begin
-    vSpr := TSprite.Create;
-    vSpr.Resources := FEngine.Resources;
-    vSpr.Group := 'survival';
-    vSpr.CurRes := FEngine.Resources.IndexOf('lifeicon');
-    FEngine.AddObject(vSpr);
+    vSpr := FCreator.Sprite.Config('lifeicon', 'survival', TObjectJustify.Center);
     vSpr.Visible := True;
-
-    FEngine.New.Formatter(vSpr, 'lifes', [i], 0).Format;
+    FCreator.Formatter(vSpr, 'lifes', [i], 0).Format;
     FLifes.Add(vSpr)
   end;
 end;
@@ -265,34 +256,34 @@ begin
   vText := FastText('time', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Time:';
   FPanel.Add('time', vText);
-  FEngine.New.Formatter(vText,'panelleftside', [1]).Format;
+  FCreator.Formatter(vText,'panelleftside', [1]).Format;
   vText := FastText('timevalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('timevalue', vText);
-  FEngine.New.Formatter(vText,'panelrightside', [1]).Format;
+  FCreator.Formatter(vText,'panelrightside', [1]).Format;
 
   vText := FastText('collisions', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Collisions:';
   FPanel.Add('collisions', vText);
-  FEngine.New.Formatter(vText,'panelleftside', [2]).Format;
+  FCreator.Formatter(vText,'panelleftside', [2]).Format;
   vText := FastText('collisionsvalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('collisionsvalue', vText);
-  FEngine.New.Formatter(vText,'panelrightside', [2]).Format;
+  FCreator.Formatter(vText,'panelrightside', [2]).Format;
 
   vText := FastText('score', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Score:';
   FPanel.Add('score', vText);
-  FEngine.New.Formatter(vText,'panelleftside', [3]).Format;
+  FCreator.Formatter(vText,'panelleftside', [3]).Format;
   vText := FastText('scoresvalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('scorevalue', vText);
-  FEngine.New.Formatter(vText,'panelrightside', [3]).Format;
+  FCreator.Formatter(vText,'panelrightside', [3]).Format;
 
   for i := 0 to FPanel.Count - 1 do
     FPanel[i].Opacity := 0.5;
 
-  FEngine.ShowGroup(vGroup);
+  FCreator.ShowGroup(vGroup);
 end;
 
 procedure TLoader.CreateStoryPanel(FPanel: TNamedList<tEngine2DText>);
@@ -300,7 +291,6 @@ var
   vText: TEngine2DText;
   vFont: TFont;
   vPrimaryColor, vSecondaryColor: TAlphaColor;
-//  vLeft, vRight: String;
   i: Integer;
   vGroup: String;
 begin
@@ -315,25 +305,25 @@ begin
   vText := FastText('level', vFont, vSecondaryColor, vGroup, CenterLeft);
   vText.Text := 'Level:';
   FPanel.Add('level', vText);
-  FEngine.New.Formatter(vText,'panelleftside', [1]).Format;
+  FCreator.Formatter(vText,'panelleftside', [1]).Format;
   vText := FastText('levelvalue', vFont, vSecondaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('levelvalue', vText);
-  FEngine.New.Formatter(vText,'panelrightside', [1]).Format;
+  FCreator.Formatter(vText,'panelrightside', [1]).Format;
 
   vText := FastText('time', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Time left:';
   FPanel.Add('time', vText);
-  FEngine.New.Formatter(vText,'panelleftside', [2]).Format;
+  FCreator.Formatter(vText,'panelleftside', [2]).Format;
   vText := FastText('timevalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('timevalue', vText);
-  FEngine.New.Formatter(vText,'panelrightside', [2]).Format;
+  FCreator.Formatter(vText,'panelrightside', [2]).Format;
 
   for i := 0 to FPanel.Count - 1 do
     FPanel[i].Opacity := 0.5;
 
-  FEngine.ShowGroup(vGroup);
+  FCreator.ShowGroup(vGroup);
 end;
 
 procedure TLoader.CreateSurvivalPanel(FPanel: TNamedList<tEngine2DText>);
@@ -341,7 +331,6 @@ var
   vText: TEngine2DText;
   vFont: TFont;
   vPrimaryColor: TAlphaColor;
-//  vLeft, vRight: String;
   i: Integer;
   vGroup: String;
 begin
@@ -355,25 +344,25 @@ begin
   vText := FastText('time', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Time:';
   FPanel.Add('time', vText);
-  FEngine.New.Formatter(vText,'panelleftside', [1]).Format;
+  FCreator.Formatter(vText,'panelleftside', [1]).Format;
   vText := FastText('timevalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('timevalue', vText);
-  FEngine.New.Formatter(vText, 'panelrightside', [1]).Format;
+  FCreator.Formatter(vText, 'panelrightside', [1]).Format;
 
   vText := FastText('score', vFont, vPrimaryColor, vGroup, CenterLeft);
   vText.Text := 'Score:';
   FPanel.Add('score', vText);
-  FEngine.New.Formatter(vText,'panelleftside', [2]).Format;
+  FCreator.Formatter(vText,'panelleftside', [2]).Format;
   vText := FastText('scoresvalue', vFont, vPrimaryColor, vGroup, CenterRight);
   vText.Text := '0';
   FPanel.Add('scorevalue', vText);
-  FEngine.New.Formatter(vText, 'panelrightside', [2]).Format;
+  FCreator.Formatter(vText, 'panelrightside', [2]).Format;
 
   for i := 0 to FPanel.Count - 1 do
     FPanel[i].Opacity := 0.5;
 
-  FEngine.ShowGroup(vGroup);
+  FCreator.ShowGroup(vGroup);
 end;
 
 function TLoader.DefinedBigAsteroids(const ASize, ASpeed: Double): TAsteroid;
@@ -383,19 +372,17 @@ var
   vCircle: TCircle;
   vAng: Double;
 begin
-  vSpr := TAsteroid.Create(FEngine);
-  vSpr.Resources := FEngine.Resources;
-  vSpr.CurRes := 1;
+  vSpr := TAsteroid.Create(FCreator);
   vSpr.Group := 'activeobject';
-  vSpr.x := Random(FEngine.Width);
-  vSpr.y := Random(FEngine.Height);
+  vSpr.x := Random(FCreator.EngineWidth);
+  vSpr.y := Random(FCreator.EngineHeight);
   vFigure := TNewFigure.Create(TNewFigure.cfCircle);
   vCircle.X := 0;
   vCircle.Y := 0;
   vCircle.Radius := 50;
   vFigure.SetData(vCircle);
   vSpr.Shape.AddFigure(vFigure);
-  vSpr.ScaleMod := ASize; //RandomRange(60, 140) / 100;
+  vSpr.ScaleMod := ASize;
 
   vAng := Random(360) + random;
 
@@ -413,11 +400,10 @@ var
   vCircle: TCircle;
   vPoly1, vPoly2, vPoly3: TNewFigure;
 begin
-  vSpr := TShip.Create(FEngine);
-  vSpr.Resources := FEngine.Resources;
+  vSpr := TShip.Create(FCreator);
   vSpr.Group := 'ship';
-  vSpr.x := 200;//Random(FEngine.Width);
-  vSpr.y := 200;//Random(FEngine.Height);
+  vSpr.x := 200;
+  vSpr.y := 200;
   vSpr.Rotate := Random(360);
 
   vPoly1 := TNewFigure.Create(TNewFigure.cfPoly);
@@ -457,7 +443,8 @@ begin
   vSpr.Shape.AddFigure(vPoly3);
   vSpr.Shape.AddFigure(vShape);
   vSpr.Visible := False;
-  FEngine.AddObject(vSpr, 'ship'); // Добавлять можно только так спрайты
+
+  FCreator.Add(vSpr, 'ship').Config(-1,'ship', TObjectJustify.Center); // Добавлять можно только так спрайты
 
   Result := vSpr;
 end;
@@ -467,14 +454,14 @@ var
   vSpr: TExplosion;
 begin
   vSpr := TExplosion.Create;
-  vSpr.Resources := FEngine.Resources;
-  vSpr.CurRes := 9;
+
   vSpr.Group := 'activeobject';
   vSpr.x := AX;
   vSpr.y := AY;
   vSpr.Rotate := AAng;
   vSpr.Scale := 0.5;
-  FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
+  FCreator.Add(vSpr);
+  vSpr.CurRes := 9;
 
   Result := vSpr;
 end;
@@ -489,7 +476,6 @@ begin
   for i := 0 to High(vSlides) do
     vSlides[i] := i + 9;
   vRes := TSpriteAnimation.Create;
-  vRes.Parent := fEngine;
   vRes.Slides := vSlides;
   vRes.TimeTotal := 250;
   vRes.Subject := ASubject;
@@ -508,15 +494,13 @@ begin
   Result.Color := AColor;
   Result.Justify := AJustify;
   Result.TextRect := RectF(-50, -7, 50, 7);
-  FEngine.AddObject(Result, AName);
+  FCreator.Add(Result, AName);
 end;
 
 function TLoader.Formatter(const ASubject: tEngine2DObject;
   const AText: String): TEngineFormatter;
 begin
-  Result := TEngineFormatter.Create(ASubject, FEngine);
-  Result.Text := AText;
-  FEngine.FormatterList.Insert(0, Result);
+  Result := FCreator.Formatter(ASubject, AText);
 end;
 
 function TLoader.OpacityAnimation(ASubject: TSprite; const AEndOpacity: Double): TOpacityAnimation;
@@ -524,7 +508,6 @@ var
   vRes: TOpacityAnimation;
 begin
   vRes := TOpacityAnimation.Create;
-  vRes.Parent := fEngine;
   vRes.EndOpaque := AEndOpacity;
   vRes.TimeTotal := 800;
   vRes.Subject := ASubject;
@@ -536,15 +519,13 @@ function TLoader.RandomAstroid: TLittleAsteroid;
 var
   vSpr: TLittleAsteroid;
 begin
-  vSpr := TLittleAsteroid.Create(FEngine);
-  vSpr.Resources := FEngine.Resources;
-  vSpr.CurRes := vSpr.Tip + 5;
+  vSpr := TLittleAsteroid.Create(FCreator);
   vSpr.Group := 'backobjects';
-  vSpr.x := Random(FEngine.Width);
-  vSpr.y := Random(FEngine.Height);
+  vSpr.x := Random(FCreator.EngineWidth);
+  vSpr.y := Random(FCreator.EngineHeight);
   vSpr.Rotate := Random(360);
-  //vSpr.Scale := 0.3;
-  FEngine.AddObject(vSpr); // Добавлять можно только так спрайты
+  FCreator.Add(vSpr); // Добавлять можно только так спрайты
+  vSpr.CurRes := vSpr.Tip + 5;
 
   Result := vSpr;
 end;
@@ -554,7 +535,6 @@ var
   vRes: TOpacityAnimation;
 begin
   vRes := TOpacityAnimation.Create;
-  vRes.Parent := fEngine;
   vRes.EndOpaque := 0;
   vRes.StartOpaque := ASubject.Opacity;
   vRes.TimeTotal := 500;
@@ -571,7 +551,6 @@ var
   vPos: TPosition;
 begin
   vRes := TMouseDownMigrationAnimation.Create;
-  vRes.Parent := FEngine;
   vPos := ASubject.Position;
   vPos.ScaleX := AEndScale;
   vPos.ScaleY := AEndScale;
@@ -589,7 +568,6 @@ var
   vPos: TPosition;
 begin
   vRes := TMigrationAnimation.Create;
-  vRes.Parent := fEngine;
   vPos := ASubject.Position;
   vPos.ScaleX := AEndScale;
   vPos.ScaleY := AEndScale;
@@ -607,28 +585,7 @@ var
 begin
   vRes := ScaleAnimation(ASubject, 0.01);
   vRes.OnDestroy := ASubject.Hide;
-  FEngine.AnimationList.Add(vRes);
-  (*for i := 0 to ASubject.Parts.Count - 1 do
-  begin
-  {  vRes := TOpacityAnimation.Create;
-    vRes.Parent := fEngine;
-    vRes.Subject := ASubject;
-    vRes.EndOpaque := 0;
-    vRes.StartOpaque := ASubject.Parts[i].Opacity;
-    vRes.TimeTotal := 500;
-    vRes.OnDestroy := ASubject.Hide;   }
-
-   { ScaleAnimation(ASubject.Parts[i], )
-    vRes := TSAnimation.Create;
-    vRes.Parent := fEngine;
-    vRes.Subject := ASubject;
-    vRes.EndOpaque := 0;
-    vRes.StartOpaque := ASubject.Parts[i].Opacity;
-    vRes.TimeTotal := 500;
-    vRes.OnDestroy := ASubject.Hide;
-
-    FEngine.AnimationList.Add(vRes); }
-  end;*)
+  FCreator.Add(vRes);
 end;
 
 class function TLoader.ShipFlyAnimation(ASubject: TSprite; const APosition: TPosition): TAnimation;
@@ -642,16 +599,6 @@ begin
   vRes.OnSetup := ASubject.SendToFront;
 
   Result := vRes;
-end;
-
-function TLoader.Sprite(const AResource, AGroup, AName: string): TSprite;
-begin
-  Result := TSprite.Create;
-  Result.Resources := FEngine.Resources;
-  if AResource <> '' then
-    Result.CurRes := FEngine.Resources.IndexOf(AResource);
-  Result.Group := AGroup;
-  FEngine.AddObject(Result, AName);
 end;
 
 end.

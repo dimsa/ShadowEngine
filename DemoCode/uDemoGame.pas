@@ -10,7 +10,8 @@ uses
   FMX.IniFile,
   uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape,
   uEngine2DAnimation, uIntersectorClasses, uDemoMenu, uClasses, uEngine2DText,
-  uEngine2DSprite, uEngineFormatter, uNamedList, uEngine2DClasses, uBannerPanel;
+  uEngine2DSprite, uEngineFormatter, uNamedList, uEngine2DClasses, uBannerPanel,
+  uEngine2DObjectCreator;
 
 type
   TGameStatus = (gsMenu1, gsMenu2, gsMenu3,
@@ -44,7 +45,8 @@ type
   TGameParam = class
   private
     FLoader: TLoader; // ССылка на Loader
-    FEngine: TDemoEngine; // Ссылка на движок. Получаем из FLoader
+    FManager: TEngine2DObjectCreator;
+//    FEngine: TDemoEngine; // Ссылка на движок. Получаем из FLoader
     FStatistics: TStatistics;
     FGameStatus: TGameStatus;
     FBackObjects: TList<TLittleAsteroid>; // Летящие бэки
@@ -99,7 +101,7 @@ type
     function AsteroidsForLevel(const ALevel: Integer): Integer;
     procedure RestartGame(const AGameMode: TGameStatus);
     procedure GameOver;
-    constructor Create(ALoader: TLoader);
+    constructor Create(ALoader: TLoader; AManager: TEngine2dObjectCreator);
     destructor Destroy; override;
   const
     // Величина параметров, скорости, размера и т.д.
@@ -199,7 +201,6 @@ end;
 constructor TDemoGame.Create;
 begin
   FEngine := TDemoEngine.Create;
-  FLoader := TLoader.Create(FEngine);
 end;
 
 function TDemoGame.DestinationFromClick(const Ax, Ay: Single): TPosition;
@@ -226,7 +227,6 @@ end;
 procedure TDemoGame.ExitGame(ASender: TObject);
 begin
   StopApplication;
-  //Halt;
 end;
 
 procedure TDemoGame.FindCollide;
@@ -323,7 +323,6 @@ procedure TDemoGame.MouseMove(Sender: TObject; Shift: TShiftState; X,
 begin
   if FEngine.IsMouseDowned then
     FGP.Ship.Destination := DestinationFromClick(x, y);
-//    FShip.AddDestination(DestinationFromClick(x, y));
 end;
 
 procedure TDemoGame.MouseUp(Sender: TObject; Button: TMouseButton;
@@ -342,11 +341,12 @@ procedure TDemoGame.Prepare;
 var
   vTxt1, vTxt2: TEngine2DText;
 begin
-  FEngine.Resources.addResFromLoadFileRes('images.load');
+  FLoader := TLoader.Create(FEngine.New, FEngine.Background);
+  FEngine.LoadResources('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
-  FEngine.FormatterList.LoadSECSS(UniPath('formatters.secss'));
+  FEngine.LoadSECSS(UniPath('formatters.secss'));
 
-  FGP := TGameParam.Create(FLoader);
+  FGP := TGameParam.Create(FLoader, FEngine.New);
 
   FGameOverText := TEngine2DText.Create;
   FGameOverText.FontSize := 56;
@@ -357,7 +357,7 @@ begin
   FEngine.AddObject(FGameOverText, 'gameovertext');
   FEngine.New.Formatter(FGameOverText, 'gameovertext', []).Format;
 
-  FMenu := TGameMenu.Create(FEngine);
+  FMenu := TGameMenu.Create(FEngine.New, FLoader);
   FMenu.StartGame := SelectMode;//StartGame;
   FMenu.AboutGame := AboutGame;
   FMenu.StatGame := StatGame;
@@ -413,7 +413,7 @@ begin
       gsMenu1: begin if (FGameStatus = gsRelaxMode) then Self.FGP.FixScore;  ShowGroup('menu1,menu'); FMenu.SendToFront; HideGroup('gameover,relaxmodemenu,ship,menu2,about,statistics,menu3,relax,survival,story,nextlevel,retrylevel,comix1,comix2,comix3'); end;
       gsMenu2: begin ShowGroup('menu2'); HideGroup('menu1,menu3'); end;
       gsMenu3: begin FMenu.ShowLevels(FGP.Statistics.MaxLevel); ShowGroup('menu3'); HideGroup('menu2'); end;
-      gsStatistics: begin TEngine2DText(SpriteList['statisticscaption']).Text := FGP.StatisticsText; ShowGroup('statistics'); HideGroup('menu1') end;
+      gsStatistics: begin TEngine2DText(FEngine.New['statisticscaption']).Text := FGP.StatisticsText; ShowGroup('statistics'); HideGroup('menu1') end;
       gsAbout: begin ShowGroup('about'); HideGroup('menu1') end;
       gsRelaxMode: begin FGP.RestartGame(Value); ShowGroup('relaxmodemenu'); HideGroup('menu2,menu'); end;
       gsSurvivalMode: begin FGP.RestartGame(Value);  HideGroup('menu2'); HideGroup('menu'); end;
@@ -435,25 +435,6 @@ begin
   Value.OnMouseUp := Self.MouseUp;
   Value.OnMouseMove := Self.MouseMove;
 end;
-
-{procedure TDemoGame.StartGame(ASender: TObject);
-var
-  vSpr: TSprite;
-begin
-  FEngine.HideGroup('menu');
-  FEngine.ShowGroup('ship');
-  FLoader := TLoader.Create(FEngine);
-
-  for vSpr in FGP.Ship.Parts do
-  begin
-    vSpr.Opacity := 0;
-    FEngine.AnimationList.Add(
-      FLoader.OpacityAnimation(vSpr, 1)
-    );
-  end;
-
-  Self.GameStatus := gsStoryMode;
-end;  }
 
 procedure TDemoGame.StartRelax(ASender: TObject);
 begin
@@ -485,7 +466,6 @@ procedure TDemoGame.ToNextLevel(ASender: TObject);
 begin
   FGP.Level := FGP.Level + 1;
   GameStatus := gsComix1;
-//  FGP.RestartGame(gsStoryMode);
 end;
 
 procedure TDemoGame.ToRetryLevel(ASender: TObject);
@@ -512,20 +492,20 @@ begin
   vSpeed := ASpeed * 1.2 + 3;
 
   vAsteroid := FLoader.DefinedBigAsteroids(vSize, vSpeed);
+  vAsteroid := TAsteroid(FManager.Add(vAsteroid));
+  vAsteroid.CurRes := 1;
 
-  FEngine.AddObject(vAsteroid);
   FAsteroids.Add(vAsteroid);
 
   // Астеройд появляется за гранью
-
   case Random(4) of
-    0: begin  vX := - vAsteroid.wHalf; vY := Random(FEngine.Height) end;
-    1: begin  vX := FEngine.Width + vAsteroid.wHalf; vY := Random(FEngine.Height) end;
-    2: begin  vX := Random(FEngine.Width); vY := -vAsteroid.hHalf end;
-    3: begin  vX := Random(FEngine.Width); vY := FEngine.Height + vAsteroid.hHalf end;
+    0: begin  vX := - vAsteroid.wHalf; vY := Random(FManager.EngineHeight) end;
+    1: begin  vX := FManager.EngineWidth + vAsteroid.wHalf; vY := Random(FManager.EngineHeight) end;
+    2: begin  vX := Random(FManager.EngineWidth); vY := -vAsteroid.hHalf end;
+    3: begin  vX := Random(FManager.EngineWidth); vY := FManager.EngineHeight + vAsteroid.hHalf end;
     else begin
-      vX := Random(FEngine.Width);
-      vY := Random(FEngine.Height);
+      vX := Random(FManager.EngineWidth);
+      vY := Random(FManager.EngineHeight);
     end;
   end;
 
@@ -621,20 +601,21 @@ begin
   if FLifes.Count > 0 then
   begin
     vSpr := FLifes.Last;
-    Floader.Parent.AnimationList.Add(FLoader.BreakLifeAnimation(vSpr));
+    FManager.Add(FLoader.BreakLifeAnimation(vSpr));
     FLifes.Count := FLifes.Count - 1;
   end;
 end;
 
-constructor TGameParam.Create(ALoader: TLoader);
+constructor TGameParam.Create(ALoader: TLoader; AManager: TEngine2dObjectCreator);
 var
   i: Integer;
   vObj: tEngine2DObject;
 begin
+  FManager := AManager;
+  FLoader := ALoader;
   FLifes := TList<TSprite>.Create;
   FPanels := TNamedList<TEngine2DText>.Create;
   FLoader := ALoader;
-  FEngine := TDemoEngine(FLoader.Parent);
   FStatistics := TStatistics.Create;
   FCollisions := 0;
   FSeconds := 0;
@@ -680,7 +661,7 @@ begin
     begin
       vSpr := FAsteroids.Last;
       FAsteroids.Remove(vSpr);
-      FEngine.DeleteObject(vSpr);
+      FManager.RemoveObject(vSpr);
       vSpr.Free;
     end;
 end;
@@ -742,8 +723,6 @@ end;
 function TGameParam.GetLevel: Integer;
 begin
   Result := FCurrentLevel;
- { if FPanels.IsHere('levelvalue') then
-    Result := StrToInt(FPanels['levelvalue'].Text);  }
 end;
 
 function TGameParam.GetScore: Integer;
@@ -756,13 +735,6 @@ end;
 function TGameParam.GetTime: Double;
 begin
   Result := FSeconds;
- { Result := 0;
-  if FPanels.IsHere('timevalue') then
-  begin
-    val(FPanels['timevalue'].Text, vValue, vErr);
-    if vErr = 0 then
-      Result := vValue;
-  end;   }
 end;
 
 procedure TGameParam.PrepareAsteroidForLevel(const ALevel: Integer);
@@ -880,14 +852,12 @@ begin
     end;
   end;
 
-  FLoader.Parent.Resize;
+  FManager.Resize;
   Self.FShip.Show;
 end;
 
 procedure TGameParam.SetLevel(const Value: Integer);
 begin
- { if FPanels.IsHere('levelvalue') then
-    FPanels['levelvalue'].Text := IntToStr(Value);   }
   Self.FCurrentLevel := Value;
 end;
 
