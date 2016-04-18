@@ -18,7 +18,10 @@ There are 3 modes: Story, Survival, Relax.
 In story mode level length is from 30 seconds to 2 minutes. Every next level is harder.
 In Survival new asteroid is spawned every 15 second.</i>
 
-With every commit it gets better!<br />
+<b>SO Engine Architecture and Features Overview</b>
+![alt tag](https://raw.githubusercontent.com/dimsa/ShadowEngine/master/Docs/SOEngineOverview.png)
+
+With every commit it getting better!<br />
 
 <br />
 Thank you for stars! <br />
