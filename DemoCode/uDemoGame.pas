@@ -11,7 +11,7 @@ uses
   uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape,
   uEngine2DAnimation, uIntersectorClasses, uDemoMenu, uClasses, uEngine2DText,
   uEngine2DSprite, uEngineFormatter, uNamedList, uEngine2DClasses, uBannerPanel,
-  uEngine2DObjectCreator;
+  uEngine2DManager;
 
 type
   TGameStatus = (gsMenu1, gsMenu2, gsMenu3,

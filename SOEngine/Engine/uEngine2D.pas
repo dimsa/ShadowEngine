@@ -47,7 +47,6 @@ type
     FInBeginPaintBehavior: TProcedure;
     FInEndPaintBehavior: TProcedure;
     FAddedSprite: Integer; // Считает сколько спрайтов добавлено всего. Без учета удалений
-//    FDrawFigures: Boolean; // Требуется обычно для отладки. Рисует области фигур интерсектора
 
     // Механизм теневого объекты необычен. Но кроме всего прочего TEngine2DObject не имеет способов определения
     {FShadowSprite: tSprite; //

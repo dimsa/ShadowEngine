@@ -1,4 +1,4 @@
-unit uEngine2DObjectCreator;
+unit uEngine2DManager;
 
 interface
 
