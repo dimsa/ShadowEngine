@@ -1,4 +1,4 @@
-unit uEngine2D;
+п»їunit uEngine2D;
 
 {******************************************************************************
 Shadow Object Engine (SO Engine)
@@ -15,7 +15,7 @@ uses
   FMX.Objects, Math, System.SyncObjs, {$I 'Utils\DelphiCompatability.inc'}
   uClasses, uEngine2DThread, uEngine2DObject, uEngine2DUnclickableObject,
   uEngine2DSprite, uEngine2DText, uEngine2DClasses, uFormatterList, uEngineFormatter,
-  uSpriteList, uEngine2DObjectCreator,
+  uSpriteList, uEngine2DManager,
   uEngine2DResources, uEngine2DAnimation, uNamedList, uEngine2DAnimationList,
   uFastFields, uEasyDevice;
 
@@ -23,32 +23,32 @@ type
 
   tEngine2d = class
   strict private
-    fEngineThread: tEngineThread; // Поток в котором происходит отрисовка
-    fOptions: TEngine2DOptions; // Настройки движка
-    fObjects: TObjectsList; // Массив спрайтов для отрисовки
-    fFastFields: tFastFields; // Содержит ссылки на TFastField, которые представляют собой найденные значения определенных спрайтов
-    fSpriteOrder: array of Integer; // Массив порядка отрисовки. Нужен для уменьшения кол-ва вычислений, содержит номер спрайта
-    fResources: TEngine2DResources;//tResourceArray; // Массив битмапов
-    fFormatters: TFormatterList; // Массив Форматтеров спрайтов
-    fAnimationList: TEngine2DAnimationList; // Массив анимаций
+    fEngineThread: tEngineThread; // РџРѕС‚РѕРє РІ РєРѕС‚РѕСЂРѕРј РїСЂРѕРёСЃС…РѕРґРёС‚ РѕС‚СЂРёСЃРѕРІРєР°
+    fOptions: TEngine2DOptions; // РќР°СЃС‚СЂРѕР№РєРё РґРІРёР¶РєР°
+    fObjects: TObjectsList; // РњР°СЃСЃРёРІ СЃРїСЂР°Р№С‚РѕРІ РґР»СЏ РѕС‚СЂРёСЃРѕРІРєРё
+    fFastFields: tFastFields; // РЎРѕРґРµСЂР¶РёС‚ СЃСЃС‹Р»РєРё РЅР° TFastField, РєРѕС‚РѕСЂС‹Рµ РїСЂРµРґСЃС‚Р°РІР»СЏСЋС‚ СЃРѕР±РѕР№ РЅР°Р№РґРµРЅРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РѕРїСЂРµРґРµР»РµРЅРЅС‹С… СЃРїСЂР°Р№С‚РѕРІ
+    fSpriteOrder: array of Integer; // РњР°СЃСЃРёРІ РїРѕСЂСЏРґРєР° РѕС‚СЂРёСЃРѕРІРєРё. РќСѓР¶РµРЅ РґР»СЏ СѓРјРµРЅСЊС€РµРЅРёСЏ РєРѕР»-РІР° РІС‹С‡РёСЃР»РµРЅРёР№, СЃРѕРґРµСЂР¶РёС‚ РЅРѕРјРµСЂ СЃРїСЂР°Р№С‚Р°
+    fResources: TEngine2DResources;//tResourceArray; // РњР°СЃСЃРёРІ Р±РёС‚РјР°РїРѕРІ
+    fFormatters: TFormatterList; // РњР°СЃСЃРёРІ Р¤РѕСЂРјР°С‚С‚РµСЂРѕРІ СЃРїСЂР°Р№С‚РѕРІ
+    fAnimationList: TEngine2DAnimationList; // РњР°СЃСЃРёРІ Р°РЅРёРјР°С†РёР№
     fObjectCreator: TEngine2DObjectCreator;
-    fMouseDowned: TIntArray; // Массив спрайтов движка, которые находились под мышкой в момент нажатия
-    fMouseUpped: TIntArray; // Массив спрайтов движка, которые находились под мышкой в момент отжатия
-    fClicked: TIntArray; // Массив спрайтов движка, которые попали под мышь
-    fStatus: byte; // Состояние движка 0-пауза, 1-работа
-    flX, flY: single; // o_O Для масштабирования на смартфоны что-то
-    FIsMouseDowned: Boolean; // Хранит состояние нажатости мыши
-    fImage: tImage; // Имедж, в котором происходит отрисовка
-    fBackGround: tBitmap; // Бэкграунд. Всегда рисуется в Repaint на весь fImage
-    fCritical: TCriticalSection; // Критическая секция движка
-    fWidth, fHeight: integer; // Размер поля имеджа и движка
-    fDebug: Boolean; // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
+    fMouseDowned: TIntArray; // РњР°СЃСЃРёРІ СЃРїСЂР°Р№С‚РѕРІ РґРІРёР¶РєР°, РєРѕС‚РѕСЂС‹Рµ РЅР°С…РѕРґРёР»РёСЃСЊ РїРѕРґ РјС‹С€РєРѕР№ РІ РјРѕРјРµРЅС‚ РЅР°Р¶Р°С‚РёСЏ
+    fMouseUpped: TIntArray; // РњР°СЃСЃРёРІ СЃРїСЂР°Р№С‚РѕРІ РґРІРёР¶РєР°, РєРѕС‚РѕСЂС‹Рµ РЅР°С…РѕРґРёР»РёСЃСЊ РїРѕРґ РјС‹С€РєРѕР№ РІ РјРѕРјРµРЅС‚ РѕС‚Р¶Р°С‚РёСЏ
+    fClicked: TIntArray; // РњР°СЃСЃРёРІ СЃРїСЂР°Р№С‚РѕРІ РґРІРёР¶РєР°, РєРѕС‚РѕСЂС‹Рµ РїРѕРїР°Р»Рё РїРѕРґ РјС‹С€СЊ
+    fStatus: byte; // РЎРѕСЃС‚РѕСЏРЅРёРµ РґРІРёР¶РєР° 0-РїР°СѓР·Р°, 1-СЂР°Р±РѕС‚Р°
+    flX, flY: single; // o_O Р”Р»СЏ РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёСЏ РЅР° СЃРјР°СЂС‚С„РѕРЅС‹ С‡С‚Рѕ-С‚Рѕ
+    FIsMouseDowned: Boolean; // РҐСЂР°РЅРёС‚ СЃРѕСЃС‚РѕСЏРЅРёРµ РЅР°Р¶Р°С‚РѕСЃС‚Рё РјС‹С€Рё
+    fImage: tImage; // РРјРµРґР¶, РІ РєРѕС‚РѕСЂРѕРј РїСЂРѕРёСЃС…РѕРґРёС‚ РѕС‚СЂРёСЃРѕРІРєР°
+    fBackGround: tBitmap; // Р‘СЌРєРіСЂР°СѓРЅРґ. Р’СЃРµРіРґР° СЂРёСЃСѓРµС‚СЃСЏ РІ Repaint РЅР° РІРµСЃСЊ fImage
+    fCritical: TCriticalSection; // РљСЂРёС‚РёС‡РµСЃРєР°СЏ СЃРµРєС†РёСЏ РґРІРёР¶РєР°
+    fWidth, fHeight: integer; // Р Р°Р·РјРµСЂ РїРѕР»СЏ РёРјРµРґР¶Р° Рё РґРІРёР¶РєР°
+    fDebug: Boolean; // РќРµ РѕС‡РµРЅСЊ РЅСѓР¶РЅРѕ, РЅРѕ РїРѕРјРѕРіР°РµС‚ РѕС‚Р»Р°Р¶РёРІР°С‚СЊ С‚Рµ РјРµСЃС‚Р°, РєРѕРіРґР° РЅРµРїРѕРЅСЏС‚РЅРѕ РєРѕРіРґР° РїРѕСЏРІР»СЏРµС‚СЃСЏ РѕС€РёР±РєР°
     FBackgroundBehavior: TProcedure;
     FInBeginPaintBehavior: TProcedure;
     FInEndPaintBehavior: TProcedure;
-    FAddedSprite: Integer; // Считает сколько спрайтов добавлено всего. Без учета удалений
+    FAddedSprite: Integer; // РЎС‡РёС‚Р°РµС‚ СЃРєРѕР»СЊРєРѕ СЃРїСЂР°Р№С‚РѕРІ РґРѕР±Р°РІР»РµРЅРѕ РІСЃРµРіРѕ. Р‘РµР· СѓС‡РµС‚Р° СѓРґР°Р»РµРЅРёР№
 
-    // Механизм теневого объекты необычен. Но кроме всего прочего TEngine2DObject не имеет способов определения
+    // РњРµС…Р°РЅРёР·Рј С‚РµРЅРµРІРѕРіРѕ РѕР±СЉРµРєС‚С‹ РЅРµРѕР±С‹С‡РµРЅ. РќРѕ РєСЂРѕРјРµ РІСЃРµРіРѕ РїСЂРѕС‡РµРіРѕ TEngine2DObject РЅРµ РёРјРµРµС‚ СЃРїРѕСЃРѕР±РѕРІ РѕРїСЂРµРґРµР»РµРЅРёСЏ
     {FShadowSprite: tSprite; //
     FShadowText: TEngine2dText; }
     FShadowObject: tEngine2DObject;
@@ -58,9 +58,9 @@ type
     procedure setStatus(newStatus: byte);
     procedure setObject(index: integer; newSprite: tEngine2DObject);
     function getObject(index: integer): tEngine2DObject;
-    function getSpriteCount: integer; // Длина массив fSprites
-    procedure SetWidth(AWidth: integer); // Установка размера поля отрисовки движка
-    procedure SetHeight(AHeight: integer); // Установка размера поля отрисовки движка
+    function getSpriteCount: integer; // Р”Р»РёРЅР° РјР°СЃСЃРёРІ fSprites
+    procedure SetWidth(AWidth: integer); // РЈСЃС‚Р°РЅРѕРІРєР° СЂР°Р·РјРµСЂР° РїРѕР»СЏ РѕС‚СЂРёСЃРѕРІРєРё РґРІРёР¶РєР°
+    procedure SetHeight(AHeight: integer); // РЈСЃС‚Р°РЅРѕРІРєР° СЂР°Р·РјРµСЂР° РїРѕР»СЏ РѕС‚СЂРёСЃРѕРІРєРё РґРІРёР¶РєР°
     procedure setBackGround(ABmp: tBitmap);
 
     procedure BackgroundDefaultBehavior;
@@ -71,14 +71,14 @@ type
     procedure BringToBackHandler(ASender: TObject);
     procedure SendToFrontHandler(ASender: TObject);
   protected
-      // Ключевые списки движка
+      // РљР»СЋС‡РµРІС‹Рµ СЃРїРёСЃРєРё РґРІРёР¶РєР°
     property Resources: TEngine2DResources read FResources;
     property AnimationList: TEngine2DAnimationList read fAnimationList;
     property FormatterList: TFormatterList read fFormatters;
     property SpriteList: TObjectsList read fObjects;
-    property FastFields: tFastFields read FFastFields; // Быстрый вызов для экспрешенсов
+    property FastFields: tFastFields read FFastFields; // Р‘С‹СЃС‚СЂС‹Р№ РІС‹Р·РѕРІ РґР»СЏ СЌРєСЃРїСЂРµС€РµРЅСЃРѕРІ
   public
-    // Ключевые свойства движка
+    // РљР»СЋС‡РµРІС‹Рµ СЃРІРѕР№СЃС‚РІР° РґРІРёР¶РєР°
     property EngineThread: TEngineThread read fEngineThread;
     property Image: TImage read FImage write FImage;
     property BackgroundBehavior: TProcedure read FBackgroundBehavior write SetBackgroundBehavior;
@@ -94,7 +94,7 @@ type
     property Downed: TIntArray read fMouseDowned;
     property Upped: TIntArray read fMouseUpped;
     property Critical: TCriticalSection read FCritical;
-    property New: TEngine2DObjectCreator read FObjectCreator; // Позволяет быстрее и проще создавать объекты
+    property New: TEngine2DObjectCreator read FObjectCreator; // РџРѕР·РІРѕР»СЏРµС‚ Р±С‹СЃС‚СЂРµРµ Рё РїСЂРѕС‰Рµ СЃРѕР·РґР°РІР°С‚СЊ РѕР±СЉРµРєС‚С‹
 
     property SpriteCount: integer read getSpriteCount;
     property Sprites[index: integer]: tEngine2DObject read getObject write setObject;
@@ -104,8 +104,8 @@ type
 
     function IsHor: Boolean; // Return True, if Engine.Width > Engine.Height
 
-    procedure SpriteToBack(const n: integer); // Передвигает в массиве отрисовки спрайт
-    procedure SpriteToFront(const n: integer);// Передвигает в массиве отрисовки спрайт
+    procedure SpriteToBack(const n: integer); // РџРµСЂРµРґРІРёРіР°РµС‚ РІ РјР°СЃСЃРёРІРµ РѕС‚СЂРёСЃРѕРІРєРё СЃРїСЂР°Р№С‚
+    procedure SpriteToFront(const n: integer);// РџРµСЂРµРґРІРёРіР°РµС‚ РІ РјР°СЃСЃРёРІРµ РѕС‚СЂРёСЃРѕРІРєРё СЃРїСЂР°Р№С‚
 
     procedure Resize;
 
@@ -114,30 +114,30 @@ type
     procedure MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; x, y: single); virtual;
 
-    procedure DeleteObject(const AObject: tEngine2DObject); overload; // Убирает спрайт из отрисовки
-    procedure AddObject(const AObject: tEngine2DObject; const AName: String = ''); // Добавляет спрайт на отрисовку
+    procedure DeleteObject(const AObject: tEngine2DObject); overload; // РЈР±РёСЂР°РµС‚ СЃРїСЂР°Р№С‚ РёР· РѕС‚СЂРёСЃРѕРІРєРё
+    procedure AddObject(const AObject: tEngine2DObject; const AName: String = ''); // Р”РѕР±Р°РІР»СЏРµС‚ СЃРїСЂР°Р№С‚ РЅР° РѕС‚СЂРёСЃРѕРІРєСѓ
 
-    procedure AssignShadowObject(ASpr: tEngine2DObject); // Ассигнет спрайт в ShadowObject
-    property ShadowObject: tEngine2DObject read FShadowObject;  // Указатель на Теневой объект.
+    procedure AssignShadowObject(ASpr: tEngine2DObject); // РђСЃСЃРёРіРЅРµС‚ СЃРїСЂР°Р№С‚ РІ ShadowObject
+    property ShadowObject: tEngine2DObject read FShadowObject;  // РЈРєР°Р·Р°С‚РµР»СЊ РЅР° РўРµРЅРµРІРѕР№ РѕР±СЉРµРєС‚.
 
-    procedure ClearSprites; // Очищает массив спрайтов, т.е. является подготовкой к полной перерисовке
-    procedure ClearTemp; // Очищает массивы выбора и т.д. короче делает кучу полезных вещей.
+    procedure ClearSprites; // РћС‡РёС‰Р°РµС‚ РјР°СЃСЃРёРІ СЃРїСЂР°Р№С‚РѕРІ, С‚.Рµ. СЏРІР»СЏРµС‚СЃСЏ РїРѕРґРіРѕС‚РѕРІРєРѕР№ Рє РїРѕР»РЅРѕР№ РїРµСЂРµСЂРёСЃРѕРІРєРµ
+    procedure ClearTemp; // РћС‡РёС‰Р°РµС‚ РјР°СЃСЃРёРІС‹ РІС‹Р±РѕСЂР° Рё С‚.Рґ. РєРѕСЂРѕС‡Рµ РґРµР»Р°РµС‚ РєСѓС‡Сѓ РїРѕР»РµР·РЅС‹С… РІРµС‰РµР№.
 
     procedure LoadResources(const AFileName: String);
     procedure LoadSECSS(const AFileName: String);
     procedure LoadSEJSON(const AFileName: String);
 
-    procedure Init(AImage: tImage); // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
+    procedure Init(AImage: tImage); // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РґРІРёР¶РєР°, Р·Р°РґР°С‘С‚ СЂРёСЃСѓРЅРѕРє РЅР° С„РѕСЂРјРµ, РЅР° РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёСЃРІР°РёРІР°С‚СЃСЏ fImage
     procedure Repaint; virtual;
 
-    // Прячем или показывает группы
+    // РџСЂСЏС‡РµРј РёР»Рё РїРѕРєР°Р·С‹РІР°РµС‚ РіСЂСѓРїРїС‹
     procedure ShowGroup(const AGroup: String);
     procedure HideGroup(const AGroup: String);
-    procedure SendToFrontGroup(const AGroup: String); // Ставит группу на передний план
-    procedure BringToBackGroup(const AGroup: String); // Отодвигает группу на задний план
+    procedure SendToFrontGroup(const AGroup: String); // РЎС‚Р°РІРёС‚ РіСЂСѓРїРїСѓ РЅР° РїРµСЂРµРґРЅРёР№ РїР»Р°РЅ
+    procedure BringToBackGroup(const AGroup: String); // РћС‚РѕРґРІРёРіР°РµС‚ РіСЂСѓРїРїСѓ РЅР° Р·Р°РґРЅРёР№ РїР»Р°РЅ
 
-    procedure Start; virtual; // Включает движок
-    procedure Stop; virtual;// Выключает движок
+    procedure Start; virtual; // Р’РєР»СЋС‡Р°РµС‚ РґРІРёР¶РѕРє
+    procedure Stop; virtual;// Р’С‹РєР»СЋС‡Р°РµС‚ РґРІРёР¶РѕРє
 
     constructor Create; virtual;
     destructor Destroy; override;
@@ -148,7 +148,7 @@ type
   end;
 
 const
-  pi180 = 0.0174532925; // (1/180)*pi для уменьшение количества пересчетов
+  pi180 = 0.0174532925; // (1/180)*pi РґР»СЏ СѓРјРµРЅСЊС€РµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° РїРµСЂРµСЃС‡РµС‚РѕРІ
 
 implementation
 
@@ -186,7 +186,7 @@ end;
 
 procedure tEngine2d.AssignShadowObject(ASpr: tEngine2DObject);
 begin
-  //  В данном контексте следует различть наследников TEngine2DObject, т.к. может попасться текст
+  //  Р’ РґР°РЅРЅРѕРј РєРѕРЅС‚РµРєСЃС‚Рµ СЃР»РµРґСѓРµС‚ СЂР°Р·Р»РёС‡С‚СЊ РЅР°СЃР»РµРґРЅРёРєРѕРІ TEngine2DObject, С‚.Рє. РјРѕР¶РµС‚ РїРѕРїР°СЃС‚СЊСЃСЏ С‚РµРєСЃС‚
   FShadowObject.Position := ASpr.Position;
 {  FShadowObject.ScaleX := ASpr.ScaleX;
   FShadowObject.ScaleY := ASpr.ScaleY;  }
@@ -295,7 +295,7 @@ begin
    // AObject.Free;
 
     vPos := vN + 1;
-    // Находим позицию спрайта
+    // РќР°С…РѕРґРёРј РїРѕР·РёС†РёСЋ СЃРїСЂР°Р№С‚Р°
     for i := vN downto 0 do
       if fSpriteOrder[i] = vNum then
       begin
@@ -303,17 +303,17 @@ begin
         Break;
       end;
 
-    // От этой позиции сдвигаем порядок отрисовки
+    // РћС‚ СЌС‚РѕР№ РїРѕР·РёС†РёРё СЃРґРІРёРіР°РµРј РїРѕСЂСЏРґРѕРє РѕС‚СЂРёСЃРѕРІРєРё
     vN := vN - 1;
     for i := vPos to vN do
       fSpriteOrder[i] := fSpriteOrder[i+1];
 
-    // Все индексы спрайтов, которые больше vNum надо уменьшить на 1
+    // Р’СЃРµ РёРЅРґРµРєСЃС‹ СЃРїСЂР°Р№С‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ Р±РѕР»СЊС€Рµ vNum РЅР°РґРѕ СѓРјРµРЅСЊС€РёС‚СЊ РЅР° 1
     for i := 0 to vN do
       if fSpriteOrder[i] >= vNum then
         fSpriteOrder[i] := fSpriteOrder[i] - 1;
 
-    // Уменьшаем длину массива
+    // РЈРјРµРЅСЊС€Р°РµРј РґР»РёРЅСѓ РјР°СЃСЃРёРІР°
     SetLength(fSpriteOrder, vN + 1);
   end;
   fCritical.Leave;
@@ -338,7 +338,7 @@ var
   i: Integer;
 begin
   fCritical.Enter;
-  // Форматирвание
+  // Р¤РѕСЂРјР°С‚РёСЂРІР°РЅРёРµ
   for i := 0 to fFormatters.Count - 1 do
     fFormatters[i].Format;
   fCritical.Leave;
@@ -347,12 +347,12 @@ end;
 procedure tEngine2d.Repaint;
 var
   i, l: integer;
-  iA, lA: Integer; // Счетчики анимации и форматирования
+  iA, lA: Integer; // РЎС‡РµС‚С‡РёРєРё Р°РЅРёРјР°С†РёРё Рё С„РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёСЏ
   m: tMatrix;
   vAnimation: tAnimation;
 begin
 
-  // Анимация
+  // РђРЅРёРјР°С†РёСЏ
   fCritical.Enter;
   lA := fAnimationList.Count - 1;
   for iA := lA downto 0 do
@@ -638,7 +638,7 @@ begin
         setLength(fMouseDowned, length(fMouseDowned) + 1);
         fMouseDowned[high(fMouseDowned)] := fSpriteOrder[i];
 
-      //ПЕРЕНЕСИ w и h в TEngine2DObject и сделай определение положения клика в спрайте
+      //РџР•Р Р•РќР•РЎР w Рё h РІ TEngine2DObject Рё СЃРґРµР»Р°Р№ РѕРїСЂРµРґРµР»РµРЅРёРµ РїРѕР»РѕР¶РµРЅРёСЏ РєР»РёРєР° РІ СЃРїСЂР°Р№С‚Рµ
 
       end;
   end;
@@ -752,7 +752,7 @@ var
 begin
   l := length(fSpriteOrder);
 
-  oldOrder := fSpriteOrder[n]; // Узнаём порядок отрисовки спрайта номер n
+  oldOrder := fSpriteOrder[n]; // РЈР·РЅР°С‘Рј РїРѕСЂСЏРґРѕРє РѕС‚СЂРёСЃРѕРІРєРё СЃРїСЂР°Р№С‚Р° РЅРѕРјРµСЂ n
 
   for i := 1 to l - 1 do
     if fSpriteOrder[i] < oldOrder then

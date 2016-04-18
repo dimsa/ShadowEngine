@@ -11,7 +11,7 @@ uses
 
 type
 
-  TEngine2DObjectCreator = class
+  TEngine2DManager = class
   private
     FEngine: Pointer;
     fObjects: TObjectsList; // Массив спрайтов для отрисовки
@@ -72,7 +72,7 @@ uses
 
 { TEngine2DObjectCreator }
 
-function TEngine2DObjectCreator.Add(const ASprite: TSprite;
+function TEngine2DManager.Add(const ASprite: TSprite;
   const AName: string): TSprite;
 begin
   Result := ASprite;
@@ -80,39 +80,39 @@ begin
   tEngine2d(FEngine).AddObject(Result, AName);
 end;
 
-function TEngine2DObjectCreator.Add(const AShape: TEngine2DShape;
+function TEngine2DManager.Add(const AShape: TEngine2DShape;
   const AName: string): TEngine2DShape;
 begin
   Result := AShape;
   tEngine2d(FEngine).AddObject(Result, AName);
 end;
 
-function TEngine2DObjectCreator.Add(const AText: TEngine2DText;
+function TEngine2DManager.Add(const AText: TEngine2DText;
   const AName: string): TEngine2DText;
 begin
   Result := AText;
   tEngine2d(FEngine).AddObject(Result, AName);
 end;
 
-procedure TEngine2DObjectCreator.AniClear(const ASubject: tEngine2DObject);
+procedure TEngine2DManager.AniClear(const ASubject: tEngine2DObject);
 begin
   fAnimationList.ClearForSubject(ASubject);
 end;
 
-procedure TEngine2DObjectCreator.AniClearAndRecover(
+procedure TEngine2DManager.AniClearAndRecover(
   const ASubject: tEngine2DObject);
 begin
   fAnimationList.ClearAndRecoverForSubject(ASubject);
 end;
 
-function TEngine2DObjectCreator.Add(
+function TEngine2DManager.Add(
   const AAnimation: TAnimation): TAnimation;
 begin
   AAnimation.Parent := tEngine2d(FEngine);
   FAnimationList.Add(AAnimation);
 end;
 
-function TEngine2DObjectCreator.AutoSprite(const AResource, AName: string;
+function TEngine2DManager.AutoSprite(const AResource, AName: string;
   const AParam: array of const; const AGroup: string;
   const AJustify: TObjectJustify): TSprite;
 begin
@@ -120,7 +120,7 @@ begin
   Formatter(Result, AName, []);
 end;
 
-constructor TEngine2DObjectCreator.Create(const AEngine: Pointer;
+constructor TEngine2DManager.Create(const AEngine: Pointer;
   const AResourcesList: TEngine2DResources; const AObjectsList: TObjectsList;
   const AAnimationsList: TEngine2DAnimationList;
   const AFormattersList: TFormatterList; const AFastFields: TFastFields; const AEngineThread: TEngineThread);
@@ -134,7 +134,7 @@ begin
   FEngineThread := AEngineThread;
 end;
 
-destructor TEngine2DObjectCreator.Destroy;
+destructor TEngine2DManager.Destroy;
 begin
   FEngine := Nil;
   fObjects := Nil;
@@ -146,7 +146,7 @@ begin
   inherited;
 end;
 
-function TEngine2DObjectCreator.Formatter(const ASubject: tEngine2DObject;
+function TEngine2DManager.Formatter(const ASubject: tEngine2DObject;
   const AText: String; const AIndex: Integer): TEngineFormatter;
 begin
   Result := TEngineFormatter.Create(ASubject, fObjects, FFastFields);
@@ -157,19 +157,19 @@ begin
     fFormatters.Insert(AIndex, Result);
 end;
 
-function TEngine2DObjectCreator.FillEllipse(const AName: string): TFillEllipse;
+function TEngine2DManager.FillEllipse(const AName: string): TFillEllipse;
 begin
   Result := TFillEllipse.Create;
   tEngine2d(FEngine).AddObject(Result, AName);
 end;
 
-function TEngine2DObjectCreator.FillRect(const AName: string): TFillRect;
+function TEngine2DManager.FillRect(const AName: string): TFillRect;
 begin
   Result := TFillRect.Create;
   tEngine2d(FEngine).AddObject(Result, AName);
 end;
 
-function TEngine2DObjectCreator.Formatter(const ASubject: tEngine2DObject;
+function TEngine2DManager.Formatter(const ASubject: tEngine2DObject;
   const AName: String; const AParam: array of const; const AIndex: Integer): TEngineFormatter;
 var
   vS: string;
@@ -178,65 +178,65 @@ begin
   Result := Formatter(ASubject, vS, AIndex);
 end;
 
-function TEngine2DObjectCreator.GetEngineHeight: Integer;
+function TEngine2DManager.GetEngineHeight: Integer;
 begin
   Result := tEngine2d(FEngine).Height;
 end;
 
-function TEngine2DObjectCreator.GetEngineSpeed: Single;
+function TEngine2DManager.GetEngineSpeed: Single;
 begin
   Result := FEngineThread.Speed;
 end;
 
-function TEngine2DObjectCreator.GetEngineWidth: Integer;
+function TEngine2DManager.GetEngineWidth: Integer;
 begin
   Result := tEngine2d(FEngine).Width;
 end;
 
-function TEngine2DObjectCreator.GetItem(AIndex: Integer): tEngine2DObject;
+function TEngine2DManager.GetItem(AIndex: Integer): tEngine2DObject;
 begin
   Result := FObjects[AIndex];
 end;
 
-function TEngine2DObjectCreator.GetItemS(AName: string): tEngine2DObject;
+function TEngine2DManager.GetItemS(AName: string): tEngine2DObject;
 begin
   Result := FObjects[AName];
 end;
 
-procedure TEngine2DObjectCreator.HideGroup(const AGroup: String);
+procedure TEngine2DManager.HideGroup(const AGroup: String);
 begin
   tEngine2d(FEngine).HideGroup(AGroup);
 end;
 
-procedure TEngine2DObjectCreator.RemoveObject(AObject: tEngine2DObject);
+procedure TEngine2DManager.RemoveObject(AObject: tEngine2DObject);
 begin
   tEngine2d(FEngine).DeleteObject(AObject);
 end;
 
 
-procedure TEngine2DObjectCreator.Resize;
+procedure TEngine2DManager.Resize;
 begin
   tEngine2d(FEngine).Resize;
 end;
 
-function TEngine2DObjectCreator.ResourceIndex(const AName: string): Integer;
+function TEngine2DManager.ResourceIndex(const AName: string): Integer;
 begin
   Result := fResources.IndexOf(AName);
 end;
 
-procedure TEngine2DObjectCreator.ShowGroup(const AGroup: String);
+procedure TEngine2DManager.ShowGroup(const AGroup: String);
 begin
   tEngine2d(FEngine).ShowGroup(AGroup);
 end;
 
-function TEngine2DObjectCreator.Sprite(const AName: string): TSprite;
+function TEngine2DManager.Sprite(const AName: string): TSprite;
 begin
   Result := TSprite.Create;
   Result.Resources := fResources;
   tEngine2d(FEngine).AddObject(Result, AName);
 end;
 
-function TEngine2DObjectCreator.Text(const AName: string): TEngine2DText;
+function TEngine2DManager.Text(const AName: string): TEngine2DText;
 begin
   Result := TEngine2DText.Create;
   tEngine2d(FEngine).AddObject(Result, AName);

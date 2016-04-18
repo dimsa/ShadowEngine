@@ -45,8 +45,7 @@ type
   TGameParam = class
   private
     FLoader: TLoader; // ССылка на Loader
-    FManager: TEngine2DObjectCreator;
-//    FEngine: TDemoEngine; // Ссылка на движок. Получаем из FLoader
+    FManager: TEngine2DManager;
     FStatistics: TStatistics;
     FGameStatus: TGameStatus;
     FBackObjects: TList<TLittleAsteroid>; // Летящие бэки
@@ -101,7 +100,7 @@ type
     function AsteroidsForLevel(const ALevel: Integer): Integer;
     procedure RestartGame(const AGameMode: TGameStatus);
     procedure GameOver;
-    constructor Create(ALoader: TLoader; AManager: TEngine2dObjectCreator);
+    constructor Create(ALoader: TLoader; AManager: TEngine2DManager);
     destructor Destroy; override;
   const
     // Величина параметров, скорости, размера и т.д.
@@ -606,7 +605,7 @@ begin
   end;
 end;
 
-constructor TGameParam.Create(ALoader: TLoader; AManager: TEngine2dObjectCreator);
+constructor TGameParam.Create(ALoader: TLoader; AManager: TEngine2DManager);
 var
   i: Integer;
   vObj: tEngine2DObject;

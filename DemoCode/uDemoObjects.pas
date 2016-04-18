@@ -6,8 +6,7 @@ uses
   FMX.Types, System.UITypes, System.Classes, System.Types, System.SysUtils, System.Math,
   System.Generics.Collections,
   uEngine2DSprite, uEngine2DText, uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
-  uEngine2DObjectCreator,
-  uEngine2DObject, uIntersectorClasses, uClasses;
+  uEngine2DManager, uEngine2DObject, uIntersectorClasses, uClasses;
 
 type
   TShipFire = class(TSprite)
@@ -41,7 +40,7 @@ type
 
   TShip = class(TMovingUnit)
   private
-    FManager: TEngine2DObjectCreator;
+    FManager: TEngine2DManager;
     FParts: TList<TSprite>;
     FLeftFire: TShipFire;
     FRightFire: TShipFire;
