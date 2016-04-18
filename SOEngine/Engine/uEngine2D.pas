@@ -71,12 +71,10 @@ type
     property Resources: TEngine2DResources read FResources;
     property AnimationList: TEngine2DAnimationList read FAnimationList;
     property FormatterList: TFormatterList read FFormatters;
-    property SpriteList: TObjectsList read FObjects;
-    property SpriteOrder: TIntArray read FObjectOrder;
+    property ObjectList: TObjectsList read FObjects;
+    property ObjectOrder: TIntArray read FObjectOrder;
     property FastFields: tFastFields read FFastFields; // Быстрый вызов для экспрешенсов
-    property Sprites[index: integer]: tEngine2DObject read getObject write setObject;
-
- //   property SpriteCount: integer read getSpriteCount;
+    property Objects[index: integer]: tEngine2DObject read getObject write setObject;
   public
     // Ключевые свойства движка
     property EngineThread: TEngineThread read FEngineThread;
@@ -191,7 +189,7 @@ begin
     vCount := ACount;
 
   for i := 0 to Min(vCount, Length(FClicked)) - 1 do
-    Sprites[FClicked[i]].OnClick(Sprites[FClicked[i]]);
+    Objects[FClicked[i]].OnClick(Objects[FClicked[i]]);
 end;
 
 constructor TEngine2d.Create; // (createSuspended: boolean);
@@ -498,7 +496,7 @@ begin
     vCount := Min(ACount, Length(FMouseDowned));
 
   for i := 0 to vCount - 1 do
-    Sprites[FMouseDowned[i]].OnMouseDown(Sprites[FMouseDowned[i]], Button, Shift, x, y);
+    Objects[FMouseDowned[i]].OnMouseDown(Objects[FMouseDowned[i]], Button, Shift, x, y);
 end;
 
 procedure TEngine2d.MouseUp(Sender: TObject; Button: TMouseButton;
@@ -534,7 +532,7 @@ begin
     vCount := Min(ACount, Length(FMouseUpped));
 
   for i := 0 to vCount - 1 do
-    Sprites[FMouseUpped[i]].OnMouseUp(Sprites[FMouseUpped[i]], Button, Shift, x, y);
+    Objects[FMouseUpped[i]].OnMouseUp(Objects[FMouseUpped[i]], Button, Shift, x, y);
 
   if AClickObjects then
     Click(ACount);

@@ -1,10 +1,17 @@
 {
 	"ImageFile": "c:/path/image.png",
+	"Resources": [{
+		"Name": "Res1",
+		"Position": "0,50;100,200"
+		}, {
+		"Name": "Res2",
+		"Position": "100,150;200,300"
+		}],
 	"Objects": [{
 		"Name": "Object1",
 		"Group": "Group1",
 		"Body": {
-			"Position": "0,50;100,200",
+			"Resource": "Res1",
 			"Figures": [{
 				"Type": "Circle",
 				"Center": "0,0",
@@ -23,7 +30,7 @@
 		"Name": "Object2",
 		"Group": "Group1",
 		"Body": {
-			"Position": "100,100;300,300",
+			"Resource": "Res2",
 			"Figures": [{
 				"Type": "Circle",
 				"Center": "0,0",
