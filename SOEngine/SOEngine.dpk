@@ -38,7 +38,7 @@ contains
   uEngine2DAnimationList in 'Engine\uEngine2DAnimationList.pas',
   uEngine2DClasses in 'Engine\uEngine2DClasses.pas',
   uEngine2DObject in 'Engine\uEngine2DObject.pas',
-  uEngine2DObjectCreator in 'Engine\uEngine2DObjectCreator.pas',
+  uEngine2DManager in 'Engine\uEngine2DManager.pas',
   uEngine2DObjectShape in 'Engine\uEngine2DObjectShape.pas',
   uEngine2DResources in 'Engine\uEngine2DResources.pas',
   uEngine2DShape in 'Engine\uEngine2DShape.pas',

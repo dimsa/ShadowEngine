@@ -7,7 +7,7 @@ uses
   {$I 'Utils\DelphiCompatability.inc'}
   System.SysUtils, System.Classes, FMX.Dialogs, FMX.Graphics,
   uEngine2DObject, uEngine2DText, uEngine2DSprite, uEngineFormatter, uEngine2DShape,
-  uIntersectorMethods, uClasses, uEngine2DClasses, uEngine2DObjectCreator, uDemoGameLoader;
+  uIntersectorMethods, uClasses, uEngine2DClasses, uEngine2DManager, uDemoGameLoader;
 
 type
 
@@ -21,7 +21,7 @@ type
   TGameButton = class
   private
 //    FParent: Pointer; // Engine2d
-    FManager: TEngine2DObjectCreator;
+    FManager: TEngine2DManager;
     FLoader: TLoader;
     FBack: TButtonBack;
     FText: TEngine2DText;
@@ -40,7 +40,7 @@ type
     property FontSize: Single read GetFontSize write SetFontSize;
     property OnClick: TNotifyEvent read FOnClick write SetOnClick;
     property Group: string read FGroup write SetGroup;
-    constructor Create(const AName: string; const AManager: TEngine2DObjectCreator; const ALoader: TLoader; const ASpriteBackName: string = 'button');
+    constructor Create(const AName: string; const AManager: TEngine2DManager; const ALoader: TLoader; const ASpriteBackName: string = 'button');
     destructor Destroy; override;
     procedure SendToFront;
     property Text: String read GetText write SetText;
@@ -50,7 +50,7 @@ type
   TYesNoMenu = class
   private
 //    FEngine: Pointer;
-    FManager: TEngine2DObjectCreator;
+    FManager: TEngine2DManager;
     FLoader: TLoader;
     FYes, FNo: TGameButton;
     FText: TEngine2DText;
@@ -66,7 +66,7 @@ type
     property OnYes: TNotifyEvent read GetOnYes write SetOnYes;
     property OnNo: TNotifyEvent read GetOnNo write SetOnNo;
     property Text: string read GetText write SetText;
-    constructor Create(const AId, AGroup: string; const AManager: TEngine2DObjectCreator; const ALoader: TLoader);
+    constructor Create(const AId, AGroup: string; const AManager: TEngine2DManager; const ALoader: TLoader);
     destructor Destroy; override;
   end;
 
@@ -75,7 +75,7 @@ type
 //    FParent: Pointer; // Engine2d
     FMaxLevel: Integer; // Максимальный уровень до которого дошел игрок
     FList: TList<TGameButton>; // Кнопки перехода по страницам меню
-    FManager: TEngine2DObjectCreator;
+    FManager: TEngine2DManager;
     FLoader: TLoader;
 //    FSelectLevel: TList<TGameButton>;
     FGameLogo: TSprite;
@@ -126,7 +126,7 @@ type
     procedure ShowLevels(const AMaxLevel: Integer; const APage: Integer = -1);
     procedure SendToFront;
     procedure Add(const AButton: TGameButton);
-    constructor Create(const AManager: TEngine2DObjectCreator; const ALoader: TLoader);
+    constructor Create(const AManager: TEngine2DManager; const ALoader: TLoader);
     destructor Destroy; override;
   end;
 
@@ -137,7 +137,7 @@ uses
 
 { TGameButton }
 
-constructor TGameButton.Create(const AName: string; const AManager: TEngine2DObjectCreator; const ALoader: TLoader; const ASpriteBackName: string = 'button');
+constructor TGameButton.Create(const AName: string; const AManager: TEngine2DManager; const ALoader: TLoader; const ASpriteBackName: string = 'button');
 var
   vFText: string;
   vPoly: TPolygon;
@@ -236,7 +236,7 @@ procedure TGameMenu.Add(const AButton: TGameButton);
 begin
 end;
 
-constructor TGameMenu.Create(const AManager: TEngine2DObjectCreator; const ALoader: TLoader);
+constructor TGameMenu.Create(const AManager: TEngine2DManager; const ALoader: TLoader);
 begin
   FManager := AManager;
   FLoader := ALoader;
@@ -566,7 +566,7 @@ end;
 
 { TYesNoMenu }
 
-constructor TYesNoMenu.Create(const AId, AGroup: string; const AManager: TEngine2DObjectCreator; const ALoader: TLoader);
+constructor TYesNoMenu.Create(const AId, AGroup: string; const AManager: TEngine2DManager; const ALoader: TLoader);
 var
   vBut: TGameButton;
   vGroup: string;

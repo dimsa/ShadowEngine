@@ -29,7 +29,7 @@ type
     procedure ClearForSubject(const AObject: tEngine2DUnclickableObject);
     procedure ClearBroken; // Удаляет все сломанные фастфильды
     destructor Destroy; override;
-    constructor Create(AIsHor: TBooleanFunction);
+    constructor Create(AIsHor: TBooleanFunction); reintroduce;
   end;
 
   TFastEngineField = class(TFastField)
@@ -318,7 +318,7 @@ end;
 
 function TFastEngineWidth.GetValue: Double;
 begin
-  Result := TEngine2D(fEngine).width;
+  Result := TEngine2d(fEngine).width;
 end;
 
 procedure TFastEngineWidth.SetValue(const Value: Double);
@@ -330,7 +330,7 @@ end;
 
 function TFastEngineHeight.GetValue: Double;
 begin
-  Result := TEngine2D(fEngine).height;
+  Result := TEngine2d(fEngine).height;
 end;
 
 procedure TFastEngineHeight.SetValue(const Value: Double);

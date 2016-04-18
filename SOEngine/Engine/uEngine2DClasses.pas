@@ -4,10 +4,13 @@ interface
 
 uses
   FMX.Graphics, System.SyncObjs, System.SysUtils, System.Types,
-  FMX.Types, uIntersectorClasses,
+  FMX.Types, uIntersectorClasses, uClasses,
   System.Generics.Collections, uNamedList, System.Generics.Defaults;
 
 type
+  TReturnSingleFunction = function: Single of object;
+  TIntArray = array of Integer;
+  PIntArray = ^TIntArray;
 
   TObjectJustify = (
     TopLeft, TopCenter, TopRight,
@@ -83,8 +86,6 @@ type
     procedure Delete(const AIndex: Integer); overload; override;
     constructor Create(const ACritical: TCriticalSection); reintroduce; virtual;
   end;
-
-  tIntArray = array of integer;
 
   tPointArray = array of TPoint;
 

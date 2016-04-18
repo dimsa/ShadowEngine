@@ -469,7 +469,7 @@ end;
 function TLoader.ExplosionAnimation(ASubject: TSprite): TSpriteAnimation;
 var
   vRes: TSpriteAnimation;
-  vSlides: tIntArray;
+  vSlides: TArray<Integer>;
   i: Integer;
 begin
   SetLength(vSlides, 4);

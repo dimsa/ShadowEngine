@@ -6,9 +6,10 @@ uses
   System.SysUtils, System.Types, System.UITypes;
 
 type
-  TProcedure = procedure of Object;
   TBooleanFunction = function: Boolean of object;
-  TSingleFunction = function: Single of object;
+
+type
+  TProcedure = procedure of object;
 
   function Random64: Int64;
   procedure NormalizeAngle(var AAngle: Single);

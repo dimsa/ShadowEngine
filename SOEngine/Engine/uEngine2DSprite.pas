@@ -28,14 +28,13 @@ type
     property hHalf: single read fHHalf; // Служебное свойство - половина высоты
     property scW: single read getScW; // Даёт ширину с учетом масштаба
     property scH: single read getScH; // Даёт высоту с учетом масштаба
-    function Config(const ACurRes: Integer = -1; AGroup: string = ''; const AJustify: TObjectJustify =Center; const AShape: TObjectShape = nil): TSprite; overload;
-    function Config(const AResName: string; AGroup: string = ''; const AJustify: TObjectJustify =Center; const AShape: TObjectShape = nil): TSprite; overload;
+    function Config(const ACurRes: Integer = -1; AGroup: string = ''; const AJustify: TObjectJustify =Center; const AShape: TObjectShape = nil): TSprite;  reintroduce; overload;
+    function Config(const AResName: string; AGroup: string = ''; const AJustify: TObjectJustify =Center; const AShape: TObjectShape = nil): TSprite; reintroduce; overload;
     procedure Repaint; override;
 
     constructor Create; override;
     destructor Destroy; override;
   end;
-
 
 implementation
 

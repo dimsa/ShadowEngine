@@ -3,33 +3,48 @@ unit uEngine2DManager;
 interface
 
 uses
-  System.Types, System.UITypes, FMX.Graphics, System.SysUtils,
+  System.Types, System.UITypes, FMX.Graphics, System.SysUtils, System.SyncObjs,
+  System.RegularExpressions, FMX.Objects, System.Classes,
   uEngine2DClasses, uEngine2DObject, uEngineFormatter, uEngine2DAnimation,
   uEngine2DText, uEngine2DShape, uEngine2DResources, uEngine2DAnimationList,
   uFormatterList, uEngine2DSprite, uFastFields, uEngine2DThread,
-  uSpriteList;
+  uSpriteList, uClasses;
 
 type
-
   TEngine2DManager = class
   private
     FEngine: Pointer;
-    fObjects: TObjectsList; // Массив спрайтов для отрисовки
-    fResources: TEngine2DResources;//tResourceArray; // Массив битмапов
-    fFormatters: TFormatterList; // Массив Форматтеров спрайтов
-    fAnimationList: TEngine2DAnimationList; // Массив анимаций
+
+    FImage: TImage;
+    FCritical: TCriticalSection;
+    FObjects: TObjectsList; // Массив спрайтов для отрисовки
+    FResources: TEngine2DResources;//tResourceArray; // Массив битмапов
+    FFormatters: TFormatterList; // Массив Форматтеров спрайтов
+    FAnimationList: TEngine2DAnimationList; // Массив анимаций
+    FObjectOrder: PIntArray;
     FEngineThread: TEngineThread;
     FFastFields: TFastFields;
+    FAddedObjects: Integer; // Quantity of Added sprites Считает сколько спрайтов добавлено всего. Без учета удалений
     function GetEngineHeight: Integer;
     function GetEngineWidth: Integer;
     function GetEngineSpeed: Single;
     function GetItem(AIndex: Integer): tEngine2DObject;
     function GetItemS(AName: string): tEngine2DObject;
+    procedure DeleteHandler(ASender: TObject);
+    procedure BringToBackHandler(ASender: TObject);
+    procedure SendToFrontHandler(ASender: TObject);
+    procedure DelObject(const AObject: tEngine2DObject); // Убирает спрайт из отрисовки
+    procedure AddObject(const AObject: tEngine2DObject; const AName: String = ''); // Добавляет спрайт на отрисовку
+    procedure SpriteToBack(const n: integer); // Передвигает в массиве отрисовки спрайт
+    procedure SpriteToFront(const n: integer);// Передвигает в массиве отрисовки спрайт
   public
     constructor Create(
       const AEngine: Pointer;
+      const AImage: TImage;
+      const ACritical: TCriticalSection;
       const AResourcesList: TEngine2DResources;
       const AObjectsList: TObjectsList;
+      const AObjectOrder: PIntArray;
       const AAnimationsList: TEngine2DAnimationList;
       const AFormattersList: TFormatterList;
       const AFastFields: TFastFields;
@@ -59,8 +74,13 @@ type
     property EngineWidth: Integer read GetEngineWidth;
     property EngineHeight: Integer read GetEngineHeight;
     property EngineSpeed: Single read GetEngineSpeed;
+
+    // Прячем или показывает группы
     procedure ShowGroup(const AGroup: String);
     procedure HideGroup(const AGroup: String);
+    procedure SendToFrontGroup(const AGroup: String); // Ставит группу на передний план
+    procedure BringToBackGroup(const AGroup: String); // Отодвигает группу на задний план
+
     procedure Resize;
     procedure RemoveObject(AObject: tEngine2DObject);
   end;
@@ -68,7 +88,7 @@ type
 implementation
 
 uses
-  uEngine2D;
+  uEngine2D, uEngine2DStandardAnimations;
 
 { TEngine2DObjectCreator }
 
@@ -77,21 +97,21 @@ function TEngine2DManager.Add(const ASprite: TSprite;
 begin
   Result := ASprite;
   ASprite.Resources := fResources;
-  tEngine2d(FEngine).AddObject(Result, AName);
+  AddObject(Result, AName);
 end;
 
 function TEngine2DManager.Add(const AShape: TEngine2DShape;
   const AName: string): TEngine2DShape;
 begin
   Result := AShape;
-  tEngine2d(FEngine).AddObject(Result, AName);
+  AddObject(Result, AName);
 end;
 
 function TEngine2DManager.Add(const AText: TEngine2DText;
   const AName: string): TEngine2DText;
 begin
   Result := AText;
-  tEngine2d(FEngine).AddObject(Result, AName);
+  AddObject(Result, AName);
 end;
 
 procedure TEngine2DManager.AniClear(const ASubject: tEngine2DObject);
@@ -108,9 +128,72 @@ end;
 function TEngine2DManager.Add(
   const AAnimation: TAnimation): TAnimation;
 begin
-  AAnimation.Parent := tEngine2d(FEngine);
+//  AAnimation.Parent := tEngine2d(FEngine);
+  AAnimation.OnDeleteSubject := DeleteHandler;
+  AAnimation.EngineFPS := Self.FEngineThread.FPS;
+
+  if (AAnimation is TMouseDownMigrationAnimation) then
+    TMouseDownMigrationAnimation(AAnimation).EngineIsMouseDowned := TEngine2d(FEngine).IsMouseDowned;
+
   FAnimationList.Add(AAnimation);
 end;
+
+procedure TEngine2DManager.AddObject(const AObject: tEngine2DObject;
+  const AName: String);
+var
+  l: integer;
+  vName: string;
+begin
+  Inc(FAddedObjects);
+  if AName = '' then
+    vName := 'genname'+IntToStr(FAddedObjects)+'x'+IntToStr(Random(65536))
+  else
+    vName := AName;
+
+  if FObjects.IsHere(AObject) then
+    raise Exception.Create('You are trying to add Object to Engine that already Exist')
+  else
+  begin
+    FCritical.Enter;
+    l := FObjects.Count;
+    FObjects.Add(vName, AObject);
+    setLength(FObjectOrder^, l + 1);
+    FObjects[l].Image := FImage;
+    AObject.OnBringToBack := BringToBackHandler;
+    AObject.OnSendToFront := SendToFrontHandler;
+    FObjectOrder^[l] := l;
+    FCritical.Leave;
+  end;
+end;
+
+//procedure TEngine2DManager.AddObject(const AObject: tEngine2DObject;
+//  const AName: String);
+//var
+//  l: integer;
+//  vName: string;
+//begin
+//  // It's bad analog of generating GUID
+//  Inc(FAddedObjects);
+//  if AName = '' then
+//    vName := 'genname'+IntToStr(FAddedObjects)+'x'+IntToStr(Random(65536))
+//  else
+//    vName := AName;
+//
+//  if FObjects.IsHere(AObject) then
+//    raise Exception.Create('You are trying to add Object to Engine that already Exist')
+//  else
+//  begin
+//    FCritical.Enter;
+//    l := FObjects.Count;
+//    FObjects.Add(vName, AObject);
+//    setLength(FObjectOrder, l + 1);
+//    FObjects[l].Image := FImage;
+//    AObject.OnBringToBack := BringToBackHandler;
+//    AObject.OnSendToFront := SendToFrontHandler;
+//    FObjectOrder[l] := l;
+//    FCritical.Leave;
+//  end;
+//end;
 
 function TEngine2DManager.AutoSprite(const AResource, AName: string;
   const AParam: array of const; const AGroup: string;
@@ -120,18 +203,110 @@ begin
   Formatter(Result, AName, []);
 end;
 
-constructor TEngine2DManager.Create(const AEngine: Pointer;
-  const AResourcesList: TEngine2DResources; const AObjectsList: TObjectsList;
-  const AAnimationsList: TEngine2DAnimationList;
-  const AFormattersList: TFormatterList; const AFastFields: TFastFields; const AEngineThread: TEngineThread);
+procedure TEngine2DManager.BringToBackGroup(const AGroup: String);
+var
+  i, iObject, iG: Integer;
+  vReg: TRegEx;
+  vStrs: TArray<string>;
+  vN: Integer;
+begin
+  vReg := TRegEx.Create(',');
+  vStrs := vReg.Split(AGroup);
+  vN := FObjects.Count - 1;
+  for iG := 0 to Length(vStrs) - 1 do
+  begin
+    i := vN;
+    iObject := vN;
+    vStrs[iG] := Trim(vStrs[iG]);
+    while iObject > 1 do
+    begin
+      if FObjects[FObjectOrder^[i]].Group = vStrs[iG] then
+      begin
+        FObjects[FObjectOrder^[i]].BringToBack;
+        Inc(i);
+      end;
+      Dec(i);
+      Dec(iObject);
+    end;
+  end;
+end;
+
+procedure TEngine2DManager.BringToBackHandler(ASender: TObject);
+begin
+ SpriteToBack(
+    FObjects.IndexOfItem(TEngine2DObject(ASender), FromBeginning)
+  );
+end;
+
+constructor TEngine2DManager.Create(      const AEngine: Pointer;
+      const AImage: TImage;
+      const ACritical: TCriticalSection;
+      const AResourcesList: TEngine2DResources;
+      const AObjectsList: TObjectsList;
+      const AObjectOrder: PIntArray;
+      const AAnimationsList: TEngine2DAnimationList;
+      const AFormattersList: TFormatterList;
+      const AFastFields: TFastFields;
+      const AEngineThread: TEngineThread);
 begin
   FEngine := AEngine;
-  fObjects := AObjectsList;
-  fResources := AResourcesList;
-  fAnimationList := AAnimationsList;
-  fFormatters := AFormattersList;
+  FImage := AImage;
+  FCritical := ACritical;
+  FAddedObjects := 0;
+  FObjects := AObjectsList;
+  FResources := AResourcesList;
+  FObjectOrder := AObjectOrder;
+  FAnimationList := AAnimationsList;
+  FFormatters := AFormattersList;
   FFastFields := AFastFields;
   FEngineThread := AEngineThread;
+end;
+
+procedure TEngine2DManager.DeleteHandler(ASender: TObject);
+begin
+  DelObject(TEngine2DObject(ASender));
+end;
+
+procedure TEngine2DManager.DelObject(const AObject: tEngine2DObject);
+var
+  i, vN, vNum, vPos: integer;
+begin
+  FCritical.Enter;
+  vNum := FObjects.IndexOfItem(AObject, FromEnd);
+  if vNum > -1 then
+  begin
+    vN := FObjects.Count - 1;
+    FAnimationList.ClearForSubject(AObject);
+    FFormatters.ClearForSubject(AObject);
+    FFastFields.ClearForSubject(AObject);
+    FObjects.Delete(vNum{AObject});
+
+   // AObject.Free;
+
+    vPos := vN + 1;
+    // Находим позицию спрайта
+    for i := vN downto 0 do
+      if FObjectOrder^[i] = vNum then
+      begin
+        vPos := i;
+        Break;
+      end;
+
+    // От этой позиции сдвигаем порядок отрисовки
+    vN := vN - 1;
+    for i := vPos to vN do
+      FObjectOrder^[i] := FObjectOrder^[i+1];
+
+    // Все индексы спрайтов, которые больше vNum надо уменьшить на 1
+    for i := 0 to vN do
+      if FObjectOrder^[i] >= vNum then
+        FObjectOrder^[i] := FObjectOrder^[i] - 1;
+
+    // Уменьшаем длину массива
+    SetLength(FObjectOrder^, vN + 1);
+  end;
+  FCritical.Leave;
+//  FDebug := True;
 end;
 
 destructor TEngine2DManager.Destroy;
@@ -160,13 +335,13 @@ end;
 function TEngine2DManager.FillEllipse(const AName: string): TFillEllipse;
 begin
   Result := TFillEllipse.Create;
-  tEngine2d(FEngine).AddObject(Result, AName);
+  AddObject(Result, AName);
 end;
 
 function TEngine2DManager.FillRect(const AName: string): TFillRect;
 begin
   Result := TFillRect.Create;
-  tEngine2d(FEngine).AddObject(Result, AName);
+  AddObject(Result, AName);
 end;
 
 function TEngine2DManager.Formatter(const ASubject: tEngine2DObject;
@@ -180,7 +355,7 @@ end;
 
 function TEngine2DManager.GetEngineHeight: Integer;
 begin
-  Result := tEngine2d(FEngine).Height;
+  Result := TEngine2d(FEngine).Height;
 end;
 
 function TEngine2DManager.GetEngineSpeed: Single;
@@ -190,7 +365,7 @@ end;
 
 function TEngine2DManager.GetEngineWidth: Integer;
 begin
-  Result := tEngine2d(FEngine).Width;
+  Result := TEngine2d(FEngine).Width;
 end;
 
 function TEngine2DManager.GetItem(AIndex: Integer): tEngine2DObject;
@@ -204,19 +379,31 @@ begin
 end;
 
 procedure TEngine2DManager.HideGroup(const AGroup: String);
+var
+  i, iG: Integer;
+  vReg: TRegEx;
+  vStrs: TArray<string>;
 begin
-  tEngine2d(FEngine).HideGroup(AGroup);
+  vReg := TRegEx.Create(',');
+  vStrs := vReg.Split(AGroup);
+  for iG := 0 to Length(vStrs) - 1 do
+  begin
+    vStrs[iG] := Trim(vStrs[iG]);
+    for i := 0 to FObjects.Count - 1 do
+      if FObjects[i].group = vStrs[iG] then
+        FObjects[i].visible := False;
+  end;
 end;
 
 procedure TEngine2DManager.RemoveObject(AObject: tEngine2DObject);
 begin
-  tEngine2d(FEngine).DeleteObject(AObject);
+  DelObject(AObject);
 end;
 
 
 procedure TEngine2DManager.Resize;
 begin
-  tEngine2d(FEngine).Resize;
+  TEngine2d(FEngine).Resize;
 end;
 
 function TEngine2DManager.ResourceIndex(const AName: string): Integer;
@@ -224,22 +411,114 @@ begin
   Result := fResources.IndexOf(AName);
 end;
 
-procedure TEngine2DManager.ShowGroup(const AGroup: String);
+procedure TEngine2DManager.SendToFrontGroup(const AGroup: String);
+var
+  i, iObject, iG: Integer;
+  vReg: TRegEx;
+  vStrs: TArray<string>;
+  vN: Integer;
 begin
-  tEngine2d(FEngine).ShowGroup(AGroup);
+  vReg := TRegEx.Create(',');
+  vStrs := vReg.Split(AGroup);
+  vN := FObjects.Count - 1;
+  for iG := 0 to Length(vStrs) - 1 do
+  begin
+    i := 1;
+    iObject := 1;
+    vStrs[iG] := Trim(vStrs[iG]);
+    while iObject < vN do
+    begin
+      if FObjects[FObjectOrder^[i]].Group = vStrs[iG] then
+      begin
+        FObjects[FObjectOrder^[i]].SendToFront;
+        Dec(i);
+      end;
+      Inc(i);
+      Inc(iObject);
+    end;
+  end;
+end;
+
+procedure TEngine2DManager.SendToFrontHandler(ASender: TObject);
+begin
+ SpriteToFront(
+    FObjects.IndexOfItem(TEngine2DObject(ASender), FromBeginning)
+  );
+end;
+
+{procedure TEngine2DManager.SendToFrontHandler(ASender: TObject);
+begin
+  SpriteToFront(
+    FObjects.IndexOfItem(TEngine2DObject(ASender), FromBeginning)
+  );
+end;   }
+
+procedure TEngine2DManager.ShowGroup(const AGroup: String);
+var
+  i, iG: Integer;
+  vReg: TRegEx;
+  vStrs: TArray<string>;
+begin
+  vReg := TRegEx.Create(',');
+  vStrs := vReg.Split(AGroup);
+  for iG := 0 to Length(vStrs) - 1 do
+  begin
+    vStrs[iG] := Trim(vStrs[iG]);
+    for i := 0 to FObjects.Count - 1 do
+      if FObjects[i].group = vStrs[iG] then
+        FObjects[i].visible := True;
+  end;
 end;
 
 function TEngine2DManager.Sprite(const AName: string): TSprite;
 begin
   Result := TSprite.Create;
   Result.Resources := fResources;
-  tEngine2d(FEngine).AddObject(Result, AName);
+  AddObject(Result, AName);
+end;
+
+procedure TEngine2DManager.SpriteToBack(const n: integer);
+var
+  i, l, oldOrder: integer;
+begin
+  l := length(FObjectOrder^);
+
+  oldOrder := FObjectOrder^[n]; // Узнаём порядок отрисовки спрайта номер n
+
+  for i := 1 to l - 1 do
+    if FObjectOrder^[i] < oldOrder then
+      FObjectOrder^[i] := FObjectOrder^[i] + 1;
+
+  FObjectOrder^[n] := 1;
+
+end;
+
+procedure TEngine2DManager.SpriteToFront(const n: integer);
+var
+  i, l, oldOrder: integer;
+begin
+  l := length(FObjectOrder^);
+  oldOrder := l - 1;
+
+  for i := 1 to l - 1 do
+    if FObjectOrder^[i] = n then
+    begin
+      oldOrder := i;
+      break;
+    end;
+
+  for i := oldOrder to l - 2 do
+  begin
+    FObjectOrder^[i] := FObjectOrder^[i + 1];
+  end;
+
+  FObjectOrder^[l - 1] := n;
 end;
 
 function TEngine2DManager.Text(const AName: string): TEngine2DText;
 begin
   Result := TEngine2DText.Create;
-  tEngine2d(FEngine).AddObject(Result, AName);
+  AddObject(Result, AName);
 end;
 
 end.

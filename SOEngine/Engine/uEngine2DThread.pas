@@ -16,7 +16,7 @@ type
     procedure SetTickEnd(AValue: Int64);
     procedure SetTickBegin(AValue: Int64);
     procedure DoNothing;
-    function GetLastFps: single;
+//    function GetLastFps: single;
     function GetSpeed: Single;
   protected
     procedure Execute; override; // Процедура выполнения потока
@@ -24,7 +24,7 @@ type
     property WorkProcedure: TProcedure read FWorkProcedure write FWorkProcedure; // Здесь процедура, которую выполняет тред
     property TickBegin: int64 read FTickBegin write SetTickBegin;
     property TickEnd: int64 read FTickEnd write SetTickEnd;
-    property FPS: single read GetLastFps;
+    function FPS: Single;// read GetLastFps;
     property Speed: Single read GetSpeed;
     constructor Create;
     destructor Destroy; override;
@@ -36,7 +36,7 @@ type
   {$ENDIF WIN32}
   {$IFDEF ANDROID}
     CLeftFPSBorder = 25;
-    CRightFPSBorder = 45;
+    CRightFPSBorder = 40;
     CMiddleFPS = 30;
   {$ENDIF ANDROID}
   end;
@@ -84,7 +84,7 @@ begin
 
 end;
 
-function tEngineThread.GetLastFps: Single;
+function TEngineThread.FPS: Single;
 begin
   if FLastFps >= 1 then
     Exit(FLastFPS)
@@ -92,6 +92,15 @@ begin
     Result := 1;
   end;
 end;
+
+//function tEngineThread.GetLastFps: Single;
+//begin
+//  if FLastFps >= 1 then
+//    Exit(FLastFPS)
+//  else begin
+//    Result := 1;
+//  end;
+//end;
 
 function TEngineThread.GetSpeed: Single;
 begin

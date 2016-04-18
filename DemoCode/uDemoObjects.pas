@@ -62,14 +62,14 @@ type
     procedure Hide;
     procedure Show;
     procedure AddDestination(const APos: TPosition);
-    constructor Create(ACreator: TEngine2DObjectCreator); reintroduce;
+    constructor Create(ACreator: TEngine2DManager); reintroduce;
     destructor Destroy; override;
   end;
 
   TAsteroid = class(TMovingUnit)
   private
 //    FNotChange: Integer; //  ол-во тиков, которое не будет измен€тьс€ направление при коллайдер
-    FManager: TEngine2DObjectCreator;
+    FManager: TEngine2DManager;
     FScaleMod: Single;
     FSize: Byte;
     FSpeed: Byte;
@@ -87,17 +87,17 @@ type
     property Size: Byte read FSize; // prSmall = 1; prMedium = 2; prBig = 3;
     property ScaleMod: Single read FScaleMod write SetScaleMod;
     function Collide(const AObject: TMovingUnit): Boolean;
-    constructor Create(ACreator: TEngine2DObjectCreator); reintroduce;
+    constructor Create(ACreator: TEngine2DManager); reintroduce;
   end;
 
   TLittleAsteroid = class(TMovingUnit)
   private
-    FManager: TEngine2DObjectCreator;
+    FManager: TEngine2DManager;
     FTip: Byte;
   public
     property Tip: Byte read FTip write FTip; // “ип астеройда
     procedure Repaint; override;
-    constructor Create(AManager: TEngine2DObjectCreator); reintroduce;
+    constructor Create(AManager: TEngine2DManager); reintroduce;
   end;
 
   TExplosion = class(TSprite)
@@ -121,7 +121,7 @@ begin
   FDestinations.Add(APos);
 end;
 
-constructor TShip.Create(ACreator: TEngine2DObjectCreator);
+constructor TShip.Create(ACreator: TEngine2DManager);
 begin
   FManager := ACreator;
   inherited Create;
@@ -474,7 +474,7 @@ begin
   vLoader.Free;
 end;
 
-constructor TAsteroid.Create(ACreator: TEngine2DObjectCreator);
+constructor TAsteroid.Create(ACreator: TEngine2DManager);
 begin
   inherited Create;
   FManager := ACreator;
@@ -561,7 +561,7 @@ end;
 
 { TLittleAsteroid }
 
-constructor TLittleAsteroid.Create(AManager: TEngine2DObjectCreator);
+constructor TLittleAsteroid.Create(AManager: TEngine2DManager);
 begin
   FManager := AManager;
 //  FParent := AParent;

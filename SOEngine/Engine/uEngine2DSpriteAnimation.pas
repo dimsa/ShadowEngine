@@ -13,7 +13,7 @@ type
   public
     property Frames: TNamedList<TSpriteFrame> read FFrames write FFrames; // Ссылка на ресурсы со спрайтами анимации
     function Animate: Byte; override;
-    procedure AddFrames(newFrames: tIntArray); // Добавляет к массиву фреймов массив новых фрейомв, если не может, выводит false
+    procedure AddFrames(newFrames: TArray<Integer>); // Добавляет к массиву фреймов массив новых фрейомв, если не может, выводит false
     procedure Setup; override;
     constructor Create; override;
     destructor Destroy; override;
@@ -21,7 +21,7 @@ type
 
 implementation
 
-procedure tSpriteAnimation.addFrames(newFrames: tIntArray);
+procedure tSpriteAnimation.addFrames(newFrames: TArray<Integer>);
 begin
 
 end;

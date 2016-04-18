@@ -1,4 +1,4 @@
-п»їunit uEngine2D;
+unit uEngine2D;
 
 {******************************************************************************
 Shadow Object Engine (SO Engine)
@@ -21,34 +21,33 @@ uses
 
 type
 
-  tEngine2d = class
+  TEngine2d = class
   strict private
-    fEngineThread: tEngineThread; // РџРѕС‚РѕРє РІ РєРѕС‚РѕСЂРѕРј РїСЂРѕРёСЃС…РѕРґРёС‚ РѕС‚СЂРёСЃРѕРІРєР°
-    fOptions: TEngine2DOptions; // РќР°СЃС‚СЂРѕР№РєРё РґРІРёР¶РєР°
-    fObjects: TObjectsList; // РњР°СЃСЃРёРІ СЃРїСЂР°Р№С‚РѕРІ РґР»СЏ РѕС‚СЂРёСЃРѕРІРєРё
-    fFastFields: tFastFields; // РЎРѕРґРµСЂР¶РёС‚ СЃСЃС‹Р»РєРё РЅР° TFastField, РєРѕС‚РѕСЂС‹Рµ РїСЂРµРґСЃС‚Р°РІР»СЏСЋС‚ СЃРѕР±РѕР№ РЅР°Р№РґРµРЅРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РѕРїСЂРµРґРµР»РµРЅРЅС‹С… СЃРїСЂР°Р№С‚РѕРІ
-    fSpriteOrder: array of Integer; // РњР°СЃСЃРёРІ РїРѕСЂСЏРґРєР° РѕС‚СЂРёСЃРѕРІРєРё. РќСѓР¶РµРЅ РґР»СЏ СѓРјРµРЅСЊС€РµРЅРёСЏ РєРѕР»-РІР° РІС‹С‡РёСЃР»РµРЅРёР№, СЃРѕРґРµСЂР¶РёС‚ РЅРѕРјРµСЂ СЃРїСЂР°Р№С‚Р°
-    fResources: TEngine2DResources;//tResourceArray; // РњР°СЃСЃРёРІ Р±РёС‚РјР°РїРѕРІ
-    fFormatters: TFormatterList; // РњР°СЃСЃРёРІ Р¤РѕСЂРјР°С‚С‚РµСЂРѕРІ СЃРїСЂР°Р№С‚РѕРІ
-    fAnimationList: TEngine2DAnimationList; // РњР°СЃСЃРёРІ Р°РЅРёРјР°С†РёР№
-    fObjectCreator: TEngine2DObjectCreator;
-    fMouseDowned: TIntArray; // РњР°СЃСЃРёРІ СЃРїСЂР°Р№С‚РѕРІ РґРІРёР¶РєР°, РєРѕС‚РѕСЂС‹Рµ РЅР°С…РѕРґРёР»РёСЃСЊ РїРѕРґ РјС‹С€РєРѕР№ РІ РјРѕРјРµРЅС‚ РЅР°Р¶Р°С‚РёСЏ
-    fMouseUpped: TIntArray; // РњР°СЃСЃРёРІ СЃРїСЂР°Р№С‚РѕРІ РґРІРёР¶РєР°, РєРѕС‚РѕСЂС‹Рµ РЅР°С…РѕРґРёР»РёСЃСЊ РїРѕРґ РјС‹С€РєРѕР№ РІ РјРѕРјРµРЅС‚ РѕС‚Р¶Р°С‚РёСЏ
-    fClicked: TIntArray; // РњР°СЃСЃРёРІ СЃРїСЂР°Р№С‚РѕРІ РґРІРёР¶РєР°, РєРѕС‚РѕСЂС‹Рµ РїРѕРїР°Р»Рё РїРѕРґ РјС‹С€СЊ
-    fStatus: byte; // РЎРѕСЃС‚РѕСЏРЅРёРµ РґРІРёР¶РєР° 0-РїР°СѓР·Р°, 1-СЂР°Р±РѕС‚Р°
-    flX, flY: single; // o_O Р”Р»СЏ РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёСЏ РЅР° СЃРјР°СЂС‚С„РѕРЅС‹ С‡С‚Рѕ-С‚Рѕ
-    FIsMouseDowned: Boolean; // РҐСЂР°РЅРёС‚ СЃРѕСЃС‚РѕСЏРЅРёРµ РЅР°Р¶Р°С‚РѕСЃС‚Рё РјС‹С€Рё
-    fImage: tImage; // РРјРµРґР¶, РІ РєРѕС‚РѕСЂРѕРј РїСЂРѕРёСЃС…РѕРґРёС‚ РѕС‚СЂРёСЃРѕРІРєР°
-    fBackGround: tBitmap; // Р‘СЌРєРіСЂР°СѓРЅРґ. Р’СЃРµРіРґР° СЂРёСЃСѓРµС‚СЃСЏ РІ Repaint РЅР° РІРµСЃСЊ fImage
-    fCritical: TCriticalSection; // РљСЂРёС‚РёС‡РµСЃРєР°СЏ СЃРµРєС†РёСЏ РґРІРёР¶РєР°
-    fWidth, fHeight: integer; // Р Р°Р·РјРµСЂ РїРѕР»СЏ РёРјРµРґР¶Р° Рё РґРІРёР¶РєР°
-    fDebug: Boolean; // РќРµ РѕС‡РµРЅСЊ РЅСѓР¶РЅРѕ, РЅРѕ РїРѕРјРѕРіР°РµС‚ РѕС‚Р»Р°Р¶РёРІР°С‚СЊ С‚Рµ РјРµСЃС‚Р°, РєРѕРіРґР° РЅРµРїРѕРЅСЏС‚РЅРѕ РєРѕРіРґР° РїРѕСЏРІР»СЏРµС‚СЃСЏ РѕС€РёР±РєР°
+    FEngineThread: TEngineThread; // Поток в котором происходит отрисовка
+    FOptions: TEngine2DOptions; // Настройки движка
+    FObjects: TObjectsList; // Массив спрайтов для отрисовки
+    FFastFields: TFastFields; // Содержит ссылки на TFastField, которые представляют собой найденные значения определенных спрайтов
+    FObjectOrder: TIntArray; // Массив порядка отрисовки. Нужен для уменьшения кол-ва вычислений, содержит номер спрайта
+    FResources: TEngine2DResources;//tResourceArray; // Массив битмапов
+    FFormatters: TFormatterList; // Массив Форматтеров спрайтов
+    FAnimationList: TEngine2DAnimationList; // Массив анимаций
+    FObjectCreator: TEngine2DManager;
+    FMouseDowned: TIntArray; // Массив спрайтов движка, которые находились под мышкой в момент нажатия
+    FMouseUpped: TIntArray; // Массив спрайтов движка, которые находились под мышкой в момент отжатия
+    FClicked: TIntArray; // Массив спрайтов движка, которые попали под мышь
+    FStatus: Byte; // Состояние движка 0-пауза, 1-работа
+    FlX, FlY: single; // o_O Для масштабирования на смартфоны что-то
+    FIsMouseDowned: Boolean; // Хранит состояние нажатости мыши
+    FImage: tImage; // Имедж, в котором происходит отрисовка
+    FBackGround: tBitmap; // Бэкграунд. Всегда рисуется в Repaint на весь fImage
+    FCritical: TCriticalSection; // Критическая секция движка
+    FWidth, FHeight: integer; // Размер поля имеджа и движка
+//    FDebug: Boolean; // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
     FBackgroundBehavior: TProcedure;
     FInBeginPaintBehavior: TProcedure;
     FInEndPaintBehavior: TProcedure;
-    FAddedSprite: Integer; // РЎС‡РёС‚Р°РµС‚ СЃРєРѕР»СЊРєРѕ СЃРїСЂР°Р№С‚РѕРІ РґРѕР±Р°РІР»РµРЅРѕ РІСЃРµРіРѕ. Р‘РµР· СѓС‡РµС‚Р° СѓРґР°Р»РµРЅРёР№
 
-    // РњРµС…Р°РЅРёР·Рј С‚РµРЅРµРІРѕРіРѕ РѕР±СЉРµРєС‚С‹ РЅРµРѕР±С‹С‡РµРЅ. РќРѕ РєСЂРѕРјРµ РІСЃРµРіРѕ РїСЂРѕС‡РµРіРѕ TEngine2DObject РЅРµ РёРјРµРµС‚ СЃРїРѕСЃРѕР±РѕРІ РѕРїСЂРµРґРµР»РµРЅРёСЏ
+    // Механизм теневого объекты необычен. Но кроме всего прочего TEngine2DObject не имеет способов определения
     {FShadowSprite: tSprite; //
     FShadowText: TEngine2dText; }
     FShadowObject: tEngine2DObject;
@@ -58,9 +57,8 @@ type
     procedure setStatus(newStatus: byte);
     procedure setObject(index: integer; newSprite: tEngine2DObject);
     function getObject(index: integer): tEngine2DObject;
-    function getSpriteCount: integer; // Р”Р»РёРЅР° РјР°СЃСЃРёРІ fSprites
-    procedure SetWidth(AWidth: integer); // РЈСЃС‚Р°РЅРѕРІРєР° СЂР°Р·РјРµСЂР° РїРѕР»СЏ РѕС‚СЂРёСЃРѕРІРєРё РґРІРёР¶РєР°
-    procedure SetHeight(AHeight: integer); // РЈСЃС‚Р°РЅРѕРІРєР° СЂР°Р·РјРµСЂР° РїРѕР»СЏ РѕС‚СЂРёСЃРѕРІРєРё РґРІРёР¶РєР°
+    procedure SetWidth(AWidth: integer); // Установка размера поля отрисовки движка
+    procedure SetHeight(AHeight: integer); // Установка размера поля отрисовки движка
     procedure setBackGround(ABmp: tBitmap);
 
     procedure BackgroundDefaultBehavior;
@@ -68,79 +66,70 @@ type
     procedure InEndPaintDefaultBehavior;
 
     procedure SetBackgroundBehavior(const Value: TProcedure);
-    procedure BringToBackHandler(ASender: TObject);
-    procedure SendToFrontHandler(ASender: TObject);
   protected
-      // РљР»СЋС‡РµРІС‹Рµ СЃРїРёСЃРєРё РґРІРёР¶РєР°
+    // Ключевые списки движка.
     property Resources: TEngine2DResources read FResources;
-    property AnimationList: TEngine2DAnimationList read fAnimationList;
-    property FormatterList: TFormatterList read fFormatters;
-    property SpriteList: TObjectsList read fObjects;
-    property FastFields: tFastFields read FFastFields; // Р‘С‹СЃС‚СЂС‹Р№ РІС‹Р·РѕРІ РґР»СЏ СЌРєСЃРїСЂРµС€РµРЅСЃРѕРІ
+    property AnimationList: TEngine2DAnimationList read FAnimationList;
+    property FormatterList: TFormatterList read FFormatters;
+    property SpriteList: TObjectsList read FObjects;
+    property SpriteOrder: TIntArray read FObjectOrder;
+    property FastFields: tFastFields read FFastFields; // Быстрый вызов для экспрешенсов
+    property Sprites[index: integer]: tEngine2DObject read getObject write setObject;
+
+ //   property SpriteCount: integer read getSpriteCount;
   public
-    // РљР»СЋС‡РµРІС‹Рµ СЃРІРѕР№СЃС‚РІР° РґРІРёР¶РєР°
-    property EngineThread: TEngineThread read fEngineThread;
+    // Ключевые свойства движка
+    property EngineThread: TEngineThread read FEngineThread;
     property Image: TImage read FImage write FImage;
     property BackgroundBehavior: TProcedure read FBackgroundBehavior write SetBackgroundBehavior;
     property InBeginPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
     property InEndPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
 
-    property IsMouseDowned: Boolean read FIsMouseDowned;
-    property Status: byte read fStatus write setStatus;
-    property Width: integer read fWidth write setWidth;
-    property Height: integer read fHeight write setHeight;
+    function IsMouseDowned: Boolean;// read FIsMouseDowned;
+    property Status: byte read FStatus write setStatus;
+    property Width: integer read FWidth write setWidth;
+    property Height: integer read FHeight write setHeight;
 
-    property Clicked: tIntArray read fClicked;
-    property Downed: TIntArray read fMouseDowned;
-    property Upped: TIntArray read fMouseUpped;
+    // Last Clicked, MouseDowned and MouseUpped objects id
+    property Clicked: TIntArray read FClicked;
+    property Downed: TIntArray read FMouseDowned;
+    property Upped: TIntArray read FMouseUpped;
+
     property Critical: TCriticalSection read FCritical;
-    property New: TEngine2DObjectCreator read FObjectCreator; // РџРѕР·РІРѕР»СЏРµС‚ Р±С‹СЃС‚СЂРµРµ Рё РїСЂРѕС‰Рµ СЃРѕР·РґР°РІР°С‚СЊ РѕР±СЉРµРєС‚С‹
 
-    property SpriteCount: integer read getSpriteCount;
-    property Sprites[index: integer]: tEngine2DObject read getObject write setObject;
-
-    property Background: TBitmap read fBackGround write setBackGround;
+    property Background: TBitmap read FBackGround write setBackGround;
     property Options: TEngine2dOptions read FOptions write FOptions;
 
     function IsHor: Boolean; // Return True, if Engine.Width > Engine.Height
-
-    procedure SpriteToBack(const n: integer); // РџРµСЂРµРґРІРёРіР°РµС‚ РІ РјР°СЃСЃРёРІРµ РѕС‚СЂРёСЃРѕРІРєРё СЃРїСЂР°Р№С‚
-    procedure SpriteToFront(const n: integer);// РџРµСЂРµРґРІРёРіР°РµС‚ РІ РјР°СЃСЃРёРІРµ РѕС‚СЂРёСЃРѕРІРєРё СЃРїСЂР°Р№С‚
-
     procedure Resize;
 
     procedure MouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; x, y: single); virtual;
+      Shift: TShiftState; x, y: single; const ACount: Integer = -1); virtual; // ACount is quantity of sorted object that will be MouseDowned -1 is all.
     procedure MouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; x, y: single); virtual;
+      Shift: TShiftState; x, y: single; const ACount: Integer = -1; const AClickObjects: Boolean = True); virtual; // ACount is quantity of sorted object that will be MouseUpped -1 is all.
+    procedure Click(const ACount: Integer = -1); virtual; // It must be Called after MouseUp if in MouseUp was AClickObjects = False;
 
-    procedure DeleteObject(const AObject: tEngine2DObject); overload; // РЈР±РёСЂР°РµС‚ СЃРїСЂР°Р№С‚ РёР· РѕС‚СЂРёСЃРѕРІРєРё
-    procedure AddObject(const AObject: tEngine2DObject; const AName: String = ''); // Р”РѕР±Р°РІР»СЏРµС‚ СЃРїСЂР°Р№С‚ РЅР° РѕС‚СЂРёСЃРѕРІРєСѓ
+    procedure AssignShadowObject(ASpr: tEngine2DObject); // Ассигнет спрайт в ShadowObject
+    property ShadowObject: tEngine2DObject read FShadowObject;  // Указатель на Теневой объект.
 
-    procedure AssignShadowObject(ASpr: tEngine2DObject); // РђСЃСЃРёРіРЅРµС‚ СЃРїСЂР°Р№С‚ РІ ShadowObject
-    property ShadowObject: tEngine2DObject read FShadowObject;  // РЈРєР°Р·Р°С‚РµР»СЊ РЅР° РўРµРЅРµРІРѕР№ РѕР±СЉРµРєС‚.
-
-    procedure ClearSprites; // РћС‡РёС‰Р°РµС‚ РјР°СЃСЃРёРІ СЃРїСЂР°Р№С‚РѕРІ, С‚.Рµ. СЏРІР»СЏРµС‚СЃСЏ РїРѕРґРіРѕС‚РѕРІРєРѕР№ Рє РїРѕР»РЅРѕР№ РїРµСЂРµСЂРёСЃРѕРІРєРµ
-    procedure ClearTemp; // РћС‡РёС‰Р°РµС‚ РјР°СЃСЃРёРІС‹ РІС‹Р±РѕСЂР° Рё С‚.Рґ. РєРѕСЂРѕС‡Рµ РґРµР»Р°РµС‚ РєСѓС‡Сѓ РїРѕР»РµР·РЅС‹С… РІРµС‰РµР№.
+    procedure ClearSprites; // Очищает массив спрайтов, т.е. является подготовкой к полной перерисовке
+    procedure ClearTemp; // Очищает массивы выбора и т.д. короче делает кучу полезных вещей.
 
     procedure LoadResources(const AFileName: String);
     procedure LoadSECSS(const AFileName: String);
     procedure LoadSEJSON(const AFileName: String);
 
-    procedure Init(AImage: tImage); // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РґРІРёР¶РєР°, Р·Р°РґР°С‘С‚ СЂРёСЃСѓРЅРѕРє РЅР° С„РѕСЂРјРµ, РЅР° РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёСЃРІР°РёРІР°С‚СЃСЏ fImage
+    procedure Init(AImage: tImage); // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
     procedure Repaint; virtual;
 
-    // РџСЂСЏС‡РµРј РёР»Рё РїРѕРєР°Р·С‹РІР°РµС‚ РіСЂСѓРїРїС‹
-    procedure ShowGroup(const AGroup: String);
-    procedure HideGroup(const AGroup: String);
-    procedure SendToFrontGroup(const AGroup: String); // РЎС‚Р°РІРёС‚ РіСЂСѓРїРїСѓ РЅР° РїРµСЂРµРґРЅРёР№ РїР»Р°РЅ
-    procedure BringToBackGroup(const AGroup: String); // РћС‚РѕРґРІРёРіР°РµС‚ РіСЂСѓРїРїСѓ РЅР° Р·Р°РґРЅРёР№ РїР»Р°РЅ
-
-    procedure Start; virtual; // Р’РєР»СЋС‡Р°РµС‚ РґРІРёР¶РѕРє
-    procedure Stop; virtual;// Р’С‹РєР»СЋС‡Р°РµС‚ РґРІРёР¶РѕРє
+    procedure Start; virtual; // Включает движок
+    procedure Stop; virtual;// Выключает движок
 
     constructor Create; virtual;
     destructor Destroy; override;
+
+    // You should use Manager to Work with Engine
+    property Manager: TEngine2DManager read FObjectCreator; // Позволяет быстрее и проще создавать объекты
 
     const
       CGameStarted = 1;
@@ -148,7 +137,7 @@ type
   end;
 
 const
-  pi180 = 0.0174532925; // (1/180)*pi РґР»СЏ СѓРјРµРЅСЊС€РµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° РїРµСЂРµСЃС‡РµС‚РѕРІ
+  pi180 = 0.0174532925; // (1/180)*pi для уменьшение количества пересчетов
 
 implementation
 
@@ -157,245 +146,147 @@ uses
 
 { tEngine2d }
 
-procedure tEngine2d.addObject(const AObject: tEngine2DObject; const AName: String);
-var
-  l: integer;
-  vName: string;
+procedure TEngine2d.AssignShadowObject(ASpr: tEngine2DObject);
 begin
-  Inc(FAddedSprite);
-  if AName = '' then
-    vName := 'genname'+IntToStr(FAddedSprite)+'x'+IntToStr(Random(65536))
-  else
-    vName := AName;
-
-  if fObjects.IsHere(AObject) then
-    raise Exception.Create('You are trying to add Object to Engine that already Exist')
-  else
-  begin
-    fCritical.Enter;
-    l := spriteCount;
-    fObjects.Add(vName, AObject);
-    setLength(fSpriteOrder, l + 1);
-    fObjects[l].Image := fImage;
-    AObject.OnBringToBack := BringToBackHandler;
-    AObject.OnSendToFront := SendToFrontHandler;
-    fSpriteOrder[l] := l;
-    fCritical.Leave;
-  end;
-end;
-
-procedure tEngine2d.AssignShadowObject(ASpr: tEngine2DObject);
-begin
-  //  Р’ РґР°РЅРЅРѕРј РєРѕРЅС‚РµРєСЃС‚Рµ СЃР»РµРґСѓРµС‚ СЂР°Р·Р»РёС‡С‚СЊ РЅР°СЃР»РµРґРЅРёРєРѕРІ TEngine2DObject, С‚.Рє. РјРѕР¶РµС‚ РїРѕРїР°СЃС‚СЊСЃСЏ С‚РµРєСЃС‚
+  //  В данном контексте следует различть наследников TEngine2DObject, т.к. может попасться текст
   FShadowObject.Position := ASpr.Position;
 {  FShadowObject.ScaleX := ASpr.ScaleX;
   FShadowObject.ScaleY := ASpr.ScaleY;  }
   tSprite(FShadowObject).Resources := tSprite(ASpr).Resources;
 end;
 
-procedure tEngine2d.BackGroundDefaultBehavior;
+procedure TEngine2d.BackGroundDefaultBehavior;
 begin
   with Self.Image do
     Bitmap.Canvas.DrawBitmap(
-      fBackGround,
-      RectF(0, 0, fBackGround.width, fBackGround.height),
+      FBackGround,
+      RectF(0, 0, FBackGround.width, FBackGround.height),
       RectF(0, 0, bitmap.width, bitmap.height),
       1,
       true);
 end;
 
-procedure tEngine2d.BringToBackGroup(const AGroup: String);
-var
-  i, iObject, iG: Integer;
-  vReg: TRegEx;
-  vStrs: TArray<string>;
-  vN: Integer;
-begin
-  vReg := TRegEx.Create(',');
-  vStrs := vReg.Split(AGroup);
-  vN := fObjects.Count - 1;
-  for iG := 0 to Length(vStrs) - 1 do
-  begin
-    i := vN;
-    iObject := vN;
-    vStrs[iG] := Trim(vStrs[iG]);
-    while iObject > 1 do
-    begin
-      if fObjects[fSpriteOrder[i]].Group = vStrs[iG] then
-      begin
-        fObjects[fSpriteOrder[i]].BringToBack;
-        Inc(i);
-      end;
-      Dec(i);
-      Dec(iObject);
-    end;
-  end;
-end;
-
-procedure tEngine2d.BringToBackHandler(ASender: TObject);
-begin
-  SpriteToBack(
-    SpriteList.IndexOfItem(TEngine2DObject(ASender), FromBeginning)
-  );
-end;
-
-procedure tEngine2d.clearSprites;
+procedure TEngine2d.clearSprites;
 var
   i: integer;
 begin
- for i := 0 to spriteCount - 1 do
-    fObjects[i].free;
+ for i := 0 to FObjects.Count - 1 do
+    FObjects[i].free;
 
-  setLength(fSpriteOrder, 0);
+  setLength(FObjectOrder, 0);
 end;
 
-procedure tEngine2d.clearTemp;
+procedure TEngine2d.clearTemp;
 begin
-  setLength(self.fClicked, 0);
+  setLength(self.FClicked, 0);
 end;
 
-constructor tEngine2d.Create; // (createSuspended: boolean);
+procedure TEngine2d.Click(const ACount: Integer);
+var
+  i, vCount: Integer;
 begin
-  fCritical := TCriticalSection.Create;
-  fEngineThread := tEngineThread.Create;
-  fResources := TEngine2DResources.Create(fCritical);
-  fAnimationList := TEngine2DAnimationList.Create(fCritical);
-  fFormatters := TFormatterList.Create(fCritical, Self);
-  fObjects := TObjectsList.Create(fCritical);
-  fOptions.Up([EAnimateForever]);
-  fOptions.Down([EClickOnlyTop]);
+  if ACount = -1 then
+    vCount := Length(FClicked)
+  else
+    vCount := ACount;
+
+  for i := 0 to Min(vCount, Length(FClicked)) - 1 do
+    Sprites[FClicked[i]].OnClick(Sprites[FClicked[i]]);
+end;
+
+constructor TEngine2d.Create; // (createSuspended: boolean);
+begin
+  FCritical := TCriticalSection.Create;
+  FEngineThread := tEngineThread.Create;
+  FObjectOrder := TIntArray.Create(0);
+  FResources := TEngine2DResources.Create(FCritical);
+  FAnimationList := TEngine2DAnimationList.Create(FCritical);
+  FFormatters := TFormatterList.Create(FCritical, Self);
+  FObjects := TObjectsList.Create(FCritical);
+  FOptions.Up([EAnimateForever]);
+  FOptions.Down([EClickOnlyTop]);
 
   FBackgroundBehavior := BackgroundDefaultBehavior;
   FInBeginPaintBehavior := InBeginPaintDefaultBehavior;
   FInEndPaintBehavior := InEndPaintDefaultBehavior;
-  FAddedSprite := 0;
-  fDebug := False;
   prepareFastFields;
   clearSprites;
-  prepareShadowObject;
-  fBackGround := tBitmap.Create;
-
-  fObjectCreator := TEngine2DObjectCreator.Create(Self, fResources, fObjects, fAnimationList, fFormatters, fFastFields, fEngineThread);
+  FBackGround := tBitmap.Create;
 end;
 
-procedure tEngine2d.deleteObject(const AObject: tEngine2DObject);
-var
-  i, vN, vNum, vPos: integer;
+destructor TEngine2d.Destroy;
 begin
-  fCritical.Enter;
-  vNum := fObjects.IndexOfItem(AObject, FromEnd);
-  if vNum > -1 then
-  begin
-    vN := fObjects.Count - 1;
-    fAnimationList.ClearForSubject(AObject);
-    fFormatters.ClearForSubject(AObject);
-    fFastFields.ClearForSubject(AObject);
-    fObjects.Delete(vNum{AObject});
-
-   // AObject.Free;
-
-    vPos := vN + 1;
-    // РќР°С…РѕРґРёРј РїРѕР·РёС†РёСЋ СЃРїСЂР°Р№С‚Р°
-    for i := vN downto 0 do
-      if fSpriteOrder[i] = vNum then
-      begin
-        vPos := i;
-        Break;
-      end;
-
-    // РћС‚ СЌС‚РѕР№ РїРѕР·РёС†РёРё СЃРґРІРёРіР°РµРј РїРѕСЂСЏРґРѕРє РѕС‚СЂРёСЃРѕРІРєРё
-    vN := vN - 1;
-    for i := vPos to vN do
-      fSpriteOrder[i] := fSpriteOrder[i+1];
-
-    // Р’СЃРµ РёРЅРґРµРєСЃС‹ СЃРїСЂР°Р№С‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ Р±РѕР»СЊС€Рµ vNum РЅР°РґРѕ СѓРјРµРЅСЊС€РёС‚СЊ РЅР° 1
-    for i := 0 to vN do
-      if fSpriteOrder[i] >= vNum then
-        fSpriteOrder[i] := fSpriteOrder[i] - 1;
-
-    // РЈРјРµРЅСЊС€Р°РµРј РґР»РёРЅСѓ РјР°СЃСЃРёРІР°
-    SetLength(fSpriteOrder, vN + 1);
-  end;
-  fCritical.Leave;
-  fDebug := True;
-end;
-
-destructor tEngine2d.Destroy;
-begin
-  fObjectCreator.Free;
+  FObjectCreator.Free;
   clearSprites;
-  fImage.free;
-  fAnimationList.Free;
-  fFormatters.Free;
-  fFastFields.Free;
-  fBackGround.free;
+  FImage.free;
+  FAnimationList.Free;
+  FFormatters.Free;
+  FFastFields.Free;
+  FBackGround.free;
 
   inherited;
 end;
 
-procedure tEngine2d.Resize;
+procedure TEngine2d.Resize;
 var
   i: Integer;
 begin
-  fCritical.Enter;
-  // Р¤РѕСЂРјР°С‚РёСЂРІР°РЅРёРµ
-  for i := 0 to fFormatters.Count - 1 do
-    fFormatters[i].Format;
-  fCritical.Leave;
+  FCritical.Enter;
+  // Форматирвание
+  for i := 0 to FFormatters.Count - 1 do
+    FFormatters[i].Format;
+  FCritical.Leave;
 end;
 
-procedure tEngine2d.Repaint;
+procedure TEngine2d.Repaint;
 var
   i, l: integer;
-  iA, lA: Integer; // РЎС‡РµС‚С‡РёРєРё Р°РЅРёРјР°С†РёРё Рё С„РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёСЏ
+  iA, lA: Integer; // Счетчики анимации и форматирования
   m: tMatrix;
   vAnimation: tAnimation;
 begin
 
-  // РђРЅРёРјР°С†РёСЏ
-  fCritical.Enter;
-  lA := fAnimationList.Count - 1;
+  // Анимация
+  FCritical.Enter;
+  lA := FAnimationList.Count - 1;
   for iA := lA downto 0 do
   begin
-    if fAnimationList[iA].Animate = TAnimation.CAnimationEnd then
+    if FAnimationList[iA].Animate = TAnimation.CAnimationEnd then
     begin
-      vAnimation := fAnimationList[iA];
-      fAnimationList.Delete(iA);
+      vAnimation := FAnimationList[iA];
+      FAnimationList.Delete(iA);
       vAnimation.Free;
     end;
   end;
-  fCritical.Leave;
+  FCritical.Leave;
 
-  if fDebug then
-   fDebug := False;
+//  if FDebug then
+//   FDebug := False;
 
-  fCritical.Enter;
+  FCritical.Enter;
   if (lA > 0) or (FOptions.ToAnimateForever)  then
-    with fImage do
+    with FImage do
     begin
       if Bitmap.Canvas.BeginScene() then
       try
         FInBeginPaintBehavior;
         FBackgroundBehavior;
 
-        l := (fObjects.Count - 1);
+        l := (FObjects.Count - 1);
         for i := 1 to l do
-        {  if fSpriteOrder[i] <= l then
-            if fObjects[fSpriteOrder[i]] <> Nil then   }
-          
-          if fObjects[fSpriteOrder[i]].visible then
+          if FObjects[FObjectOrder[i]].visible then
           begin
             m :=
-              TMatrix.CreateTranslation(-fObjects[fSpriteOrder[i]].x, -fObjects[fSpriteOrder[i]].y) *
-              TMatrix.CreateScaling(fObjects[fSpriteOrder[i]].ScaleX, fObjects[fSpriteOrder[i]].ScaleY) *
-              TMatrix.CreateRotation(fObjects[fSpriteOrder[i]].rotate * pi180) *
-              TMatrix.CreateTranslation(fObjects[fSpriteOrder[i]].x, fObjects[fSpriteOrder[i]].y);
+              TMatrix.CreateTranslation(-FObjects[FObjectOrder[i]].x, -FObjects[FObjectOrder[i]].y) *
+              TMatrix.CreateScaling(FObjects[FObjectOrder[i]].ScaleX, FObjects[FObjectOrder[i]].ScaleY) *
+              TMatrix.CreateRotation(FObjects[FObjectOrder[i]].rotate * pi180) *
+              TMatrix.CreateTranslation(FObjects[FObjectOrder[i]].x, FObjects[FObjectOrder[i]].y);
             Bitmap.Canvas.SetMatrix(m);
 
-            fObjects[fSpriteOrder[i]].Repaint;
+            FObjects[FObjectOrder[i]].Repaint;
             {$IFDEF DEBUG}
-            if fOptions.ToDrawFigures then
-               fObjects[fSpriteOrder[i]].RepaintWithShapes;
+            if FOptions.ToDrawFigures then
+               FObjects[FObjectOrder[i]].RepaintWithShapes;
             {$ENDIF}
           end;
       finally
@@ -408,81 +299,24 @@ begin
       end;
   end;
 
-  fCritical.Leave;
+  FCritical.Leave;
 end;
 
-procedure tEngine2d.SendToFrontGroup(const AGroup: String);
-var
-  i, iObject, iG: Integer;
-  vReg: TRegEx;
-  vStrs: TArray<string>;
-  vN: Integer;
+function TEngine2d.getObject(index: integer): tEngine2DObject;
 begin
-  vReg := TRegEx.Create(',');
-  vStrs := vReg.Split(AGroup);
-  vN := fObjects.Count - 1;
-  for iG := 0 to Length(vStrs) - 1 do
-  begin
-    i := 1;
-    iObject := 1;
-    vStrs[iG] := Trim(vStrs[iG]);
-    while iObject < vN do
-    begin
-      if fObjects[fSpriteOrder[i]].Group = vStrs[iG] then
-      begin
-        fObjects[fSpriteOrder[i]].SendToFront;
-        Dec(i);
-      end;
-      Inc(i);
-      Inc(iObject);
-    end;
-  end;
+  FCritical.Enter;
+  result := FObjects[index];
+  FCritical.Leave;
 end;
 
-procedure tEngine2d.SendToFrontHandler(ASender: TObject);
-begin
-  SpriteToFront(
-    SpriteList.IndexOfItem(TEngine2DObject(ASender), FromBeginning)
-  );
-end;
-
-function tEngine2d.getObject(index: integer): tEngine2DObject;
-begin
-  fCritical.Enter;
-  result := fObjects[index];
-  fCritical.Leave;
-end;
-
-function tEngine2d.getSpriteCount: integer;
-begin
-  result := fObjects.Count;//length(fSprites)
-end;
-
-procedure tEngine2d.HideGroup(const AGroup: String);
-var
-  i, iG: Integer;
-  vReg: TRegEx;
-  vStrs: TArray<string>;
-begin
-  vReg := TRegEx.Create(',');
-  vStrs := vReg.Split(AGroup);
-  for iG := 0 to Length(vStrs) - 1 do
-  begin
-    vStrs[iG] := Trim(vStrs[iG]);
-    for i := 0 to fObjects.Count - 1 do
-      if fObjects[i].group = vStrs[iG] then
-        fObjects[i].visible := False;
-  end;
-end;
-
-procedure tEngine2d.InBeginPaintDefaultBehavior;
+procedure TEngine2d.InBeginPaintDefaultBehavior;
 begin
 
 end;
 
-procedure tEngine2d.InEndPaintDefaultBehavior;
+procedure TEngine2d.InEndPaintDefaultBehavior;
 begin
-  Exit;
+  //Exit;
   with FImage do
   begin
   // bitmap.Canvas.Blending:=true;
@@ -495,7 +329,7 @@ begin
          {$IF CompilerVersion >= 19.0}
         bitmap.Canvas.FillText(
           RectF(15, 15, 165, 125),
-          'FPS=' + floattostr(fEngineThread.fps),
+          'FPS=' + floattostr(FEngineThread.fps),
           false, 1, [],
           TTextAlign.Leading
         );
@@ -544,31 +378,45 @@ begin
   end;
 end;
 
-procedure tEngine2d.Init(AImage: tImage);
+procedure TEngine2d.Init(AImage: tImage);
 begin
-  fImage := AImage;
-  fWidth := Round(AImage.Width);
-  fHeight := Round(AImage.Height);
-  fImage.Bitmap.Width := Round(AImage.Width * getScreenScale);
-  fImage.Bitmap.Height := ROund(AImage.Height * getScreenScale);
+  FImage := AImage;
+  FWidth := Round(AImage.Width);
+  FHeight := Round(AImage.Height);
+  FImage.Bitmap.Width := Round(AImage.Width * getScreenScale);
+  FImage.Bitmap.Height := ROund(AImage.Height * getScreenScale);
+
+  SetLength(FObjectOrder, 4);
+
+  FObjectCreator := TEngine2DManager.Create(
+    Self,
+    FImage,
+    FCritical,
+    FResources, FObjects, @FObjectOrder, FAnimationList, FFormatters, FFastFields, FEngineThread);
+  prepareShadowObject;
 end;
 
-function tEngine2d.IsHor: Boolean;
+function TEngine2d.IsHor: Boolean;
 begin
-  Result := fWidth > fHeight;
+  Result := FWidth > FHeight;
 end;
 
-procedure tEngine2d.LoadResources(const AFileName: String);
+function TEngine2d.IsMouseDowned: Boolean;
+begin
+  REsult := FIsMouseDowned;
+end;
+
+procedure TEngine2d.LoadResources(const AFileName: String);
 begin
   FResources.AddResFromLoadFileRes(AFileName);
 end;
 
-procedure tEngine2d.LoadSECSS(const AFileName: String);
+procedure TEngine2d.LoadSECSS(const AFileName: String);
 begin
-  fFormatters.LoadSECSS(AFileName);
+  FFormatters.LoadSECSS(AFileName);
 end;
 
-procedure tEngine2d.LoadSEJson(const AFileName: String);
+procedure TEngine2d.LoadSEJson(const AFileName: String);
 var
   vJSON, vObj, vObjBody: TJSONObject;
   vObjects, vFigures: TJSONArray;
@@ -616,179 +464,146 @@ begin
 
 end;
 
-procedure tEngine2d.MouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; x, y: single);
+procedure TEngine2d.MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; x, y: single; const ACount: Integer = -1);
 var
-  i, l: integer;
+  i, l, vCount: integer;
 begin
   FIsMouseDowned := True;
 
-  flX := x;// * getScreenScale;
-  flY := y; //* getScreenScale;
-  l := fObjects.Count - 1;//length(fSprites) - 1;
+  FlX := x;// * getScreenScale;
+  FlY := y; //* getScreenScale;
+  l := FObjects.Count - 1;//length(fSprites) - 1;
 
-  setLength(fClicked, 0);
-  setLength(fMouseDowned, 0);
+  setLength(FClicked, 0);
+  setLength(FMouseDowned, 0);
 
   for i := l downto 1 do
   begin
-    if fObjects[fSpriteOrder[i]].visible then
-      if fObjects[fSpriteOrder[i]].underTheMouse(flX, flY) then
+    if FObjects[FObjectOrder[i]].visible then
+      if FObjects[FObjectOrder[i]].underTheMouse(FlX, FlY) then
       begin
-        setLength(fMouseDowned, length(fMouseDowned) + 1);
-        fMouseDowned[high(fMouseDowned)] := fSpriteOrder[i];
+        setLength(FMouseDowned, length(FMouseDowned) + 1);
+        FMouseDowned[high(FMouseDowned)] := FObjectOrder[i];
 
-      //РџР•Р Р•РќР•РЎР w Рё h РІ TEngine2DObject Рё СЃРґРµР»Р°Р№ РѕРїСЂРµРґРµР»РµРЅРёРµ РїРѕР»РѕР¶РµРЅРёСЏ РєР»РёРєР° РІ СЃРїСЂР°Р№С‚Рµ
+      //ПЕРЕНЕСИ w и h в TEngine2DObject и сделай определение положения клика в спрайте
 
       end;
   end;
+
+ // MouseUp and Clicks on Objects
+  if ACount = -1 then
+    vCount := Length(FMouseDowned)
+  else
+    vCount := Min(ACount, Length(FMouseDowned));
+
+  for i := 0 to vCount - 1 do
+    Sprites[FMouseDowned[i]].OnMouseDown(Sprites[FMouseDowned[i]], Button, Shift, x, y);
 end;
 
-procedure tEngine2d.MouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; x, y: single);
+procedure TEngine2d.MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; x, y: single; const ACount: Integer = -1; const AClickObjects: Boolean = True);
 var
-  i, l: integer;
+  i, l, vCount: integer;
 begin
   FIsMouseDowned := False;
 
-  flX := x ;//* getScreenScale;
-  flY := y ;//* getScreenScale;
-  l := fObjects.Count - 1;//length(fSprites) - 1;
+  FlX := x ;//* getScreenScale;
+  FlY := y ;//* getScreenScale;
+  l := FObjects.Count - 1;//length(fSprites) - 1;
 
-  SetLength(fClicked, 0);
-  SetLength(fMouseUpped, 0);
+  SetLength(FClicked, 0);
+  SetLength(FMouseUpped, 0);
 
   for i := l downto 1 do
   begin
-    if fObjects[fSpriteOrder[i]].visible then
-      if fObjects[fSpriteOrder[i]].underTheMouse(flX, flY) then
+    if FObjects[FObjectOrder[i]].visible then
+      if FObjects[FObjectOrder[i]].underTheMouse(FlX, FlY) then
       begin
-        SetLength(fMouseUpped, length(fMouseUpped) + 1);
-        fMouseUpped[high(fMouseUpped)] := fSpriteOrder[i];
+        SetLength(FMouseUpped, length(FMouseUpped) + 1);
+        FMouseUpped[high(FMouseUpped)] := FObjectOrder[i];
       end;
     end;
 
-  fClicked := IntArrInIntArr(fMouseDowned, fMouseUpped);
+  FClicked := IntArrInIntArr(FMouseDowned, FMouseUpped);
+
+  // MouseUp and Clicks on Objects
+  if ACount = -1 then
+    vCount := Length(FMouseUpped)
+  else
+    vCount := Min(ACount, Length(FMouseUpped));
+
+  for i := 0 to vCount - 1 do
+    Sprites[FMouseUpped[i]].OnMouseUp(Sprites[FMouseUpped[i]], Button, Shift, x, y);
+
+  if AClickObjects then
+    Click(ACount);
 end;
 
-procedure tEngine2d.prepareFastFields;
+procedure TEngine2d.prepareFastFields;
 var
   vTmp: TFastField;
 begin
-  fFastFields := TFastFields.Create(IsHor);
+  FFastFields := TFastFields.Create(IsHor);
 //  fFastFields.Parent := Self;
   vTmp := TFastEngineWidth.Create(Self);
-  fFastFields.Add('engine.width', vTmp);
+  FFastFields.Add('engine.width', vTmp);
   vTmp := TFastEngineHeight.Create(Self);
-  fFastFields.Add('engine.height', vTmp);
+  FFastFields.Add('engine.height', vTmp);
 end;
 
-procedure tEngine2d.prepareShadowObject;
+procedure TEngine2d.prepareShadowObject;
 begin
   FShadowObject := tSprite.Create;
-  Self.AddObject(FShadowObject, 'shadow');
+  FObjectCreator.Add(TSprite(FShadowObject), 'shadow');
 end;
 
-procedure tEngine2d.setBackGround(ABmp: tBitmap);
+procedure TEngine2d.setBackGround(ABmp: tBitmap);
 begin
   if width > height then
   begin
-    fBackGround.Assign(ABmp);
-    fBackGround.rotate(90);
+    FBackGround.Assign(ABmp);
+    FBackGround.rotate(90);
   end
   else
-    fBackGround.Assign(ABmp);
+    FBackGround.Assign(ABmp);
 end;
 
-procedure tEngine2d.SetBackgroundBehavior(const Value: TProcedure);
+procedure TEngine2d.SetBackgroundBehavior(const Value: TProcedure);
 begin
   FBackgroundBehavior := Value;
 end;
 
-procedure tEngine2d.setHeight(AHeight: integer);
+procedure TEngine2d.setHeight(AHeight: integer);
 begin
-  fImage.Bitmap.Height := Round(AHeight * getScreenScale + 0.4);
-  fHeight := AHeight;
+  FImage.Bitmap.Height := Round(AHeight * getScreenScale + 0.4);
+  FHeight := AHeight;
 end;
 
-procedure tEngine2d.setObject(index: integer; newSprite: tEngine2DObject);
+procedure TEngine2d.setObject(index: integer; newSprite: tEngine2DObject);
 begin
-  fCritical.Enter;
-  fObjects[index] := NewSprite;
-  fCritical.Leave;
+  FCritical.Enter;
+  FObjects[index] := NewSprite;
+  FCritical.Leave;
 end;
 
-procedure tEngine2d.setStatus(newStatus: byte);
+procedure TEngine2d.setStatus(newStatus: byte);
 begin
-  fStatus := newStatus;
+  FStatus := newStatus;
 end;
 
-procedure tEngine2d.setWidth(AWidth: integer);
+procedure TEngine2d.setWidth(AWidth: integer);
 begin
-  fImage.Bitmap.Width := Round(AWidth * getScreenScale + 0.4);
-  fWidth := AWidth;
+  FImage.Bitmap.Width := Round(AWidth * getScreenScale + 0.4);
+  FWidth := AWidth;
 end;
 
-procedure tEngine2d.showGroup(const AGroup: String);
-var
-  i, iG: Integer;
-  vReg: TRegEx;
-  vStrs: TArray<string>;
-begin
-  vReg := TRegEx.Create(',');
-  vStrs := vReg.Split(AGroup);
-  for iG := 0 to Length(vStrs) - 1 do
-  begin
-    vStrs[iG] := Trim(vStrs[iG]);
-    for i := 0 to fObjects.Count - 1 do
-      if fObjects[i].group = vStrs[iG] then
-        fObjects[i].visible := True;
-  end;
-end;
-
-procedure tEngine2d.spriteToBack(const n: integer);
-var
-  i, l, oldOrder: integer;
-begin
-  l := length(fSpriteOrder);
-
-  oldOrder := fSpriteOrder[n]; // РЈР·РЅР°С‘Рј РїРѕСЂСЏРґРѕРє РѕС‚СЂРёСЃРѕРІРєРё СЃРїСЂР°Р№С‚Р° РЅРѕРјРµСЂ n
-
-  for i := 1 to l - 1 do
-    if fSpriteOrder[i] < oldOrder then
-      fSpriteOrder[i] := fSpriteOrder[i] + 1;
-
-  fSpriteOrder[n] := 1;
-end;
-
-procedure tEngine2d.spriteToFront(const n: integer);
-var
-  i, l, oldOrder: integer;
-begin
-  l := length(fSpriteOrder);
-  oldOrder := l - 1;
-
-  for i := 1 to l - 1 do
-    if fSpriteOrder[i] = n then
-    begin
-      oldOrder := i;
-      break;
-    end;
-
-  for i := oldOrder to l - 2 do
-  begin
-    fSpriteOrder[i] := fSpriteOrder[i + 1];
-  end;
-
-  fSpriteOrder[l - 1] := n;
-end;
-
-procedure tEngine2d.start;
+procedure TEngine2d.start;
 begin
   status := CGameStarted;
 end;
 
-procedure tEngine2d.stop;
+procedure TEngine2d.stop;
 begin
   status := CGameStopped;
 end;

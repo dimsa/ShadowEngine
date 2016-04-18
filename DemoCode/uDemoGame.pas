@@ -311,8 +311,8 @@ begin
 
   fEngine.MouseDown(Sender, Button, Shift, x, y);
 
-  for i := 0 to Length(fEngine.Downed) - 1 do
-    fEngine.Sprites[fEngine.Downed[i]].OnMouseDown(fEngine.Sprites[fEngine.Downed[i]], Button, Shift, x, y);
+{  for i := 0 to Length(fEngine.Downed) - 1 do
+    fEngine.Sprites[fEngine.Downed[i]].OnMouseDown(fEngine.Sprites[fEngine.Downed[i]], Button, Shift, x, y);  }
 
   FGP.Ship.Destination := DestinationFromClick(x, y);
 end;
@@ -326,26 +326,20 @@ end;
 
 procedure TDemoGame.MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; x, y: single);
-var
-  vL, i: Integer;
 begin
-  fEngine.MouseUp(Sender, Button, Shift, x, y);
-  vL := Length(FEngine.Clicked) - 1;
-  if vL >= 0 then
-    for i := 0 to 0{vL} do
-      fEngine.sprites[fEngine.Clicked[i]].OnClick(fEngine.Sprites[fEngine.Clicked[i]]);
+  fEngine.MouseUp(Sender, Button, Shift, x, y, 1);
 end;
 
 procedure TDemoGame.Prepare;
 var
   vTxt1, vTxt2: TEngine2DText;
 begin
-  FLoader := TLoader.Create(FEngine.New, FEngine.Background);
+  FLoader := TLoader.Create(FEngine.Manager, FEngine.Background);
   FEngine.LoadResources('images.load');
   FEngine.Background.LoadFromFile(UniPath('back.jpg'));
   FEngine.LoadSECSS(UniPath('formatters.secss'));
 
-  FGP := TGameParam.Create(FLoader, FEngine.New);
+  FGP := TGameParam.Create(FLoader, FEngine.Manager);
 
   FGameOverText := TEngine2DText.Create;
   FGameOverText.FontSize := 56;
@@ -353,10 +347,11 @@ begin
   FGameOverText.Color :=  TAlphaColorRec.White;
   FGameOverText.TextRect := RectF(-150, -35, 150, 35);
   FGameOverText.Text := 'Game Over';
-  FEngine.AddObject(FGameOverText, 'gameovertext');
-  FEngine.New.Formatter(FGameOverText, 'gameovertext', []).Format;
 
-  FMenu := TGameMenu.Create(FEngine.New, FLoader);
+  FEngine.Manager.Add(FGameOverText, 'gameovertext');
+  FEngine.Manager.Formatter(FGameOverText, 'gameovertext', []).Format;
+
+  FMenu := TGameMenu.Create(FEngine.Manager, FLoader);
   FMenu.StartGame := SelectMode;//StartGame;
   FMenu.AboutGame := AboutGame;
   FMenu.StatGame := StatGame;
@@ -372,7 +367,7 @@ begin
   FMenu.ComixText1 := vTxt1;
   FMenu.ComixText2 := vTxt2;
 
-  FEngine.HideGroup('ship, menu2, menu3, relaxmodemenu, gameover, stat');
+  FEngine.Manager.HideGroup('ship, menu2, menu3, relaxmodemenu, gameover, stat');
 
   FEngine.InBeginPaintBehavior := DoGameTick;
   FEngine.Start;
@@ -407,12 +402,12 @@ end;
 
 procedure TDemoGame.SetGameStatus(const Value: TGameStatus);
 begin
-  with FEngine do
+  with FEngine.Manager do
     case Value of
       gsMenu1: begin if (FGameStatus = gsRelaxMode) then Self.FGP.FixScore;  ShowGroup('menu1,menu'); FMenu.SendToFront; HideGroup('gameover,relaxmodemenu,ship,menu2,about,statistics,menu3,relax,survival,story,nextlevel,retrylevel,comix1,comix2,comix3'); end;
       gsMenu2: begin ShowGroup('menu2'); HideGroup('menu1,menu3'); end;
       gsMenu3: begin FMenu.ShowLevels(FGP.Statistics.MaxLevel); ShowGroup('menu3'); HideGroup('menu2'); end;
-      gsStatistics: begin TEngine2DText(FEngine.New['statisticscaption']).Text := FGP.StatisticsText; ShowGroup('statistics'); HideGroup('menu1') end;
+      gsStatistics: begin TEngine2DText(FEngine.Manager['statisticscaption']).Text := FGP.StatisticsText; ShowGroup('statistics'); HideGroup('menu1') end;
       gsAbout: begin ShowGroup('about'); HideGroup('menu1') end;
       gsRelaxMode: begin FGP.RestartGame(Value); ShowGroup('relaxmodemenu'); HideGroup('menu2,menu'); end;
       gsSurvivalMode: begin FGP.RestartGame(Value);  HideGroup('menu2'); HideGroup('menu'); end;

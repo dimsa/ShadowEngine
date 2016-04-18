@@ -3,7 +3,7 @@ unit uEngine2DAnimation;
 interface
 
 uses
-  FMX.Graphics,
+  FMX.Graphics, System.Classes,
   uNamedList, uEngine2DClasses, uClasses, uIntersectorClasses;
 
 type
@@ -16,8 +16,12 @@ type
 
   TAnimation = class
   strict private
-    FParent: Pointer;
+//      FEngineFPS: TReturnSingleFunction;
+//    FParent: Pointer;
+    FEngineFPS: TReturnSingleFunction;
     FSubject: Pointer; // Указатель на объект анимации
+    FOnDeleteSubject: TNotifyEvent;
+ //   FEngineIsMouseDowned: TBooleanFunction;
     FNextAnimation: TAnimation;
     FSetupped: Boolean;
     FStopped: Boolean;
@@ -29,8 +33,10 @@ type
     FOnDestroy: TProcedure;
     FOnFinalize: TProcedure;
     procedure SetSubject(const Value: Pointer);
-  public
-    property Parent: Pointer read FParent write FParent;
+   public
+//    property Parent: Pointer read FParent write FParent;
+    property OnDeleteSubject: TNotifyEvent read FOnDeleteSubject write FOnDeleteSubject;
+    property EngineFPS: TReturnSingleFunction read FEngineFPS write FEngineFPS;
     property Stopped: Boolean read FStopped write FStopped; // Если анимация остановлена, она ничего не делает, что логично
     property Finalized: Boolean read FFinalized; // Финализирована ли анимация
     property Subject: Pointer read FSubject write SetSubject;//GetSubject write
@@ -79,8 +85,6 @@ begin
 end;
 
 function tAnimation.Animate: Byte;
-var
-  vEngine: tEngine2d;
 begin
   if FSetupped = False then
     Setup;
@@ -88,8 +92,8 @@ begin
   Result := CAnimationInProcess;
   if TimePassed < TimeTotal then
   begin
-    vEngine := Parent;
-    TimePassed := TimePassed + (1000 / vEngine.EngineThread.FPS);
+//    vEngine := Parent;
+    TimePassed := TimePassed + (1000 / FEngineFPS {vEngine.EngineThread.FPS});
     if TimePassed > TimeTotal then
       Result := CAnimationEnd;
   end else
@@ -130,12 +134,10 @@ end;   }
 
 procedure TAnimation.DeleteSubject;
 var
-  vEngine: tEngine2d;
   vObj: tEngine2DObject;
 begin
-  vEngine := FParent;
   vObj := FSubject;
-  vEngine.DeleteObject(vObj);
+  FOnDeleteSubject(vObj);
   vObj.Free;
 end;
 

@@ -5,7 +5,7 @@ interface
 uses
   uIntersectorClasses,
   uEngine2DClasses, uEngine2DAnimation, uEngine2DObject, uEngine2D,
-  uEngine2DSprite;
+  uEngine2DSprite, uClasses;
 
 type
   TMigrationAnimation = class(TAnimation)
@@ -21,11 +21,13 @@ type
 
   TMouseDownMigrationAnimation = class(TAnimation)
   private
+    FEngineIsMouseDowned: TBooleanFunction;
     FAway: Boolean;
     FPressed: Boolean; // Нажати ли уже кнопка была
     FTempEndPos, FTempStartPos: TPosition;
     FEndPos: TPosition;
   public
+    property EngineIsMouseDowned: TBooleanFunction read FEngineIsMouseDowned write FEngineIsMouseDowned;
     procedure Setup; override;
     function Animate: Byte; override;
     property EndPos: TPosition read FEndPos write FEndPos;
@@ -37,11 +39,11 @@ type
   TSpriteAnimation = class(TAnimation)
   strict private
     FCurSlide: Integer;
-    FSlides: tIntArray;
+    FSlides: TArray<Integer>;
   public
     function Animate: Byte; override;
     procedure Finalize; override;
-    property Slides: tIntArray read FSlides write FSlides;
+    property Slides: TArray<Integer> read FSlides write FSlides;
     property CurSlide: Integer read FCurSlide write FCurSlide;
     // Time for one slide is (fulltime / slide count)
     constructor Create; override;
@@ -200,10 +202,10 @@ begin
   if (TimePassed >= TimeTotal)  then
     TimePassed := TimeTotal;
 
-  if (tEngine2d(Parent).IsMouseDowned) then
+  if (FEngineIsMouseDowned) then
     vRes := CAnimationInProcess;
 
-  if (tEngine2d(Parent).IsMouseDowned) and (not FPressed) then
+  if (FEngineIsMouseDowned) and (not FPressed) then
   begin
     vRes := CAnimationInProcess;
     FPressed := True;
@@ -212,7 +214,7 @@ begin
     FTempStartPos := StartPosition;
   end;
 
-  if (not tEngine2d(Parent).IsMouseDowned) and (FPressed) then
+  if (not FEngineIsMouseDowned) and (FPressed) then
   begin
     FPressed := False;
     FTempEndPos := StartPosition;

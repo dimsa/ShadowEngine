@@ -49,7 +49,7 @@ type
       const AColor: TAlphaColor = TAlphaColorRec.Black;
       const AGroup: string = '';
       const AJustify: TObjectJustify = Center;
-      const AShape: TObjectShape = nil): TEngine2DText;
+      const AShape: TObjectShape = nil): TEngine2DText; reintroduce;
 
     procedure AutoResizeFont(const ARatio: Single = 0); experimental; // Автоматически подбирает размер шрифта
     procedure Repaint; override;
