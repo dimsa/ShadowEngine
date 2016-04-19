@@ -187,7 +187,7 @@ begin
   FGP.Ship.SendToFront;
   FMenu.SendToFront;
 
-  vTmp := 1 / FEngine.EngineThread.FPS;
+  vTmp := 1 / FEngine.Status.EngineFPS;
   FGP.AddTime(vTmp);
 
   if GameStatus = gsStoryMode then
@@ -289,13 +289,11 @@ end;
 
 function TDemoGame.GetSpeed: Single;
 begin
-  Result := FEngine.EngineThread.Speed;
+  Result := FEngine.Status.EngineSpeed;//.EngineThread.Speed;
 end;
 
 procedure TDemoGame.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; x, y: single);
-var
-  i: Integer;
 begin
   {$IFDEF RELEASE}
   if Banners.Visible then
@@ -311,16 +309,13 @@ begin
 
   fEngine.MouseDown(Sender, Button, Shift, x, y);
 
-{  for i := 0 to Length(fEngine.Downed) - 1 do
-    fEngine.Sprites[fEngine.Downed[i]].OnMouseDown(fEngine.Sprites[fEngine.Downed[i]], Button, Shift, x, y);  }
-
   FGP.Ship.Destination := DestinationFromClick(x, y);
 end;
 
 procedure TDemoGame.MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Single);
 begin
-  if FEngine.IsMouseDowned then
+  if FEngine.Status.IsMouseDowned then
     FGP.Ship.Destination := DestinationFromClick(x, y);
 end;
 
@@ -376,8 +371,10 @@ end;
 procedure TDemoGame.Resize(const AWidth, AHeight: Integer);
 begin
 //  vSize := getDisplaySizeInPx;
-  FEngine.Width := AWidth;//Round(vSize.X + 0.4);
-  FEngine.Height := AHeight;//Round(vSize.Y + 0.4);
+  FEngine.Width := AWidth;
+  FEngine.Height:= AHeight;
+//  FEngine.Width := AWidth;//Round(vSize.X + 0.4);
+//  FEngine.Height := AHeight;//Round(vSize.Y + 0.4);
   FEngine.Resize;
   FGP.SetScaling(MonitorScale, SpeedModScale);
 end;

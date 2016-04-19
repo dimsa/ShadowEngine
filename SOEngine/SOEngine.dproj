@@ -164,6 +164,7 @@
         <DCCReference Include="Intersector\uNewFigure.pas"/>
         <DCCReference Include="Utils\uClasses.pas"/>
         <DCCReference Include="Utils\uNamedList.pas"/>
+        <DCCReference Include="Engine\uEngine2DStatus.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

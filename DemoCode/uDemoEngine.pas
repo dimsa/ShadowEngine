@@ -32,14 +32,14 @@ begin
   inherited;
   FParalX := 0;
   FParalY := 0;
-  Status := CGameEnded;
+  Status.Status := CGameEnded;
   EngineThread.WorkProcedure := Self.DoWork;
   BackgroundBehavior := ParallaxBackgroundBehavior;
 end;
 
 procedure TDemoEngine.DoWork;
 begin
-  case Status of
+  case Status.Status of
     CGameRun: doWorkGame;
   end;
 end;

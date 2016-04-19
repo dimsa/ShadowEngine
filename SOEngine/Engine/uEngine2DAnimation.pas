@@ -4,7 +4,7 @@ interface
 
 uses
   FMX.Graphics, System.Classes,
-  uNamedList, uEngine2DClasses, uClasses, uIntersectorClasses;
+  uNamedList, uEngine2DClasses, uClasses, uIntersectorClasses, uEngine2DStatus;
 
 type
   // Здесь используется термин DelayedCreate, но он отличается от понятия
@@ -16,12 +16,9 @@ type
 
   TAnimation = class
   strict private
-//      FEngineFPS: TReturnSingleFunction;
-//    FParent: Pointer;
-    FEngineFPS: TReturnSingleFunction;
     FSubject: Pointer; // Указатель на объект анимации
     FOnDeleteSubject: TNotifyEvent;
- //   FEngineIsMouseDowned: TBooleanFunction;
+    FStatus: TEngine2DStatus;
     FNextAnimation: TAnimation;
     FSetupped: Boolean;
     FStopped: Boolean;
@@ -36,7 +33,8 @@ type
    public
 //    property Parent: Pointer read FParent write FParent;
     property OnDeleteSubject: TNotifyEvent read FOnDeleteSubject write FOnDeleteSubject;
-    property EngineFPS: TReturnSingleFunction read FEngineFPS write FEngineFPS;
+    property Status: TEngine2DStatus read FStatus write FStatus;
+//    property EngineFPS: TReturnSingleFunction read FEngineFPS write FEngineFPS;
     property Stopped: Boolean read FStopped write FStopped; // Если анимация остановлена, она ничего не делает, что логично
     property Finalized: Boolean read FFinalized; // Финализирована ли анимация
     property Subject: Pointer read FSubject write SetSubject;//GetSubject write
@@ -92,8 +90,7 @@ begin
   Result := CAnimationInProcess;
   if TimePassed < TimeTotal then
   begin
-//    vEngine := Parent;
-    TimePassed := TimePassed + (1000 / FEngineFPS {vEngine.EngineThread.FPS});
+    TimePassed := TimePassed + (1000 / FStatus.EngineFPS {vEngine.EngineThread.FPS});
     if TimePassed > TimeTotal then
       Result := CAnimationEnd;
   end else

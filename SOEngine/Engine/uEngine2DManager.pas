@@ -8,14 +8,14 @@ uses
   uEngine2DClasses, uEngine2DObject, uEngineFormatter, uEngine2DAnimation,
   uEngine2DText, uEngine2DShape, uEngine2DResources, uEngine2DAnimationList,
   uFormatterList, uEngine2DSprite, uFastFields, uEngine2DThread,
-  uSpriteList, uClasses;
+  uSpriteList, uEngine2DStatus, uClasses;
 
 type
   TEngine2DManager = class
   private
-    FEngine: Pointer;
-
+    FStatus: TEngine2DStatus;
     FImage: TImage;
+    FResize: TProcedure;
     FCritical: TCriticalSection;
     FObjects: TObjectsList; // Массив спрайтов для отрисовки
     FResources: TEngine2DResources;//tResourceArray; // Массив битмапов
@@ -39,7 +39,7 @@ type
     procedure SpriteToFront(const n: integer);// Передвигает в массиве отрисовки спрайт
   public
     constructor Create(
-      const AEngine: Pointer;
+      const AStatus: TEngine2DStatus;
       const AImage: TImage;
       const ACritical: TCriticalSection;
       const AResourcesList: TEngine2DResources;
@@ -48,7 +48,8 @@ type
       const AAnimationsList: TEngine2DAnimationList;
       const AFormattersList: TFormatterList;
       const AFastFields: TFastFields;
-      const AEngineThread: TEngineThread
+      const AEngineThread: TEngineThread;
+      const AResize: TProcedure
       );
     destructor Destroy; override;
     function Formatter(const ASubject: tEngine2DObject; const AText: String; const AIndex: Integer = -1): TEngineFormatter; overload;
@@ -128,14 +129,11 @@ end;
 function TEngine2DManager.Add(
   const AAnimation: TAnimation): TAnimation;
 begin
-//  AAnimation.Parent := tEngine2d(FEngine);
   AAnimation.OnDeleteSubject := DeleteHandler;
-  AAnimation.EngineFPS := Self.FEngineThread.FPS;
-
-  if (AAnimation is TMouseDownMigrationAnimation) then
-    TMouseDownMigrationAnimation(AAnimation).EngineIsMouseDowned := TEngine2d(FEngine).IsMouseDowned;
+  AAnimation.Status := FStatus;
 
   FAnimationList.Add(AAnimation);
+  Result := AAnimation;
 end;
 
 procedure TEngine2DManager.AddObject(const AObject: tEngine2DObject;
@@ -238,7 +236,8 @@ begin
   );
 end;
 
-constructor TEngine2DManager.Create(      const AEngine: Pointer;
+constructor TEngine2DManager.Create(
+      const AStatus: TEngine2DStatus;
       const AImage: TImage;
       const ACritical: TCriticalSection;
       const AResourcesList: TEngine2DResources;
@@ -247,9 +246,10 @@ constructor TEngine2DManager.Create(      const AEngine: Pointer;
       const AAnimationsList: TEngine2DAnimationList;
       const AFormattersList: TFormatterList;
       const AFastFields: TFastFields;
-      const AEngineThread: TEngineThread);
+      const AEngineThread: TEngineThread;
+      const AResize: TProcedure);
 begin
-  FEngine := AEngine;
+  FStatus := AStatus;
   FImage := AImage;
   FCritical := ACritical;
   FAddedObjects := 0;
@@ -260,6 +260,7 @@ begin
   FFormatters := AFormattersList;
   FFastFields := AFastFields;
   FEngineThread := AEngineThread;
+  FResize := AResize;
 end;
 
 procedure TEngine2DManager.DeleteHandler(ASender: TObject);
@@ -311,13 +312,17 @@ end;
 
 destructor TEngine2DManager.Destroy;
 begin
-  FEngine := Nil;
-  fObjects := Nil;
-  fResources := Nil;
-  fAnimationList := Nil;
-  fFormatters := Nil;
-  FFastFields := Nil;
-  FEngineThread := Nil;
+  FStatus := nil;
+  FImage := nil;
+  FCritical := nil;
+  FObjects :=  nil;
+  FResources :=  nil;
+  FObjectOrder := nil;
+  FAnimationList := nil;
+  FFormatters := nil;
+  FFastFields := nil;
+  FEngineThread := nil;
+  FResize := nil;
   inherited;
 end;
 
@@ -355,7 +360,7 @@ end;
 
 function TEngine2DManager.GetEngineHeight: Integer;
 begin
-  Result := TEngine2d(FEngine).Height;
+  Result := FStatus.Height; //TEngine2d(FEngine).Height;
 end;
 
 function TEngine2DManager.GetEngineSpeed: Single;
@@ -365,7 +370,7 @@ end;
 
 function TEngine2DManager.GetEngineWidth: Integer;
 begin
-  Result := TEngine2d(FEngine).Width;
+  Result := FStatus.Width;//TEngine2d(FEngine).Width;
 end;
 
 function TEngine2DManager.GetItem(AIndex: Integer): tEngine2DObject;
@@ -403,7 +408,7 @@ end;
 
 procedure TEngine2DManager.Resize;
 begin
-  TEngine2d(FEngine).Resize;
+  FResize;
 end;
 
 function TEngine2DManager.ResourceIndex(const AName: string): Integer;

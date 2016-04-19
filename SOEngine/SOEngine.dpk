@@ -62,6 +62,7 @@ contains
   uIntersectorMethods in 'Intersector\uIntersectorMethods.pas',
   uNewFigure in 'Intersector\uNewFigure.pas',
   uClasses in 'Utils\uClasses.pas',
-  uNamedList in 'Utils\uNamedList.pas';
+  uNamedList in 'Utils\uNamedList.pas',
+  uEngine2DStatus in 'Engine\uEngine2DStatus.pas';
 
 end.

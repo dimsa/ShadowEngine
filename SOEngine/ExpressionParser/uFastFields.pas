@@ -34,9 +34,11 @@ type
 
   TFastEngineField = class(TFastField)
   private
-    fEngine: Pointer;
+    FValue: PInteger;
+//    fEngine: Pointer;
   public
-    constructor Create(const APointer: Pointer); reintroduce; virtual;
+    constructor Create(const AValue: PInteger); reintroduce; virtual;
+//     Pointer: Pointer
     destructor Destroy; override;
   end;
 
@@ -303,14 +305,16 @@ end;
 
 { TFastEngineField }
 
-constructor TFastEngineField.Create(const APointer: Pointer);
+constructor TFastEngineField.Create(const AValue: PInteger);
 begin
-  fEngine := APointer;
+  FValue := AValue;
+  //fEngine := APointer;
 end;
 
 destructor TFastEngineField.Destroy;
 begin
-  fEngine := Nil;
+  FValue := Nil;
+//  fEngine := Nil;
   inherited;
 end;
 
@@ -318,7 +322,8 @@ end;
 
 function TFastEngineWidth.GetValue: Double;
 begin
-  Result := TEngine2d(fEngine).width;
+  Result := FValue^;
+//  Result := TEngine2d(fEngine).width;
 end;
 
 procedure TFastEngineWidth.SetValue(const Value: Double);
@@ -330,7 +335,8 @@ end;
 
 function TFastEngineHeight.GetValue: Double;
 begin
-  Result := TEngine2d(fEngine).height;
+  Result := FValue^;
+  //Result := TEngine2d(fEngine).height;
 end;
 
 procedure TFastEngineHeight.SetValue(const Value: Double);

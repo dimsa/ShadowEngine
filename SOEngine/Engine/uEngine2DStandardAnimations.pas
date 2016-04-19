@@ -21,13 +21,11 @@ type
 
   TMouseDownMigrationAnimation = class(TAnimation)
   private
-    FEngineIsMouseDowned: TBooleanFunction;
     FAway: Boolean;
     FPressed: Boolean; // Нажати ли уже кнопка была
     FTempEndPos, FTempStartPos: TPosition;
     FEndPos: TPosition;
   public
-    property EngineIsMouseDowned: TBooleanFunction read FEngineIsMouseDowned write FEngineIsMouseDowned;
     procedure Setup; override;
     function Animate: Byte; override;
     property EndPos: TPosition read FEndPos write FEndPos;
@@ -202,10 +200,10 @@ begin
   if (TimePassed >= TimeTotal)  then
     TimePassed := TimeTotal;
 
-  if (FEngineIsMouseDowned) then
+  if (Status.IsMouseDowned) then
     vRes := CAnimationInProcess;
 
-  if (FEngineIsMouseDowned) and (not FPressed) then
+  if (Status.IsMouseDowned) and (not FPressed) then
   begin
     vRes := CAnimationInProcess;
     FPressed := True;
@@ -214,7 +212,7 @@ begin
     FTempStartPos := StartPosition;
   end;
 
-  if (not FEngineIsMouseDowned) and (FPressed) then
+  if (not Status.IsMouseDowned) and (FPressed) then
   begin
     FPressed := False;
     FTempEndPos := StartPosition;
