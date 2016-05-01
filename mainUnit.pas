@@ -29,6 +29,7 @@ type
 
 var
   mainForm: TmainForm;
+
 implementation
 
 {$R *.fmx}

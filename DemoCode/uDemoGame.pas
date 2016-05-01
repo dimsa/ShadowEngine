@@ -43,7 +43,7 @@ type
   end;
 
   TGameParam = class
-  private
+  strict private
     FLoader: TLoader; // ССылка на Loader
     FManager: TEngine2DManager;
     FStatistics: TStatistics;
@@ -69,11 +69,25 @@ type
     function GetTime: Double;
     procedure SetLevel(const Value: Integer);
     procedure SetScore(const Value: Integer);
+
+    function AddAsteroid(ASize, ASpeed: Byte): TAsteroid;
+    procedure DeleteAsteroid(const ACount: Integer = 1);
+    procedure DefineAsteroidCount(const ACount: Integer);
+
+    procedure PrepareAsteroidForLevel(const ALevel: Integer);
   public
     // Статитические данные игры
     property Score: Integer read GetScore write SetScore;
     property Time: Double read GetTime;
     property GameStatus: TGameStatus read FGameStatus;
+
+    procedure AddTime(const ADeltaTime: Double); // Добавляет дельту времени
+    procedure RenewPanels;
+    procedure BreakLife;
+    procedure FixScore;
+    procedure AddCollision; // Добавляет одно столкновение
+    procedure SetScaling(const AMonitorScale, ASpeedModScale: Double);
+    function AsteroidsForLevel(const ALevel: Integer): Integer;
 
     property Level: Integer read GetLevel write SetLevel;
     property Collisions: Integer read GetCollisions;
@@ -83,21 +97,8 @@ type
     property Lifes: TList<TSprite> read FLifes;
     property Statistics: TStatistics read FStatistics;
 
-    procedure AddTime(const ADeltaTime: Double); // Добавляет дельту времени
-    procedure AddCollision; // Добавляет одно столкновение
-
-    procedure BreakLife;
-    function AddAsteroid(ASize, ASpeed: Byte): TAsteroid;
-    procedure DeleteAsteroid(const ACount: Integer = 1);
-    procedure DefineAsteroidCount(const ACount: Integer);
-    procedure FixScore;
-
     function StatisticsText: string;
 
-    procedure SetScaling(const AMonitorScale, ASpeedModScale: Double);
-    procedure RenewPanels;
-    procedure PrepareAsteroidForLevel(const ALevel: Integer);
-    function AsteroidsForLevel(const ALevel: Integer): Integer;
     procedure RestartGame(const AGameMode: TGameStatus);
     procedure GameOver;
     constructor Create(ALoader: TLoader; AManager: TEngine2DManager);
@@ -289,7 +290,7 @@ end;
 
 function TDemoGame.GetSpeed: Single;
 begin
-  Result := FEngine.Status.EngineSpeed;//.EngineThread.Speed;
+  Result := FEngine.Status.EngineSpeed;
 end;
 
 procedure TDemoGame.MouseDown(Sender: TObject; Button: TMouseButton;
@@ -347,20 +348,23 @@ begin
   FEngine.Manager.Formatter(FGameOverText, 'gameovertext', []).Format;
 
   FMenu := TGameMenu.Create(FEngine.Manager, FLoader);
-  FMenu.StartGame := SelectMode;//StartGame;
-  FMenu.AboutGame := AboutGame;
-  FMenu.StatGame := StatGame;
-  FMenu.ExitGame := ExitGame;
-  FMenu.RelaxMode := StartRelax;
-  FMenu.SurvivalMode := StartSurvival;
-  FMenu.StoryMode := SelectLevel;
-  FMenu.LevelSelect := StartStory;
-  FMenu.OnNextLevelYes := ToNextLevel;
-  FMenu.OnNextLevelNo := ToMainMenu;
-  FMenu.OnRetryLevelYes := ToRetryLevel;
-  FLoader.CreateComix(vTxt1, vTxt2);
-  FMenu.ComixText1 := vTxt1;
-  FMenu.ComixText2 := vTxt2;
+  with FMenu do
+  begin
+    StartGame := Self.SelectMode;//StartGame;
+    AboutGame := Self.AboutGame;
+    StatGame := Self.StatGame;
+    ExitGame := Self.ExitGame;
+    RelaxMode := StartRelax;
+    SurvivalMode := StartSurvival;
+    StoryMode := SelectLevel;
+    LevelSelect := StartStory;
+    OnNextLevelYes := ToNextLevel;
+    OnNextLevelNo := ToMainMenu;
+    OnRetryLevelYes := ToRetryLevel;
+    FLoader.CreateComix(vTxt1, vTxt2);
+    ComixText1 := vTxt1;
+    ComixText2 := vTxt2;
+  end;
 
   FEngine.Manager.HideGroup('ship, menu2, menu3, relaxmodemenu, gameover, stat');
 

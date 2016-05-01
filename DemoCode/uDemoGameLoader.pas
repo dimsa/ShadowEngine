@@ -444,7 +444,7 @@ begin
   vSpr.Shape.AddFigure(vShape);
   vSpr.Visible := False;
 
-  FManager.Add(vSpr, 'ship').Config(-1,'ship', TObjectJustify.Center); // Добавлять можно только так спрайты
+  FManager.Add(vSpr, 'ship');//.Config(-1,'ship', TObjectJustify.Center); // Добавлять можно только так спрайты
 
   Result := vSpr;
 end;

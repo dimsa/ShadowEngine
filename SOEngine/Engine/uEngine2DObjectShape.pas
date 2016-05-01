@@ -79,6 +79,7 @@ end;
 procedure TObjectShape.Draw;
 var
   vFigure: TNewFigure;
+  vSpr: tEngine2DObject;
 begin
   // it's only for debug, so it is not very fast
   ToGlobal;
@@ -88,7 +89,11 @@ begin
     for vFigure in FFigures do
     begin
       vFigure.Reset;
-      vFigure.TempTranslate(tEngine2DObject(Owner).Center);
+
+      vSpr := TEngine2DObject(Owner);
+//      vFigure.TempTranslate(PointF(vSpr.Center.X ,
+//      vSpr.Center.Y));
+
       vFigure.Draw(TEngine2DObject(Owner).Image.Bitmap.Canvas);
     end;
   end

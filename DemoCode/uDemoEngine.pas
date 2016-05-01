@@ -1,5 +1,9 @@
 // В примере рассмотрен вариант с созданием наследника TEngine
-
+{
+  From the box, all what we need will do TEngine2D, but this inheritance is for
+  changing of Background behavior and add Parallax.
+  But realy, now, for this needs you can assign BackgroundBehavior Property
+  }
 unit uDemoEngine;
 
 interface
@@ -8,19 +12,12 @@ uses
   System.Types, uEngine2D;
 
 type
-  TGameStatus = (gsMenu1, gsMenu2, gsMenu3, gsStatics, gsAbout, gsStoryMode);
-
   TDemoEngine = class(TEngine2D)
   private
     FParalX, FParalY: Double;
-    procedure DoWork;
-    procedure DoWorkGame;
     procedure ParallaxBackgroundBehavior;
   public
     constructor Create; override;
-  const
-    CGameRun = 1; // Игра идет
-    CGameEnded = 2; // Ждем клика для создания новой игры
   end;
 
 implementation
@@ -32,21 +29,7 @@ begin
   inherited;
   FParalX := 0;
   FParalY := 0;
-  Status.Status := CGameEnded;
-  EngineThread.WorkProcedure := Self.DoWork;
   BackgroundBehavior := ParallaxBackgroundBehavior;
-end;
-
-procedure TDemoEngine.DoWork;
-begin
-  case Status.Status of
-    CGameRun: doWorkGame;
-  end;
-end;
-
-procedure TDemoEngine.DoWorkGame;
-begin
-  Repaint;
 end;
 
 procedure TDemoEngine.ParallaxBackgroundBehavior;

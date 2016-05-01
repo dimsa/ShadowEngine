@@ -20,7 +20,6 @@ type
 
   TGameButton = class
   private
-//    FParent: Pointer; // Engine2d
     FManager: TEngine2DManager;
     FLoader: TLoader;
     FBack: TButtonBack;
@@ -49,7 +48,6 @@ type
 
   TYesNoMenu = class
   private
-//    FEngine: Pointer;
     FManager: TEngine2DManager;
     FLoader: TLoader;
     FYes, FNo: TGameButton;
@@ -72,12 +70,10 @@ type
 
   TGameMenu = class
   private
-//    FParent: Pointer; // Engine2d
     FMaxLevel: Integer; // Максимальный уровень до которого дошел игрок
     FList: TList<TGameButton>; // Кнопки перехода по страницам меню
     FManager: TEngine2DManager;
     FLoader: TLoader;
-//    FSelectLevel: TList<TGameButton>;
     FGameLogo: TSprite;
     FComixText1, FComixText2: TEngine2DText;
     FNextLevelMenu, FRetryLevelMenu: TYesNoMenu;
@@ -476,7 +472,6 @@ begin
     Self.FLevelMenu[i].OnClick := Value;
 
   FDoLevelSelect := Value;
-  //FList[4].OnClick := Value;
 end;
 
 procedure TGameMenu.SetNextLevelNo(const Value: TNotifyEvent);

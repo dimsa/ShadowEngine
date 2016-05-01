@@ -3,28 +3,30 @@ unit uNewFigure;
 interface
 
 uses
-  System.Generics.Collections, System.Types, System.Classes, {$I 'Utils\DelphiCompatability.inc'}
-  System.Math, uIntersectorClasses, uIntersectorMethods, FMX.Objects,
-  System.UITypes, FMX.Graphics;
+  System.Generics.Collections, System.Types, System.Classes,
+  System.Math, {$I 'Utils\DelphiCompatability.inc'}
+  uIntersectorClasses, uIntersectorMethods, FMX.Objects, System.UITypes, FMX.Graphics,
+  uClasses;
 
 type
-  TNewFigure = class
+  TNewFigure = class(TInterfacedObject)
   private
-    FKind: Byte;
-    FData: TPolygon; // Оригинальная фигура. Задается через SetData
     FTemp: TPolygon; // Темповые координаты. Задаются через Temp методы
     FTempMaxRadius: Single;
     FTempCenter: TPointF;
     procedure RecalcMaxRadius;
     function GetCircle: uIntersectorClasses.TCircle;
     function GetPoly: TPolygon; // Вызывается в SetData
+  protected
+    FKind: Byte;
+    FData: TPolygon; // Оригинальная фигура. Задается через SetData
   public
     property Kind: Byte read FKind; // Тип. Круг или полигон пока что
     property Temp: TPolygon read FTemp write FTemp;
     property TempMaxRadius: Single read FTempMaxRadius; // Временный радиус. Т.е. с учетом масштаба
     property AsCircle: uIntersectorClasses.TCircle read GetCircle;
     property AsPoly: TPolygon read GetPoly;
-    property TempCenter: TPointF read FTempCenter write FTempCenter;
+    property TempCenter: TPointF read FTempCenter;
 
     procedure Reset; // Сбрасывает темповые координат на начальные.
 //    procedure SetData(const vData: TArray<TPointF>); overload;// Трактует данные в зависимости от своего типа
@@ -40,11 +42,13 @@ type
     function IsIntersectWith(const AFigure: TNewFigure): Boolean;
     function FastIntersectWith(const AFigure: TNewFigure): Boolean; experimental; // APoint это центры фигур для сравнения. Нужны, т.к. у полигонов нет центра
     function BelongPointLocal(const APoint: TPointF): Boolean;
-    procedure Draw(ACanvas: TCanvas);
 
-    constructor Create(const AKind: Byte);
-//    constructor CreatePoly;
-//    constructor CreateCircle;
+    procedure Draw(ACanvas: TCanvas; AColor: TColor = TAlphaColorRec.Aqua);
+    procedure DrawPoint(ACanvas: TCanvas; const APoint: TPointF; AColor: TColor = TAlphaColorRec.Aqua);
+
+    constructor Create(const AKind: Byte); virtual;
+    constructor CreatePoly;
+    constructor CreateCircle;
   const
     cfCircle = 1;
     cfPoly = 2;
@@ -78,22 +82,22 @@ begin
   FTemp := Copy(FData);
 end;
 
-//constructor TNewFigure.CreateCircle;
-//begin
-//  Self.Create(cfCircle);
-//end;
-//
-//constructor TNewFigure.CreatePoly;
-//begin
-//  Self.Create(cfPoly);
-//end;
-
-procedure TNewFigure.Draw(ACanvas: TCanvas);
+constructor TNewFigure.CreateCircle;
 begin
+  Self.Create(cfCircle);
+end;
+
+constructor TNewFigure.CreatePoly;
+begin
+  Self.Create(cfPoly);
+end;
+
+procedure TNewFigure.Draw(ACanvas: TCanvas; AColor: TColor);
+begin
+   ACanvas.Fill.Color := AColor;
    case FKind of
     cfCircle:
     begin
-      ACanvas.Fill.Color := TAlphaColorRec.Aqua;
       ACanvas.FillEllipse(
         RectF(
         FTemp[0].X - FTemp[1].X,
@@ -105,12 +109,11 @@ begin
     end;
     cfPoly:
     begin
-      ACanvas.Fill.Color := TAlphaColorRec.Blue;
       ACanvas.FillPolygon(AsPoly, 0.75);
     end;
   end;
 
-  ACanvas.Fill.Color := TAlphaColorRec.Yellow;
+ { ACanvas.Fill.Color := TAlphaColorRec.Yellow;
   ACanvas.FillEllipse(
     RectF(
     FTempCenter.X - FTempMaxRadius,
@@ -128,7 +131,57 @@ begin
         FTempCenter.X + 5,
         FTempCenter.Y + 5),
         1
-      );
+      );  }
+end;
+
+procedure TNewFigure.DrawPoint(ACanvas: TCanvas; const APoint: TPointF;
+  AColor: TColor);
+var
+  vPr: Single;
+
+begin
+   vPr := 5;
+   ACanvas.Fill.Color := AColor;
+
+   ACanvas.FillEllipse(
+     RectF(
+     FTempCenter.X + APoint.X - vPr,
+     FTempCenter.Y + APoint.Y - vPr,
+     FTempCenter.X + APoint.X + vPr,
+     FTempCenter.Y + APoint.Y + vPr),
+     0.75
+   );
+
+//    ACanvas.FillEllipse(
+//     RectF(
+//       APoint.X - vPr,
+//       APoint.Y - vPr,
+//       APoint.X + vPr,
+//       APoint.Y + vPr),
+//       0.75
+//   );
+
+//   case FKind  of
+//    cfCircle: ACanvas.FillEllipse(
+//     RectF(
+//       APoint.X - vPr,
+//       APoint.Y - vPr,
+//       APoint.X + vPr,
+//       APoint.Y + vPr),
+//       0.75
+//   );
+//    cfPoly: ACanvas.FillEllipse(
+//     RectF(
+//       FTempCenter.X + APoint.X - vPr,
+//       FTempCenter.Y + APoint.Y - vPr,
+//       FTempCenter.X + APoint.X + vPr,
+//       FTempCenter.Y + APoint.Y + vPr),
+//       0.75
+//   );
+//   end;
+
+//   + FData[0].X
+//    + FData[0].Y
 end;
 
 function TNewFigure.FastIntersectWith(const AFigure: TNewFigure): Boolean;

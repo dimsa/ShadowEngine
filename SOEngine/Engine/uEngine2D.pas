@@ -173,6 +173,7 @@ constructor TEngine2d.Create;
 begin
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
+  FEngineThread.WorkProcedure := Repaint;
   FStatus := TEngine2DStatus.Create(FEngineThread, @FWidth, @FHeight, @FIsMouseDowned, @FMouseDowned, @FMouseUpped, @FClicked);
 
   FObjectOrder := TIntArray.Create(0);
@@ -258,7 +259,10 @@ begin
 
             FObjects[FObjectOrder[i]].Repaint;
             {$IFDEF DEBUG}
-            if FOptions.ToDrawFigures then
+            if FObjects['ship'] =  FObjects[FObjectOrder[i]] then
+             FObjects['ship'].RepaintWithShapes;
+
+           if FOptions.ToDrawFigures then
               FObjects[FObjectOrder[i]].RepaintWithShapes;
             {$ENDIF}
           end;
