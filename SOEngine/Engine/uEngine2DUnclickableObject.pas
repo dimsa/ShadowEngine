@@ -32,6 +32,7 @@ type
     procedure SetScaleY(const Value: single); virtual;
     procedure SetScale(AValue: single); virtual;
     procedure SetRotate(AValue: single); virtual;
+    procedure SetOpacity(const Value: single); virtual;
   public
     // Связывающие свойства
     property Image: TImage read fImage write fImage; // В этом имедже происходит отрисовка.
@@ -51,7 +52,7 @@ type
 
     // Параметры для  классификации и модификаций
     property Group: string read fGroup write fGroup; // Группа для быстрого скрытия - открытия спрайтов
-    property Opacity: single read {fPosition.opacity}fOpacity write {fPosition.opacity}fOpacity; // Прозрачность
+    property Opacity: single read fOpacity write SetOpacity; // Прозрачность
     property Visible: boolean read fVisible write fVisible; // Риовать спрайт или нет
     property Selectable: boolean read fSelectable write fSelectable; // Риовать спрайт или нет
 
@@ -137,17 +138,22 @@ begin
   Self.Y:= Value.Y
 end;
 
+procedure tEngine2DUnclickableObject.SetOpacity(const Value: Single);
+begin
+  fOpacity := Value;
+end;
+
 procedure tEngine2DUnclickableObject.SetPosition(const Value: TPosition);
 begin
   fPosition := Value;
 end;
 
-procedure tEngine2DUnclickableObject.setRotate(AValue: single);
+procedure tEngine2DUnclickableObject.setRotate(AValue: Single);
 begin
   fPosition.rotate := AValue;
 end;
 
-procedure tEngine2DUnclickableObject.setScale(AValue: single);
+procedure tEngine2DUnclickableObject.setScale(AValue: Single);
 var
   vSoot: Single;
 begin
@@ -169,7 +175,7 @@ begin
   Self.ScaleY:= Value.Y
 end;
 
-procedure tEngine2DUnclickableObject.setScaleX(const Value: single);
+procedure tEngine2DUnclickableObject.setScaleX(const Value: Single);
 begin
   fPosition.ScaleX := Value;
 end;

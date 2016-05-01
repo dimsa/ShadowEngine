@@ -222,6 +222,9 @@ var
   iA, lA: Integer; // Счетчики анимации и форматирования
   m: tMatrix;
   vAnimation: tAnimation;
+  {$IFDEF DEBUG}
+  vSpr: TEngine2DObject;
+  {$ENDIF}
 begin
 
   // Анимация
@@ -237,9 +240,6 @@ begin
     end;
   end;
   FCritical.Leave;
-
-//  if FDebug then
-//   FDebug := False;
 
   FCritical.Enter;
   if (lA > 0) or (FOptions.ToAnimateForever) then
@@ -257,14 +257,17 @@ begin
             m := TMatrix.CreateTranslation(-FObjects[FObjectOrder[i]].x, -FObjects[FObjectOrder[i]].y) * TMatrix.CreateScaling(FObjects[FObjectOrder[i]].ScaleX, FObjects[FObjectOrder[i]].ScaleY) * TMatrix.CreateRotation(FObjects[FObjectOrder[i]].rotate * pi180) * TMatrix.CreateTranslation(FObjects[FObjectOrder[i]].x, FObjects[FObjectOrder[i]].y);
             Bitmap.Canvas.SetMatrix(m);
 
-            FObjects[FObjectOrder[i]].Repaint;
-            {$IFDEF DEBUG}
-            if FObjects['ship'] =  FObjects[FObjectOrder[i]] then
-             FObjects['ship'].RepaintWithShapes;
-
+           {$IFDEF DEBUG}
            if FOptions.ToDrawFigures then
-              FObjects[FObjectOrder[i]].RepaintWithShapes;
-            {$ENDIF}
+             vSpr := FObjects[FObjectOrder[i]];
+           {$ENDIF}
+
+           FObjects[FObjectOrder[i]].Repaint;
+
+           {$IFDEF DEBUG}
+           if FOptions.ToDrawFigures then
+             vSpr.RepaintWithShapes;
+           {$ENDIF}
           end;
       finally
         FInEndPaintBehavior;

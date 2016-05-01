@@ -82,7 +82,8 @@ var
   vSpr: tEngine2DObject;
 begin
   // it's only for debug, so it is not very fast
-  ToGlobal;
+  //ToGlobal;
+
   if Length(Self.FFigures) > 0 then
   begin
 
@@ -91,8 +92,8 @@ begin
       vFigure.Reset;
 
       vSpr := TEngine2DObject(Owner);
-//      vFigure.TempTranslate(PointF(vSpr.Center.X ,
-//      vSpr.Center.Y));
+
+     vFigure.TempTranslate(PointF(vSpr.X, vSpr.Y));
 
       vFigure.Draw(TEngine2DObject(Owner).Image.Bitmap.Canvas);
     end;
@@ -111,10 +112,12 @@ begin
   // Center of the all figures. Base point of sprite
   with TEngine2DObject(Owner) do
   begin
-    Image.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Aliceblue;
+    Image.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Yellow;
     Image.Bitmap.Canvas.FillEllipse(RectF(X - 3, Y - 3, X + 3, Y + 3), 1);
+
+    // Max radius.If circles of this radius collides then engine start test colliding in parts
     Image.Bitmap.Canvas.Fill.Color := TAlphaColorRec.Pink;
-    Image.Bitmap.Canvas.FillEllipse(RectF(X - MaxRadius, Y - MaxRadius, X + MaxRadius, Y + MaxRadius), 0.5);
+    Image.Bitmap.Canvas.FillEllipse(RectF(X - MaxRadius / ScaleX, Y - MaxRadius / ScaleY, X + MaxRadius / ScaleX, Y + MaxRadius / ScaleY), 0.5);
   end;
 end;
 

@@ -29,7 +29,6 @@ type
     FMaxDx, FMaxDy, FMaxDa: Single;
     FMonitorScale: Single;
     FSpeedModScale: Single;
-    procedure SetScale(AValue: single); override;
   public
     property DX: Double read FDx write FDx;
     property DY: Double read FDy write FDy;
@@ -53,9 +52,10 @@ type
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   protected
     procedure SetScale(AValue: single); override;
+    procedure SetOpacity(const Value: single); override;
   public
     property Parts: TList<TSprite> read FParts;
-    procedure SetOpacity(const AOpacity: Integer);
+
     property Destination: TPosition read FDestination write FDestination;
     property IsPaint: Boolean read FIsPaint write FIsPaint;
     procedure Repaint; override;
@@ -68,7 +68,7 @@ type
 
   TAsteroid = class(TMovingUnit)
   private
-//    FNotChange: Integer; // Кол-во тиков, которое не будет изменяться направление при коллайдер
+//    FNotChange: Integer; // Кол-во тиков, которое не будет изменяться направление при коллайдере
     FManager: TEngine2DManager;
     FScaleMod: Single;
     FSize: Byte;
@@ -361,13 +361,15 @@ begin
   FShipLight.SendToFront;
  end;
 
-procedure TShip.SetOpacity(const AOpacity: Integer);
+procedure TShip.SetOpacity(const Value: single);
 var
   i: Integer;
 begin
-  Self.Opacity := AOpacity;
-  for i := 0 to FParts.Count - 1 do
-    FParts[i].Opacity := AOpacity;
+  inherited;
+//  Self.Opacity := Value;
+  if FParts <> nil then
+    for i := 1 to FParts.Count - 1 do
+      FParts[i].Opacity := Value;
 end;
 
 procedure TShip.SetScale(AValue: single);
@@ -381,11 +383,13 @@ end;
 
 procedure TShip.Show;
 begin
-  Self.SetOpacity(1);
+//Self.SetOpacity(1);
+  Opacity := 1;
   Self.x := FManager.EngineWidth * 0.5;
   Self.y := FManager.EngineHeight * 0.5;
   FIsPaint := True;
   FManager.ShowGroup('ship');
+
 end;
 
 { TAsteroid }
@@ -636,12 +640,6 @@ end;
 procedure TMovingUnit.SetMonitorScale(const AValue: Single);
 begin
   FMonitorScale := AValue;
-end;
-
-procedure TMovingUnit.SetScale(AValue: single);
-begin
-  inherited;
-
 end;
 
 procedure TMovingUnit.SetSpeedModScale(const AValue: Single);
