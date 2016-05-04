@@ -46,7 +46,7 @@ type
     procedure AddPoly;
     procedure AddCircle;
     procedure AddObj; overload;
-    procedure AddObj(const AObject: TItemObjectModel); overload; // Need to move to protected
+    procedure AddObj(const AObject: TResourceModel); overload; // Need to move to protected
     procedure DelObj;
     procedure AddPoint;
     procedure DelPoint;
@@ -67,7 +67,7 @@ procedure TObjecterPresenter.AddObj;
 var
   vViewItem: IItemView;
   vItemPresenter: TItemObjecterPresenter;
-  vModel: TItemObjectModel;
+  vModel: TResourceModel;
 begin
     // Creating View
     vViewItem := View.AddElement;
@@ -94,7 +94,7 @@ begin
     end;
 end;
 
-procedure TObjecterPresenter.AddObj(const AObject: TItemObjectModel);
+procedure TObjecterPresenter.AddObj(const AObject: TResourceModel);
 var
   vViewItem: IItemView;
   vItemPresenter: TItemObjecterPresenter;

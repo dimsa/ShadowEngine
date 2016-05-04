@@ -28,9 +28,6 @@ type
 
     FObjecter: IInterface;
     FImager: IInterface;
-//    FObjecter: TObjecterPresenter;
-//    FImager: TImagerPresenter;
-
     FResourceFileName: string;
 
     procedure DoChangeStatus(ASender: TObject);
@@ -161,7 +158,7 @@ var
   vS, vSTmp, vPar: string;
   vN: Integer;
   vImageElement: TItemImageModel;
-  vElement: TItemObjectModel;
+  vElement: TResourceModel;
 begin
   try
   vStream := TStreamUtil.Create(AFileName);
@@ -254,34 +251,9 @@ var
   vBmp: TBitmap;
   vTmp: TStream;
 begin
+
   vStream := TStreamUtil.Create(AFileName);
-  with vStream do
-  begin
-    StartWrite;
-    WriteStrOnly('SpriteShapeBuilderProjectFile');
-    WriteStr('Version');
-    WriteInt(1);
-    WriteStr('Resources');
-    WriteInt(FModel.ImageElementCount);
-    for i := 0 to FModel.ImageElementCount - 1 do
-    begin
-      WriteStr('Resource');
-      FModel.ImageElements[i].WriteToStream(vStream);
-    end;
-
-    WriteStr('ResourceFileName');
-    WriteStr(FResourceFileName);
-    WriteStr('Objects');
-    WriteInt(FModel.ElementCount);
-
-    for i := 0 to FModel.ElementCount - 1 do
-    begin
-      FModel.Elements[i].WriteToStream(vStream);
-    end;
-
-    Stop;
-  end;
-
+  FModel.SaveProjectToStream(vStream);
   vStream.Free;
 
   {Look at SSBProjectFormatDescription.txt !!!}

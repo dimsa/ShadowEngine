@@ -545,7 +545,7 @@ object SSBForm: TSSBForm
     Top = 8
   end
   object GlowEffect1: TGlowEffect
-    Softness = 0.400000005960464500
+    Softness = 0.400000005960464400
     GlowColor = claGold
     Opacity = 0.899999976158142100
   end

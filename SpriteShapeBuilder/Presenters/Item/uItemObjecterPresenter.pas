@@ -14,7 +14,7 @@ type
 
   TItemObjecterPresenter = class(TItemBasePresenter)
   private
-    FItemObjectModel: TItemObjectModel;
+    FItemObjectModel: TResourceModel;
     FBmp: TBitmap; // Picture of object with Shapes
     FShapes: TList<TItemShaperPresenterFriend>;
     FIsShapeVisible: Boolean;
@@ -40,7 +40,7 @@ type
     property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
     property Rect: TRectF read GetRect write SetRect;
-    property Model: TItemObjectModel read FItemObjectModel;
+    property Model: TResourceModel read FItemObjectModel;
     procedure ShowShapes;
     procedure HideShapes;
     procedure AddPoly;
@@ -52,7 +52,7 @@ type
     procedure MouseUp; override;
     procedure MouseMove; override;
     procedure Delete; override;
-    constructor Create(const AItemView: IItemView; const AItemObjectModel: TItemObjectModel);
+    constructor Create(const AItemView: IItemView; const AItemObjectModel: TResourceModel);
     destructor Destroy; override;
   end;
 
@@ -127,7 +127,7 @@ begin
   Result := FBmp;
 end;
 
-constructor TItemObjecterPresenter.Create(const AItemView: IItemView; const AItemObjectModel: TItemObjectModel);
+constructor TItemObjecterPresenter.Create(const AItemView: IItemView; const AItemObjectModel: TResourceModel);
 begin
   inherited Create(AItemView);
 
@@ -312,7 +312,7 @@ end;
 
 procedure TItemObjecterPresenter.OnModelUpdate(ASender: TObject);
 var
-  vModel: TItemObjectModel;
+  vModel: TResourceModel;
   vShape: TItemShaperPresenterFriend;
   i: Integer;
 begin
