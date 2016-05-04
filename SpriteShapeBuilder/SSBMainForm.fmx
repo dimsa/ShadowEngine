@@ -1,7 +1,7 @@
 object SSBForm: TSSBForm
   Left = 0
   Top = 0
-  Caption = 'SSBForm'
+  Caption = 'Sprite Shape Builder (SSB)'
   ClientHeight = 576
   ClientWidth = 640
   FormFactor.Width = 320
@@ -519,7 +519,6 @@ object SSBForm: TSSBForm
       OnMouseMove = BackgroundMouseMove
       OnMouseUp = BackgroundMouseUp
       OnMouseWheel = BackgroundMouseWheel
-      OnResize = BackgroundResize
     end
   end
   object OpenDialog: TOpenDialog

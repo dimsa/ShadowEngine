@@ -25,6 +25,13 @@
 					"50,200"
 				]
 			}]
+		},
+		"Custom": {
+			"Lifes": 3,
+			"Description": "Some kind of text for example",
+			"SomeObject": {
+				"Id": 100
+			}
 		}
 	}, {
 		"Name": "Object2",

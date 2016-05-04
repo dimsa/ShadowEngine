@@ -29,6 +29,10 @@ type
     procedure JustifyPoints(AItem: TItemObjecterPresenter);
     procedure JustifyAnchors(AItem: TItemObjecterPresenter);
     function ResizeType(const AItem: TItemObjecterPresenter): TResizeType;
+    procedure AddObj(const AView: IItemView; const APresenter: TItemObjecterPresenter); overload;
+    procedure InitViewAndPresenter(const AView: IItemView;
+      const APresenter: TItemObjecterPresenter);
+//    procedure InitViewAndPresenter(const AView: IItemView; const APresenter: TItemObjecterPresenter);
   protected
     FModel: TSSBModel;
     FItems: TDictionary<TItemObjecterPresenter, IItemView>;
@@ -47,6 +51,8 @@ type
     procedure AddCircle;
     procedure AddObj; overload;
     procedure AddObj(const AObject: TItemObjectModel); overload; // Need to move to protected
+    procedure AddObj(const AImageModel: TItemImageModel); overload; // Need to move to protected
+//    procedure AddObj(const AItemImageModel: TItemImageModel); overload; // Need to move to protected
     procedure DelObj;
     procedure AddPoint;
     procedure DelPoint;
@@ -69,29 +75,19 @@ var
   vItemPresenter: TItemObjecterPresenter;
   vModel: TItemObjectModel;
 begin
-    // Creating View
-    vViewItem := View.AddElement;
+  // Creating View
+  vViewItem := View.AddElement;
 
-    // Creating Model
-    vModel := Model.AddElement;
+  // Creating Model
+  vModel := Model.AddElement;
 
-    // Creating Presenter
-    vItemPresenter := TItemObjecterPresenter.Create(vViewItem, vModel);
+  // Creating Presenter
+  vItemPresenter := TItemObjecterPresenter.Create(vViewItem, vModel);
 
-    vModel.Width := 50;
-    vModel.Height:= 50;
+  vModel.Width := 50;
+  vModel.Height:= 50;
 
-    vViewItem.Presenter := vItemPresenter;
-    vItemPresenter.OnMouseDown := DoMouseDown;
-    vItemPresenter.OnMouseUp := DoMouseUp;
-    vItemPresenter.OnMouseMove := DoMouseMove;
-
-    FItems.Add(TItemObjecterPresenter(vItemPresenter), vViewItem);
-    try
-      vItemPresenter.Repaint;
-    except
-      View.RemoveElement(vViewItem);
-    end;
+  AddObj(vViewItem, vItemPresenter);
 end;
 
 procedure TObjecterPresenter.AddObj(const AObject: TItemObjectModel);
@@ -105,16 +101,36 @@ begin
     // Creating Presenter
     vItemPresenter := TItemObjecterPresenter.Create(vViewItem, AObject);
 
-    vViewItem.Presenter := vItemPresenter;
-    vItemPresenter.OnMouseDown := DoMouseDown;
-    vItemPresenter.OnMouseUp := DoMouseUp;
-    vItemPresenter.OnMouseMove := DoMouseMove;
+  AddObj(vViewItem, vItemPresenter);
+end;
 
-    FItems.Add(TItemObjecterPresenter(vItemPresenter), vViewItem);
+procedure TObjecterPresenter.AddObj(const AImageModel: TItemImageModel);
+var
+  vViewItem: IItemView;
+  vItemPresenter: TItemObjecterPresenter;
+begin
+    // Creating View
+    vViewItem := View.AddElement;
+
+    {
+
+    // Creating Presenter
+    vItemPresenter := TItemObjecterPresenter.Create(vViewItem, AObject);}
+end;
+
+procedure TObjecterPresenter.AddObj(const AView: IItemView;
+  const APresenter: TItemObjecterPresenter);
+begin
+    AView.Presenter := APresenter;
+    APresenter.OnMouseDown := DoMouseDown;
+    APresenter.OnMouseUp := DoMouseUp;
+    APresenter.OnMouseMove := DoMouseMove;
+
+    FItems.Add(TItemObjecterPresenter(APresenter), AView);
     try
-      vItemPresenter.Repaint;
+      APresenter.Repaint;
     except
-      View.RemoveElement(vViewItem);
+      View.RemoveElement(AView);
     end;
 end;
 
@@ -202,6 +218,12 @@ begin
 
   for vItem in FItems.Keys do
     vItem.HideShapes;
+end;
+
+procedure TObjecterPresenter.InitViewAndPresenter(const AView: IItemView;
+  const APresenter: TItemObjecterPresenter);
+begin
+
 end;
 
 procedure TObjecterPresenter.JustifyAnchors(AItem: TItemObjecterPresenter);

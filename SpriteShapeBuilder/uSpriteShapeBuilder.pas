@@ -28,9 +28,6 @@ type
 
     FObjecter: IInterface;
     FImager: IInterface;
-//    FObjecter: TObjecterPresenter;
-//    FImager: TImagerPresenter;
-
     FResourceFileName: string;
 
     procedure DoChangeStatus(ASender: TObject);
@@ -288,10 +285,36 @@ begin
 end;
 
 procedure TSpriteShapeBuilder.SetStatus(const Value: TSSBStatus);
+var
+  vImageList: TList<TItemImageModel>;
+  i: Integer;
+  vDlg: Integer;
+  vObj: TItemObjectModel;
 begin
+  if (Value = TSSBStatus.sObject) and (FStatus = TSSBStatus.sPicture) then
+  begin
+    vImageList := FModel.FindResourceWithoutObject;
+
+    for i := 0 to vImageList.Count - 1 do
+    begin
+      vDlg := FMX.Dialogs.MessageDlg(
+        'The Image with Name "' + vImageList[i].Name + '" hasn''t object that uses it. Add that object?',
+        TMsgDlgType.mtCustom, mbYesNoCancel, 0);
+      case vDlg of
+        mrOk: begin Objecter.AddObj(FModel.ItemObjectFromItemImage(vImageList[i])); end;
+        mrCancel: Exit;
+        else Continue;
+      end;
+    end;
+
+  end;
+
+
   FPanels[FStatus].Visible := False;
   FStatus := Value;
   FPanels[FStatus].Visible := True;
+
+
 
   if Value = TSSBStatus.sShape then
     Objecter.ShowShapes

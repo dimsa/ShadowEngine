@@ -37,18 +37,21 @@ type
     FPosition: TPoint;
     FGroup: string;
     FShapes: TList<TItemShapeModel>;
+    FResourceName: string;
     procedure SetGroup(const Value: string);
     procedure SetHeight(const Value: Integer);
     procedure SetName(const Value: string);
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
     procedure SetShapesList(const Value: TList<TItemShapeModel>);
+    procedure SetResourceName(const Value: string);
   public
     property Name: string read FName write SetName;
     property Width: Integer read FWidth write SetWidth;
     property Height: Integer read FHeight write SetHeight;
-    property Position: TPoint read FPosition write SetPosition;
+//    property Position: TPoint read FPosition write SetPosition;
     property Group: string read FGroup write SetGroup;
+    property ResourceName: string read FResourceName write SetResourceName;
     property ShapesList: TList<TItemShapeModel> read FShapes write SetShapesList;
     procedure AddShape(const AShape: TItemShapeModel);
     procedure DelShape(const AShape: TItemShapeModel);
@@ -66,6 +69,7 @@ type
   private
     FOriginalImage: TImage;
     FRect: TRect;
+    FName: string;
     procedure SetOriginalImage(const Value: TImage);
     procedure SetRect(const Value: TRect);
     function GetHeight: Integer;
@@ -74,12 +78,15 @@ type
     procedure SetHeight(const Value: Integer);
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
+    procedure SetName(const Value: string);
   public
     property OriginalImage: TImage read FOriginalImage write SetOriginalImage;
     property Rect: TRect read FRect write SetRect;
     property Position: TPoint read GetPosition write SetPosition;
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
+    property Name: string read FName write SetName;
+    function AsJson: TJSONObject;
     procedure WriteToStream(AStream: TStreamUtil);
     procedure ReadFromStream(AStream: TStreamUtil);
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
@@ -109,9 +116,12 @@ type
     property ImageElementCount: Integer read GetImageElementCount;
     property Elements[AIndex: Integer]: TItemObjectModel read GetElement write SetElement;
     property ImageElements[AIndex: Integer]: TItemImageModel read GetImageElement write SetImageElement;
+    function FindResourceWithoutObject: TList<TItemImageModel>; // Finds all ImageModels that haven't using in Elements
+    function FindObjectsWithoutResource: TList<TItemObjectModel>; // Finds all ObjectModels that haven't resources
     property Image: TBitmap read FBitmap;
     function AddImageElement: TItemImageModel;
     function AddElement: TItemObjectModel;
+    function ItemObjectFromItemImage(const AItemImageModel: TItemImageModel): TItemObjectModel;
     function GenerateWholeBitmap: TBitmap;
     procedure DelElement(const AElement: TItemObjectModel);
     procedure DelImage(const AImageElement: TItemImageModel);
@@ -138,7 +148,10 @@ var
   vModel: TItemImageModel;
 begin
   vModel := TItemImageModel.Create(OnUpdateImageObject);
+  vModel.Name := 'Res' + IntToStr(FImageElements.Count);
+
   FImageElements.Add(vModel);
+
   RaiseUpdateEvent;
   Result := vModel;
 end;
@@ -180,6 +193,37 @@ begin
   for i := 0 to FImageElements.Count - 1 do
     FImageElements[i].Free;
   FImageElements.Free;
+end;
+
+function TSSBModel.FindObjectsWithoutResource: TList<TItemObjectModel>;
+var
+  i: Integer;
+begin
+  Result := TList<TItemObjectModel>.Create;
+  for i := 0 to ElementCount - 1 do
+    if Elements[i].ResourceName = '' then
+      Result.Add(Elements[i]);
+end;
+
+function TSSBModel.FindResourceWithoutObject: TList<TItemImageModel>;
+var
+  i, j: Integer;
+  vIsElementExist: Boolean;
+begin
+  Result := TList<TItemImageModel>.Create;
+
+  for i := 0 to ImageElementCount -1 do
+  begin
+    vIsElementExist := False;
+    for j := 0 to ElementCount - 1 do
+      if ImageElements[i].Name = Elements[j].ResourceName then
+      begin
+        vIsElementExist := True;
+        Break;
+      end;
+    if not vIsElementExist then
+      Result.Add(ImageElements[i]);
+  end;
 end;
 
 procedure TSSBModel.FromJson(const AJson: string);
@@ -240,6 +284,18 @@ begin
   Result := FImageElements.Count;
 end;
 
+function TSSBModel.ItemObjectFromItemImage(
+  const AItemImageModel: TItemImageModel): TItemObjectModel;
+begin
+  Result := TItemObjectModel.Create(OnUpdateItemObject);
+  Result.Width := AItemImageModel.Width;
+  Result.Height := AItemImageModel.Height;
+
+  Result. := AItemImageModel.Width;
+  Result.Height := AItemImageModel.Height;
+
+end;
+
 procedure TSSBModel.OnUpdateImageObject(Sender: TObject);
 begin
 
@@ -277,13 +333,18 @@ var
 begin
   vJson := TJSONObject.Create;
   vJson.AddPair('ImageFile', 'test.txt');
+
+  // Saving Resources section
   vObjArr := TJSONArray.Create;
+  for i := 0 to FImageElements.Count - 1 do
+    vObjArr.AddElement(FImageElements[i].AsJson);
+  vJson.AddPair('Resources', vObjArr);
+  vObjArr.Free;
 
+  // Saving Objects section
+  vObjArr := TJSONArray.Create;
   for i := 0 to FElements.Count - 1 do
-  begin
     vObjArr.AddElement(FElements[i].AsJson);
-  end;
-
   vJson.AddPair('Objects', vObjArr);
 
   Result := vJson.ToJSON;
@@ -303,23 +364,22 @@ var
   vObj,vBody: TJSONObject;
   vShapes: TJSONArray;
 begin
+  vObj.AddPair('Name', Self.Name);
+  vObj.AddPair('Group', Self.Group);
+
   vBody := TJSONObject.Create;
 
-
-  vBody.AddPair('Position',
-    IntToStr(Self.Position.X) + ',' + IntToStr(Self.Position.Y) + ';' +
-    IntToStr(Self.Position.X + Self.Width) + ',' + IntToStr(Self.Position.Y + Self.Height)
-  );
+  vBody.AddPair('Resource', Self.ResourceName);
 
   vShapes := TJSONArray.Create;
   for i := 0 to FShapes.Count - 1 do
     vShapes.AddElement(FShapes[i].AsJson);
 
+
   vBody.AddPair('Figures', vShapes);
 
   vObj := TJSONObject.Create;
-  vObj.AddPair('Name', Self.Name);
-  vObj.AddPair('Group', Self.Group);
+
   vObj.AddPair('Body', vBody);
 
   Result := vObj;
@@ -416,6 +476,12 @@ end;
 procedure TItemObjectModel.SetPosition(const Value: TPoint);
 begin
   FPosition := Value;
+  RaiseUpdateEvent;
+end;
+
+procedure TItemObjectModel.SetResourceName(const Value: string);
+begin
+  FResourceName := Value;
   RaiseUpdateEvent;
 end;
 
@@ -611,6 +677,21 @@ begin
   FFigure.SetData(AData);
 end;
 
+function TItemImageModel.AsJson: TJSONObject;
+var
+  vObj: TJSONObject;
+begin
+  vObj := TJSONObject.Create;
+
+  vObj.AddPair('Name', Name);
+  vObj.AddPair('Position',
+    IntToStr(Self.Position.X) + ',' + IntToStr(Self.Position.Y) + ';' +
+    IntToStr(Self.Position.X + Self.Width) + ',' + IntToStr(Self.Position.Y + Self.Height)
+  );
+
+  Result := vObj;
+end;
+
 constructor TItemImageModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
   inherited;
@@ -683,6 +764,12 @@ begin
   RaiseUpdateEvent;
 end;
 
+procedure TItemImageModel.SetName(const Value: string);
+begin
+  FName := Value;
+  RaiseUpdateEvent;
+end;
+
 procedure TItemImageModel.SetOriginalImage(const Value: TImage);
 begin
   FOriginalImage := Value;
@@ -692,8 +779,6 @@ end;
 procedure TItemImageModel.SetPosition(const Value: TPoint);
 begin
   FRect.SetLocation(Value);
-//  FRect.TopLeft:= Value;
-
   RaiseUpdateEvent;
 end;
 

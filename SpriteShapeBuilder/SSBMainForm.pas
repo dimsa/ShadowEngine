@@ -56,7 +56,6 @@ type
     procedure Shape_imgClick(Sender: TObject);
     procedure BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Single);
-    procedure BackgroundResize(Sender: TObject);
     procedure AddObjectBtnClick(Sender: TObject);
     procedure DelObjectBtnClick(Sender: TObject);
     procedure BackgroundMouseUp(Sender: TObject; Button: TMouseButton;
@@ -118,7 +117,7 @@ end;
 procedure TSSBForm.BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Single);
 begin
-  SSBForm.Caption := x.ToString() + ' ' + y.ToString();
+//  SSBForm.Caption := x.ToString() + ' ' + y.ToString();
   SSB.Imager.MouseMove;
   SSB.Objecter.MouseMove;
 end;
@@ -138,11 +137,6 @@ begin
     MainPanel.Scale.X := MainPanel.Scale.X + ((WheelDelta / 120) * 0.1);
     MainPanel.Scale.Y := MainPanel.Scale.X;
   end;
-end;
-
-procedure TSSBForm.BackgroundResize(Sender: TObject);
-begin
-  SSBForm.Caption := Random(100).ToString;
 end;
 
 procedure TSSBForm.DelObjectBtnClick(Sender: TObject);
