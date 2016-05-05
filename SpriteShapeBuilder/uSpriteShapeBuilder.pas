@@ -6,7 +6,7 @@ uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types, FMX.Graphics,
   System.JSON, FMX.Controls, FMX.Layouts,
-  uNamedList, uEasyDevice, uClasses, uStreamUtil,
+  uNamedList, uEasyDevice, uClasses, uStreamUtil, uMainModel,
   uSSBModels, uView, uSSBTypes, uImagerPresenter, uObjecterPresenter;
 
 type
@@ -203,7 +203,7 @@ begin
 
     for i := 0 to vN - 1 do
     begin
-      vElement := FModel.AddElement;
+      vElement := FModel.AddResource;
       vElement.ReadFromStream(vStream);
       Objecter.AddObj(vElement);
       Objecter.ShowShapes;

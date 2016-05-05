@@ -6,7 +6,7 @@ uses
   System.Types, System.SysUtils, System.Generics.Collections, FMX.Objects,
   uBasePresenterIncapsulator,
   uIView, uSSBTypes, uItemBasePresenter, uClasses, uIItemPresenter,
-  uIItemView, uItemImagerPresenter, uSSBModels, uMVPFrameWork,
+  uIItemView, uItemImagerPresenter, uMainModel, uSSBModels, uMVPFrameWork,
   uEasyDevice;
 
 
@@ -123,7 +123,7 @@ var
 begin
   if FSelected <> nil then
   begin
-    Model.DelImage(FSelected.Model);
+    Model.RemoveImage(FSelected.Model);
     vView := FItems[FSelected];
     View.RemoveElement(vView);
     FItems.Remove(FSelected);

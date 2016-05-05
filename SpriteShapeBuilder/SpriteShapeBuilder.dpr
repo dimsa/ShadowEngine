@@ -28,7 +28,8 @@ uses
   uObjecterPresenter in 'Presenters\Main\uObjecterPresenter.pas',
   uBasePresenterIncapsulator in 'Presenters\Main\uBasePresenterIncapsulator.pas',
   uItemShaperPresenter in 'Presenters\Item\uItemShaperPresenter.pas',
-  uStreamUtil in 'Utils\uStreamUtil.pas';
+  uStreamUtil in 'Utils\uStreamUtil.pas',
+  uMainModel in 'Model\uMainModel.pas';
 
 {$R *.res}
 

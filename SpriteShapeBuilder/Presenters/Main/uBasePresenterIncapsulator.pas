@@ -4,7 +4,7 @@ interface
 
 uses
   System.Types,
-  uMVPFrameWork, uIView, uSSBModels;
+  uMVPFrameWork, uIView, uMainModel;
 
 type
   TBasePresenterIncapsulator = class(TPresenter)

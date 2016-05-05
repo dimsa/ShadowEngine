@@ -4,7 +4,7 @@ interface
 
 uses
   System.Generics.Collections, FMX.Objects, System.Types, uClasses,
-  uIView, uMVPFrameWork, uSSBModels, uSSBTypes,
+  uIView, uMVPFrameWork, uSSBModels, uMainModel, uSSBTypes,
   uIItemView, uItemObjecterPresenter,
   uBasePresenterIncapsulator;
 
@@ -73,7 +73,7 @@ begin
     vViewItem := View.AddElement;
 
     // Creating Model
-    vModel := Model.AddElement;
+    vModel := Model.AddResource;
 
     // Creating Presenter
     vItemPresenter := TItemObjecterPresenter.Create(vViewItem, vModel);
@@ -149,7 +149,7 @@ var
 begin
   if FSelected <> nil then
   begin
-    Model.DelElement(FSelected.Model);
+    Model.RemoveResource(FSelected.Model);
     vView := FItems[FSelected];
     View.RemoveElement(vView);
     FItems.Remove(FSelected);
