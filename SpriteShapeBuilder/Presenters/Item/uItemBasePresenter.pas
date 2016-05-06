@@ -10,24 +10,28 @@ type
   TItemBasePresenter = class abstract(TPresenter, IItemPresenter, IPresenterEvent)
   protected
     FView: IItemView;
-    FOnMouseDown, FOnMouseUp, FOnMouseMove: TNotifyEvent;
+    FOnMouseDown, FOnMouseUp, FOnMouseMove, FOnOptionsShow: TNotifyEvent;
     procedure SetOnMouseDown(AHandler: TNotifyEvent); virtual;
     function GetOnMouseDown: TNotifyEvent; virtual;
     procedure SetOnMouseUp(AHandler: TNotifyEvent); virtual;
     function GetOnMouseUp: TNotifyEvent; virtual;
     procedure SetOnMouseMove(AHandler: TNotifyEvent); virtual;
     function GetOnMouseMove: TNotifyEvent; virtual;
+    function GetOnOptionsShow: TNotifyEvent; virtual;
+    procedure SetOnOptionsShow(AHandler: TNotifyEvent); virtual;
     function GetRect: TRectF; virtual; abstract;
     procedure SetRect(const Value: TRectF); virtual; abstract;
   public
     property OnMouseDown: TNotifyEvent read GetOnMouseDown write SetOnMouseDown;
     property OnMouseUp: TNotifyEvent read GetOnMouseUp write SetOnMouseUp;
     property OnMouseMove: TNotifyEvent read GetOnMouseMove write SetOnMouseMove;
+    property OnOptionsShow: TNotifyEvent read GetOnOptionsShow write SetOnOptionsShow;
     property Rect: TRectF read GetRect write SetRect;
     procedure Delete; virtual; abstract;
     procedure MouseDown; virtual; abstract;
     procedure MouseUp; virtual; abstract;
     procedure MouseMove; virtual; abstract;
+    procedure ShowOptions; virtual; abstract;
     constructor Create(const AItemView: IItemView); reintroduce; virtual;
   end;
 
@@ -55,6 +59,11 @@ begin
   Result := FOnMouseUp;
 end;
 
+function TItemBasePresenter.GetOnOptionsShow: TNotifyEvent;
+begin
+  Result := FOnOptionsShow;
+end;
+
 procedure TItemBasePresenter.SetOnMouseDown(AHandler: TNotifyEvent);
 begin
   FOnMouseDown := AHandler;
@@ -68,6 +77,11 @@ end;
 procedure TItemBasePresenter.SetOnMouseUp(AHandler: TNotifyEvent);
 begin
   FOnMouseUp := AHandler;
+end;
+
+procedure TItemBasePresenter.SetOnOptionsShow(AHandler: TNotifyEvent);
+begin
+  FOnOptionsShow := AHandler;
 end;
 
 end.

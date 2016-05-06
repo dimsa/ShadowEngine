@@ -11,7 +11,7 @@ uses
   uIntersectorClasses in 'Intersector\uIntersectorClasses.pas',
   uIntersectorMethods in 'Intersector\uIntersectorMethods.pas',
   uNewFigure in 'Intersector\uNewFigure.pas',
-  SSBOptionsForm in 'SSBOptionsForm.pas' {OptionsForm},
+  uOptionsForm in 'uOptionsForm.pas' {OptionsForm},
   uSSBModels in 'Model\uSSBModels.pas',
   uView in 'View\uView.pas',
   uSSBTypes in 'uSSBTypes.pas',
@@ -36,6 +36,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TSSBForm, SSBForm);
-  Application.CreateForm(TOptionsForm, OptionsForm);
   Application.Run;
 end.

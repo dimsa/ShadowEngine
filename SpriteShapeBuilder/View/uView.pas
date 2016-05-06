@@ -5,13 +5,14 @@ interface
 uses
   System.Generics.Collections, System.SysUtils, System.Types, FMX.Graphics,
   FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms, FMX.Dialogs,
-  FMX.Types, System.Classes, System.UITypes, uEasyDevice,
+  FMX.Types, System.Classes, System.UITypes, uEasyDevice, uOptionsForm,
   uSSBTypes, uIView, uIItemView, uItemView, uMVPFrameWork, FMX.Effects;
 
 type
   TView = class(TInterfacedObject, IMainView, IView)
   private
     FElements: TDictionary<IItemView, TItemView>;
+    FOptionsFrom: TOptionsForm;
     FEffect: TGlowEffect;
     FParentTopLeft: TPointFunction;
     FPanel: TPanel;
@@ -31,6 +32,7 @@ type
     procedure SetBackground(const AImg: TImage);
     function FilenameFromDlg: string;
     procedure ChangeCursor(const ACursor: TCursor);
+    function ShowParams(const AParams: TDictionary<string,string>): TDictionary<string,string>;
   end;
 
 implementation
@@ -110,6 +112,7 @@ begin
   FSelected := ASelected;
   FOpenDialog := AOpenDialog;
   FParentTopLeft := AParentTopLeft;
+  FOptionsFrom := TOptionsForm.Create(nil);
 //  FFormPosition := AFormPosition;
   FEffect := TGlowEffect.Create(nil);
 end;
@@ -183,6 +186,12 @@ end;
 procedure TView.SetBackground(const AImg: TImage);
 begin
 
+end;
+
+function TView.ShowParams(
+  const AParams: TDictionary<string, string>): TDictionary<string, string>;
+begin
+  FOptionsFrom.Show;
 end;
 
 end.

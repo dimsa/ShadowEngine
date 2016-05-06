@@ -1,4 +1,4 @@
-unit SSBOptionsForm;
+unit uOptionsForm;
 
 interface
 
@@ -23,9 +23,6 @@ type
   public
     { Public declarations }
   end;
-
-var
-  OptionsForm: TOptionsForm;
 
 implementation
 

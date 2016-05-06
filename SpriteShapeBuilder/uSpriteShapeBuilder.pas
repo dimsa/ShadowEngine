@@ -86,7 +86,6 @@ procedure TSpriteShapeBuilder.DoChangeStatus(ASender: TObject);
 var
   vName: String;
 begin
-
   vName := LowerCase(TControl(ASender).Name);
   if vName.Contains('picture') then
     Status := sPicture;

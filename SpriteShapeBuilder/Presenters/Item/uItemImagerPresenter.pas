@@ -34,6 +34,7 @@ type
     procedure MouseDown; override;
     procedure MouseUp; override;
     procedure MouseMove; override;
+    procedure ShowOptions; override;
     constructor Create(const AItemView: IItemView; const AItemImageModel: TItemImageModel); reintroduce;
     destructor Destroy; override;
   end;
@@ -145,6 +146,13 @@ end;
 procedure TItemImagerPresenter.SetWidth(const Value: Integer);
 begin
   FItemImageModel.Width := Value;
+end;
+
+procedure TItemImagerPresenter.ShowOptions;
+begin
+  inherited;
+  if Assigned(FOnOptionsShow) then
+    FOnOptionsShow(Self)
 end;
 
 {procedure TImagerItemPresenter.Capture;

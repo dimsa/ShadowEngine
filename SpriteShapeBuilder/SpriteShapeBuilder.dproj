@@ -291,7 +291,7 @@
         <DCCReference Include="Intersector\uIntersectorClasses.pas"/>
         <DCCReference Include="Intersector\uIntersectorMethods.pas"/>
         <DCCReference Include="Intersector\uNewFigure.pas"/>
-        <DCCReference Include="SSBOptionsForm.pas">
+        <DCCReference Include="uOptionsForm.pas">
             <Form>OptionsForm</Form>
             <FormType>fmx</FormType>
         </DCCReference>

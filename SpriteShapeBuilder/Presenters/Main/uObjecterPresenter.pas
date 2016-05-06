@@ -39,6 +39,7 @@ type
     procedure DoMouseUp(ASender: TObject);
     procedure DoMouseDown(ASender: TObject);
     procedure DoMouseMove(ASender: TObject);
+    procedure DoOptionsShow(ASender: TObject);
   public
     constructor Create(AView: IView; AModel: TSSBModel);
     procedure ShowShapes;
@@ -85,6 +86,7 @@ begin
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
+    vItemPresenter.OnOptionsShow := DoOptionsShow;
 
     FItems.Add(TItemObjecterPresenter(vItemPresenter), vViewItem);
     try
@@ -109,6 +111,7 @@ begin
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
+    vItemPresenter.OnOptionsShow := DoOptionsShow;
 
     FItems.Add(TItemObjecterPresenter(vItemPresenter), vViewItem);
     try
@@ -187,6 +190,14 @@ end;
 procedure TObjecterPresenter.DoMouseUp(ASender: TObject);
 begin
   MouseUp;
+end;
+
+procedure TObjecterPresenter.DoOptionsShow(ASender: TObject);
+var
+  vItem: TItemObjecterPresenter;
+begin
+  vItem := TItemObjecterPresenter(ASender);
+  View.ShowParams(vItem.Params)
 end;
 
 function TObjecterPresenter.GetView: IMainView;

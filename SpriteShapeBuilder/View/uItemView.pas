@@ -24,7 +24,7 @@ type
     procedure SetTop(AValue: Integer);
     function GetLeft: Integer;
     procedure SetLeft(AValue: Integer);
-    procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure MouseLeftDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
     procedure MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     function GetPresenter: IItemPresenter;
@@ -62,7 +62,7 @@ begin
   FImage.Parent := AOwner;
   FParentTopLeft := AParentTopLeft;
 
-  FImage.OnMouseDown := MouseDown;
+  FImage.OnMouseDown := MouseLeftDown;
   FImage.OnMouseUp:= MouseUp;
   FImage.OnMouseMove := MouseMove;
 end;
@@ -97,12 +97,17 @@ begin
   Result := Round(FImage.Width);
 end;
 
-procedure TItemView.MouseDown(Sender: TObject; Button: TMouseButton;
+procedure TItemView.MouseLeftDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
   FLastMousePos.X := X;
   FLastMousePos.Y := Y;
-  FPresenter.MouseDown;
+
+  if Button = TMouseButton.mbLeft then
+    FPresenter.MouseDown;
+  if Button = TMouseButton.mbRight then
+    FPresenter.ShowOptions;
+
 end;
 
 procedure TItemView.MouseMove(Sender: TObject; Shift: TShiftState; X,

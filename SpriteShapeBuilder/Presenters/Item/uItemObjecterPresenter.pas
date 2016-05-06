@@ -4,7 +4,7 @@ interface
 
 uses
   System.Types, System.Generics.Collections, uIntersectorClasses, FMX.Graphics,
-  System.UITypes, FMX.Types, {$I 'Utils\DelphiCompatability.inc'}
+  System.UITypes, FMX.Types, System.SysUtils, {$I 'Utils\DelphiCompatability.inc'}
   System.Math, uItemBasePresenter, uItemShaperPresenter, uIItemView, uSSBModels;
 
 type
@@ -15,6 +15,7 @@ type
   TItemObjecterPresenter = class(TItemBasePresenter)
   private
     FItemObjectModel: TResourceModel;
+    FParams: TDictionary<string,string>;
     FBmp: TBitmap; // Picture of object with Shapes
     FShapes: TList<TItemShaperPresenterFriend>;
     FIsShapeVisible: Boolean;
@@ -32,6 +33,7 @@ type
     procedure OnModelUpdate(ASender: TObject);
     function Bitmap: TBitmap;
     procedure RepaintShapes;
+    function GetParams: TDictionary<string,string>;
   protected
     function GetRect: TRectF; override;
     procedure SetRect(const Value: TRectF); override;
@@ -41,6 +43,7 @@ type
     property Position: TPoint read GetPosition write SetPosition;
     property Rect: TRectF read GetRect write SetRect;
     property Model: TResourceModel read FItemObjectModel;
+    property Params: TDictionary<string,string> read GetParams;
     procedure ShowShapes;
     procedure HideShapes;
     procedure AddPoly;
@@ -52,6 +55,7 @@ type
     procedure MouseUp; override;
     procedure MouseMove; override;
     procedure Delete; override;
+    procedure ShowOptions; override;
     constructor Create(const AItemView: IItemView; const AItemObjectModel: TResourceModel);
     destructor Destroy; override;
   end;
@@ -133,6 +137,7 @@ begin
 
   FCaptureType := ctNone;
   FBmp := TBitmap.Create;
+  FParams := TDictionary<string, string>.Create;
   FItemObjectModel := AItemObjectModel;
   FItemObjectModel.UpdateHander := OnModelUpdate;
   FShapes := TList<TItemShaperPresenterFriend>.Create;
@@ -164,13 +169,24 @@ begin
   for i := 0 to FShapes.Count - 1 do
     FShapes[i].Free;
   FShapes.Free;
-
+  FParams.Free;
   inherited;
 end;
 
 function TItemObjecterPresenter.GetHeight: Integer;
 begin
   Result := FItemObjectModel.Height;
+end;
+
+function TItemObjecterPresenter.GetParams: TDictionary<string,string>;
+begin
+  FParams.Clear;
+  FParams.Add('Name', Model.Name);
+  FParams.Add('X', IntToStr(Model.Position.X));
+  FParams.Add('Y', IntToStr(Model.Position.Y));
+  FParams.Add('Width', IntToStr(Model.Width));
+  FParams.Add('Height', IntToStr(Model.Height));
+  Result := FParams;
 end;
 
 function TItemObjecterPresenter.GetPosition: TPoint;
@@ -381,6 +397,12 @@ end;
 procedure TItemObjecterPresenter.SetWidth(const Value: Integer);
 begin
   FItemObjectModel.Width:= Value;
+end;
+
+procedure TItemObjecterPresenter.ShowOptions;
+begin
+  if Assigned(FOnOptionsShow) then
+    FOnOptionsShow(Self)
 end;
 
 procedure TItemObjecterPresenter.ShowShapes;

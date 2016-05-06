@@ -4,6 +4,7 @@ interface
 
 uses
   FMX.Objects, System.Types, FMX.Graphics, FMX.Types, System.UITypes,
+  System.Generics.Collections,
   uSSBTypes, uIItemView, uMVPFrameWork;
 
 type
@@ -17,6 +18,7 @@ type
     procedure SetBackground(const AImg: TImage);
     function FilenameFromDlg: string;
     procedure ChangeCursor(const ACursor: TCursor);
+    function ShowParams(const AParams: TDictionary<string,string>): TDictionary<string,string>;
   end;
 
 implementation
