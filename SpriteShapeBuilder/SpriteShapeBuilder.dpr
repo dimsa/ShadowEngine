@@ -13,11 +13,7 @@ uses
   uNewFigure in 'Intersector\uNewFigure.pas',
   uOptionsForm in 'uOptionsForm.pas' {OptionsForm},
   uSSBModels in 'Model\uSSBModels.pas',
-  uView in 'View\uView.pas',
   uSSBTypes in 'uSSBTypes.pas',
-  uIView in 'IView\uIView.pas',
-  uIItemView in 'IView\uIItemView.pas',
-  uItemView in 'View\uItemView.pas',
   uMVPFrameWork in 'Utils\uMVPFrameWork.pas',
   uIItemPresenter in 'Presenters\Item\uIItemPresenter.pas',
   uIItemPresenterEvent in 'Presenters\Item\uIItemPresenterEvent.pas',
@@ -29,7 +25,13 @@ uses
   uBasePresenterIncapsulator in 'Presenters\Main\uBasePresenterIncapsulator.pas',
   uItemShaperPresenter in 'Presenters\Item\uItemShaperPresenter.pas',
   uStreamUtil in 'Utils\uStreamUtil.pas',
-  uMainModel in 'Model\uMainModel.pas';
+  uMainModel in 'Model\uMainModel.pas',
+  uIItemView in 'Views\IView\uIItemView.pas',
+  uIView in 'Views\IView\uIView.pas',
+  uItemView in 'Views\View\uItemView.pas',
+  uView in 'Views\View\uView.pas',
+  uITableView in 'Views\IView\uITableView.pas',
+  uTableView in 'Views\View\uTableView.pas';
 
 {$R *.res}
 

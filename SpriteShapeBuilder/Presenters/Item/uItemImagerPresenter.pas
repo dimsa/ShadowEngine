@@ -19,22 +19,22 @@ type
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
     procedure OnUpdateModel(ASender: TObject);
-  protected
     function GetRect: TRectF; override;
     procedure SetRect(const Value: TRectF); override;
-  public
+  protected
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
     property Rect: TRectF read GetRect write SetRect;
     property Image: TImage read GetImage write SetImage;
     property Model: TItemImageModel read FItemImageModel;
-
+  public
     procedure Delete; override;
     procedure MouseDown; override;
     procedure MouseUp; override;
     procedure MouseMove; override;
     procedure ShowOptions; override;
+
     constructor Create(const AItemView: IItemView; const AItemImageModel: TItemImageModel); reintroduce;
     destructor Destroy; override;
   end;

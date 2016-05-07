@@ -7,8 +7,10 @@ object OptionsForm: TOptionsForm
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   DesignerMasterStyle = 0
-  object ElementsPointGrd: TStringGrid
+  object Grd: TStringGrid
     Anchors = [akLeft, akTop, akRight, akBottom]
     Position.X = 8.000000000000000000
     Position.Y = 120.000000000000000000
@@ -16,10 +18,28 @@ object OptionsForm: TOptionsForm
     Size.Height = 193.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
+    ShowScrollBars = False
     RowCount = 100
     RowHeight = 21.000000000000000000
     Viewport.Width = 317.000000000000000000
     Viewport.Height = 168.000000000000000000
+    object ParamName: TStringColumn
+      Align = MostLeft
+      Header = 'Param'
+      Size.Width = 153.000000000000000000
+      Size.Height = 168.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+    end
+    object ParamValue: TStringColumn
+      Align = MostRight
+      Header = 'Value'
+      Position.X = 152.000000000000000000
+      Size.Width = 165.000000000000000000
+      Size.Height = 168.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+    end
   end
   object ElementNameEdt: TEdit
     Touch.InteractiveGestures = [LongTap, DoubleTap]
@@ -64,6 +84,7 @@ object OptionsForm: TOptionsForm
     Size.PlatformDefault = False
     TabOrder = 6
     Text = 'Apply'
+    OnClick = ApplyBtnClick
   end
   object CancelBtn: TButton
     Anchors = [akRight, akBottom]

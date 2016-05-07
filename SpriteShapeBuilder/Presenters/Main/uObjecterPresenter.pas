@@ -9,29 +9,32 @@ uses
   uBasePresenterIncapsulator;
 
 type
+  // To access protected Fields
+  TItemObjPresenter = class(TItemObjecterPresenter);
+
   TObjecterPresenterIncapsulator = class(TBasePresenterIncapsulator)
   strict private
-    FCaptured: TItemObjecterPresenter;
-    procedure SetCaptured(const Value: TItemObjecterPresenter);
+    FCaptured: TItemObjPresenter;
+    procedure SetCaptured(const Value: TItemObjPresenter);
     procedure SetElementStart(const ARect: TRect); override;
   protected
-    property Captured: TItemObjecterPresenter read FCaptured write SetCaptured;
+    property Captured: TItemObjPresenter read FCaptured write SetCaptured;
   const
     CPrec = 3;
   end;
 
   TObjecterPresenter = class(TObjecterPresenterIncapsulator)
   private
-    FSelected: TItemObjecterPresenter;
+    FSelected: TItemObjPresenter;
     FCaptureMode: TCaptureMode;
     FResizeType: TResizeType;
     FIsShapeVisible: Boolean;
-    procedure JustifyPoints(AItem: TItemObjecterPresenter);
-    procedure JustifyAnchors(AItem: TItemObjecterPresenter);
-    function ResizeType(const AItem: TItemObjecterPresenter): TResizeType;
+    procedure JustifyPoints(AItem: TItemObjPresenter);
+    procedure JustifyAnchors(AItem: TItemObjPresenter);
+    function ResizeType(const AItem: TItemObjPresenter): TResizeType;
   protected
     FModel: TSSBModel;
-    FItems: TDictionary<TItemObjecterPresenter, IItemView>;
+    FItems: TDictionary<TItemObjPresenter, IItemView>;
     function GetView: IMainView;
     property View: IMainView read GetView;
 
@@ -67,7 +70,7 @@ uses
 procedure TObjecterPresenter.AddObj;
 var
   vViewItem: IItemView;
-  vItemPresenter: TItemObjecterPresenter;
+  vItemPresenter: TItemObjPresenter;
   vModel: TResourceModel;
 begin
     // Creating View
@@ -77,7 +80,7 @@ begin
     vModel := Model.AddResource;
 
     // Creating Presenter
-    vItemPresenter := TItemObjecterPresenter.Create(vViewItem, vModel);
+    vItemPresenter := TItemObjPresenter.Create(vViewItem, vModel);
 
     vModel.Width := 50;
     vModel.Height:= 50;
@@ -88,7 +91,7 @@ begin
     vItemPresenter.OnMouseMove := DoMouseMove;
     vItemPresenter.OnOptionsShow := DoOptionsShow;
 
-    FItems.Add(TItemObjecterPresenter(vItemPresenter), vViewItem);
+    FItems.Add(TItemObjPresenter(vItemPresenter), vViewItem);
     try
       vItemPresenter.Repaint;
     except
@@ -99,13 +102,13 @@ end;
 procedure TObjecterPresenter.AddObj(const AObject: TResourceModel);
 var
   vViewItem: IItemView;
-  vItemPresenter: TItemObjecterPresenter;
+  vItemPresenter: TItemObjPresenter;
 begin
     // Creating View
     vViewItem := View.AddElement;
 
     // Creating Presenter
-    vItemPresenter := TItemObjecterPresenter.Create(vViewItem, AObject);
+    vItemPresenter := TItemObjPresenter.Create(vViewItem, AObject);
 
     vViewItem.Presenter := vItemPresenter;
     vItemPresenter.OnMouseDown := DoMouseDown;
@@ -113,7 +116,7 @@ begin
     vItemPresenter.OnMouseMove := DoMouseMove;
     vItemPresenter.OnOptionsShow := DoOptionsShow;
 
-    FItems.Add(TItemObjecterPresenter(vItemPresenter), vViewItem);
+    FItems.Add(TItemObjPresenter(vItemPresenter), vViewItem);
     try
       vItemPresenter.Repaint;
     except
@@ -142,7 +145,7 @@ end;
 constructor TObjecterPresenter.Create(AView: IView; AModel: TSSBModel);
 begin
   inherited Create(AView, AModel);
-  FItems := TDictionary<TItemObjecterPresenter, IItemView>.Create;
+  FItems := TDictionary<TItemObjPresenter, IItemView>.Create;
   FView := AView;
 end;
 
@@ -174,9 +177,9 @@ end;
 
 procedure TObjecterPresenter.DoMouseDown(ASender: TObject);
 begin
-  if (ASender is TItemObjecterPresenter) then
+  if (ASender is TItemObjPresenter) then
   begin
-    FSelected := TItemObjecterPresenter(ASender);
+    FSelected := TItemObjPresenter(ASender);
     View.SelectElement(FItems[FSelected]);
     MouseDown;
   end;
@@ -194,10 +197,10 @@ end;
 
 procedure TObjecterPresenter.DoOptionsShow(ASender: TObject);
 var
-  vItem: TItemObjecterPresenter;
+  vItem: TItemObjPresenter;
 begin
-  vItem := TItemObjecterPresenter(ASender);
-  View.ShowParams(vItem.Params)
+  vItem := TItemObjPresenter(ASender);
+  View.ShowParams(vItem.Params);
 end;
 
 function TObjecterPresenter.GetView: IMainView;
@@ -207,7 +210,7 @@ end;
 
 procedure TObjecterPresenter.HideShapes;
 var
-  vItem: TItemObjecterPresenter;
+  vItem: TItemObjPresenter;
 begin
   FIsShapeVisible := False;
 
@@ -215,11 +218,11 @@ begin
     vItem.HideShapes;
 end;
 
-procedure TObjecterPresenter.JustifyAnchors(AItem: TItemObjecterPresenter);
+procedure TObjecterPresenter.JustifyAnchors(AItem: TItemObjPresenter);
 var
   vX: Integer;
   vY: Integer;
-  vItem: TItemObjecterPresenter;
+  vItem: TItemObjPresenter;
   vRect: TRectF;
 begin
   vRect := RectF(AItem.Rect.TopLeft.X, AItem.Rect.TopLeft.Y, AItem.Rect.BottomRight.X, AItem.Rect.BottomRight.Y);
@@ -243,7 +246,7 @@ begin
   end;
 end;
 
-procedure TObjecterPresenter.JustifyPoints(AItem: TItemObjecterPresenter);
+procedure TObjecterPresenter.JustifyPoints(AItem: TItemObjPresenter);
 begin
 
 end;
@@ -318,7 +321,7 @@ begin
 end;
 
 function TObjecterPresenter.ResizeType(
-  const AItem: TItemObjecterPresenter): TResizeType;
+  const AItem: TItemObjPresenter): TResizeType;
 var
   vPoint: TPoint;
   vD: Integer;
@@ -369,7 +372,7 @@ end;
 
 procedure TObjecterPresenter.ShowShapes;
 var
-  vItem: TItemObjecterPresenter;
+  vItem: TItemObjPresenter;
 begin
   FIsShapeVisible := True;
 
@@ -380,7 +383,7 @@ end;
 { TObjecterPresenterIncapsulator }
 
 procedure TObjecterPresenterIncapsulator.SetCaptured(
-  const Value: TItemObjecterPresenter);
+  const Value: TItemObjPresenter);
 var
   vRect: TRect;
 begin

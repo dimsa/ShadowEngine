@@ -29,14 +29,15 @@ type
     procedure ChangeLockedPoint(const ANewPoint: TPointF);
     procedure TranslateFigure(const ATranslate: TPointF);
     procedure Repaint(ABmp: TBitmap; const AColor: TColor = TAlphaColorRec.Aliceblue);
-  public
     property Model: TItemShapeModel read FItemShapeModel;
+  public
     procedure AddPoint;
     procedure DelPoint;
     procedure MouseDown; override;
     procedure MouseUp; override;
     procedure MouseMove; override;
     procedure Delete; override;
+
     constructor Create(const AItemView: IItemView; const AItemShapeModel: TItemShapeModel);
     destructor Destroy; override;
   end;

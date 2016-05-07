@@ -18,7 +18,8 @@ type
     procedure SetBackground(const AImg: TImage);
     function FilenameFromDlg: string;
     procedure ChangeCursor(const ACursor: TCursor);
-    function ShowParams(const AParams: TDictionary<string,string>): TDictionary<string,string>;
+//    function ShowParams(const AParams: TDictionary<string,string>): TDictionary<string,string>;
+    procedure ShowParams(const AParams: TDictionary<string,string>);
   end;
 
 implementation

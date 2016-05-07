@@ -8,7 +8,8 @@ uses
   System.Math, uItemBasePresenter, uItemShaperPresenter, uIItemView, uSSBModels;
 
 type
-  TItemShaperPresenterFriend = class(TItemShaperPresenter);
+  // To access protected Fields
+  TItemShpPresenter = class(TItemShaperPresenter);
 
   TCaptureType = (ctNone, ctFigure, ctKeyPoint);
 
@@ -17,13 +18,13 @@ type
     FItemObjectModel: TResourceModel;
     FParams: TDictionary<string,string>;
     FBmp: TBitmap; // Picture of object with Shapes
-    FShapes: TList<TItemShaperPresenterFriend>;
+    FShapes: TList<TItemShpPresenter>;
     FIsShapeVisible: Boolean;
     FCaptureType: TCaptureType;
     FStartCapturePoint: TPointF;
     FLastTranslate: TPointF;
-    FCapturedShape: TItemShaperPresenterFriend;
-    FSelectedShape: TItemShaperPresenterFriend;
+    FCapturedShape: TItemShpPresenter;
+    FSelectedShape: TItemShpPresenter;
     function GetHeight: Integer;
     function GetPosition: TPoint;
     function GetWidth: Integer;
@@ -34,16 +35,16 @@ type
     function Bitmap: TBitmap;
     procedure RepaintShapes;
     function GetParams: TDictionary<string,string>;
-  protected
     function GetRect: TRectF; override;
     procedure SetRect(const Value: TRectF); override;
-  public
+  protected
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
     property Rect: TRectF read GetRect write SetRect;
     property Model: TResourceModel read FItemObjectModel;
     property Params: TDictionary<string,string> read GetParams;
+  public
     procedure ShowShapes;
     procedure HideShapes;
     procedure AddPoly;
@@ -56,6 +57,7 @@ type
     procedure MouseMove; override;
     procedure Delete; override;
     procedure ShowOptions; override;
+
     constructor Create(const AItemView: IItemView; const AItemObjectModel: TResourceModel);
     destructor Destroy; override;
   end;
@@ -66,7 +68,7 @@ implementation
 
 procedure TItemObjecterPresenter.AddCircle;
 var
-  vShape: TItemShaperPresenterFriend;
+  vShape: TItemShpPresenter;
   vShapeModel: TItemShapeModel;
   vCircle: TCircle;
 begin
@@ -77,7 +79,7 @@ begin
   vCircle.Radius := FItemObjectModel.Width / 4;
   vShapeModel.SetData(vCircle);
 
-  vShape := TItemShaperPresenterFriend.Create(FView, vShapeModel);
+  vShape := TItemShpPresenter.Create(FView, vShapeModel);
   FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
   RepaintShapes;
@@ -94,7 +96,7 @@ end;
 
 procedure TItemObjecterPresenter.AddPoly;
 var
-  vShape: TItemShaperPresenterFriend;
+  vShape: TItemShpPresenter;
   vShapeModel: TItemShapeModel;
   vPoly: TPolygon;
 begin
@@ -107,7 +109,7 @@ begin
 
   vShapeModel.SetData(vPoly);
 
-  vShape := TItemShaperPresenterFriend.Create(FView, vShapeModel);
+  vShape := TItemShpPresenter.Create(FView, vShapeModel);
   FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
   RepaintShapes;
@@ -140,7 +142,7 @@ begin
   FParams := TDictionary<string, string>.Create;
   FItemObjectModel := AItemObjectModel;
   FItemObjectModel.UpdateHander := OnModelUpdate;
-  FShapes := TList<TItemShaperPresenterFriend>.Create;
+  FShapes := TList<TItemShpPresenter>.Create;
 end;
 
 procedure TItemObjecterPresenter.Delete;
@@ -329,7 +331,7 @@ end;
 procedure TItemObjecterPresenter.OnModelUpdate(ASender: TObject);
 var
   vModel: TResourceModel;
-  vShape: TItemShaperPresenterFriend;
+  vShape: TItemShpPresenter;
   i: Integer;
 begin
   FView.Width := FItemObjectModel.Width;
@@ -350,7 +352,7 @@ begin
 
   for i := 0 to vModel.ShapesList.Count - 1 do
   begin
-    vShape := TItemShaperPresenterFriend.Create(FView, vModel.ShapesList[i]);
+    vShape := TItemShpPresenter.Create(FView, vModel.ShapesList[i]);
     FShapes.Add(vShape);
   end;
 

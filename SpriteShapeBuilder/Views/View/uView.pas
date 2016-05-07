@@ -1,40 +1,28 @@
-unit uSSBView;
+unit uView;
 
 interface
 
 uses
   System.Generics.Collections, System.SysUtils, System.Types, FMX.Graphics,
   FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms, FMX.Dialogs,
-  FMX.Types, System.Classes, System.UITypes, uEasyDevice,
-  uSSBTypes, uSSBPresenters, uIView, uIItemView, uItemView;
+  FMX.Types, System.Classes, System.UITypes, uEasyDevice, uOptionsForm,
+  uSSBTypes, uIView, uIItemView, uItemView, uMVPFrameWork, FMX.Effects;
 
 type
-  TView = class(TInterfacedObject, IView)
+  TView = class(TInterfacedObject, IMainView, IView)
   private
-    FChangeblePanel: TLayout;
-    FElements: TList<TItemView>;
+    FElements: TDictionary<IItemView, TItemView>;
+    FOptionsFrom: TOptionsForm;
+    FEffect: TGlowEffect;
+    FParentTopLeft: TPointFunction;
     FPanel: TPanel;
-    FFormPosition: TPositionFunc;
     FBackground: TImage;
     FSelected: TImage;
     FOpenDialog: TOpenDialog;
-    FMouseMoveHandler: TMouseMoveEvent;
-    FMouseDownHandler: TMouseEvent;
-    FMouseUpHandler: TMouseEvent;
-    procedure CopyEvents(const AFromControl: TControl; AToControl: TControl);
-    function ElementByInterface(AElem: IItemView): TItemView;
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-//    function ElementUnderMouse: ISSBViewElement;
+    function PanelTopLeft: TPointF;
   public
-
-   { property Selected: TImage read FSelected;
-    property Elements: TList<TLinkedImage> read FElements;
-    property ChangeblePanel: TLayout read FChangeblePanel;
-    property Background: TImage read FBackground;
-    property Model: TSSBModel read FModel write SetModel;
-    procedure Update(Sender: TObject);
-    procedure Init(const AProgForm: TForm); // Инициализируем где будут размещатсья элементы   }
-    constructor Create(APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog; AFormPosition: TPositionFunc);
+    constructor Create(APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
     destructor Destroy; override;
     procedure ClearAndFreeImg;
     function GetMousePos: TPoint;
@@ -43,41 +31,41 @@ type
     procedure SelectElement(const AElement: IItemView);
     procedure SetBackground(const AImg: TImage);
     function FilenameFromDlg: string;
-    procedure ChangeImageMouseDownHandler(const AHandler: TMouseEvent);
-    procedure ChangeImageMouseUpHandler(const AHandler: TMouseEvent);
-    procedure ChangeImageMouseMoveHandler(const AHandler: TMouseMoveEvent);
+    procedure ChangeCursor(const ACursor: TCursor);
+    procedure ShowParams(const AParams: TDictionary<string,string>);
+    function TakeParams: TDictionary<string,string>;
   end;
 
 implementation
 
 { TSSBView }
 
+function TView.PanelTopLeft: TPointF;
+begin
+  Result := (FPanel.Position.Point + FParentTopLeft);
+//  FPanel. (FPanel.Position.Point - FParentTopLeft);
+end;
+
+{function TView.ParentScreenToClient(const APoint: TPointF): TPointF;
+begin
+  Result := (FFormPosition(APoint) - FPanel.Position.Point);
+end;  }
+
 function TView.AddElement: IItemView;
 var
   vImg: TItemView;
-  vi: TImage;
 begin
-  vImg := TItemView.Create(FPanel);
-  vImg.OnMouseDown := MouseDown;
-  vImg.OnMouseUp := FMouseUpHandler;
-  vImg.OnMouseMove := FMouseMoveHandler;
-  FElements.Add(vImg);
+  vImg := TItemView.Create(FPanel, PanelTopLeft);
+  FElements.Add(vImg, vImg);
+  vImg.Image.WrapMode := TImageWrapMode.Stretch;
   Result := vImg;
 end;
 
-procedure TView.ChangeImageMouseDownHandler(const AHandler: TMouseEvent);
+procedure TView.ChangeCursor(const ACursor: TCursor);
 begin
-  FMouseDownHandler := AHandler;
-end;
-
-procedure TView.ChangeImageMouseMoveHandler(const AHandler: TMouseMoveEvent);
-begin
-  FMouseMoveHandler := AHandler;
-end;
-
-procedure TView.ChangeImageMouseUpHandler(const AHandler: TMouseEvent);
-begin
-  FMouseUpHandler := AHandler;
+  if ACursor = FPanel.Cursor then
+    Exit;
+  FPanel.Cursor := ACursor;
 end;
 
 procedure TView.ClearAndFreeImg;
@@ -85,7 +73,7 @@ begin
 
 end;
 
-procedure TView.CopyEvents(const AFromControl: TControl;
+{procedure TView.CopyEvents(const AFromControl: TControl;
   AToControl: TControl);
 begin
   AToControl.OnDragEnter := AFromControl.OnDragEnter;
@@ -114,25 +102,32 @@ begin
   AToControl.OnApplyStyleLookup := AFromControl.OnApplyStyleLookup;
   AToControl.OnGesture := AFromControl.OnGesture;
   AToControl.OnTap := AFromControl.OnTap;
-end;
+end;}
 
 constructor TView.Create(APanel: TPanel; ABackground, ASelected: TImage;
-  AOpenDialog: TOpenDialog; AFormPosition: TPositionFunc);
+  AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
 begin
-  FElements := TList<TItemView>.Create;
+  FElements := TDictionary<IItemView, TItemView>.Create;
   FPanel := APanel;
   FBackground := ABackground;
   FSelected := ASelected;
   FOpenDialog := AOpenDialog;
-  FFormPosition := AFormPosition;
+  FParentTopLeft := AParentTopLeft;
+  FOptionsFrom := TOptionsForm.Create(nil);
+//  FFormPosition := AFormPosition;
+  FEffect := TGlowEffect.Create(nil);
 end;
 
 destructor TView.Destroy;
 var
-  i: Integer;
+  vItem: TPair<IItemView, TItemView>;
 begin
-  for i := 0 to FElements.Count - 1 do
-    FElements[i].Free;
+  FEffect.Free;
+  for vItem in FElements do
+    FElements.Remove(vItem.Key);
+
+ {for i := 0 to FElements.Count - 1 do
+    FElements[i].Free;}
   FElements.Clear;
   FElements.Free;
 
@@ -141,14 +136,11 @@ begin
   FSelected := nil;
   FOpenDialog := nil;
 
-  FMouseMoveHandler := nil;
-  FMouseDownHandler := nil;
-  FMouseUpHandler := nil;
 
   inherited;
 end;
 
-function TView.ElementByInterface(AElem: IItemView): TItemView;
+{unction TView.ElementByInterface(AElem: IItemView): TItemView;
 var
   i: Integer;
 begin
@@ -156,7 +148,7 @@ begin
   for i := 0 to FElements.Count - 1 do
     if IItemView(FElements[i]) = AElem then
       Exit(FElements[i]);
-end;
+end; }
 
 function TView.FilenameFromDlg: string;
 begin
@@ -166,42 +158,44 @@ begin
 end;
 
 function TView.GetMousePos: TPoint;
-var
-  vPoint: TPointF;
 begin
-  vPoint := uEasyDevice.MousePos;
-  Result := (FFormPosition(vPoint) - FPanel.Position.Point).Round;
+  Result := (uEasyDevice.MousePos - FPanel.Position.Point - FParentTopLeft).Round;
 end;
 
 procedure TView.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
-//  Sender.
+
 end;
 
 procedure TView.RemoveElement(const AElement: IItemView);
 var
-  i: Integer;
-  vElem: TItemView;
+  vItem: TItemView;
 begin
-  vElem := ElementByInterface(AElement);
-  FElements.Remove(vElem);
-  vElem.Free;
-  {for i := 0 to FElements.Count - 1 do
-    if IItemView(FElements[i]) = AElement then
-    begin
-      vElem := FElements[i];
-      FElements.Remove(vElem);
-      vElem.Free;
-    end;}
- end;
+  FEffect.Parent := nil;
+  FElements.Remove(AElement);
+  vItem := TItemView(AElement);
+  vItem.Image.Free;
+end;
 
 procedure TView.SelectElement(const AElement: IItemView);
+begin
+  FSelected.Bitmap.Assign(FElements[AElement].Image.Bitmap);
+  FEffect.Parent := FElements[AElement].Image;
+end;
+
+procedure TView.SetBackground(const AImg: TImage);
 begin
 
 end;
 
-procedure TView.SetBackground(const AImg: TImage);
+procedure TView.ShowParams(const AParams: TDictionary<string, string>);
+begin
+  FOptionsFrom.Show(AParams);
+
+end;
+
+function TView.TakeParams: TDictionary<string, string>;
 begin
 
 end;
