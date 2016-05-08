@@ -5,7 +5,7 @@ interface
 uses
   System.Generics.Collections, FMX.Objects, System.Types, uClasses,
   uIView, uMVPFrameWork, uSSBModels, uMainModel, uSSBTypes,
-  uIItemView, uItemObjecterPresenter,
+  uIItemView, uItemObjecterPresenter, uTableView,
   uBasePresenterIncapsulator;
 
 type
@@ -44,7 +44,7 @@ type
     procedure DoMouseMove(ASender: TObject);
     procedure DoOptionsShow(ASender: TObject);
   public
-    constructor Create(AView: IView; AModel: TSSBModel);
+    constructor Create(AView: IMainView; AModel: TSSBModel);
     procedure ShowShapes;
     procedure HideShapes;
     procedure AddPoly;
@@ -71,21 +71,25 @@ procedure TObjecterPresenter.AddObj;
 var
   vViewItem: IItemView;
   vItemPresenter: TItemObjPresenter;
+  vTableView: TTableView;
   vModel: TResourceModel;
 begin
     // Creating View
     vViewItem := View.AddElement;
+    vTableView := TTableView.Create;
 
     // Creating Model
     vModel := Model.AddResource;
 
     // Creating Presenter
-    vItemPresenter := TItemObjPresenter.Create(vViewItem, vModel);
+    vItemPresenter := TItemObjPresenter.Create(vViewItem, vTableView, vModel);
 
     vModel.Width := 50;
     vModel.Height:= 50;
 
     vViewItem.Presenter := vItemPresenter;
+    vTableView.Presenter := vItemPresenter;
+
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
@@ -103,14 +107,18 @@ procedure TObjecterPresenter.AddObj(const AObject: TResourceModel);
 var
   vViewItem: IItemView;
   vItemPresenter: TItemObjPresenter;
+  vTableView: TTableView;
 begin
     // Creating View
     vViewItem := View.AddElement;
+    vTableView := TTableView.Create;
 
     // Creating Presenter
-    vItemPresenter := TItemObjPresenter.Create(vViewItem, AObject);
+    vItemPresenter := TItemObjPresenter.Create(vViewItem, vTableView, AObject);
 
     vViewItem.Presenter := vItemPresenter;
+    vTableView.Presenter := vItemPresenter;
+
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
@@ -142,7 +150,7 @@ begin
     FSelected.AddCircle;
 end;
 
-constructor TObjecterPresenter.Create(AView: IView; AModel: TSSBModel);
+constructor TObjecterPresenter.Create(AView: IMainView; AModel: TSSBModel);
 begin
   inherited Create(AView, AModel);
   FItems := TDictionary<TItemObjPresenter, IItemView>.Create;
@@ -200,7 +208,7 @@ var
   vItem: TItemObjPresenter;
 begin
   vItem := TItemObjPresenter(ASender);
-  View.ShowParams(vItem.Params);
+//  View.ShowParams(vItem.Params);
 end;
 
 function TObjecterPresenter.GetView: IMainView;

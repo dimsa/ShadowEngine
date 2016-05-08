@@ -11,6 +11,7 @@ type
     procedure Delete;
     procedure MouseDown;
     procedure ShowOptions;
+    procedure SaveOptions;
     procedure MouseUp;
     procedure MouseMove;
   end;

@@ -32,8 +32,6 @@ type
     procedure SetBackground(const AImg: TImage);
     function FilenameFromDlg: string;
     procedure ChangeCursor(const ACursor: TCursor);
-    procedure ShowParams(const AParams: TDictionary<string,string>);
-    function TakeParams: TDictionary<string,string>;
   end;
 
 implementation
@@ -185,17 +183,6 @@ begin
 end;
 
 procedure TView.SetBackground(const AImg: TImage);
-begin
-
-end;
-
-procedure TView.ShowParams(const AParams: TDictionary<string, string>);
-begin
-  FOptionsFrom.Show(AParams);
-
-end;
-
-function TView.TakeParams: TDictionary<string, string>;
 begin
 
 end;

@@ -2,6 +2,58 @@ unit uTableView;
 
 interface
 
+uses
+  System.Generics.Collections,
+  uMVPFrameWork, uITableView, uOptionsForm, uIItemPresenter;
+
+type
+  TTableView = class(TInterfacedObject, ITableView, IView)
+  private
+    FOptionsForm: TOptionsForm;
+    FPresenter: IItemPresenter;
+    function GetPresenter: IItemPresenter;
+    procedure SetPresenter(AValue: IItemPresenter);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Presenter: IItemPresenter read GetPresenter write SetPresenter;
+    procedure ShowParams(const AParams: TDictionary<string,string>);
+    function TakeParams: TDictionary<string,string>;
+  end;
+
 implementation
+
+{ TTableView }
+
+constructor TTableView.Create;
+begin
+  FOptionsForm := TOptionsForm.Create(nil);
+end;
+
+destructor TTableView.Destroy;
+begin
+  FOptionsForm.Free;
+  inherited;
+end;
+
+function TTableView.GetPresenter: IItemPresenter;
+begin
+  Result := FPresenter;
+end;
+
+procedure TTableView.SetPresenter(AValue: IItemPresenter);
+begin
+  FPresenter := AValue;
+end;
+
+procedure TTableView.ShowParams(const AParams: TDictionary<string, string>);
+begin
+  FOptionsForm.Show(AParams);
+end;
+
+function TTableView.TakeParams: TDictionary<string, string>;
+begin
+
+end;
 
 end.

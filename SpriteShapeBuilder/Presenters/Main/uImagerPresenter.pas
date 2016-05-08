@@ -7,7 +7,7 @@ uses
   uBasePresenterIncapsulator,
   uIView, uSSBTypes, uItemBasePresenter, uClasses, uIItemPresenter,
   uIItemView, uItemImagerPresenter, uMainModel, uSSBModels, uMVPFrameWork,
-  uEasyDevice;
+  uTableView, uEasyDevice;
 
 
 type
@@ -63,6 +63,7 @@ var
   vFileName: string;
   vViewItem: IItemView;
   vItemPresenter: TItemImgPresenter;
+  vTableView: TTableView;
   vModel: TItemImageModel;
   vImg: TImage;
 begin
@@ -74,13 +75,15 @@ begin
 
     // Creating View
     vViewItem := View.AddElement;
+    vTableView := TTableView.Create;
 
     // Creating Model
     vModel := Model.AddImageElement;
 
     // Creating Presenter
-    vItemPresenter := TItemImgPresenter.Create(vViewItem, vModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
+    vItemPresenter := TItemImgPresenter.Create(vViewItem, vTableView, vModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
     vViewItem.Presenter := vItemPresenter;
+    vTableView.Presenter := vItemPresenter;
 
     vModel.OriginalImage := vImg;
     vModel.Rect := Rect(0, 0, Round(vImg.Bitmap.Width), Round(vImg.Bitmap.Height)) ;
@@ -98,18 +101,18 @@ var
   vViewItem: IItemView;
   vItemPresenter: TItemImgPresenter;
 begin
-//     Creating View
-    vViewItem := View.AddElement;
+// Creating View
+  vViewItem := View.AddElement;
 
-    // Creating Presenter
-    vItemPresenter := TItemImgPresenter.Create(vViewItem, AModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
-    vViewItem.Presenter := vItemPresenter;
+  // Creating Presenter
+  vItemPresenter := TItemImgPresenter.Create(vViewItem, TTableView.Create, AModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
+  vViewItem.Presenter := vItemPresenter;
 
-    vItemPresenter.OnMouseDown := DoMouseDown;
-    vItemPresenter.OnMouseUp := DoMouseUp;
-    vItemPresenter.OnMouseMove := DoMouseMove;
+  vItemPresenter.OnMouseDown := DoMouseDown;
+  vItemPresenter.OnMouseUp := DoMouseUp;
+  vItemPresenter.OnMouseMove := DoMouseMove;
 
-    FItems.Add(vItemPresenter, vViewItem);
+  FItems.Add(vItemPresenter, vViewItem);
 end;
 
 constructor TImagerPresenter.Create(AView: IView; AModel: TSSBModel);

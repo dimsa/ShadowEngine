@@ -5,7 +5,8 @@ interface
 uses
   System.Types, System.Generics.Collections, uIntersectorClasses, FMX.Graphics,
   System.UITypes, FMX.Types, System.SysUtils, {$I 'Utils\DelphiCompatability.inc'}
-  System.Math, uItemBasePresenter, uItemShaperPresenter, uIItemView, uSSBModels;
+  System.Math, uItemBasePresenter, uItemShaperPresenter, uIItemView, uSSBModels,
+  uITableView;
 
 type
   // To access protected Fields
@@ -16,6 +17,8 @@ type
   TItemObjecterPresenter = class(TItemBasePresenter)
   private
     FItemObjectModel: TResourceModel;
+    FTableView: ITableView;
+    FShapesTable: TList<ITableView>;
     FParams: TDictionary<string,string>;
     FBmp: TBitmap; // Picture of object with Shapes
     FShapes: TList<TItemShpPresenter>;
@@ -58,11 +61,14 @@ type
     procedure Delete; override;
     procedure ShowOptions; override;
 
-    constructor Create(const AItemView: IItemView; const AItemObjectModel: TResourceModel);
+    constructor Create(const AItemView: IItemView; const ATableView: ITableView; const AItemObjectModel: TResourceModel);
     destructor Destroy; override;
   end;
 
 implementation
+
+uses
+  uTableView, uIItemPresenter;
 
 { TObjecterItemPresenter }
 
@@ -70,16 +76,21 @@ procedure TItemObjecterPresenter.AddCircle;
 var
   vShape: TItemShpPresenter;
   vShapeModel: TItemShapeModel;
+  vTableView: TTableView;
   vCircle: TCircle;
 begin
+  // Creating Model
   vShapeModel := TItemShapeModel.CreateCircle(OnModelUpdate);
+  // Creating View
+  vTableView := TTableView.Create;
 
   vCircle.X := 0;
   vCircle.Y := 0;
   vCircle.Radius := FItemObjectModel.Width / 4;
   vShapeModel.SetData(vCircle);
 
-  vShape := TItemShpPresenter.Create(FView, vShapeModel);
+  vShape := TItemShpPresenter.Create(FView, vTableView, vShapeModel);
+  vTableView.Presenter := vShape;
   FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
   RepaintShapes;
@@ -99,8 +110,12 @@ var
   vShape: TItemShpPresenter;
   vShapeModel: TItemShapeModel;
   vPoly: TPolygon;
+  vTableView: TTableView;
 begin
+  // Creating Model
   vShapeModel := TItemShapeModel.CreatePoly(OnModelUpdate);
+  // Creating View
+  vTableView := TTableView.Create;
 
   SetLength(vPoly, 3);
   vPoly[0] := PointF(0, -FItemObjectModel.Height / 4);
@@ -109,7 +124,8 @@ begin
 
   vShapeModel.SetData(vPoly);
 
-  vShape := TItemShpPresenter.Create(FView, vShapeModel);
+  vShape := TItemShpPresenter.Create(FView, vTableView, vShapeModel);
+  vTableView.Presenter := vShape;
   FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
   RepaintShapes;
@@ -133,9 +149,11 @@ begin
   Result := FBmp;
 end;
 
-constructor TItemObjecterPresenter.Create(const AItemView: IItemView; const AItemObjectModel: TResourceModel);
+constructor TItemObjecterPresenter.Create(const AItemView: IItemView; const ATableView: ITableView; const AItemObjectModel: TResourceModel);
 begin
   inherited Create(AItemView);
+
+  FTableView := ATableView;
 
   FCaptureType := ctNone;
   FBmp := TBitmap.Create;
@@ -143,6 +161,7 @@ begin
   FItemObjectModel := AItemObjectModel;
   FItemObjectModel.UpdateHander := OnModelUpdate;
   FShapes := TList<TItemShpPresenter>.Create;
+  FShapesTable := TList<ITableView>.Create;
 end;
 
 procedure TItemObjecterPresenter.Delete;
@@ -170,6 +189,11 @@ var
 begin
   for i := 0 to FShapes.Count - 1 do
     FShapes[i].Free;
+
+  for i := 0 to FShapesTable.Count - 1 do
+    FShapesTable[i] := nil;
+
+  FShapesTable.Free;
   FShapes.Free;
   FParams.Free;
   inherited;
@@ -332,27 +356,56 @@ procedure TItemObjecterPresenter.OnModelUpdate(ASender: TObject);
 var
   vModel: TResourceModel;
   vShape: TItemShpPresenter;
+  vTableView: TTableView;
+  vITableView:ITableView;
   i: Integer;
+  vi: IItemPresenter;
 begin
   FView.Width := FItemObjectModel.Width;
   FView.Height:= FItemObjectModel.Height;
   FView.Left := FItemObjectModel.Position.X;
   FView.Top := FItemObjectModel.Position.Y;
 
-
   if ASender = nil then
     Exit;
 
-  vModel := FItemObjectModel;
+  vModel := TResourceModel(ASender);
 
-  for i := 0 to FShapes.Count - 1 do
-    FShapes[i].Free;
+  // We creating or destroying TableViews
+  if FShapesTable.Count > vModel.ShapesList.Count then
+    for i := FShapesTable.Count - 1 downto vModel.ShapesList.Count do
+    begin
+      vITableView := FShapesTable[i];
+      FShapesTable[i].Presenter := nil;
+      FShapesTable.Remove(vITableView);
+      vITableView := nil;
+    end;
+
+  if FShapesTable.Count < vModel.ShapesList.Count then
+    for i := FShapesTable.Count to vModel.ShapesList.Count - 1 do
+    begin
+      vTableView := TTableView.Create;
+      FShapesTable.Add(vTableView);
+    end;
+
+
+  for i := 0 to FShapesTable.Count - 1 do
+     FShapesTable[i].Presenter := nil;   // After presenter = nil, refcount on ShapePresenter is 0, so it destroying
+
+  for i := FShapes.Count - 1 downto 0  do
+    if (Assigned(FShapes[i])) and (FShapes[i].RefCount > 0) then
+    begin
+      vShape := FShapes[i];
+      vShape.TableView := nil;
+      vShape.Free;
+    end;
 
   FShapes.Clear;
 
   for i := 0 to vModel.ShapesList.Count - 1 do
   begin
-    vShape := TItemShpPresenter.Create(FView, vModel.ShapesList[i]);
+    vShape := TItemShpPresenter.Create(FView, FShapesTable[i], vModel.ShapesList[i]);
+    FShapesTable[i].Presenter := vShape;
     FShapes.Add(vShape);
   end;
 

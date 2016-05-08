@@ -5,12 +5,13 @@ interface
 uses
   System.Types, FMX.Graphics, System.UITypes,  {$I 'Utils\DelphiCompatability.inc'}
   System.Math, uItemBasePresenter, uIntersectorClasses, uIntersectorMethods,
-  uIItemView, uNewFigure, uSSBModels;
+  uIItemView, uNewFigure, uSSBModels, uITableView;
 
 type
   TItemShaperPresenter = class(TItemBasePresenter)
   private
     FItemShapeModel: TItemShapeModel;
+    FTableView: ITableView;
     FLockedIndex: Integer;
     FLockedPoint: TPointF;
     function GetHeight: Integer;
@@ -37,8 +38,9 @@ type
     procedure MouseUp; override;
     procedure MouseMove; override;
     procedure Delete; override;
+    property TableView: ITableView read FTableView write FTableView;
 
-    constructor Create(const AItemView: IItemView; const AItemShapeModel: TItemShapeModel);
+    constructor Create(const AItemView: IItemView; const ATableView: ITableView; AItemShapeModel: TItemShapeModel);
     destructor Destroy; override;
   end;
 
@@ -98,11 +100,13 @@ begin
   end;
 end;
 
-constructor TItemShaperPresenter.Create(const AItemView: IItemView;
-  const AItemShapeModel: TItemShapeModel);
+constructor TItemShaperPresenter.Create(const AItemView: IItemView; const ATableView: ITableView;
+  AItemShapeModel: TItemShapeModel);
 begin
   inherited Create(AItemView);
   FItemShapeModel := AItemShapeModel;
+  FTableView := ATableView;
+  //FTableView.Presenter := Self;
   //FColor := TAlphaColorRec.Aliceblue;
 end;
 
@@ -136,6 +140,7 @@ end;
 destructor TItemShaperPresenter.Destroy;
 begin
   FItemShapeModel := nil;
+  FTableView := nil;
   inherited;
 end;
 

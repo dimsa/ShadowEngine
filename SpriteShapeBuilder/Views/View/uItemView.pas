@@ -5,12 +5,12 @@ interface
 uses
   System.UITypes, System.Classes, System.Types,
   FMX.Types, FMX.Objects, FMX.Graphics, FMX.Controls, uSSBTypes,
-  uIItemView, uItemImagerPresenter, uIItemPresenter,
+  uIItemView, uItemImagerPresenter, uIItemPresenter, uMVPFrameWork,
   uEasyDevice;
 
 type
 
-  TItemView = class(TInterfacedObject, IItemView)
+  TItemView = class(TInterfacedObject, IItemView, IView)
   private
     FPresenter: IItemPresenter;
     FImage: TImage;

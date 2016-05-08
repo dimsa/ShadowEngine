@@ -7,7 +7,7 @@ uses
   uIItemPresenter, uIItemPresenterEvent, uMVPFrameWork, uIItemView, uSSBModels;
 
 type
-  TItemBasePresenter = class abstract(TPresenter, IItemPresenter, IPresenterEvent)
+  TItemBasePresenter = class(TPresenter, IItemPresenter, IPresenterEvent)
   protected
     FView: IItemView;
     FOnMouseDown, FOnMouseUp, FOnMouseMove, FOnOptionsShow: TNotifyEvent;
@@ -32,6 +32,7 @@ type
     procedure MouseUp; virtual; abstract;
     procedure MouseMove; virtual; abstract;
     procedure ShowOptions; virtual; abstract;
+    procedure SaveOptions; virtual; abstract;
     constructor Create(const AItemView: IItemView); reintroduce; virtual;
   end;
 

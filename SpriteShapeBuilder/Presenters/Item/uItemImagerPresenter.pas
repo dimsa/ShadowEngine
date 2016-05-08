@@ -4,12 +4,14 @@ interface
 
 uses
   System.Classes, System.Types, FMX.Objects, System.SysUtils, uClasses,
+  uITableView,
   uIItemView, uIItemPresenter, uSSBTypes, uItemBasePresenter, uSSBModels;
 
 type
   TItemImagerPresenter = class(TItemBasePresenter)
   private
     FItemImageModel: TItemImageModel;
+    FTableView: ITableView;
     function GetHeight: Integer;
     function GetImage: TImage;
     function GetPosition: TPoint;
@@ -35,7 +37,7 @@ type
     procedure MouseMove; override;
     procedure ShowOptions; override;
 
-    constructor Create(const AItemView: IItemView; const AItemImageModel: TItemImageModel); reintroduce;
+    constructor Create(const AItemView: IItemView; const ATableView: ITableView; const AItemImageModel: TItemImageModel); reintroduce;
     destructor Destroy; override;
   end;
 
@@ -43,10 +45,11 @@ implementation
 
 { TImagerItemPresenter }
 
-constructor TItemImagerPresenter.Create(const AItemView: IItemView;
+constructor TItemImagerPresenter.Create(const AItemView: IItemView; const ATableView: ITableView;
   const AItemImageModel: TItemImageModel);
 begin
   inherited Create(AItemView);
+  FTableView := ATableView;
   FItemImageModel := AItemImageModel;
   FItemImageModel.UpdateHander := OnUpdateModel;
 end;

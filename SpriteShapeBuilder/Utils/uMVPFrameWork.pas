@@ -22,7 +22,7 @@ type
     destructor Destroy; override;
   end;
 
-  TPresenter = class(TInterfacedObject, IInterface)
+  TPresenter = class(TInterfacedObject)
   protected
     FView: IView;
   public
