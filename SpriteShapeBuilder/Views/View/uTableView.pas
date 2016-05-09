@@ -13,6 +13,7 @@ type
     FPresenter: IItemPresenter;
     function GetPresenter: IItemPresenter;
     procedure SetPresenter(AValue: IItemPresenter);
+    procedure OnApply(ASender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
@@ -28,6 +29,7 @@ implementation
 constructor TTableView.Create;
 begin
   FOptionsForm := TOptionsForm.Create(nil);
+  FOptionsForm.ValuesApplied := OnApply;
 end;
 
 destructor TTableView.Destroy;
@@ -39,6 +41,11 @@ end;
 function TTableView.GetPresenter: IItemPresenter;
 begin
   Result := FPresenter;
+end;
+
+procedure TTableView.OnApply(ASender: TObject);
+begin
+  FPresenter.SaveOptions;
 end;
 
 procedure TTableView.SetPresenter(AValue: IItemPresenter);
@@ -53,7 +60,7 @@ end;
 
 function TTableView.TakeParams: TDictionary<string, string>;
 begin
-
+  Result := FOptionsForm.Params;
 end;
 
 end.

@@ -38,15 +38,16 @@ type
     function Bitmap: TBitmap;
     procedure RepaintShapes;
     function GetParams: TDictionary<string,string>;
+    procedure SetParams(const AValue: TDictionary<string, string>);
     function GetRect: TRectF; override;
     procedure SetRect(const Value: TRectF); override;
+   // function GetParams: TDictionary<string,string> read GetParams;
   protected
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
     property Rect: TRectF read GetRect write SetRect;
     property Model: TResourceModel read FItemObjectModel;
-    property Params: TDictionary<string,string> read GetParams;
   public
     procedure ShowShapes;
     procedure HideShapes;
@@ -60,6 +61,7 @@ type
     procedure MouseMove; override;
     procedure Delete; override;
     procedure ShowOptions; override;
+    procedure SaveOptions; override;
 
     constructor Create(const AItemView: IItemView; const ATableView: ITableView; const AItemObjectModel: TResourceModel);
     destructor Destroy; override;
@@ -68,7 +70,7 @@ type
 implementation
 
 uses
-  uTableView, uIItemPresenter;
+  uTableView, uIItemPresenter, uClasses;
 
 { TObjecterItemPresenter }
 
@@ -432,9 +434,27 @@ begin
   FView.AssignBitmap(FBmp);
 end;
 
+procedure TItemObjecterPresenter.SaveOptions;
+begin
+  inherited;
+
+  SetParams(FTableView.TakeParams);
+end;
+
 procedure TItemObjecterPresenter.SetHeight(const Value: Integer);
 begin
   FItemObjectModel.Height := Value;
+end;
+
+procedure TItemObjecterPresenter.SetParams(
+  const AValue: TDictionary<string, string>);
+var
+  vErr, vA: Integer;
+begin
+  Model.Name := AValue['Name'];
+  Model.Position:= Point(ToInt(AValue['X']), ToInt(AValue['Y']));
+  Model.Width := ToInt(AValue['Width']);
+  Model.Height := ToInt(AValue['Height']);
 end;
 
 procedure TItemObjecterPresenter.SetPosition(const Value: TPoint);
@@ -456,8 +476,10 @@ end;
 
 procedure TItemObjecterPresenter.ShowOptions;
 begin
-  if Assigned(FOnOptionsShow) then
-    FOnOptionsShow(Self)
+  FTableView.ShowParams(GetParams);
+
+{  if Assigned(FOnOptionsShow) then
+    FOnOptionsShow(Self) }
 end;
 
 procedure TItemObjecterPresenter.ShowShapes;

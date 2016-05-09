@@ -11,15 +11,16 @@ uses
 type
   TOptionsForm = class(TForm)
     Grd: TStringGrid;
-    ElementNameEdt: TEdit;
     ElementPointsLbl: TLabel;
-    ElementPathEdt: TEdit;
-    ElementPathLbl: TLabel;
     ApplyBtn: TButton;
     CancelBtn: TButton;
-    ElementNameLbl: TLabel;
     ParamName: TStringColumn;
     ParamValue: TStringColumn;
+    Panel1: TPanel;
+    ElementPathEdt: TEdit;
+    ElementPathLbl: TLabel;
+    ElementNameEdt: TEdit;
+    ElementNameLbl: TLabel;
     procedure CancelBtnClick(Sender: TObject);
     procedure ApplyBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -30,7 +31,7 @@ type
     function GetOnApply: TNotifyEvent;
     procedure SetOnApply(const Value: TNotifyEvent);
   public
-    property OnApply: TNotifyEvent read GetOnApply write SetOnApply;
+    property ValuesApplied: TNotifyEvent read GetOnApply write SetOnApply;
     property Params: TDictionary<string, string> read FParams;
     procedure Show(AParams: TDictionary<string, string>);
     { Public declarations }
@@ -41,12 +42,18 @@ implementation
 {$R *.fmx}
 
 procedure TOptionsForm.ApplyBtnClick(Sender: TObject);
+var
+  i: Integer;
 begin
   if Assigned(FOnApply) then
   begin
-    FParams.Clear;
+   for i := 0 to FParams.Count - 1 do
+     FParams[Grd.Cells[0, i]] :=  Grd.Cells[1, i];
+
     FOnApply(Self);
+    FParams.Clear;
   end;
+  Close;
 end;
 
 procedure TOptionsForm.CancelBtnClick(Sender: TObject);

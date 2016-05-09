@@ -28,7 +28,6 @@ type
     property Top: Integer read GetTop write SetTop;
     property Left: Integer read GetLeft write SetLeft;
 
-
     property Presenter: IItemPresenter read GetPresenter write SetPresenter;
   end;
 

@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Types, System.Math, {$I 'Utils\DelphiCompatability.inc'}
-  System.UITypes, FMX.Controls,
+  System.UITypes, FMX.Controls, FMX.Dialogs,
   System.JSON;
 
 type
@@ -54,8 +54,21 @@ type
   function Random64: Int64;
   procedure NormalizeAngle(var AAngle: Single);
   function RGBColor(const AR, AG, AB, AA: Byte): TAlphaColorRec;
+  function ToInt(const AValue: string): Integer;
 
 implementation
+
+function ToInt(const AValue: string): Integer;
+var
+  vErr: Integer;
+begin
+  Val(AValue, Result, vErr);
+  if vErr <> 0 then
+  begin
+    Result := -1;
+    ShowMessage('Can not convert to Integer ' + AValue);
+  end;
+end;
 
 function RGBColor(const AR, AG, AB, AA: Byte): TAlphaColorRec;
 begin
