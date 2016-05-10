@@ -11,7 +11,7 @@ uses
   uIntersectorClasses in 'Intersector\uIntersectorClasses.pas',
   uIntersectorMethods in 'Intersector\uIntersectorMethods.pas',
   uNewFigure in 'Intersector\uNewFigure.pas',
-  uOptionsForm in 'uOptionsForm.pas' {OptionsForm},
+  uNamedOptionsForm in 'uNamedOptionsForm.pas' {NamedOptionsForm},
   uSSBModels in 'Model\uSSBModels.pas',
   uSSBTypes in 'uSSBTypes.pas',
   uMVPFrameWork in 'Utils\uMVPFrameWork.pas',
@@ -31,12 +31,14 @@ uses
   uItemView in 'Views\View\uItemView.pas',
   uView in 'Views\View\uView.pas',
   uITableView in 'Views\IView\uITableView.pas',
-  uTableView in 'Views\View\uTableView.pas';
+  uNamedTableView in 'Views\View\uNamedTableView.pas',
+  uOptionsForm in 'uOptionsForm.pas' {OptionsForm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.CreateForm(TSSBForm, SSBForm);
+  Application.CreateForm(TOptionsForm, OptionsForm);
   Application.Run;
 end.

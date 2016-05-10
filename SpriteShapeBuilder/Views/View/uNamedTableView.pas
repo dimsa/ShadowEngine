@@ -1,15 +1,15 @@
-unit uTableView;
+unit uNamedTableView;
 
 interface
 
 uses
   System.Generics.Collections,
-  uMVPFrameWork, uITableView, uOptionsForm, uIItemPresenter;
+  uMVPFrameWork, uITableView, uNamedOptionsForm, uIItemPresenter;
 
 type
   TTableView = class(TInterfacedObject, ITableView, IView)
   private
-    FOptionsForm: TOptionsForm;
+    FOptionsForm: TNamedOptionsForm;
     FPresenter: IItemPresenter;
     function GetPresenter: IItemPresenter;
     procedure SetPresenter(AValue: IItemPresenter);
@@ -28,7 +28,7 @@ implementation
 
 constructor TTableView.Create;
 begin
-  FOptionsForm := TOptionsForm.Create(nil);
+  FOptionsForm := TNamedOptionsForm.Create(nil);
   FOptionsForm.ValuesApplied := OnApply;
 end;
 

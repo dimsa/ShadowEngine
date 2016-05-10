@@ -1,119 +1,68 @@
 object OptionsForm: TOptionsForm
   Left = 0
   Top = 0
-  Caption = 'Options'
-  ClientHeight = 342
-  ClientWidth = 341
+  Caption = 'Form1'
+  ClientHeight = 405
+  ClientWidth = 306
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
   DesignerMasterStyle = 0
-  object Grd: TStringGrid
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    Position.X = 8.000000000000000000
-    Position.Y = 24.000000000000000000
-    Size.Width = 321.000000000000000000
-    Size.Height = 265.000000000000000000
+  object CancelBtn: TButton
+    Anchors = [akRight, akBottom]
+    Position.X = 131.000000000000000000
+    Position.Y = 364.000000000000000000
+    Size.Width = 80.000000000000000000
+    Size.Height = 25.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 0
-    ShowScrollBars = False
-    RowCount = 100
-    RowHeight = 21.000000000000000000
-    Viewport.Width = 317.000000000000000000
-    Viewport.Height = 240.000000000000000000
-    object ParamName: TStringColumn
-      Align = MostLeft
-      Header = 'Param'
-      Size.Width = 153.000000000000000000
-      Size.Height = 240.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 0
-    end
-    object ParamValue: TStringColumn
-      Align = MostRight
-      Header = 'Value'
-      Position.X = 152.000000000000000000
-      Size.Width = 165.000000000000000000
-      Size.Height = 240.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 1
-    end
+    TabOrder = 3
+    Text = 'Cancel'
+  end
+  object ApplyBtn: TButton
+    Anchors = [akRight, akBottom]
+    Position.X = 219.000000000000000000
+    Position.Y = 364.000000000000000000
+    Size.Width = 80.000000000000000000
+    Size.Height = 25.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 4
+    Text = 'Apply'
   end
   object ElementPointsLbl: TLabel
     Position.X = 8.000000000000000000
     Position.Y = 8.000000000000000000
     Text = 'Object Parametres'
   end
-  object ApplyBtn: TButton
-    Anchors = [akRight, akBottom]
-    Position.X = 248.000000000000000000
-    Position.Y = 303.000000000000000000
-    Size.Width = 80.000000000000000000
-    Size.Height = 25.000000000000000000
+  object Grd: TStringGrid
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Position.X = 8.000000000000000000
+    Position.Y = 24.000000000000000000
+    Size.Width = 290.000000000000000000
+    Size.Height = 331.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 4
-    Text = 'Apply'
-    OnClick = ApplyBtnClick
-  end
-  object CancelBtn: TButton
-    Anchors = [akRight, akBottom]
-    Position.X = 160.000000000000000000
-    Position.Y = 303.000000000000000000
-    Size.Width = 80.000000000000000000
-    Size.Height = 25.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 3
-    Text = 'Cancel'
-    OnClick = CancelBtnClick
-  end
-  object Panel1: TPanel
-    Position.X = -60.000000000000000000
-    Position.Y = 261.000000000000000000
-    Size.Width = 201.000000000000000000
-    Size.Height = 113.000000000000000000
-    Size.PlatformDefault = False
-    Visible = False
-    TabOrder = 6
-    object ElementPathEdt: TEdit
-      Touch.InteractiveGestures = [LongTap, DoubleTap]
-      Anchors = [akLeft, akTop, akRight]
+    TabOrder = 0
+    ShowScrollBars = False
+    RowCount = 100
+    RowHeight = 21.000000000000000000
+    Viewport.Width = 286.000000000000000000
+    Viewport.Height = 306.000000000000000000
+    object ParamName: TStringColumn
+      Align = MostLeft
+      Header = 'Param'
+      ReadOnly = True
+      Size.Width = 153.000000000000000000
+      Size.Height = 306.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+    end
+    object ParamValue: TStringColumn
+      Align = MostRight
+      Header = 'Value'
+      Position.X = -157.000000000000000000
+      Size.Width = 443.000000000000000000
+      Size.Height = 306.000000000000000000
+      Size.PlatformDefault = False
       TabOrder = 1
-      Position.X = 8.000000000000000000
-      Position.Y = 72.000000000000000000
-      Size.Width = 187.000000000000000000
-      Size.Height = 22.000000000000000000
-      Size.PlatformDefault = False
-    end
-    object ElementPathLbl: TLabel
-      Anchors = [akLeft, akTop, akRight]
-      Position.X = 8.000000000000000000
-      Position.Y = 56.000000000000000000
-      Size.Width = 192.000000000000000000
-      Size.Height = 17.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Path to Element Picture'
-    end
-    object ElementNameEdt: TEdit
-      Touch.InteractiveGestures = [LongTap, DoubleTap]
-      Anchors = [akLeft, akTop, akRight]
-      TabOrder = 2
-      Text = 'ds'
-      Position.X = 8.000000000000000000
-      Position.Y = 24.000000000000000000
-      Size.Width = 187.000000000000000000
-      Size.Height = 22.000000000000000000
-      Size.PlatformDefault = False
-    end
-    object ElementNameLbl: TLabel
-      Anchors = [akLeft, akTop, akRight]
-      Position.X = 8.000000000000000000
-      Position.Y = 8.000000000000000000
-      Size.Width = 192.000000000000000000
-      Size.Height = 17.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Element Name'
     end
   end
 end

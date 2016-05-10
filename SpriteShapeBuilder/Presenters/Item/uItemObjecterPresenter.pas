@@ -70,7 +70,7 @@ type
 implementation
 
 uses
-  uTableView, uIItemPresenter, uClasses;
+  uNamedTableView, uIItemPresenter, uClasses;
 
 { TObjecterItemPresenter }
 

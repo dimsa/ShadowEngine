@@ -7,7 +7,7 @@ uses
   uBasePresenterIncapsulator,
   uIView, uSSBTypes, uItemBasePresenter, uClasses, uIItemPresenter,
   uIItemView, uItemImagerPresenter, uMainModel, uSSBModels, uMVPFrameWork,
-  uTableView, uEasyDevice;
+  uNamedTableView, uEasyDevice;
 
 
 type

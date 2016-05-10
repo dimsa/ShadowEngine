@@ -5,14 +5,14 @@ interface
 uses
   System.Generics.Collections, System.SysUtils, System.Types, FMX.Graphics,
   FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms, FMX.Dialogs,
-  FMX.Types, System.Classes, System.UITypes, uEasyDevice, uOptionsForm,
+  FMX.Types, System.Classes, System.UITypes, uEasyDevice, uNamedOptionsForm,
   uSSBTypes, uIView, uIItemView, uItemView, uMVPFrameWork, FMX.Effects;
 
 type
   TView = class(TInterfacedObject, IMainView, IView)
   private
     FElements: TDictionary<IItemView, TItemView>;
-    FOptionsFrom: TOptionsForm;
+    FOptionsFrom: TNamedOptionsForm;
     FEffect: TGlowEffect;
     FParentTopLeft: TPointFunction;
     FPanel: TPanel;
@@ -111,7 +111,7 @@ begin
   FSelected := ASelected;
   FOpenDialog := AOpenDialog;
   FParentTopLeft := AParentTopLeft;
-  FOptionsFrom := TOptionsForm.Create(nil);
+  FOptionsFrom := TNamedOptionsForm.Create(nil);
 //  FFormPosition := AFormPosition;
   FEffect := TGlowEffect.Create(nil);
 end;

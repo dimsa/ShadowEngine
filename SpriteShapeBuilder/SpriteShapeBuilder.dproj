@@ -291,8 +291,8 @@
         <DCCReference Include="Intersector\uIntersectorClasses.pas"/>
         <DCCReference Include="Intersector\uIntersectorMethods.pas"/>
         <DCCReference Include="Intersector\uNewFigure.pas"/>
-        <DCCReference Include="uOptionsForm.pas">
-            <Form>OptionsForm</Form>
+        <DCCReference Include="uNamedOptionsForm.pas">
+            <Form>NamedOptionsForm</Form>
             <FormType>fmx</FormType>
         </DCCReference>
         <DCCReference Include="Model\uSSBModels.pas"/>
@@ -314,7 +314,11 @@
         <DCCReference Include="Views\View\uItemView.pas"/>
         <DCCReference Include="Views\View\uView.pas"/>
         <DCCReference Include="Views\IView\uITableView.pas"/>
-        <DCCReference Include="Views\View\uTableView.pas"/>
+        <DCCReference Include="Views\View\uNamedTableView.pas"/>
+        <DCCReference Include="uOptionsForm.pas">
+            <Form>OptionsForm</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
