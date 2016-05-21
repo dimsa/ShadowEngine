@@ -243,13 +243,13 @@ begin
 
   FNextLevelMenu := TYesNoMenu.Create('nextlevel', 'nextlevel', AManager, ALoader);
   FNextLevelMenu.Text :=
-    'Congratulations!' + #13 +
-    'You have completed level!' + #13 + #13 +
+    'Congratulations! ' + sLineBreak +
+    'You have completed level!' + sLineBreak +
     'Play Next Level?';
   FRetryLevelMenu := TYesNoMenu.Create('retrylevel', 'retrylevel', AManager, ALoader);
   FRetryLevelMenu.Text :=
-    'Regretulations! :-(' + #13 +
-    'Your ship is destroyed!' + #13 + #13 +
+    'Regretulations! ' + sLineBreak +
+    'Your ship is destroyed!' + sLineBreak +
     'Retry This Level?';
 
   FList := TList<TGameButton>.Create;
@@ -274,9 +274,9 @@ begin
   vText.Group := 'about';
   vText.Color :=  TAlphaColorRec.White;
   vText.Text :=
-    'Asteroids vs You' + #13 +
-    'ver. 0.8.2' + #13 + #13 +
-    'Game about confrontation of' + #13 + 'Humankind and Asteroids';
+    'Asteroids vs You' + sLineBreak +
+    'ver. 0.8.2' + sLineBreak + sLineBreak +
+    'Game about confrontation of' + sLineBreak + 'Humankind and Asteroids';
   vText.Group := 'about';
   FManager.Add(vText, 'aboutcaption');
   FManager.Formatter(vText, 'about1', []).Format;
@@ -286,15 +286,15 @@ begin
   vText.FontSize := 16;
   vText.Color :=  TAlphaColorRec.Gray;
   vText.Text :=
-  'It''s opensource project' + #13 +
-  'Written with Delphi, using Firemonkey ' + #13 +
-  'Game uses ShadowEngine (SO Engine) by Dmitriy Sorokin' + #13 + #13 +
-  'Project on GitHub: ' + #13 +
-  'https://github.com/dimsa/ShadowEngine' +  #13 + #13 +
-  'Game uses FMX.IniFile by HOSOKAWA' + #13 +
-  'Project on GitHub:' + #13 +
-  'https://github.com/freeonterminate/delphi/tree/master/FMX.IniFile' + #13 + #13 +
-  'Some illustrations made by Yunna Sorokina' + #13 + #13 +
+  'It''s opensource project' + sLineBreak +
+  'Written with Delphi, using Firemonkey ' + sLineBreak +
+  'Game uses ShadowEngine (SO Engine) by Dmitriy Sorokin' + sLineBreak + sLineBreak +
+  'Project on GitHub: ' + sLineBreak +
+  'https://github.com/dimsa/ShadowEngine' + sLineBreak + sLineBreak +
+  'Game uses FMX.IniFile by HOSOKAWA' + sLineBreak +
+  'Project on GitHub:' + sLineBreak +
+  'https://github.com/freeonterminate/delphi/tree/master/FMX.IniFile' + sLineBreak + sLineBreak +
+  'Some illustrations made by Yunna Sorokina' + sLineBreak + sLineBreak +
   'Thanks to everyone who helped with Game and Engine!';
   vText.Group := 'about';
   FManager.Add(vText, 'aboutdescription');

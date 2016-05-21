@@ -16,7 +16,6 @@ type
     procedure SetTickEnd(AValue: Int64);
     procedure SetTickBegin(AValue: Int64);
     procedure DoNothing;
-//    function GetLastFps: single;
     function GetSpeed: Single;
   protected
     procedure Execute; override; // Процедура выполнения потока
@@ -29,13 +28,14 @@ type
     constructor Create;
     destructor Destroy; override;
   const
+    CMinSleep = 2;
   {$IFDEF WIN32}
     CLeftFPSBorder = 30;
     CRightFPSBorder = 120;
     CMiddleFPS = 60;
   {$ENDIF WIN32}
   {$IFDEF ANDROID}
-    CLeftFPSBorder = 25;
+    CLeftFPSBorder = 20;
     CRightFPSBorder = 40;
     CMiddleFPS = 30;
   {$ENDIF ANDROID}
@@ -56,8 +56,8 @@ begin
   FTickCount := 0;
   FTickBegin := 0;
   FTickEnd := 0;
-  FLastFPS := CMiddleFPS;
-  FSleep := 0;
+  FLastFPS := CLeftFPSBorder;
+  FSleep := CMinSleep;
 end;
 
 destructor tEngineThread.Destroy;
@@ -78,7 +78,7 @@ begin
   begin
     TickBegin := GetTickCount;
     Synchronize(FWorkProcedure);
-    Self.Sleep(FSleep);
+    Sleep(FSleep);
     TickEnd := GetTickCount;
   end;
 
@@ -92,15 +92,6 @@ begin
     Result := 1;
   end;
 end;
-
-//function tEngineThread.GetLastFps: Single;
-//begin
-//  if FLastFps >= 1 then
-//    Exit(FLastFPS)
-//  else begin
-//    Result := 1;
-//  end;
-//end;
 
 function TEngineThread.GetSpeed: Single;
 begin
@@ -125,7 +116,7 @@ begin
     fTickCount := 0;
     if fLastFps > CRightFPSBorder then
       fSleep := FSleep + 1;
-    if (fLastFps < CLeftFPSBorder) and (fLastFps > 0) and (fSleep > 0) then
+    if (fLastFps < CLeftFPSBorder) and (fLastFps > 0) and (fSleep > CMinSleep) then
       fSleep := FSleep - 1;
   end
   else

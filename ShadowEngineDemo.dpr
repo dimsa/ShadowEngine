@@ -2,6 +2,7 @@ program ShadowEngineDemo;
 
 uses
   System.StartUpCopy,
+  FMX.Types,
   FMX.Forms,
   mainUnit in 'mainUnit.pas' {mainForm},
   uClasses in 'Utils\uClasses.pas',
@@ -19,6 +20,9 @@ uses
 {$R *.res}
 
 begin
+  // If GlobalUseGPUCanvas true, you've got more fps, but lower font rendering quality
+  // and you can not use #13 for linebreak, use sLineBreak instead
+  GlobalUseGPUCanvas := True;
   Application.Initialize;
   Application.CreateForm(TmainForm, mainForm);
   Application.Run;

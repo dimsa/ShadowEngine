@@ -950,11 +950,11 @@ var
   vTmpS: string;
 begin
   vS := '';
-  vS := vS + 'Max Level in Story Mode: ' + IntToStr(FMaxLevel) + #13 + #13;
-  vS := vS + 'Max Score in Survival Mode: ' + IntToStr(FMaxSurvivalScore) + #13;
+  vS := vS + 'Max Level in Story Mode: ' + IntToStr(FMaxLevel) + sLineBreak + sLineBreak;
+  vS := vS + 'Max Score in Survival Mode: ' + IntToStr(FMaxSurvivalScore) + sLineBreak;
   Str(FMaxSurvivalTime:0:3, vTmpS);
-  vS := vS + 'Max Time in Survival Mode: ' + vTmpS + #13 + #13;
-  vS := vS + 'Max Score in Relax Mode: ' + IntToStr(FMaxRelaxScore) + #13;
+  vS := vS + 'Max Time in Survival Mode: ' + vTmpS + sLineBreak + sLineBreak;
+  vS := vS + 'Max Score in Relax Mode: ' + IntToStr(FMaxRelaxScore) + sLineBreak;
   Str(FMaxRelaxTime:0:3, vTmpS);
   vS := vS + 'Max Score in Relax Mode: ' + vTmpS;
   Result := vS;
