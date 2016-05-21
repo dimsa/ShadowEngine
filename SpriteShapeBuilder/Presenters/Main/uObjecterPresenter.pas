@@ -35,8 +35,8 @@ type
   protected
     FModel: TSSBModel;
     FItems: TDictionary<TItemObjPresenter, IItemView>;
-    function GetView: IMainView;
-    property View: IMainView read GetView;
+    function GetView: IWorkSpaceView;
+    property View: IWorkSpaceView read GetView;
 
     // Методы на клик
     procedure DoMouseUp(ASender: TObject);
@@ -44,7 +44,7 @@ type
     procedure DoMouseMove(ASender: TObject);
     procedure DoOptionsShow(ASender: TObject);
   public
-    constructor Create(AView: IMainView; AModel: TSSBModel);
+    constructor Create(AView: IWorkSpaceView; AModel: TSSBModel);
     procedure ShowShapes;
     procedure HideShapes;
     procedure AddPoly;
@@ -150,7 +150,7 @@ begin
     FSelected.AddCircle;
 end;
 
-constructor TObjecterPresenter.Create(AView: IMainView; AModel: TSSBModel);
+constructor TObjecterPresenter.Create(AView: IWorkSpaceView; AModel: TSSBModel);
 begin
   inherited Create(AView, AModel);
   FItems := TDictionary<TItemObjPresenter, IItemView>.Create;
@@ -211,9 +211,9 @@ begin
 //  View.ShowParams(vItem.Params);
 end;
 
-function TObjecterPresenter.GetView: IMainView;
+function TObjecterPresenter.GetView: IWorkSpaceView;
 begin
-  Result := IMainView(FView);
+  Result := IWorkSpaceView(FView);
 end;
 
 procedure TObjecterPresenter.HideShapes;

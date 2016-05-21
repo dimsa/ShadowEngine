@@ -157,14 +157,12 @@ object SSBForm: TSSBForm
             Size.Width = 32.000000000000000000
             Size.Height = 32.000000000000000000
             Size.PlatformDefault = False
-            OnClick = Object_imgClick
           end
         end
         object Picture_rect: TRectangle
           Size.Width = 32.000000000000000000
           Size.Height = 32.000000000000000000
           Size.PlatformDefault = False
-          OnClick = Picture_imgClick
           object Picture_img: TImage
             MultiResBitmap.Height = 64
             MultiResBitmap.Width = 64
@@ -233,7 +231,6 @@ object SSBForm: TSSBForm
             Size.Width = 32.000000000000000000
             Size.Height = 32.000000000000000000
             Size.PlatformDefault = False
-            OnClick = Picture_imgClick
           end
         end
         object Shape_rect: TRectangle
@@ -339,7 +336,6 @@ object SSBForm: TSSBForm
             Size.Width = 32.000000000000000000
             Size.Height = 32.000000000000000000
             Size.PlatformDefault = False
-            OnClick = Shape_imgClick
           end
         end
       end
@@ -545,7 +541,7 @@ object SSBForm: TSSBForm
     Top = 8
   end
   object GlowEffect1: TGlowEffect
-    Softness = 0.400000005960464400
+    Softness = 0.400000005960464500
     GlowColor = claGold
     Opacity = 0.899999976158142100
   end

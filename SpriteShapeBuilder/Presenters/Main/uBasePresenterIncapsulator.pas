@@ -13,17 +13,17 @@ type
     FElementStart: TRect;
     FMouseStartPoint: TPoint;
     FIsMouseDowned: Boolean;
-    function GetView: IMainView;
+    function GetView: IWorkSpaceView;
     procedure SetIsMouseDowned(const Value: Boolean);
   protected
     procedure SetElementStart(const ARect: TRect); virtual;
-    property View: IMainView read GetView;
+    property View: IWorkSpaceView read GetView;
     property ElementStart: TRect read FElementStart;
     property MouseStart: TPoint read FMouseStartPoint;
     property IsMouseDowned: Boolean read FIsMouseDowned write SetIsMouseDowned;
     property Model: TSSBModel read FModel;
 
-    constructor Create(AView: IView; AModel: TSSBModel); virtual;
+    constructor Create(AView: IWorkSpaceView; AModel: TSSBModel); virtual;
     destructor Destroy; override;
   end;
 
@@ -31,7 +31,7 @@ implementation
 
 { TBasePresenterIncapsulator }
 
-constructor TBasePresenterIncapsulator.Create(AView: IView; AModel: TSSBModel);
+constructor TBasePresenterIncapsulator.Create(AView: IWorkSpaceView; AModel: TSSBModel);
 begin
   FView := AView;
   FModel := AModel;
@@ -43,9 +43,9 @@ begin
   inherited;;
 end;
 
-function TBasePresenterIncapsulator.GetView: IMainView;
+function TBasePresenterIncapsulator.GetView: IWorkSpaceView;
 begin
-  Result := IMainView(FView);
+  Result := IWorkSpaceView(FView);
 end;
 
 procedure TBasePresenterIncapsulator.SetElementStart(const ARect: TRect);

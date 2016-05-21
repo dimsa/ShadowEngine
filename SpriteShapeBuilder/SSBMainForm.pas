@@ -5,11 +5,13 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Controls.Presentation, FMX.Objects, uSpriteShapeBuilder, System.ImageList,
-  FMX.ImgList, FMX.Layouts, uSSBTypes, FMX.Effects;
+  FMX.Controls.Presentation, FMX.Objects, System.ImageList,
+  FMX.ImgList, FMX.Layouts, uSSBTypes, FMX.Effects,
+  uMainPresenter, uIMainView;
 
 type
-  TSSBForm = class(TForm)
+
+  TSSBForm = class(TForm, IMainView)
     Selected: TImage;
     SaveProjectBtn: TCornerButton;
     LoadProjectBtn: TCornerButton;
@@ -51,9 +53,9 @@ type
     procedure BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean);
     procedure AddPictureBtnClick(Sender: TObject);
-    procedure Picture_imgClick(Sender: TObject);
+    {procedure Picture_imgClick(Sender: TObject);
     procedure Object_imgClick(Sender: TObject);
-    procedure Shape_imgClick(Sender: TObject);
+    procedure Shape_imgClick(Sender: TObject); }
     procedure BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Single);
     procedure BackgroundResize(Sender: TObject);
@@ -68,8 +70,15 @@ type
     procedure DelShapeBtnClick(Sender: TObject);
     procedure AddPointBtnClick(Sender: TObject);
     procedure DelPointBtnClick(Sender: TObject);
+
   private
-    { Private declarations }
+    FPanels: array[TSSBStatus] of TLayout;
+    FStatus: TSSBStatus;
+    FMainPresenter: TMainPresenter;
+    function LoadDialog(out AFileName: string): boolean;
+    function GetStatus: TSSBStatus;
+    procedure SetStatus(const AStatus: TSSBStatus);
+    function ClientToScreenPoint(const APoint: TPoint): TPoint;
   public
 
     { Public declarations }
@@ -77,7 +86,6 @@ type
 
 var
   SSBForm: TSSBForm;
-  SSB: TSpriteShapeBuilder;
 
 implementation
 
@@ -85,49 +93,49 @@ implementation
 
 procedure TSSBForm.AddCircleBtnClick(Sender: TObject);
 begin
-  SSB.Objecter.AddCircle;
+  FMainPresenter.Objecter.AddCircle;
 end;
 
 procedure TSSBForm.AddObjectBtnClick(Sender: TObject);
 begin
-  SSB.Objecter.AddObj;
+  FMainPresenter.Objecter.AddObj;
 end;
 
 procedure TSSBForm.AddPictureBtnClick(Sender: TObject);
 begin
-  SSB.Imager.AddImg;
+  FMainPresenter.Imager.AddImg;
 end;
 
 procedure TSSBForm.AddPointBtnClick(Sender: TObject);
 begin
-  SSB.Objecter.AddPoint;
+  FMainPresenter.Objecter.AddPoint;
 end;
 
 procedure TSSBForm.AddPolyBtnClick(Sender: TObject);
 begin
-  SSB.Objecter.AddPoly;
+  FMainPresenter.Objecter.AddPoly;
 end;
 
 procedure TSSBForm.BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
-  SSB.Objecter.MouseDown;
-  SSB.Imager.MouseDown;
+  FMainPresenter.Objecter.MouseDown;
+  FMainPresenter.Imager.MouseDown;
 end;
 
 procedure TSSBForm.BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Single);
 begin
   SSBForm.Caption := x.ToString() + ' ' + y.ToString();
-  SSB.Imager.MouseMove;
-  SSB.Objecter.MouseMove;
+  FMainPresenter.Imager.MouseMove;
+  FMainPresenter.Objecter.MouseMove;
 end;
 
 procedure TSSBForm.BackgroundMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
-  SSB.Objecter.MouseUp;
-  SSB.Imager.MouseUp;
+  FMainPresenter.Objecter.MouseUp;
+  FMainPresenter.Imager.MouseUp;
 end;
 
 procedure TSSBForm.BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -145,24 +153,29 @@ begin
   SSBForm.Caption := Random(100).ToString;
 end;
 
+function TSSBForm.ClientToScreenPoint(const APoint: TPoint): TPoint;
+begin
+  Result := Self.ClientToScreen(APoint).Round;
+end;
+
 procedure TSSBForm.DelObjectBtnClick(Sender: TObject);
 begin
-  SSB.Objecter.DelObj;
+  FMainPresenter.Objecter.DelObj;
 end;
 
 procedure TSSBForm.DelPictureBtnClick(Sender: TObject);
 begin
-  SSB.Imager.DelImg;
+  FMainPresenter.Imager.DelImg;
 end;
 
 procedure TSSBForm.DelPointBtnClick(Sender: TObject);
 begin
-  SSB.Objecter.DelPoint;
+  FMainPresenter.Objecter.DelPoint;
 end;
 
 procedure TSSBForm.DelShapeBtnClick(Sender: TObject);
 begin
-  SSB.Objecter.DelShape;
+  FMainPresenter.Objecter.DelShape;
 end;
 
 procedure TSSBForm.FormCreate(Sender: TObject);
@@ -171,46 +184,74 @@ begin
   Object_Inst.Position.X := 0;
   Shape_Inst.Position.X := 0;
 
+  FPanels[TSSBStatus.sPicture] := Picture_Inst;
+  FPanels[TSSBStatus.sObject] := Object_Inst;
+  FPanels[TSSBStatus.sShape] := Shape_Inst;
+
   Picture_Inst.Visible := False;
   Object_Inst.Visible := False;
   Shape_Inst.Visible := False;
 
-  SSB := TSpriteShapeBuilder.Create(Self, MainPanel, Background, Selected, OpenDialog);
-  SSB.Init(Self);
+  FMainPresenter := TMainPresenter.Create(Self);//, MainPanel, Background, Selected, OpenDialog);
+
+
+
+//  FMainPresenter.Init(Self);
+end;
+
+function TSSBForm.GetStatus: TSSBStatus;
+begin
+  Result := FStatus;
+end;
+
+function TSSBForm.LoadDialog(out AFileName: string): boolean;
+begin
+  Result := OpenDialog.Execute;
+
+  AFileName := '';
+  if Result then
+    AFileName := OpenDialog.FileName;
 end;
 
 procedure TSSBForm.LoadProjectBtnClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
-    SSB.LoadProject(OpenDialog.FileName);
+    FMainPresenter.LoadProject(OpenDialog.FileName);
 end;
 
-procedure TSSBForm.Object_imgClick(Sender: TObject);
+{procedure TSSBForm.Object_imgClick(Sender: TObject);
 begin
-  SSB.Status := TSSBStatus.sObject;
+  FMainPresenter.Status := TSSBStatus.sObject;
 end;
 
 procedure TSSBForm.Picture_imgClick(Sender: TObject);
 begin
-  SSB.Status := TSSBStatus.sPicture;
-  SSB.Imager.Init;
-end;
+  FMainPresenter.Status := TSSBStatus.sPicture;
+end;   }
 
 procedure TSSBForm.SaveForEngineBtnClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
-    SSB.SaveForEngine(SaveDialog.FileName);
+    FMainPresenter.SaveForEngine(SaveDialog.FileName);
 end;
 
 procedure TSSBForm.SaveProjectBtnClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
-    SSB.SaveProject(SaveDialog.FileName);
+    FMainPresenter.SaveProject(SaveDialog.FileName);
 end;
 
-procedure TSSBForm.Shape_imgClick(Sender: TObject);
+procedure TSSBForm.SetStatus(const AStatus: TSSBStatus);
 begin
-  SSB.Status := TSSBStatus.sShape;
+  FStatus := AStatus;
+
+  FPanels[FStatus].Visible := False;
+  FPanels[FStatus].Visible := True;
 end;
+
+{procedure TSSBForm.Shape_imgClick(Sender: TObject);
+begin
+  FMainPresenter.Status := TSSBStatus.sShape;
+end;  }
 
 end.

@@ -49,7 +49,6 @@ type
     FDestination: TPosition;
     FDestinations: TList<TPosition>;
     FIsPaint: Boolean;
-    procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   protected
     procedure SetScale(AValue: single); override;
     procedure SetOpacity(const Value: single); override;
@@ -62,7 +61,7 @@ type
     procedure Hide;
     procedure Show;
     procedure AddDestination(const APos: TPosition);
-    constructor Create(ACreator: TEngine2DManager); reintroduce;
+    constructor Create(AManager: TEngine2DManager); reintroduce;
     destructor Destroy; override;
   end;
 
@@ -87,7 +86,7 @@ type
     property Size: Byte read FSize; // prSmall = 1; prMedium = 2; prBig = 3;
     property ScaleMod: Single read FScaleMod write SetScaleMod;
     function Collide(const AObject: TMovingUnit): Boolean;
-    constructor Create(ACreator: TEngine2DManager); reintroduce;
+    constructor Create(AManager: TEngine2DManager); reintroduce;
   end;
 
   TLittleAsteroid = class(TMovingUnit)
@@ -121,9 +120,9 @@ begin
   FDestinations.Add(APos);
 end;
 
-constructor TShip.Create(ACreator: TEngine2DManager);
+constructor TShip.Create(AManager: TEngine2DManager);
 begin
-  FManager := ACreator;
+  FManager := AManager;
   inherited Create;
 
   FLeftFire := TShipFire.Create;
@@ -163,8 +162,6 @@ begin
   FShipLight.ScaleX := Self.ScaleX;
   FShipLight.ScaleY := Self.ScaleY;
   FManager.Add(FShipLight);
-
-  Self.OnMouseDown := Self.MouseDown;
 
   FParts := TList<TSprite>.Create;
   FParts.Add(Self);
@@ -207,36 +204,6 @@ var
 begin
   for i := 0 to FParts.Count - 1 do
     FParts[i].Visible := False;
-end;
-
-procedure TShip.MouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-var
-  vPos: TPosition;
-  vFi, vEX, vEY, vDist: Double; // Координаты
-  vAni: TAnimation;
-begin
-  vEX := Self.x - X;
-  vEY := Self.y - y;
-
-  vDist := Sqrt(Sqr(vEX) + Sqr(vEY));
-  vFi := ArcTan2(-vEY, -vEX);
-  if vDist > 25 then
-    vPos.Rotate := (Self.Rotate + ((vFi / Pi) * 180+270)) / 2
-  else
-    vPos.rotate := Self.Rotate;
-  vPos.x := self.x + vEX * vDist * 0.05;
-  vPos.y := self.y + vEY * vDist * 0.05;
-
-  vPos.ScaleX := Self.ScaleX;
-  vPos.ScaleY := Self.ScaleY;
-  Self.Opacity := 1;
-
-  mainForm.caption := FloatToStr(vEX) + '~~' + FloatToStr(vEY) + '~~' + FloatToStr(vPos.Rotate);
-
-  vAni := TLoader.ShipFlyAnimation(Self, vPos);
-
-  FManager.Add(vAni);
 end;
 
 procedure TShip.Repaint;
@@ -454,9 +421,6 @@ begin
     AObject.DY := V2NewY;
   end;
 
- // FDx := - FDx;
- // FDy := - FDy;
-
   AObject.x := AObject.x - FDx * FManager.EngineSpeed * 2 * FSpeedModScale;
   AObject.y := AObject.y - FDy * FManager.EngineSpeed * 2 * FSpeedModScale;
 
@@ -478,10 +442,10 @@ begin
   vLoader.Free;
 end;
 
-constructor TAsteroid.Create(ACreator: TEngine2DManager);
+constructor TAsteroid.Create(AManager: TEngine2DManager);
 begin
   inherited Create;
-  FManager := ACreator;
+  FManager := AManager;
 
   FMaxDx := 10;
   FMaxDy := 10;

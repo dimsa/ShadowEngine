@@ -36,7 +36,7 @@ type
     procedure DoMouseUp(ASender: TObject);
     procedure DoMouseMove(ASender: TObject);
     function ResizeType(const AItem: TItemImgPresenter): TResizeType;
-    function GetView: IMainView;
+    function GetView: IWorkSpaceView;
 //    procedure JustifyPoints(vItem: TItemImgPresenter; var vRect: TRectF);
     procedure JustifyPoints(AItem: TItemImgPresenter);
     procedure JustifyAnchors(AItem: TItemImgPresenter);
@@ -48,8 +48,7 @@ type
     procedure MouseMove;
     procedure MouseDown;
     procedure MouseUp;
-    procedure Init;                        
-    constructor Create(AView: IView; AModel: TSSBModel); override;
+    constructor Create(AView: IWorkSpaceView; AModel: TSSBModel); override;
     destructor Destroy; override;
   end;
 
@@ -115,7 +114,7 @@ begin
   FItems.Add(vItemPresenter, vViewItem);
 end;
 
-constructor TImagerPresenter.Create(AView: IView; AModel: TSSBModel);
+constructor TImagerPresenter.Create(AView: IWorkSpaceView; AModel: TSSBModel);
 begin
   inherited Create(AView, AModel);
   FItems := TDictionary<TItemImgPresenter, IItemView>.Create;
@@ -223,14 +222,8 @@ begin
   MouseUp;
 end;
 
-function TImagerPresenter.GetView: IMainView;
+function TImagerPresenter.GetView: IWorkSpaceView;
 begin
-
-end;
-
-procedure TImagerPresenter.Init;
-begin
-  inherited;
 
 end;
 

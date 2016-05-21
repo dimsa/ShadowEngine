@@ -4,7 +4,6 @@ uses
   System.StartUpCopy,
   FMX.Forms,
   SSBMainForm in 'SSBMainForm.pas' {SSBForm},
-  uSpriteShapeBuilder in 'uSpriteShapeBuilder.pas',
   uNamedList in 'Utils\uNamedList.pas',
   uClasses in 'Utils\uClasses.pas',
   uEasyDevice in 'Utils\uEasyDevice.pas',
@@ -32,7 +31,9 @@ uses
   uView in 'Views\View\uView.pas',
   uITableView in 'Views\IView\uITableView.pas',
   uNamedTableView in 'Views\View\uNamedTableView.pas',
-  uOptionsForm in 'uOptionsForm.pas' {OptionsForm};
+  uOptionsForm in 'uOptionsForm.pas' {OptionsForm},
+  uMainPresenter in 'Presenters\uMainPresenter.pas',
+  uIMainView in 'Views\IView\uIMainView.pas';
 
 {$R *.res}
 

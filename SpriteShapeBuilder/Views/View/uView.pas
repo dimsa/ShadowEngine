@@ -9,7 +9,7 @@ uses
   uSSBTypes, uIView, uIItemView, uItemView, uMVPFrameWork, FMX.Effects;
 
 type
-  TView = class(TInterfacedObject, IMainView, IView)
+  TWorkSpaceView = class(TInterfacedObject, IWorkSpaceView, IView)
   private
     FElements: TDictionary<IItemView, TItemView>;
     FOptionsFrom: TNamedOptionsForm;
@@ -38,7 +38,7 @@ implementation
 
 { TSSBView }
 
-function TView.PanelTopLeft: TPointF;
+function TWorkSpaceView.PanelTopLeft: TPointF;
 begin
   Result := (FPanel.Position.Point + FParentTopLeft);
 //  FPanel. (FPanel.Position.Point - FParentTopLeft);
@@ -49,7 +49,7 @@ begin
   Result := (FFormPosition(APoint) - FPanel.Position.Point);
 end;  }
 
-function TView.AddElement: IItemView;
+function TWorkSpaceView.AddElement: IItemView;
 var
   vImg: TItemView;
 begin
@@ -59,14 +59,14 @@ begin
   Result := vImg;
 end;
 
-procedure TView.ChangeCursor(const ACursor: TCursor);
+procedure TWorkSpaceView.ChangeCursor(const ACursor: TCursor);
 begin
   if ACursor = FPanel.Cursor then
     Exit;
   FPanel.Cursor := ACursor;
 end;
 
-procedure TView.ClearAndFreeImg;
+procedure TWorkSpaceView.ClearAndFreeImg;
 begin
 
 end;
@@ -102,7 +102,7 @@ begin
   AToControl.OnTap := AFromControl.OnTap;
 end;}
 
-constructor TView.Create(APanel: TPanel; ABackground, ASelected: TImage;
+constructor TWorkSpaceView.Create(APanel: TPanel; ABackground, ASelected: TImage;
   AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
 begin
   FElements := TDictionary<IItemView, TItemView>.Create;
@@ -116,7 +116,7 @@ begin
   FEffect := TGlowEffect.Create(nil);
 end;
 
-destructor TView.Destroy;
+destructor TWorkSpaceView.Destroy;
 var
   vItem: TPair<IItemView, TItemView>;
 begin
@@ -148,25 +148,25 @@ begin
       Exit(FElements[i]);
 end; }
 
-function TView.FilenameFromDlg: string;
+function TWorkSpaceView.FilenameFromDlg: string;
 begin
   Result := '';
   if FOpenDialog.Execute then
     Result := FOpenDialog.FileName;
 end;
 
-function TView.GetMousePos: TPoint;
+function TWorkSpaceView.GetMousePos: TPoint;
 begin
   Result := (uEasyDevice.MousePos - FPanel.Position.Point - FParentTopLeft).Round;
 end;
 
-procedure TView.MouseDown(Sender: TObject; Button: TMouseButton;
+procedure TWorkSpaceView.MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
 
 end;
 
-procedure TView.RemoveElement(const AElement: IItemView);
+procedure TWorkSpaceView.RemoveElement(const AElement: IItemView);
 var
   vItem: TItemView;
 begin
@@ -176,13 +176,13 @@ begin
   vItem.Image.Free;
 end;
 
-procedure TView.SelectElement(const AElement: IItemView);
+procedure TWorkSpaceView.SelectElement(const AElement: IItemView);
 begin
   FSelected.Bitmap.Assign(FElements[AElement].Image.Bitmap);
   FEffect.Parent := FElements[AElement].Image;
 end;
 
-procedure TView.SetBackground(const AImg: TImage);
+procedure TWorkSpaceView.SetBackground(const AImg: TImage);
 begin
 
 end;

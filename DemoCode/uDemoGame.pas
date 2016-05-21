@@ -374,11 +374,8 @@ end;
 
 procedure TDemoGame.Resize(const AWidth, AHeight: Integer);
 begin
-//  vSize := getDisplaySizeInPx;
   FEngine.Width := AWidth;
   FEngine.Height:= AHeight;
-//  FEngine.Width := AWidth;//Round(vSize.X + 0.4);
-//  FEngine.Height := AHeight;//Round(vSize.Y + 0.4);
   FEngine.Resize;
   FGP.SetScaling(MonitorScale, SpeedModScale);
 end;

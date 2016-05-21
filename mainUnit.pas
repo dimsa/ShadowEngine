@@ -59,7 +59,6 @@ begin
   if KeyChar = #32 then
     Game.DrawFigures := not Game.DrawFigures;
 
-
   if ReturnPressed(Key) then
   begin
     {$IFDEF RELEASE}

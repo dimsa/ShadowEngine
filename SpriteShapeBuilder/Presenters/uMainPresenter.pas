@@ -1,4 +1,4 @@
-unit uSpriteShapeBuilder;
+unit uMainPresenter;
 
 interface
 
@@ -6,24 +6,24 @@ uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types, FMX.Graphics,
   System.JSON, FMX.Controls, FMX.Layouts,
-  uNamedList, uEasyDevice, uClasses, uStreamUtil, uMainModel,
+  uNamedList, uEasyDevice, uClasses, uStreamUtil, uMainModel, uIMainView,
   uSSBModels, uView, uSSBTypes, uImagerPresenter, uObjecterPresenter;
 
 type
-  TSpriteShapeBuilder = class
+  TMainPresenter = class
   private
     FStatus: TSSBStatus;
-    FPanel: TPanel;
-    FForm: TForm;
+//    FPanel: TPanel;
+    //FForm: TForm;
 
     // Контролы для переключения статуса
-    FPanels: array[TSSBStatus] of TLayout;
-    FTabsRect: array[TSSBStatus] of TRectangle;
-    FTabsImg: array[TSSBStatus] of TImage;
+//
+//    FTabsRect: array[TSSBStatus] of TRectangle;
+//    FTabsImg: array[TSSBStatus] of TImage;
 
-    FView: TView;
+    FView: IMainView;
     FModel: TSSBModel;
-    FControllers: array[TSSBStatus] of TImagerPresenter;
+    FPresenters: array[TSSBStatus] of TImagerPresenter;
     FIsMouseDown: Boolean;
 
     FObjecter: IInterface;
@@ -32,24 +32,22 @@ type
 
     procedure DoChangeStatus(ASender: TObject);
 
-    procedure SetStatus(const Value: TSSBStatus);
-    function GetController: TImagerPresenter;
+//    procedure SetStatus(const Value: TSSBStatus);
     function FormTopLeft: TPointF;
     procedure OnModelUpdate(ASender: TObject);
     function GetImager: TImagerPresenter;
     function GetObjecter: TObjecterPresenter;
   public
-    property Status: TSSBStatus read FStatus write SetStatus;
+//    property Status: TSSBStatus read FStatus write SetStatus;
     property IsMouseDown: Boolean read FIsMouseDown write FIsMouseDown;
-    property Controller: TImagerPresenter read GetController;
     property Imager: TImagerPresenter read GetImager;
     property Objecter: TObjecterPresenter read GetObjecter;
     procedure LoadProject(const AFileName: string);
     procedure SaveProject(const AFileName: string);
     procedure SaveForEngine(const AFileName: string);
-    constructor Create(AForm: TForm; APanel: TPanel; ABackground, ASelected: TImage;
-      AOpenDialog: TOpenDialog);
-    procedure Init(const AProgForm: TForm);
+    constructor Create(const AView: IMainView);
+//    (AForm: TForm; APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog);
+//    procedure Init(const AProgForm: TForm);
     destructor Destroy; override;
   const
     CPrec = 5;
@@ -63,18 +61,19 @@ uses
 
 { TSpriteShapeBuilder }
 
-constructor TSpriteShapeBuilder.Create(AForm: TForm; APanel: TPanel; ABackground,
-  ASelected: TImage; AOpenDialog: TOpenDialog);
+constructor TMainPresenter.Create(const AView: IMainView);
+//; APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog);
 begin
-  FForm := AForm;
-  FView := TView.Create(APanel, ABackground, ASelected, AOpenDialog, FormTopLeft);
+  FView := AView;
+//  FForm := AForm;
+ // FView := TView.Create(APanel, ABackground, ASelected, AOpenDialog, FormTopLeft);
   FModel := TSSBModel.Create(OnModelUpdate);
-  FImager := TImagerPresenter.Create(FView, FModel);
-  FObjecter := TObjecterPresenter.Create(FView, FModel);
+  {FImager := TImagerPresenter.Create(FView, FModel);
+  FObjecter := TObjecterPresenter.Create(FView, FModel);   }
   FResourceFileName := 'NoName';
 end;
 
-destructor TSpriteShapeBuilder.Destroy;
+destructor TMainPresenter.Destroy;
 begin
   FView := nil;//.Free;
   FImager := nil; //.Free;
@@ -82,42 +81,29 @@ begin
   inherited;
 end;
 
-procedure TSpriteShapeBuilder.DoChangeStatus(ASender: TObject);
+procedure TMainPresenter.DoChangeStatus(ASender: TObject);
 var
   vName: String;
 begin
-  vName := LowerCase(TControl(ASender).Name);
-  if vName.Contains('picture') then
-    Status := sPicture;
 
-  if vName.Contains('object') then
-    Status := sObject;
-
-  if vName.Contains('shape') then
-    Status := sShape;
 end;
 
-function TSpriteShapeBuilder.FormTopLeft: TPointF;
+function TMainPresenter.FormTopLeft: TPointF;
 begin
-  Result := FForm.ClientToScreen(TPoint.Zero);
+  Result := FView.ClientToScreenPoint(TPoint.Zero); //FForm.ClientToScreen(TPoint.Zero);
 end;
 
-function TSpriteShapeBuilder.GetController: TImagerPresenter;
-begin
-  Result := FControllers[FStatus];
-end;
-
-function TSpriteShapeBuilder.GetImager: TImagerPresenter;
+function TMainPresenter.GetImager: TImagerPresenter;
 begin
   Result := TImagerPresenter(FImager);
 end;
 
-function TSpriteShapeBuilder.GetObjecter: TObjecterPresenter;
+function TMainPresenter.GetObjecter: TObjecterPresenter;
 begin
   Result := TObjecterPresenter(FObjecter);
 end;
 
-procedure TSpriteShapeBuilder.Init(const AProgForm: TForm);
+{procedure TMainPresenter.Init(const AProgForm: TForm);
 begin
   FPanel := TPanel(AProgForm.FindComponent('MainPanel'));
   with FPanel do
@@ -148,9 +134,9 @@ begin
 
   Status := TSSBStatus.sPicture;
   Imager.Init;
-end;
+end; }
 
-procedure TSpriteShapeBuilder.LoadProject(const AFileName: string);
+procedure TMainPresenter.LoadProject(const AFileName: string);
 var
   vStream: TStreamUtil;
   i, vInt: Integer;
@@ -219,12 +205,12 @@ begin
   {Look at SSBProjectFormatDescription.txt !!!}
 end;
 
-procedure TSpriteShapeBuilder.OnModelUpdate(ASender: TObject);
+procedure TMainPresenter.OnModelUpdate(ASender: TObject);
 begin
 
 end;
 
-procedure TSpriteShapeBuilder.SaveForEngine(const AFileName: string);
+procedure TMainPresenter.SaveForEngine(const AFileName: string);
 var
   vS: String;
   vList: TStringList;
@@ -243,7 +229,7 @@ begin
   vBmp.Free;
 end;
 
-procedure TSpriteShapeBuilder.SaveProject(const AFileName: string);
+procedure TMainPresenter.SaveProject(const AFileName: string);
 var
   vStream: TStreamUtil;
   i: Integer;
@@ -258,7 +244,7 @@ begin
   {Look at SSBProjectFormatDescription.txt !!!}
 end;
 
-procedure TSpriteShapeBuilder.SetStatus(const Value: TSSBStatus);
+{procedure TMainPresenter.SetStatus(const Value: TSSBStatus);
 begin
   FPanels[FStatus].Visible := False;
   FStatus := Value;
@@ -268,6 +254,6 @@ begin
     Objecter.ShowShapes
   else
     Objecter.HideShapes;
-end;
+end;  }
 
 end.
