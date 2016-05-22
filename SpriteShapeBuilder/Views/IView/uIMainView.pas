@@ -10,7 +10,7 @@ type
   IMainView = interface
     function GetStatus: TSSBStatus;
     procedure SetStatus(const AStatus: TSSBStatus);
-    function LoadDialog(out AFileName: string): boolean;
+    function FilenameFromDlg(out AFileName: string): boolean;
     function ClientToScreenPoint(const APoint: TPoint): TPoint;
   end;
 

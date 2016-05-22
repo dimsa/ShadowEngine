@@ -6,8 +6,8 @@ uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types, FMX.Graphics,
   System.JSON, FMX.Controls, FMX.Layouts,
-  uNamedList, uEasyDevice, uClasses, uStreamUtil, uMainModel, uIMainView,
-  uSSBModels, uView, uSSBTypes, uImagerPresenter, uObjecterPresenter;
+  uNamedList, uEasyDevice, uClasses, uStreamUtil, uMainModel, uIMainView, uIWorkSpaceView,
+  uSSBModels, uWorkSpaceView, uSSBTypes, uImagerPresenter, uObjecterPresenter;
 
 type
   TMainPresenter = class
@@ -23,11 +23,12 @@ type
 
     FView: IMainView;
     FModel: TSSBModel;
-    FPresenters: array[TSSBStatus] of TImagerPresenter;
+//    FPresenters: array[TSSBStatus] of TImagerPresenter;
     FIsMouseDown: Boolean;
 
-    FObjecter: IInterface;
-    FImager: IInterface;
+    FObjecter: TObjecterPresenter;
+    FImager: TImagerPresenter;
+
     FResourceFileName: string;
 
     procedure DoChangeStatus(ASender: TObject);
@@ -35,19 +36,21 @@ type
 //    procedure SetStatus(const Value: TSSBStatus);
     function FormTopLeft: TPointF;
     procedure OnModelUpdate(ASender: TObject);
-    function GetImager: TImagerPresenter;
-    function GetObjecter: TObjecterPresenter;
   public
 //    property Status: TSSBStatus read FStatus write SetStatus;
-    property IsMouseDown: Boolean read FIsMouseDown write FIsMouseDown;
-    property Imager: TImagerPresenter read GetImager;
-    property Objecter: TObjecterPresenter read GetObjecter;
-    procedure LoadProject(const AFileName: string);
-    procedure SaveProject(const AFileName: string);
-    procedure SaveForEngine(const AFileName: string);
-    constructor Create(const AView: IMainView);
+//    property IsMouseDown: Boolean read FIsMouseDown write FIsMouseDown;
+
+    procedure InitImager;
+    procedure InitObjecter;
+    procedure InitShaper;
+    procedure LoadProject;//(const AFileName: string);
+    procedure SaveProject;//(const AFileName: string);
+    procedure SaveForEngine;//(const AFileName: string);
+    constructor Create(const AView: IMainView; const AWorkSpaceView: IWorkSpaceView);
 //    (AForm: TForm; APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog);
 //    procedure Init(const AProgForm: TForm);
+    property Imager: TImagerPresenter read FImager;
+    property Objecter: TObjecterPresenter read FObjecter;
     destructor Destroy; override;
   const
     CPrec = 5;
@@ -61,15 +64,15 @@ uses
 
 { TSpriteShapeBuilder }
 
-constructor TMainPresenter.Create(const AView: IMainView);
+constructor TMainPresenter.Create(const AView: IMainView; const AWorkSpaceView: IWorkSpaceView);
 //; APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog);
 begin
   FView := AView;
 //  FForm := AForm;
  // FView := TView.Create(APanel, ABackground, ASelected, AOpenDialog, FormTopLeft);
   FModel := TSSBModel.Create(OnModelUpdate);
-  {FImager := TImagerPresenter.Create(FView, FModel);
-  FObjecter := TObjecterPresenter.Create(FView, FModel);   }
+  FImager := TImagerPresenter.Create(AWorkSpaceView, FModel);
+  FObjecter := TObjecterPresenter.Create(AWorkSpaceView, FModel);
   FResourceFileName := 'NoName';
 end;
 
@@ -77,6 +80,7 @@ destructor TMainPresenter.Destroy;
 begin
   FView := nil;//.Free;
   FImager := nil; //.Free;
+  FObjecter := nil;
 
   inherited;
 end;
@@ -93,15 +97,30 @@ begin
   Result := FView.ClientToScreenPoint(TPoint.Zero); //FForm.ClientToScreen(TPoint.Zero);
 end;
 
-function TMainPresenter.GetImager: TImagerPresenter;
+procedure TMainPresenter.InitImager;
 begin
-  Result := TImagerPresenter(FImager);
+  FView.SetStatus(TSSBStatus.sPicture);
 end;
 
-function TMainPresenter.GetObjecter: TObjecterPresenter;
+procedure TMainPresenter.InitObjecter;
 begin
-  Result := TObjecterPresenter(FObjecter);
+  FView.SetStatus(TSSBStatus.sObject);
 end;
+
+procedure TMainPresenter.InitShaper;
+begin
+  FView.SetStatus(TSSBStatus.sShape);
+end;
+
+//function TMainPresenter.GetImager: TImagerPresenter;
+//begin
+//  Result := TImagerPresenter(FImager);
+//end;
+//
+//function TMainPresenter.GetObjecter: TObjecterPresenter;
+//begin
+//  Result := TObjecterPresenter(FObjecter);
+//end;
 
 {procedure TMainPresenter.Init(const AProgForm: TForm);
 begin
@@ -136,7 +155,7 @@ begin
   Imager.Init;
 end; }
 
-procedure TMainPresenter.LoadProject(const AFileName: string);
+procedure TMainPresenter.LoadProject;//(const AFileName: string);
 var
   vStream: TStreamUtil;
   i, vInt: Integer;
@@ -144,62 +163,64 @@ var
   vN: Integer;
   vImageElement: TItemImageModel;
   vElement: TResourceModel;
+  vFileName: string;
 begin
-  try
-  vStream := TStreamUtil.Create(AFileName);
-  with vStream do
-  begin
-    StartRead;
-    vS := 'SpriteShapeBuilderProjectFile';
-    vSTmp := ReadStrWithLength(Length(vS));
-    if vS <> vSTmp then
+  if FView.FilenameFromDlg(vFileName) then
+    try
+      vStream := TStreamUtil.Create(vFileName);
+    with vStream do
     begin
-      ShowMessage('This file format not supported!');
-      vStream.Free;
-      Exit;
+      StartRead;
+      vS := 'SpriteShapeBuilderProjectFile';
+      vSTmp := ReadStrWithLength(Length(vS));
+      if vS <> vSTmp then
+      begin
+        ShowMessage('This file format not supported!');
+        vStream.Free;
+        Exit;
+      end;
+
+      ReadStr('Version');
+      vInt := ReadInt;
+
+      if vInt <> 1 then
+      begin
+        ShowMessage('This version of SpriteShapeBuilderProjectFile not supported!');
+        vStream.Free;
+        Exit;
+      end;
+      ReadStr('Resources');
+      vN := ReadInt;
+
+      for i := 0 to vN - 1 do
+      begin
+        ReadStr('Resource');
+
+        vImageElement := FModel.AddImageElement;
+        vImageElement.ReadFromStream(vStream);
+        FImager.AddImg(vImageElement);
+        vImageElement.RaiseUpdateEvent;
+      end;
+
+      ReadStr('ResourceFileName');
+      FResourceFileName := ReadStr;
+      ReadStr('Objects');
+      vN := ReadInt;
+
+      for i := 0 to vN - 1 do
+      begin
+        vElement := FModel.AddResource;
+        vElement.ReadFromStream(vStream);
+        FObjecter.AddObj(vElement);
+        FObjecter.ShowShapes;
+        vElement.RaiseUpdateEvent;
+      end;
+
+      Stop;
     end;
-
-    ReadStr('Version');
-    vInt := ReadInt;
-
-    if vInt <> 1 then
-    begin
-      ShowMessage('This version of SpriteShapeBuilderProjectFile not supported!');
-      vStream.Free;
-      Exit;
-    end;
-    ReadStr('Resources');
-    vN := ReadInt;
-
-    for i := 0 to vN - 1 do
-    begin
-      ReadStr('Resource');
-
-      vImageElement := FModel.AddImageElement;
-      vImageElement.ReadFromStream(vStream);
-      Imager.AddImg(vImageElement);
-      vImageElement.RaiseUpdateEvent;
-    end;
-
-    ReadStr('ResourceFileName');
-    FResourceFileName := ReadStr;
-    ReadStr('Objects');
-    vN := ReadInt;
-
-    for i := 0 to vN - 1 do
-    begin
-      vElement := FModel.AddResource;
-      vElement.ReadFromStream(vStream);
-      Objecter.AddObj(vElement);
-      Objecter.ShowShapes;
-      vElement.RaiseUpdateEvent;
-    end;
-
-    Stop;
-  end;
 
   finally
-    vStream.Free;
+      vStream.Free;
   end;
 
   {Look at SSBProjectFormatDescription.txt !!!}
@@ -210,38 +231,45 @@ begin
 
 end;
 
-procedure TMainPresenter.SaveForEngine(const AFileName: string);
+procedure TMainPresenter.SaveForEngine;//(const AFileName: string);
 var
   vS: String;
   vList: TStringList;
   vBmp: TBitmap;
+  vFileName: string;
 begin
-  vList := TStringList.Create;
-  vS := FModel.ToJson;
-  vList.Add(vS);
-  vList.SaveToFile(AFileName);
-  vList.Free;
-  vBmp := FModel.GenerateWholeBitmap;
+  if FView.FilenameFromDlg(vFileName) then
+  begin
+    vList := TStringList.Create;
+    vS := FModel.ToJson;
+    vList.Add(vS);
+    vList.SaveToFile(vFileName);
+    vList.Free;
+    vBmp := FModel.GenerateWholeBitmap;
 
-  vS := ExtractFileDir(AFileName) + '\' + Fmodel.ImageFileName;
-  if not FileExists(vS) then
-    vBmp.SaveToFile(vS);
-  vBmp.Free;
+    vS := ExtractFileDir(vFileName) + '\' + FModel.ImageFileName;
+    if not FileExists(vS) then
+      vBmp.SaveToFile(vS);
+    vBmp.Free;
+  end;
 end;
 
-procedure TMainPresenter.SaveProject(const AFileName: string);
+procedure TMainPresenter.SaveProject;//(const AFileName: string);
 var
   vStream: TStreamUtil;
   i: Integer;
   vBmp: TBitmap;
   vTmp: TStream;
+  vFileName: string;
 begin
+  if FView.FilenameFromDlg(vFileName) then
+  begin
+    vStream := TStreamUtil.Create(vFileName);
+    FModel.SaveProjectToStream(vStream);
+    vStream.Free;
+  end;
 
-  vStream := TStreamUtil.Create(AFileName);
-  FModel.SaveProjectToStream(vStream);
-  vStream.Free;
-
-  {Look at SSBProjectFormatDescription.txt !!!}
+  { Look at SSBProjectFormatDescription.txt !!!}
 end;
 
 {procedure TMainPresenter.SetStatus(const Value: TSSBStatus);

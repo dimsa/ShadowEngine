@@ -5,7 +5,7 @@ interface
 uses
   System.Types, System.SysUtils, System.Generics.Collections, FMX.Objects,
   uBasePresenterIncapsulator,
-  uIView, uSSBTypes, uItemBasePresenter, uClasses, uIItemPresenter,
+  uIWorkSpaceView, uSSBTypes, uItemBasePresenter, uClasses, uIItemPresenter,
   uIItemView, uItemImagerPresenter, uMainModel, uSSBModels, uMVPFrameWork,
   uNamedTableView, uEasyDevice;
 
@@ -66,8 +66,7 @@ var
   vModel: TItemImageModel;
   vImg: TImage;
 begin
-  vFileName := View.FilenameFromDlg;
-  if vFileName <> '' then
+  if View.FilenameFromDlg(vFileName) then
   begin
     vImg := TImage.Create(nil);
     vImg.Bitmap.LoadFromFile(vFileName);

@@ -7,7 +7,7 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, System.ImageList,
   FMX.ImgList, FMX.Layouts, uSSBTypes, FMX.Effects,
-  uMainPresenter, uIMainView;
+  uMainPresenter, uIMainView, uWorkSpaceView;
 
 type
 
@@ -70,18 +70,24 @@ type
     procedure DelShapeBtnClick(Sender: TObject);
     procedure AddPointBtnClick(Sender: TObject);
     procedure DelPointBtnClick(Sender: TObject);
-
+    procedure Picture_imgMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Single);
+    procedure Object_imgMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Single);
+    procedure Shape_imgMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Single);
+    function FormTopLeft: TPointF;
   private
     FPanels: array[TSSBStatus] of TLayout;
     FStatus: TSSBStatus;
     FMainPresenter: TMainPresenter;
+    FWorkSpaceView: TWorkSpaceView;
     function LoadDialog(out AFileName: string): boolean;
     function GetStatus: TSSBStatus;
     procedure SetStatus(const AStatus: TSSBStatus);
     function ClientToScreenPoint(const APoint: TPoint): TPoint;
   public
-
-    { Public declarations }
+    function FilenameFromDlg(out AFileName: string): boolean;
   end;
 
 var
@@ -93,49 +99,49 @@ implementation
 
 procedure TSSBForm.AddCircleBtnClick(Sender: TObject);
 begin
-  FMainPresenter.Objecter.AddCircle;
+  FWorkSpaceView.Objecter.AddCircle;
 end;
 
 procedure TSSBForm.AddObjectBtnClick(Sender: TObject);
 begin
-  FMainPresenter.Objecter.AddObj;
+  FWorkSpaceView.Objecter.AddObj;
 end;
 
 procedure TSSBForm.AddPictureBtnClick(Sender: TObject);
 begin
-  FMainPresenter.Imager.AddImg;
+  FWorkSpaceView.Imager.AddImg;
 end;
 
 procedure TSSBForm.AddPointBtnClick(Sender: TObject);
 begin
-  FMainPresenter.Objecter.AddPoint;
+  FWorkSpaceView.Objecter.AddPoint;
 end;
 
 procedure TSSBForm.AddPolyBtnClick(Sender: TObject);
 begin
-  FMainPresenter.Objecter.AddPoly;
+  FWorkSpaceView.Objecter.AddPoly;
 end;
 
 procedure TSSBForm.BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
-  FMainPresenter.Objecter.MouseDown;
-  FMainPresenter.Imager.MouseDown;
+  FWorkSpaceView.Objecter.MouseDown;
+  FWorkSpaceView.Imager.MouseDown;
 end;
 
 procedure TSSBForm.BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Single);
 begin
   SSBForm.Caption := x.ToString() + ' ' + y.ToString();
-  FMainPresenter.Imager.MouseMove;
-  FMainPresenter.Objecter.MouseMove;
+  FWorkSpaceView.Imager.MouseMove;
+  FWorkSpaceView.Objecter.MouseMove;
 end;
 
 procedure TSSBForm.BackgroundMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
-  FMainPresenter.Objecter.MouseUp;
-  FMainPresenter.Imager.MouseUp;
+  FWorkSpaceView.Objecter.MouseUp;
+  FWorkSpaceView.Imager.MouseUp;
 end;
 
 procedure TSSBForm.BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -160,26 +166,36 @@ end;
 
 procedure TSSBForm.DelObjectBtnClick(Sender: TObject);
 begin
-  FMainPresenter.Objecter.DelObj;
+  FWorkSpaceView.Objecter.DelObj;
 end;
 
 procedure TSSBForm.DelPictureBtnClick(Sender: TObject);
 begin
-  FMainPresenter.Imager.DelImg;
+  FWorkSpaceView.Imager.DelImg;
 end;
 
 procedure TSSBForm.DelPointBtnClick(Sender: TObject);
 begin
-  FMainPresenter.Objecter.DelPoint;
+  FWorkSpaceView.Objecter.DelPoint;
 end;
 
 procedure TSSBForm.DelShapeBtnClick(Sender: TObject);
 begin
-  FMainPresenter.Objecter.DelShape;
+  FWorkSpaceView.Objecter.DelShape;
+end;
+
+function TSSBForm.FilenameFromDlg(out AFileName: string): boolean;
+begin
+  AFileName := '';
+  Result := OpenDialog.Execute;
+
+  if Result then
+    AFileName := OpenDialog.FileName;
 end;
 
 procedure TSSBForm.FormCreate(Sender: TObject);
 begin
+  // Initiilizing of controls
   Picture_Inst.Position.X := 0;
   Object_Inst.Position.X := 0;
   Shape_Inst.Position.X := 0;
@@ -192,11 +208,12 @@ begin
   Object_Inst.Visible := False;
   Shape_Inst.Visible := False;
 
-  FMainPresenter := TMainPresenter.Create(Self);//, MainPanel, Background, Selected, OpenDialog);
+  // MVP
+  FWorkSpaceView := TWorkSpaceView.Create(MainPanel, Background, Selected, OpenDialog, FormTopLeft);
+  FMainPresenter := TMainPresenter.Create(Self, FWorkSpaceView);
 
-
-
-//  FMainPresenter.Init(Self);
+  FWorkSpaceView.Imager := FMainPresenter.Imager;
+  FWorkSpaceView.Objecter := FMainPresenter.Objecter;
 end;
 
 function TSSBForm.GetStatus: TSSBStatus;
@@ -215,8 +232,19 @@ end;
 
 procedure TSSBForm.LoadProjectBtnClick(Sender: TObject);
 begin
-  if OpenDialog.Execute then
-    FMainPresenter.LoadProject(OpenDialog.FileName);
+  FMainPresenter.LoadProject;
+end;
+
+procedure TSSBForm.Object_imgMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+begin
+  FMainPresenter.InitObjecter;
+end;
+
+procedure TSSBForm.Picture_imgMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+begin
+  FMainPresenter.InitImager;
 end;
 
 {procedure TSSBForm.Object_imgClick(Sender: TObject);
@@ -231,27 +259,30 @@ end;   }
 
 procedure TSSBForm.SaveForEngineBtnClick(Sender: TObject);
 begin
-  if SaveDialog.Execute then
-    FMainPresenter.SaveForEngine(SaveDialog.FileName);
+  FMainPresenter.SaveForEngine;
 end;
 
 procedure TSSBForm.SaveProjectBtnClick(Sender: TObject);
 begin
-  if SaveDialog.Execute then
-    FMainPresenter.SaveProject(SaveDialog.FileName);
+    FMainPresenter.SaveProject;
 end;
 
 procedure TSSBForm.SetStatus(const AStatus: TSSBStatus);
 begin
-  FStatus := AStatus;
-
   FPanels[FStatus].Visible := False;
+  FStatus := AStatus;
   FPanels[FStatus].Visible := True;
 end;
 
-{procedure TSSBForm.Shape_imgClick(Sender: TObject);
+procedure TSSBForm.Shape_imgMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
 begin
-  FMainPresenter.Status := TSSBStatus.sShape;
-end;  }
+  FMainPresenter.InitShaper;
+end;
+
+function TSSBForm.FormTopLeft: TPointF;
+begin
+  Result := ClientToScreenPoint(TPoint.Zero);
+end;
 
 end.

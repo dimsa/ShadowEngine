@@ -1,4 +1,4 @@
-unit uView;
+unit uWorkSpaceView;
 
 interface
 
@@ -6,11 +6,13 @@ uses
   System.Generics.Collections, System.SysUtils, System.Types, FMX.Graphics,
   FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms, FMX.Dialogs,
   FMX.Types, System.Classes, System.UITypes, uEasyDevice, uNamedOptionsForm,
-  uSSBTypes, uIView, uIItemView, uItemView, uMVPFrameWork, FMX.Effects;
+  uSSBTypes, uIWorkSpaceView, uIItemView, uItemView, uMVPFrameWork, FMX.Effects,
+  uImagerPresenter, uObjecterPresenter;
 
 type
   TWorkSpaceView = class(TInterfacedObject, IWorkSpaceView, IView)
   private
+
     FElements: TDictionary<IItemView, TItemView>;
     FOptionsFrom: TNamedOptionsForm;
     FEffect: TGlowEffect;
@@ -19,10 +21,17 @@ type
     FBackground: TImage;
     FSelected: TImage;
     FOpenDialog: TOpenDialog;
+    FObjecter: IInterface;
+    FImager: IInterface;
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     function PanelTopLeft: TPointF;
+    function GetImager: TImagerPresenter;
+    function GetObjecter: TObjecterPresenter;
+    procedure SetImager(const Value: TImagerPresenter);
+    procedure SetObjecter(const Value: TObjecterPresenter);
   public
-    constructor Create(APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
+    constructor Create(APanel: TPanel; ABackground, ASelected: TImage;
+      AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
     destructor Destroy; override;
     procedure ClearAndFreeImg;
     function GetMousePos: TPoint;
@@ -30,8 +39,11 @@ type
     procedure RemoveElement(const AElement: IItemView);
     procedure SelectElement(const AElement: IItemView);
     procedure SetBackground(const AImg: TImage);
-    function FilenameFromDlg: string;
+    function FilenameFromDlg(out AFileName: string): boolean;
     procedure ChangeCursor(const ACursor: TCursor);
+
+    property Imager: TImagerPresenter read GetImager write SetImager;
+    property Objecter: TObjecterPresenter read GetObjecter write SetObjecter;
   end;
 
 implementation
@@ -71,37 +83,6 @@ begin
 
 end;
 
-{procedure TView.CopyEvents(const AFromControl: TControl;
-  AToControl: TControl);
-begin
-  AToControl.OnDragEnter := AFromControl.OnDragEnter;
-  AToControl.OnDragLeave := AFromControl.OnDragLeave;
-  AToControl.OnDragOver := AFromControl.OnDragOver;
-  AToControl.OnDragDrop := AFromControl.OnDragDrop;
-  AToControl.OnDragEnd := AFromControl.OnDragEnd;
-  AToControl.OnKeyDown := AFromControl.OnKeyDown;
-  AToControl.OnKeyUp := AFromControl.OnKeyUp;
-  AToControl.OnClick := AFromControl.OnClick;
-  AToControl.OnDblClick := AFromControl.OnDblClick;
-  AToControl.OnCanFocus := AFromControl.OnCanFocus;
-  AToControl.OnEnter := AFromControl.OnEnter;
-  AToControl.OnExit := AFromControl.OnExit;
-  AToControl.OnMouseDown := AFromControl.OnMouseDown;
-  AToControl.OnMouseMove := AFromControl.OnMouseMove;
-  AToControl.OnMouseUp := AFromControl.OnMouseUp;
-  AToControl.OnMouseWheel := AFromControl.OnMouseWheel;
-  AToControl.OnMouseEnter := AFromControl.OnMouseEnter;
-  AToControl.OnMouseLeave := AFromControl.OnMouseLeave;
-  AToControl.OnPainting := AFromControl.OnPainting;
-  AToControl.OnPaint := AFromControl.OnPaint;
-  AToControl.OnResize := AFromControl.OnResize;
-  AToControl.OnActivate := AFromControl.OnActivate;
-  AToControl.OnDeactivate := AFromControl.OnDeactivate;
-  AToControl.OnApplyStyleLookup := AFromControl.OnApplyStyleLookup;
-  AToControl.OnGesture := AFromControl.OnGesture;
-  AToControl.OnTap := AFromControl.OnTap;
-end;}
-
 constructor TWorkSpaceView.Create(APanel: TPanel; ABackground, ASelected: TImage;
   AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
 begin
@@ -114,12 +95,17 @@ begin
   FOptionsFrom := TNamedOptionsForm.Create(nil);
 //  FFormPosition := AFormPosition;
   FEffect := TGlowEffect.Create(nil);
+
+
 end;
 
 destructor TWorkSpaceView.Destroy;
 var
   vItem: TPair<IItemView, TItemView>;
 begin
+  FImager := nil;
+  FObjecter := nil;
+
   FEffect.Free;
   for vItem in FElements do
     FElements.Remove(vItem.Key);
@@ -148,16 +134,27 @@ begin
       Exit(FElements[i]);
 end; }
 
-function TWorkSpaceView.FilenameFromDlg: string;
+function TWorkSpaceView.FilenameFromDlg(out AFileName: string): Boolean;
 begin
-  Result := '';
-  if FOpenDialog.Execute then
-    Result := FOpenDialog.FileName;
+  AFileName := '';
+  Result := FOpenDialog.Execute;
+  if Result then
+    AFileName := FOpenDialog.FileName;
+end;
+
+function TWorkSpaceView.GetImager: TImagerPresenter;
+begin
+  Result := TImagerPresenter(FImager);
 end;
 
 function TWorkSpaceView.GetMousePos: TPoint;
 begin
   Result := (uEasyDevice.MousePos - FPanel.Position.Point - FParentTopLeft).Round;
+end;
+
+function TWorkSpaceView.GetObjecter: TObjecterPresenter;
+begin
+  Result := TObjecterPresenter(FObjecter);
 end;
 
 procedure TWorkSpaceView.MouseDown(Sender: TObject; Button: TMouseButton;
@@ -185,6 +182,16 @@ end;
 procedure TWorkSpaceView.SetBackground(const AImg: TImage);
 begin
 
+end;
+
+procedure TWorkSpaceView.SetImager(const Value: TImagerPresenter);
+begin
+  FImager := Value;
+end;
+
+procedure TWorkSpaceView.SetObjecter(const Value: TObjecterPresenter);
+begin
+  FObjecter := Value;
 end;
 
 end.

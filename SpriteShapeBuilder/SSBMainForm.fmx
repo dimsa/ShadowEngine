@@ -157,6 +157,7 @@ object SSBForm: TSSBForm
             Size.Width = 32.000000000000000000
             Size.Height = 32.000000000000000000
             Size.PlatformDefault = False
+            OnMouseDown = Object_imgMouseDown
           end
         end
         object Picture_rect: TRectangle
@@ -231,6 +232,7 @@ object SSBForm: TSSBForm
             Size.Width = 32.000000000000000000
             Size.Height = 32.000000000000000000
             Size.PlatformDefault = False
+            OnMouseDown = Picture_imgMouseDown
           end
         end
         object Shape_rect: TRectangle
@@ -336,6 +338,7 @@ object SSBForm: TSSBForm
             Size.Width = 32.000000000000000000
             Size.Height = 32.000000000000000000
             Size.PlatformDefault = False
+            OnMouseDown = Shape_imgMouseDown
           end
         end
       end

@@ -1,4 +1,4 @@
-unit uIView;
+unit uIWorkSpaceView;
 
 interface
 
@@ -16,7 +16,8 @@ type
     function GetMousePos: TPoint;
     procedure ClearAndFreeImg;
     procedure SetBackground(const AImg: TImage);
-    function FilenameFromDlg: string;
+//    function FilenameFromDlg: string;
+    function FilenameFromDlg(out AFileName: string): boolean;
     procedure ChangeCursor(const ACursor: TCursor);
   end;
 
