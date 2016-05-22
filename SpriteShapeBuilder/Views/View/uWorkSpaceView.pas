@@ -7,14 +7,13 @@ uses
   FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms, FMX.Dialogs,
   FMX.Types, System.Classes, System.UITypes, uEasyDevice, uNamedOptionsForm,
   uSSBTypes, uIWorkSpaceView, uIItemView, uItemView, uMVPFrameWork, FMX.Effects,
-  uImagerPresenter, uObjecterPresenter;
+  uImagerPresenter, uObjecterPresenter, uITableView, uNamedTableView;
 
 type
   TWorkSpaceView = class(TInterfacedObject, IWorkSpaceView, IView)
   private
-
     FElements: TDictionary<IItemView, TItemView>;
-    FOptionsFrom: TNamedOptionsForm;
+    FOptionsForm: TNamedOptionsForm;
     FEffect: TGlowEffect;
     FParentTopLeft: TPointFunction;
     FPanel: TPanel;
@@ -41,7 +40,7 @@ type
     procedure SetBackground(const AImg: TImage);
     function FilenameFromDlg(out AFileName: string): boolean;
     procedure ChangeCursor(const ACursor: TCursor);
-
+    function AddTableView: ITableView;
     property Imager: TImagerPresenter read GetImager write SetImager;
     property Objecter: TObjecterPresenter read GetObjecter write SetObjecter;
   end;
@@ -71,6 +70,11 @@ begin
   Result := vImg;
 end;
 
+function TWorkSpaceView.AddTableView: ITableView;
+begin
+  Result := TTableView.Create;
+end;
+
 procedure TWorkSpaceView.ChangeCursor(const ACursor: TCursor);
 begin
   if ACursor = FPanel.Cursor then
@@ -92,11 +96,8 @@ begin
   FSelected := ASelected;
   FOpenDialog := AOpenDialog;
   FParentTopLeft := AParentTopLeft;
-  FOptionsFrom := TNamedOptionsForm.Create(nil);
-//  FFormPosition := AFormPosition;
+  FOptionsForm := TNamedOptionsForm.Create(nil);
   FEffect := TGlowEffect.Create(nil);
-
-
 end;
 
 destructor TWorkSpaceView.Destroy;
@@ -110,8 +111,6 @@ begin
   for vItem in FElements do
     FElements.Remove(vItem.Key);
 
- {for i := 0 to FElements.Count - 1 do
-    FElements[i].Free;}
   FElements.Clear;
   FElements.Free;
 
@@ -120,19 +119,8 @@ begin
   FSelected := nil;
   FOpenDialog := nil;
 
-
   inherited;
 end;
-
-{unction TView.ElementByInterface(AElem: IItemView): TItemView;
-var
-  i: Integer;
-begin
-  Result := nil;
-  for i := 0 to FElements.Count - 1 do
-    if IItemView(FElements[i]) = AElem then
-      Exit(FElements[i]);
-end; }
 
 function TWorkSpaceView.FilenameFromDlg(out AFileName: string): Boolean;
 begin

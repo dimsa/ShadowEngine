@@ -5,7 +5,7 @@ interface
 uses
   FMX.Objects, System.Types, FMX.Graphics, FMX.Types, System.UITypes,
   System.Generics.Collections,
-  uSSBTypes, uIItemView, uMVPFrameWork;
+  uSSBTypes, uIItemView, uMVPFrameWork, uITableView;
 
 type
   IWorkSpaceView = interface(IView)
@@ -16,7 +16,7 @@ type
     function GetMousePos: TPoint;
     procedure ClearAndFreeImg;
     procedure SetBackground(const AImg: TImage);
-//    function FilenameFromDlg: string;
+    function AddTableView: ITableView;
     function FilenameFromDlg(out AFileName: string): boolean;
     procedure ChangeCursor(const ACursor: TCursor);
   end;

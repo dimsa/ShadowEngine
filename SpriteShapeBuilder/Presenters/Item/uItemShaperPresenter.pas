@@ -38,9 +38,8 @@ type
     procedure MouseUp; override;
     procedure MouseMove; override;
     procedure Delete; override;
-    property TableView: ITableView read FTableView write FTableView;
 
-    constructor Create(const AItemView: IItemView; const ATableView: ITableView; AItemShapeModel: TItemShapeModel);
+    constructor Create(const AItemView: IItemView; AItemShapeModel: TItemShapeModel);
     destructor Destroy; override;
   end;
 
@@ -100,12 +99,12 @@ begin
   end;
 end;
 
-constructor TItemShaperPresenter.Create(const AItemView: IItemView; const ATableView: ITableView;
+constructor TItemShaperPresenter.Create(const AItemView: IItemView;
   AItemShapeModel: TItemShapeModel);
 begin
   inherited Create(AItemView);
   FItemShapeModel := AItemShapeModel;
-  FTableView := ATableView;
+//  FTableView := ATableView;
   //FTableView.Presenter := Self;
   //FColor := TAlphaColorRec.Aliceblue;
 end;

@@ -82,7 +82,7 @@ begin
     vModel := Model.AddResource;
 
     // Creating Presenter
-    vItemPresenter := TItemObjPresenter.Create(vViewItem, vTableView, vModel);
+    vItemPresenter := TItemObjPresenter.Create(vViewItem, {vTableView,} vModel);
 
     vModel.Width := 50;
     vModel.Height:= 50;
@@ -107,17 +107,17 @@ procedure TObjecterPresenter.AddObj(const AObject: TResourceModel);
 var
   vViewItem: IItemView;
   vItemPresenter: TItemObjPresenter;
-  vTableView: TTableView;
+//  vTableView: TTableView;
 begin
     // Creating View
     vViewItem := View.AddElement;
-    vTableView := TTableView.Create;
+  //  vTableView := TTableView.Create;
 
     // Creating Presenter
-    vItemPresenter := TItemObjPresenter.Create(vViewItem, vTableView, AObject);
+    vItemPresenter := TItemObjPresenter.Create(vViewItem,{ vTableView,} AObject);
 
     vViewItem.Presenter := vItemPresenter;
-    vTableView.Presenter := vItemPresenter;
+   // vTableView.Presenter := vItemPresenter;
 
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;

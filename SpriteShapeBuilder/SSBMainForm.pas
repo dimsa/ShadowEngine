@@ -247,16 +247,6 @@ begin
   FMainPresenter.InitImager;
 end;
 
-{procedure TSSBForm.Object_imgClick(Sender: TObject);
-begin
-  FMainPresenter.Status := TSSBStatus.sObject;
-end;
-
-procedure TSSBForm.Picture_imgClick(Sender: TObject);
-begin
-  FMainPresenter.Status := TSSBStatus.sPicture;
-end;   }
-
 procedure TSSBForm.SaveForEngineBtnClick(Sender: TObject);
 begin
   FMainPresenter.SaveForEngine;

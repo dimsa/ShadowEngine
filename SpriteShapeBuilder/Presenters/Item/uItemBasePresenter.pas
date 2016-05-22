@@ -10,7 +10,7 @@ type
   TItemBasePresenter = class(TPresenter, IItemPresenter, IPresenterEvent)
   protected
     FView: IItemView;
-    FOnMouseDown, FOnMouseUp, FOnMouseMove, FOnOptionsShow: TNotifyEvent;
+    FOnMouseDown, FOnMouseUp, FOnMouseMove, FOnOptionsSave, FOnOptionsShow: TNotifyEvent;
     procedure SetOnMouseDown(AHandler: TNotifyEvent); virtual;
     function GetOnMouseDown: TNotifyEvent; virtual;
     procedure SetOnMouseUp(AHandler: TNotifyEvent); virtual;
@@ -19,6 +19,8 @@ type
     function GetOnMouseMove: TNotifyEvent; virtual;
     function GetOnOptionsShow: TNotifyEvent; virtual;
     procedure SetOnOptionsShow(AHandler: TNotifyEvent); virtual;
+    function GetOnOptionsSave: TNotifyEvent; virtual;
+    procedure SetOnOptionsSave(AHandler: TNotifyEvent); virtual;
     function GetRect: TRectF; virtual; abstract;
     procedure SetRect(const Value: TRectF); virtual; abstract;
   public
@@ -60,6 +62,11 @@ begin
   Result := FOnMouseUp;
 end;
 
+function TItemBasePresenter.GetOnOptionsSave: TNotifyEvent;
+begin
+  Result := FOnOptionsSave;
+end;
+
 function TItemBasePresenter.GetOnOptionsShow: TNotifyEvent;
 begin
   Result := FOnOptionsShow;
@@ -78,6 +85,11 @@ end;
 procedure TItemBasePresenter.SetOnMouseUp(AHandler: TNotifyEvent);
 begin
   FOnMouseUp := AHandler;
+end;
+
+procedure TItemBasePresenter.SetOnOptionsSave(AHandler: TNotifyEvent);
+begin
+
 end;
 
 procedure TItemBasePresenter.SetOnOptionsShow(AHandler: TNotifyEvent);
