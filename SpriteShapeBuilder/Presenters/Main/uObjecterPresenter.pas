@@ -6,7 +6,7 @@ uses
   System.Generics.Collections, FMX.Objects, System.Types, uClasses,
   uIWorkSpaceView, uMVPFrameWork, uSSBModels, uMainModel, uSSBTypes,
   uIItemView, uItemObjecterPresenter, uNamedTableView,
-  uBasePresenterIncapsulator;
+  uBasePresenterIncapsulator, uITableView;
 
 type
   // To access protected Fields
@@ -94,6 +94,7 @@ begin
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
     vItemPresenter.OnOptionsShow := DoOptionsShow;
+  //  vItemPresenter.OnOptionsShow := DoOptionsSave;;
 
     FItems.Add(TItemObjPresenter(vItemPresenter), vViewItem);
     try
@@ -206,8 +207,13 @@ end;
 procedure TObjecterPresenter.DoOptionsShow(ASender: TObject);
 var
   vItem: TItemObjPresenter;
+  vTableView: ITableView;
 begin
   vItem := TItemObjPresenter(ASender);
+  vTableView := View.AddTableView;
+
+  vTableView.Presenter := vItem;
+  vItem.TableView := vTableView;
 //  View.ShowParams(vItem.Params);
 end;
 

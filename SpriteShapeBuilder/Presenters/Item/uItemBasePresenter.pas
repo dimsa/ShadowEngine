@@ -28,6 +28,7 @@ type
     property OnMouseUp: TNotifyEvent read GetOnMouseUp write SetOnMouseUp;
     property OnMouseMove: TNotifyEvent read GetOnMouseMove write SetOnMouseMove;
     property OnOptionsShow: TNotifyEvent read GetOnOptionsShow write SetOnOptionsShow;
+    property OnOptionsSave: TNotifyEvent read GetOnOptionsSave write SetOnOptionsSave;
     property Rect: TRectF read GetRect write SetRect;
     procedure Delete; virtual; abstract;
     procedure MouseDown; virtual; abstract;

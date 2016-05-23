@@ -50,6 +50,7 @@ begin
     FOnApply(Self);
     FParams.Clear;
   end;
+
   Close;
 end;
 

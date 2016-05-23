@@ -28,6 +28,7 @@ type
     FLastTranslate: TPointF;
     FCapturedShape: TItemShpPresenter;
     FSelectedShape: TItemShpPresenter;
+    FTableView: ITableView;
     function GetHeight: Integer;
     function GetPosition: TPoint;
     function GetWidth: Integer;
@@ -48,6 +49,7 @@ type
     property Position: TPoint read GetPosition write SetPosition;
     property Rect: TRectF read GetRect write SetRect;
     property Model: TResourceModel read FItemObjectModel;
+    property TableView: ITableView write FTableView;
   public
     procedure ShowShapes;
     procedure HideShapes;
@@ -153,6 +155,7 @@ begin
 
 //  FTableView := ATableView;
 
+  FIsShapeVisible := True;
   FCaptureType := ctNone;
   FBmp := TBitmap.Create;
   FParams := TDictionary<string, string>.Create;
@@ -205,6 +208,7 @@ end;
 function TItemObjecterPresenter.GetParams: TDictionary<string,string>;
 begin
   FParams.Clear;
+  FParams.Add('a', 'b');
   FParams.Add('Name', Model.Name);
   FParams.Add('X', IntToStr(Model.Position.X));
   FParams.Add('Y', IntToStr(Model.Position.Y));
@@ -436,7 +440,10 @@ begin
 
   if Assigned(FOnOptionsSave) then
     FOnOptionsSave(Self);
-  //SetParams(FTableView.TakeParams);
+
+  //FTableView.Presenter := nil;
+  //FTableView := nil;
+  SetParams(FTableView.TakeParams);
 end;
 
 procedure TItemObjecterPresenter.SetHeight(const Value: Integer);
@@ -476,10 +483,9 @@ procedure TItemObjecterPresenter.ShowOptions;
 begin
   if Assigned(FOnOptionsShow) then
     FOnOptionsShow(Self);
- // FTableView.ShowParams(GetParams);
 
-{  if Assigned(FOnOptionsShow) then
-    FOnOptionsShow(Self) }
+  if Assigned(FTableView) then
+    FTableView.ShowParams(GetParams);
 end;
 
 procedure TItemObjecterPresenter.ShowShapes;
