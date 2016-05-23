@@ -7,7 +7,7 @@ uses
   uBasePresenterIncapsulator,
   uIWorkSpaceView, uSSBTypes, uItemBasePresenter, uClasses, uIItemPresenter,
   uIItemView, uItemImagerPresenter, uMainModel, uSSBModels, uMVPFrameWork,
-  uNamedTableView, uEasyDevice;
+  uITableView, uEasyDevice;
 
 
 type
@@ -35,12 +35,12 @@ type
     procedure DoMouseDown(ASender: TObject);
     procedure DoMouseUp(ASender: TObject);
     procedure DoMouseMove(ASender: TObject);
+    procedure DoOptionsShow(ASender: TObject);
+
     function ResizeType(const AItem: TItemImgPresenter): TResizeType;
     function GetView: IWorkSpaceView;
-//    procedure JustifyPoints(vItem: TItemImgPresenter; var vRect: TRectF);
     procedure JustifyPoints(AItem: TItemImgPresenter);
     procedure JustifyAnchors(AItem: TItemImgPresenter);
-
   public
     procedure AddImg; overload;
     procedure AddImg(const AModel: TItemImageModel); overload;
@@ -62,7 +62,6 @@ var
   vFileName: string;
   vViewItem: IItemView;
   vItemPresenter: TItemImgPresenter;
-  vTableView: TTableView;
   vModel: TItemImageModel;
   vImg: TImage;
 begin
@@ -73,15 +72,14 @@ begin
 
     // Creating View
     vViewItem := View.AddElement;
-    vTableView := TTableView.Create;
 
     // Creating Model
     vModel := Model.AddImageElement;
 
     // Creating Presenter
-    vItemPresenter := TItemImgPresenter.Create(vViewItem, vTableView, vModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
+    vItemPresenter := TItemImgPresenter.Create(vViewItem, vModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
     vViewItem.Presenter := vItemPresenter;
-    vTableView.Presenter := vItemPresenter;
+    //vTableView.Presenter := vItemPresenter;
 
     vModel.OriginalImage := vImg;
     vModel.Rect := Rect(0, 0, Round(vImg.Bitmap.Width), Round(vImg.Bitmap.Height)) ;
@@ -89,6 +87,7 @@ begin
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;
     vItemPresenter.OnMouseMove := DoMouseMove;
+    vItemPresenter.OnOptionsShow := DoOptionsShow;
 
     FItems.Add(TItemImgPresenter(vItemPresenter), vViewItem);
   end;
@@ -103,7 +102,7 @@ begin
   vViewItem := View.AddElement;
 
   // Creating Presenter
-  vItemPresenter := TItemImgPresenter.Create(vViewItem, TTableView.Create, AModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
+  vItemPresenter := TItemImgPresenter.Create(vViewItem, AModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
   vViewItem.Presenter := vItemPresenter;
 
   vItemPresenter.OnMouseDown := DoMouseDown;
@@ -219,6 +218,18 @@ end;
 procedure TImagerPresenter.DoMouseUp(ASender: TObject);
 begin
   MouseUp;
+end;
+
+procedure TImagerPresenter.DoOptionsShow(ASender: TObject);
+var
+  vItem: TItemImgPresenter;
+  vTableView: ITableView;
+begin
+  vItem := TItemImgPresenter(ASender);
+  vTableView := View.AddTableView;
+
+  vTableView.Presenter := vItem;
+  vItem.TableView := vTableView;
 end;
 
 function TImagerPresenter.GetView: IWorkSpaceView;

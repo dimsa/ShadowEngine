@@ -5,7 +5,7 @@ interface
 uses
   System.Generics.Collections, FMX.Objects, System.Types, uClasses,
   uIWorkSpaceView, uMVPFrameWork, uSSBModels, uMainModel, uSSBTypes,
-  uIItemView, uItemObjecterPresenter, uNamedTableView,
+  uIItemView, uItemObjecterPresenter,
   uBasePresenterIncapsulator, uITableView;
 
 type
@@ -71,12 +71,12 @@ procedure TObjecterPresenter.AddObj;
 var
   vViewItem: IItemView;
   vItemPresenter: TItemObjPresenter;
-  vTableView: TTableView;
+//  vTableView: TTableView;
   vModel: TResourceModel;
 begin
     // Creating View
     vViewItem := View.AddElement;
-    vTableView := TTableView.Create;
+//    vTableView := TTableView.Create;
 
     // Creating Model
     vModel := Model.AddResource;
@@ -88,7 +88,7 @@ begin
     vModel.Height:= 50;
 
     vViewItem.Presenter := vItemPresenter;
-    vTableView.Presenter := vItemPresenter;
+  //  vTableView.Presenter := vItemPresenter;
 
     vItemPresenter.OnMouseDown := DoMouseDown;
     vItemPresenter.OnMouseUp := DoMouseUp;

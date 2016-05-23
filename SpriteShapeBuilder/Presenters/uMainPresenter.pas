@@ -13,17 +13,8 @@ type
   TMainPresenter = class
   private
     FStatus: TSSBStatus;
-//    FPanel: TPanel;
-    //FForm: TForm;
-
-    // Контролы для переключения статуса
-//
-//    FTabsRect: array[TSSBStatus] of TRectangle;
-//    FTabsImg: array[TSSBStatus] of TImage;
-
     FView: IMainView;
     FModel: TSSBModel;
-//    FPresenters: array[TSSBStatus] of TImagerPresenter;
     FIsMouseDown: Boolean;
 
     FObjecter: TObjecterPresenter;

@@ -86,8 +86,9 @@ type
     function GetStatus: TSSBStatus;
     procedure SetStatus(const AStatus: TSSBStatus);
     function ClientToScreenPoint(const APoint: TPoint): TPoint;
-  public
     function FilenameFromDlg(out AFileName: string): boolean;
+  public
+
   end;
 
 var
@@ -132,7 +133,7 @@ end;
 procedure TSSBForm.BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Single);
 begin
-  SSBForm.Caption := x.ToString() + ' ' + y.ToString();
+//  SSBForm.Caption := x.ToString() + ' ' + y.ToString();
   FWorkSpaceView.Imager.MouseMove;
   FWorkSpaceView.Objecter.MouseMove;
 end;

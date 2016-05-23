@@ -31,6 +31,7 @@ type
     procedure TranslateFigure(const ATranslate: TPointF);
     procedure Repaint(ABmp: TBitmap; const AColor: TColor = TAlphaColorRec.Aliceblue);
     property Model: TItemShapeModel read FItemShapeModel;
+    property TableView: ITableView write FTableView;
   public
     procedure AddPoint;
     procedure DelPoint;

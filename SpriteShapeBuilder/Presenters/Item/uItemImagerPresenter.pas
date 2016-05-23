@@ -4,6 +4,7 @@ interface
 
 uses
   System.Classes, System.Types, FMX.Objects, System.SysUtils, uClasses,
+  System.Generics.Collections,
   uITableView,
   uIItemView, uIItemPresenter, uSSBTypes, uItemBasePresenter, uSSBModels;
 
@@ -12,6 +13,7 @@ type
   private
     FItemImageModel: TItemImageModel;
     FTableView: ITableView;
+    FParams: TDictionary<string, string>;
     function GetHeight: Integer;
     function GetImage: TImage;
     function GetPosition: TPoint;
@@ -23,7 +25,10 @@ type
     procedure OnUpdateModel(ASender: TObject);
     function GetRect: TRectF; override;
     procedure SetRect(const Value: TRectF); override;
+    function GetParams: TDictionary<string, string>;
+    procedure SetParams(const AValue: TDictionary<string, string>);
   protected
+    property TableView: ITableView  write FTableView;
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
@@ -36,8 +41,9 @@ type
     procedure MouseUp; override;
     procedure MouseMove; override;
     procedure ShowOptions; override;
+    procedure SaveOptions; override;
 
-    constructor Create(const AItemView: IItemView; const ATableView: ITableView; const AItemImageModel: TItemImageModel); reintroduce;
+    constructor Create(const AItemView: IItemView; const AItemImageModel: TItemImageModel); reintroduce;
     destructor Destroy; override;
   end;
 
@@ -45,11 +51,11 @@ implementation
 
 { TImagerItemPresenter }
 
-constructor TItemImagerPresenter.Create(const AItemView: IItemView; const ATableView: ITableView;
+constructor TItemImagerPresenter.Create(const AItemView: IItemView;
   const AItemImageModel: TItemImageModel);
 begin
   inherited Create(AItemView);
-  FTableView := ATableView;
+  FParams := TDictionary<string, string>.Create;
   FItemImageModel := AItemImageModel;
   FItemImageModel.UpdateHander := OnUpdateModel;
 end;
@@ -61,7 +67,7 @@ end;
 
 destructor TItemImagerPresenter.Destroy;
 begin
-
+  FParams.Free;
   inherited;
 end;
 
@@ -73,6 +79,16 @@ end;
 function TItemImagerPresenter.GetImage: TImage;
 begin
   Result := FItemImageModel.OriginalImage;
+end;
+
+function TItemImagerPresenter.GetParams: TDictionary<string, string>;
+begin
+  FParams.Clear;
+  FParams.Add('X', IntToStr(Model.Position.X));
+  FParams.Add('Y', IntToStr(Model.Position.Y));
+  FParams.Add('Width', IntToStr(Model.Width));
+  FParams.Add('Height', IntToStr(Model.Height));
+  Result := FParams;
 end;
 
 function TItemImagerPresenter.GetPosition: TPoint;
@@ -124,6 +140,16 @@ begin
   FView.Top := FItemImageModel.Position.Y;
 end;
 
+procedure TItemImagerPresenter.SaveOptions;
+begin
+  inherited;
+
+  if Assigned(FOnOptionsSave) then
+    FOnOptionsSave(Self);
+
+  SetParams(FTableView.TakeParams);
+end;
+
 procedure TItemImagerPresenter.SetHeight(const Value: Integer);
 begin
   FItemImageModel.Height := Value;
@@ -132,6 +158,16 @@ end;
 procedure TItemImagerPresenter.SetImage(const Value: TImage);
 begin
   FItemImageModel.OriginalImage := Value;
+end;
+
+procedure TItemImagerPresenter.SetParams(
+  const AValue: TDictionary<string, string>);
+var
+  vErr, vA: Integer;
+begin
+  Model.Position:= Point(ToInt(AValue['X']), ToInt(AValue['Y']));
+  Model.Width := ToInt(AValue['Width']);
+  Model.Height := ToInt(AValue['Height']);
 end;
 
 procedure TItemImagerPresenter.SetPosition(const Value: TPoint);
@@ -153,9 +189,11 @@ end;
 
 procedure TItemImagerPresenter.ShowOptions;
 begin
-  inherited;
   if Assigned(FOnOptionsShow) then
-    FOnOptionsShow(Self)
+    FOnOptionsShow(Self);
+
+  if Assigned(FTableView) then
+    FTableView.ShowParams(GetParams);
 end;
 
 {procedure TImagerItemPresenter.Capture;

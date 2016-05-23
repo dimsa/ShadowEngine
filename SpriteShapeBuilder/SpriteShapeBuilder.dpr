@@ -40,6 +40,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TSSBForm, SSBForm);
-  Application.CreateForm(TOptionsForm, OptionsForm);
   Application.Run;
 end.

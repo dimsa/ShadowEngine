@@ -17,9 +17,7 @@ type
   TItemObjecterPresenter = class(TItemBasePresenter)
   private
     FItemObjectModel: TResourceModel;
-//    FTableView: ITableView;
-//    FShapesTable: TList<ITableView>;
-    FParams: TDictionary<string,string>;
+    FParams: TDictionary<string, string>;
     FBmp: TBitmap; // Picture of object with Shapes
     FShapes: TList<TItemShpPresenter>;
     FIsShapeVisible: Boolean;
@@ -42,7 +40,6 @@ type
     procedure SetParams(const AValue: TDictionary<string, string>);
     function GetRect: TRectF; override;
     procedure SetRect(const Value: TRectF); override;
-   // function GetParams: TDictionary<string,string> read GetParams;
   protected
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
@@ -370,36 +367,20 @@ begin
   if ASender = nil then
     Exit;
 
-  vModel := TResourceModel(ASender);
+  vModel := FItemObjectModel;
 
   // We creating or destroying TableViews
-{  if FShapesTable.Count > vModel.ShapesList.Count then
-    for i := FShapesTable.Count - 1 downto vModel.ShapesList.Count do
-    begin
-      vITableView := FShapesTable[i];
-      FShapesTable[i].Presenter := nil;
-      FShapesTable.Remove(vITableView);
-      vITableView := nil;
-    end;
-
-  if FShapesTable.Count < vModel.ShapesList.Count then
-    for i := FShapesTable.Count to vModel.ShapesList.Count - 1 do
-    begin
-      vTableView := TTableView.Create;
-      FShapesTable.Add(vTableView);
-    end;
 
 
-  for i := 0 to FShapesTable.Count - 1 do
-     FShapesTable[i].Presenter := nil;   // After presenter = nil, refcount on ShapePresenter is 0, so it destroying   }
+
+ // for i := 0 to FShapesTable.Count - 1 do
+  //   FShapesTable[i].Presenter := nil;   // After presenter = nil, refcount on ShapePresenter is 0, so it destroying   }
 
   for i := FShapes.Count - 1 downto 0  do
     if (Assigned(FShapes[i])) and (FShapes[i].RefCount > 0) then
     begin
       vShape := FShapes[i];
-      //vShape.TableView := nil;
-      // Shape was destroyed after TableView := nil;
-       vShape.Free;
+      vShape.Free;
     end;
 
   FShapes.Clear;
@@ -407,7 +388,6 @@ begin
   for i := 0 to vModel.ShapesList.Count - 1 do
   begin
     vShape := TItemShpPresenter.Create(FView, vModel.ShapesList[i]);
-    //FShapesTable[i].Presenter := vShape;
     FShapes.Add(vShape);
   end;
 
@@ -441,8 +421,6 @@ begin
   if Assigned(FOnOptionsSave) then
     FOnOptionsSave(Self);
 
-  //FTableView.Presenter := nil;
-  //FTableView := nil;
   SetParams(FTableView.TakeParams);
 end;
 
