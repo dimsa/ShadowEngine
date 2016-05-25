@@ -12,26 +12,26 @@ type
 TEngine2DModel = class
 private
   FCritical: TCriticalSection;
-  // Ключевые списки движка.
-  FObjects: TObjectsList; // Массив спрайтов для отрисовки
+
+  FObjects: TObjectsList;
   FFastFields: TFastFields; // Содержит ссылки на TFastField, которые представляют собой найденные значения определенных спрайтов
-  FObjectOrder: TIntArray; // Массив порядка отрисовки. Нужен для уменьшения кол-ва вычислений, содержит номер спрайта
-  FResources: TEngine2DResources; //tResourceArray; // Массив битмапов
-  FFormatters: TFormatterList; // Массив Форматтеров спрайтов
+  FObjectOrder: TIntArray;
+  FResources: TEngine2DResources;
+  FFormatters: TFormatterList;
   FAnimationList: TEngine2DAnimationList; // Массив анимаций
   FIsHor: TBooleanFunction;
   procedure setObject(AIndex: integer; ASprite: tEngine2DObject);
   function getObject(AIndex: integer): tEngine2DObject;
 public
-  ObjectOrder: TIntArray;
-  property Resources: TEngine2DResources read FResources;
+  // Ключевые списки движка.
+  ObjectOrder: TIntArray; // Массив порядка отрисовки. Нужен для уменьшения кол-ва вычислений, содержит номер спрайта
+  property Resources: TEngine2DResources read FResources; //tResourceArray; // Массив битмапов
   property AnimationList: TEngine2DAnimationList read FAnimationList;
-  property FormatterList: TFormatterList read FFormatters;
-  property ObjectList: TObjectsList read FObjects;
-//property ObjectOrder: TIntArray ;read FObjectOrder write FObjectOrder;
+  property FormatterList: TFormatterList read FFormatters; // Массив Форматтеров спрайтов
+  property ObjectList: TObjectsList read FObjects; // Массив спрайтов для отрисовки
   property FastFields: tFastFields read FFastFields; // Быстрый вызов для экспрешенсов
   property Objects[index: integer]: tEngine2DObject read getObject write setObject;
-  procedure ClearSprites;
+  procedure ClearSprites; // Очищает массив спрайтов, т.е. является подготовкой к полной перерисовке
   constructor Create(const ACritical: TCriticalSection; const AEngine: Pointer; const AIsHor: TBooleanFunction);
   destructor Destroy; override;
 end;

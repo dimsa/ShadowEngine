@@ -22,14 +22,8 @@ type
   TEngine2d = class
   strict private
     FEngineThread: TEngineThread; // Поток в котором происходит отрисовка
-    FModel: TEngine2DModel;
+    FModel: TEngine2DModel; // All main lists are in It.
     FOptions: TEngine2DOptions; // Настройки движка
-    //FObjects: TObjectsList; // Массив спрайтов для отрисовки
-    //FFastFields: TFastFields; // Содержит ссылки на TFastField, которые представляют собой найденные значения определенных спрайтов
- //   FObjectOrder: TIntArray; // Массив порядка отрисовки. Нужен для уменьшения кол-ва вычислений, содержит номер спрайта
-    //FResources: TEngine2DResources; //tResourceArray; // Массив битмапов
-   // FFormatters: TFormatterList; // Массив Форматтеров спрайтов
-   // FAnimationList: TEngine2DAnimationList; // Массив анимаций
     FObjectCreator: TEngine2DManager;
     FMouseDowned: TIntArray; // Массив спрайтов движка, которые находились под мышкой в момент нажатия
     FMouseUpped: TIntArray; // Массив спрайтов движка, которые находились под мышкой в момент отжатия
@@ -84,7 +78,6 @@ type
     procedure AssignShadowObject(ASpr: tEngine2DObject); // Ассигнет спрайт в ShadowObject
     property ShadowObject: tEngine2DObject read FShadowObject;  // Указатель на Теневой объект.
 
-//    procedure ClearSprites; // Очищает массив спрайтов, т.е. является подготовкой к полной перерисовке
     procedure ClearTemp; // Очищает массивы выбора и т.д. короче делает кучу полезных вещей.
 
     procedure LoadResources(const AFileName: string);
@@ -130,16 +123,6 @@ begin
   with Self.Image do
     Bitmap.Canvas.DrawBitmap(FBackGround, RectF(0, 0, FBackGround.width, FBackGround.height), RectF(0, 0, bitmap.width, bitmap.height), 1, true);
 end;
-
-{procedure TEngine2d.clearSprites;
-var
-  i: integer;
-begin
-  for i := 0 to FModel.ObjectList.Count - 1 do
-    FModel.ObjectList[i].free;
-
-  setLength(FModel.ObjectOrder, 0);
-end;  }
 
 procedure TEngine2d.clearTemp;
 begin
@@ -488,8 +471,6 @@ procedure TEngine2d.prepareFastFields;
 var
   vTmp: TFastField;
 begin
-//  FModel.FastFields := TFastFields.Create(IsHor);
-//  fFastFields.Parent := Self;
   vTmp := TFastEngineWidth.Create(@FWidth);
   FModel.FastFields.Add('engine.width', vTmp);
   vTmp := TFastEngineHeight.Create(@FHeight);
@@ -523,11 +504,6 @@ begin
   FImage.Bitmap.Height := Round(AHeight * getScreenScale + 0.4);
   FHeight := AHeight;
 end;
-
-{procedure TEngine2d.setStatus(newStatus: byte);
-begin
-  FStatus := newStatus;
-end;   }
 
 procedure TEngine2d.setWidth(AWidth: integer);
 begin
