@@ -55,23 +55,27 @@ type
     function Formatter(const ASubject: tEngine2DObject; const AText: String; const AIndex: Integer = -1): TEngineFormatter; overload;
     function Formatter(const ASubject: tEngine2DObject; const AName: String; const AParam: array of const; const AIndex: Integer = -1): TEngineFormatter; overload;
 
+    // Adding Created Object
     function Add(const ASprite: TSprite; const AName: string = ''): TSprite; overload;
     function Add(const AShape: TEngine2DShape; const AName: string = ''): TEngine2DShape; overload;
     function Add(const AText: TEngine2DText; const AName: string = ''): TEngine2DText; overload;
     function Add(const AAnimation: TAnimation): TAnimation; overload;
 
+    // Created  and Add Object
     function Sprite(const AName: string = ''): TSprite;
     function Text(const AName: string = ''): TEngine2DText;
     function FillEllipse(const AName: string = ''): TFillEllipse;
     function FillRect(const AName: string = ''): TFillRect;
 
-    procedure AniClearAndRecover(const ASubject: tEngine2DObject);
-    procedure AniClear(const ASubject: tEngine2DObject);
+    procedure AniClearAndRecover(const ASubject: tEngine2DObject); // Kills all animation of object and Recover state before they were applied
+    procedure AniClear(const ASubject: tEngine2DObject); // Kills all animation of object
 
     property Items[AIndex: Integer]: tEngine2DObject read GetItem; default;
     property Items[AName: string]: tEngine2DObject read GetItemS; default;
     function ResourceIndex(const AName: string): Integer;
     function AutoSprite(const AResource: string; const AName: string; const AParam: array of const; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TSprite; overload;
+
+    // Deprecated!
     property EngineWidth: Integer read GetEngineWidth;
     property EngineHeight: Integer read GetEngineHeight;
     property EngineSpeed: Single read GetEngineSpeed;

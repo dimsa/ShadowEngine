@@ -15,6 +15,7 @@ uses
   FMX.IniFile.Android in 'Utils\inifile\FMX.IniFile.Android.pas',
   FMX.IniFile.Apple in 'Utils\inifile\FMX.IniFile.Apple.pas',
   FMX.IniFile in 'Utils\inifile\FMX.IniFile.pas',
+  {$R}
   uBannerPanel in 'Utils\uBannerPanel.pas' {$R *.res};
 
 {$R *.res}
