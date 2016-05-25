@@ -8,7 +8,7 @@ uses
   uEngine2DClasses, uEngine2DObject, uEngineFormatter, uEngine2DAnimation,
   uEngine2DText, uEngine2DShape, uEngine2DResources, uEngine2DAnimationList,
   uFormatterList, uEngine2DSprite, uFastFields, uEngine2DThread,
-  uSpriteList, uEngine2DStatus, uClasses;
+  uSpriteList, uEngine2DStatus, uClasses, uEngine2DModel;
 
 type
   TEngine2DManager = class
@@ -17,13 +17,8 @@ type
     FImage: TImage;
     FResize: TProcedure;
     FCritical: TCriticalSection;
-    FObjects: TObjectsList; // Массив спрайтов для отрисовки
-    FResources: TEngine2DResources;//tResourceArray; // Массив битмапов
-    FFormatters: TFormatterList; // Массив Форматтеров спрайтов
-    FAnimationList: TEngine2DAnimationList; // Массив анимаций
-    FObjectOrder: PIntArray;
+    FModel: TEngine2DModel;
     FEngineThread: TEngineThread;
-    FFastFields: TFastFields;
     FAddedObjects: Integer; // Quantity of Added sprites Считает сколько спрайтов добавлено всего. Без учета удалений
     function GetEngineHeight: Integer;
     function GetEngineWidth: Integer;
@@ -42,12 +37,7 @@ type
       const AStatus: TEngine2DStatus;
       const AImage: TImage;
       const ACritical: TCriticalSection;
-      const AResourcesList: TEngine2DResources;
-      const AObjectsList: TObjectsList;
-      const AObjectOrder: PIntArray;
-      const AAnimationsList: TEngine2DAnimationList;
-      const AFormattersList: TFormatterList;
-      const AFastFields: TFastFields;
+      const AModel: TEngine2DModel;
       const AEngineThread: TEngineThread;
       const AResize: TProcedure
       );
@@ -101,7 +91,7 @@ function TEngine2DManager.Add(const ASprite: TSprite;
   const AName: string): TSprite;
 begin
   Result := ASprite;
-  ASprite.Resources := fResources;
+  ASprite.Resources := FModel.Resources;
   AddObject(Result, AName);
 end;
 
@@ -121,13 +111,13 @@ end;
 
 procedure TEngine2DManager.AniClear(const ASubject: tEngine2DObject);
 begin
-  fAnimationList.ClearForSubject(ASubject);
+  FModel.AnimationList.ClearForSubject(ASubject);
 end;
 
 procedure TEngine2DManager.AniClearAndRecover(
   const ASubject: tEngine2DObject);
 begin
-  fAnimationList.ClearAndRecoverForSubject(ASubject);
+  FModel.AnimationList.ClearAndRecoverForSubject(ASubject);
 end;
 
 function TEngine2DManager.Add(
@@ -136,7 +126,7 @@ begin
   AAnimation.OnDeleteSubject := DeleteHandler;
   AAnimation.Status := FStatus;
 
-  FAnimationList.Add(AAnimation);
+  FModel.AnimationList.Add(AAnimation);
   Result := AAnimation;
 end;
 
@@ -152,18 +142,18 @@ begin
   else
     vName := AName;
 
-  if FObjects.IsHere(AObject) then
+  if FModel.ObjectList.IsHere(AObject) then
     raise Exception.Create('You are trying to add Object to Engine that already Exist')
   else
   begin
     FCritical.Enter;
-    l := FObjects.Count;
-    FObjects.Add(vName, AObject);
-    setLength(FObjectOrder^, l + 1);
-    FObjects[l].Image := FImage;
+    l := FModel.ObjectList.Count;
+    FModel.ObjectList.Add(vName, AObject);
+    setLength(FModel.ObjectOrder, l + 1);
+    FModel.ObjectList[l].Image := FImage;
     AObject.OnBringToBack := BringToBackHandler;
     AObject.OnSendToFront := SendToFrontHandler;
-    FObjectOrder^[l] := l;
+    FModel.ObjectOrder[l] := l;
     FCritical.Leave;
   end;
 end;
@@ -214,7 +204,7 @@ var
 begin
   vReg := TRegEx.Create(',');
   vStrs := vReg.Split(AGroup);
-  vN := FObjects.Count - 1;
+  vN := FModel.ObjectList.Count - 1;
   for iG := 0 to Length(vStrs) - 1 do
   begin
     i := vN;
@@ -222,9 +212,9 @@ begin
     vStrs[iG] := Trim(vStrs[iG]);
     while iObject > 1 do
     begin
-      if FObjects[FObjectOrder^[i]].Group = vStrs[iG] then
+      if FModel.ObjectList[FModel.ObjectOrder[i]].Group = vStrs[iG] then
       begin
-        FObjects[FObjectOrder^[i]].BringToBack;
+        FModel.ObjectList[FModel.ObjectOrder[i]].BringToBack;
         Inc(i);
       end;
       Dec(i);
@@ -236,7 +226,7 @@ end;
 procedure TEngine2DManager.BringToBackHandler(ASender: TObject);
 begin
  SpriteToBack(
-    FObjects.IndexOfItem(TEngine2DObject(ASender), FromBeginning)
+    FModel.ObjectList.IndexOfItem(TEngine2DObject(ASender), FromBeginning)
   );
 end;
 
@@ -244,12 +234,7 @@ constructor TEngine2DManager.Create(
       const AStatus: TEngine2DStatus;
       const AImage: TImage;
       const ACritical: TCriticalSection;
-      const AResourcesList: TEngine2DResources;
-      const AObjectsList: TObjectsList;
-      const AObjectOrder: PIntArray;
-      const AAnimationsList: TEngine2DAnimationList;
-      const AFormattersList: TFormatterList;
-      const AFastFields: TFastFields;
+      const AModel: TEngine2dModel;
       const AEngineThread: TEngineThread;
       const AResize: TProcedure);
 begin
@@ -257,12 +242,7 @@ begin
   FImage := AImage;
   FCritical := ACritical;
   FAddedObjects := 0;
-  FObjects := AObjectsList;
-  FResources := AResourcesList;
-  FObjectOrder := AObjectOrder;
-  FAnimationList := AAnimationsList;
-  FFormatters := AFormattersList;
-  FFastFields := AFastFields;
+  FModel := AModel;
   FEngineThread := AEngineThread;
   FResize := AResize;
 end;
@@ -277,21 +257,21 @@ var
   i, vN, vNum, vPos: integer;
 begin
   FCritical.Enter;
-  vNum := FObjects.IndexOfItem(AObject, FromEnd);
+  vNum := FModel.ObjectList.IndexOfItem(AObject, FromEnd);
   if vNum > -1 then
   begin
-    vN := FObjects.Count - 1;
-    FAnimationList.ClearForSubject(AObject);
-    FFormatters.ClearForSubject(AObject);
-    FFastFields.ClearForSubject(AObject);
-    FObjects.Delete(vNum{AObject});
+    vN := FModel.ObjectList.Count - 1;
+    FModel.AnimationList.ClearForSubject(AObject);
+    FModel.FormatterList.ClearForSubject(AObject);
+    FModel.FastFields.ClearForSubject(AObject);
+    FModel.ObjectList.Delete(vNum{AObject});
 
    // AObject.Free;
 
     vPos := vN + 1;
     // Находим позицию спрайта
     for i := vN downto 0 do
-      if FObjectOrder^[i] = vNum then
+      if FModel.ObjectOrder[i] = vNum then
       begin
         vPos := i;
         Break;
@@ -300,15 +280,15 @@ begin
     // От этой позиции сдвигаем порядок отрисовки
     vN := vN - 1;
     for i := vPos to vN do
-      FObjectOrder^[i] := FObjectOrder^[i+1];
+      FModel.ObjectOrder[i] := FModel.ObjectOrder[i+1];
 
     // Все индексы спрайтов, которые больше vNum надо уменьшить на 1
     for i := 0 to vN do
-      if FObjectOrder^[i] >= vNum then
-        FObjectOrder^[i] := FObjectOrder^[i] - 1;
+      if FModel.ObjectOrder[i] >= vNum then
+        FModel.ObjectOrder[i] := FModel.ObjectOrder[i] - 1;
 
     // Уменьшаем длину массива
-    SetLength(FObjectOrder^, vN + 1);
+    SetLength(FModel.ObjectOrder, vN + 1);
   end;
   FCritical.Leave;
 //  FDebug := True;
@@ -319,12 +299,7 @@ begin
   FStatus := nil;
   FImage := nil;
   FCritical := nil;
-  FObjects :=  nil;
-  FResources :=  nil;
-  FObjectOrder := nil;
-  FAnimationList := nil;
-  FFormatters := nil;
-  FFastFields := nil;
+  FModel := nil;
   FEngineThread := nil;
   FResize := nil;
   inherited;
@@ -333,12 +308,12 @@ end;
 function TEngine2DManager.Formatter(const ASubject: tEngine2DObject;
   const AText: String; const AIndex: Integer): TEngineFormatter;
 begin
-  Result := TEngineFormatter.Create(ASubject, fObjects, FFastFields);
+  Result := TEngineFormatter.Create(ASubject, FModel.ObjectList, FModel.FastFields);
   Result.Text := AText;
   if AIndex = -1 then
-    fFormatters.Add(Result)
+    FModel.FormatterList.Add(Result)
   else
-    fFormatters.Insert(AIndex, Result);
+    FModel.FormatterList.Insert(AIndex, Result);
 end;
 
 function TEngine2DManager.FillEllipse(const AName: string): TFillEllipse;
@@ -358,7 +333,7 @@ function TEngine2DManager.Formatter(const ASubject: tEngine2DObject;
 var
   vS: string;
 begin
-  vS := Format(fFormatters.StyleByName[AName], AParam);
+  vS := Format(FModel.FormatterList.StyleByName[AName], AParam);
   Result := Formatter(ASubject, vS, AIndex);
 end;
 
@@ -379,12 +354,12 @@ end;
 
 function TEngine2DManager.GetItem(AIndex: Integer): tEngine2DObject;
 begin
-  Result := FObjects[AIndex];
+  Result := FModel.ObjectList[AIndex];
 end;
 
 function TEngine2DManager.GetItemS(AName: string): tEngine2DObject;
 begin
-  Result := FObjects[AName];
+  Result := FModel.ObjectList[AName];
 end;
 
 procedure TEngine2DManager.HideGroup(const AGroup: String);
@@ -398,9 +373,9 @@ begin
   for iG := 0 to Length(vStrs) - 1 do
   begin
     vStrs[iG] := Trim(vStrs[iG]);
-    for i := 0 to FObjects.Count - 1 do
-      if FObjects[i].group = vStrs[iG] then
-        FObjects[i].visible := False;
+    for i := 0 to FModel.ObjectList.Count - 1 do
+      if FModel.ObjectList[i].group = vStrs[iG] then
+        FModel.ObjectList[i].visible := False;
   end;
 end;
 
@@ -417,7 +392,7 @@ end;
 
 function TEngine2DManager.ResourceIndex(const AName: string): Integer;
 begin
-  Result := fResources.IndexOf(AName);
+  Result := FModel.Resources.IndexOf(AName);
 end;
 
 procedure TEngine2DManager.SendToFrontGroup(const AGroup: String);
@@ -429,7 +404,7 @@ var
 begin
   vReg := TRegEx.Create(',');
   vStrs := vReg.Split(AGroup);
-  vN := FObjects.Count - 1;
+  vN := FModel.ObjectList.Count - 1;
   for iG := 0 to Length(vStrs) - 1 do
   begin
     i := 1;
@@ -437,9 +412,9 @@ begin
     vStrs[iG] := Trim(vStrs[iG]);
     while iObject < vN do
     begin
-      if FObjects[FObjectOrder^[i]].Group = vStrs[iG] then
+      if FModel.ObjectList[FModel.ObjectOrder[i]].Group = vStrs[iG] then
       begin
-        FObjects[FObjectOrder^[i]].SendToFront;
+        FModel.ObjectList[FModel.ObjectOrder[i]].SendToFront;
         Dec(i);
       end;
       Inc(i);
@@ -451,7 +426,7 @@ end;
 procedure TEngine2DManager.SendToFrontHandler(ASender: TObject);
 begin
  SpriteToFront(
-    FObjects.IndexOfItem(TEngine2DObject(ASender), FromBeginning)
+    FModel.ObjectList.IndexOfItem(TEngine2DObject(ASender), FromBeginning)
   );
 end;
 
@@ -473,16 +448,16 @@ begin
   for iG := 0 to Length(vStrs) - 1 do
   begin
     vStrs[iG] := Trim(vStrs[iG]);
-    for i := 0 to FObjects.Count - 1 do
-      if FObjects[i].group = vStrs[iG] then
-        FObjects[i].visible := True;
+    for i := 0 to FModel.ObjectList.Count - 1 do
+      if FModel.ObjectList[i].Group = vStrs[iG] then
+        FModel.ObjectList[i].Visible := True;
   end;
 end;
 
 function TEngine2DManager.Sprite(const AName: string): TSprite;
 begin
   Result := TSprite.Create;
-  Result.Resources := fResources;
+  Result.Resources := FModel.Resources;
   AddObject(Result, AName);
 end;
 
@@ -490,15 +465,15 @@ procedure TEngine2DManager.SpriteToBack(const n: integer);
 var
   i, l, oldOrder: integer;
 begin
-  l := length(FObjectOrder^);
+  l := length(FModel.ObjectOrder);
 
-  oldOrder := FObjectOrder^[n]; // Узнаём порядок отрисовки спрайта номер n
+  oldOrder := FModel.ObjectOrder[n]; // Узнаём порядок отрисовки спрайта номер n
 
   for i := 1 to l - 1 do
-    if FObjectOrder^[i] < oldOrder then
-      FObjectOrder^[i] := FObjectOrder^[i] + 1;
+    if FModel.ObjectOrder[i] < oldOrder then
+      FModel.ObjectOrder[i] := FModel.ObjectOrder[i] + 1;
 
-  FObjectOrder^[n] := 1;
+  FModel.ObjectOrder[n] := 1;
 
 end;
 
@@ -506,11 +481,11 @@ procedure TEngine2DManager.SpriteToFront(const n: integer);
 var
   i, l, oldOrder: integer;
 begin
-  l := length(FObjectOrder^);
+  l := length(FModel.ObjectOrder);
   oldOrder := l - 1;
 
   for i := 1 to l - 1 do
-    if FObjectOrder^[i] = n then
+    if FModel.ObjectOrder[i] = n then
     begin
       oldOrder := i;
       break;
@@ -518,10 +493,10 @@ begin
 
   for i := oldOrder to l - 2 do
   begin
-    FObjectOrder^[i] := FObjectOrder^[i + 1];
+    FModel.ObjectOrder[i] := FModel.ObjectOrder[i + 1];
   end;
 
-  FObjectOrder^[l - 1] := n;
+  FModel.ObjectOrder[l - 1] := n;
 end;
 
 function TEngine2DManager.Text(const AName: string): TEngine2DText;

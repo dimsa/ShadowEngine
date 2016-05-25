@@ -16,19 +16,20 @@ uses
   uEngine2DSprite, uEngine2DText, uEngine2DClasses, uFormatterList,
   uEngineFormatter, uSpriteList, uEngine2DManager, uEngine2DResources,
   uEngine2DAnimation, uNamedList, uEngine2DAnimationList, uFastFields,
-  uEngine2DStatus, uEasyDevice;
+  uEngine2DStatus, uEasyDevice, uEngine2DModel;
 
 type
   TEngine2d = class
   strict private
     FEngineThread: TEngineThread; // Поток в котором происходит отрисовка
+    FModel: TEngine2DModel;
     FOptions: TEngine2DOptions; // Настройки движка
-    FObjects: TObjectsList; // Массив спрайтов для отрисовки
-    FFastFields: TFastFields; // Содержит ссылки на TFastField, которые представляют собой найденные значения определенных спрайтов
-    FObjectOrder: TIntArray; // Массив порядка отрисовки. Нужен для уменьшения кол-ва вычислений, содержит номер спрайта
-    FResources: TEngine2DResources; //tResourceArray; // Массив битмапов
-    FFormatters: TFormatterList; // Массив Форматтеров спрайтов
-    FAnimationList: TEngine2DAnimationList; // Массив анимаций
+    //FObjects: TObjectsList; // Массив спрайтов для отрисовки
+    //FFastFields: TFastFields; // Содержит ссылки на TFastField, которые представляют собой найденные значения определенных спрайтов
+ //   FObjectOrder: TIntArray; // Массив порядка отрисовки. Нужен для уменьшения кол-ва вычислений, содержит номер спрайта
+    //FResources: TEngine2DResources; //tResourceArray; // Массив битмапов
+   // FFormatters: TFormatterList; // Массив Форматтеров спрайтов
+   // FAnimationList: TEngine2DAnimationList; // Массив анимаций
     FObjectCreator: TEngine2DManager;
     FMouseDowned: TIntArray; // Массив спрайтов движка, которые находились под мышкой в момент нажатия
     FMouseUpped: TIntArray; // Массив спрайтов движка, которые находились под мышкой в момент отжатия
@@ -52,9 +53,6 @@ type
     FShadowObject: tEngine2DObject;
     procedure prepareFastFields;
     procedure prepareShadowObject;
-//    procedure setStatus(newStatus: byte);
-    procedure setObject(index: integer; newSprite: tEngine2DObject);
-    function getObject(index: integer): tEngine2DObject;
     procedure SetWidth(AWidth: integer); // Установка размера поля отрисовки движка
     procedure SetHeight(AHeight: integer); // Установка размера поля отрисовки движка
     procedure setBackGround(ABmp: tBitmap);
@@ -64,14 +62,6 @@ type
     procedure SetBackgroundBehavior(const Value: TProcedure);
     function IsHor: Boolean; // Return True, if Engine.Width > Engine.Height
   protected
-    // Ключевые списки движка.
-    property Resources: TEngine2DResources read FResources;
-    property AnimationList: TEngine2DAnimationList read FAnimationList;
-    property FormatterList: TFormatterList read FFormatters;
-    property ObjectList: TObjectsList read FObjects;
-    property ObjectOrder: TIntArray read FObjectOrder;
-    property FastFields: tFastFields read FFastFields; // Быстрый вызов для экспрешенсов
-    property Objects[index: integer]: tEngine2DObject read getObject write setObject;
     property EngineThread: TEngineThread read FEngineThread;
   public
     // Ключевые свойства движка
@@ -94,7 +84,7 @@ type
     procedure AssignShadowObject(ASpr: tEngine2DObject); // Ассигнет спрайт в ShadowObject
     property ShadowObject: tEngine2DObject read FShadowObject;  // Указатель на Теневой объект.
 
-    procedure ClearSprites; // Очищает массив спрайтов, т.е. является подготовкой к полной перерисовке
+//    procedure ClearSprites; // Очищает массив спрайтов, т.е. является подготовкой к полной перерисовке
     procedure ClearTemp; // Очищает массивы выбора и т.д. короче делает кучу полезных вещей.
 
     procedure LoadResources(const AFileName: string);
@@ -141,15 +131,15 @@ begin
     Bitmap.Canvas.DrawBitmap(FBackGround, RectF(0, 0, FBackGround.width, FBackGround.height), RectF(0, 0, bitmap.width, bitmap.height), 1, true);
 end;
 
-procedure TEngine2d.clearSprites;
+{procedure TEngine2d.clearSprites;
 var
   i: integer;
 begin
-  for i := 0 to FObjects.Count - 1 do
-    FObjects[i].free;
+  for i := 0 to FModel.ObjectList.Count - 1 do
+    FModel.ObjectList[i].free;
 
-  setLength(FObjectOrder, 0);
-end;
+  setLength(FModel.ObjectOrder, 0);
+end;  }
 
 procedure TEngine2d.clearTemp;
 begin
@@ -166,7 +156,7 @@ begin
     vCount := ACount;
 
   for i := 0 to Min(vCount, Length(FClicked)) - 1 do
-    Objects[FClicked[i]].OnClick(Objects[FClicked[i]]);
+    FModel.Objects[FClicked[i]].OnClick(FModel.Objects[FClicked[i]]);
 end;
 
 constructor TEngine2d.Create;
@@ -176,11 +166,8 @@ begin
   FEngineThread.WorkProcedure := Repaint;
   FStatus := TEngine2DStatus.Create(FEngineThread, @FWidth, @FHeight, @FIsMouseDowned, @FMouseDowned, @FMouseUpped, @FClicked);
 
-  FObjectOrder := TIntArray.Create(0);
-  FResources := TEngine2DResources.Create(FCritical);
-  FAnimationList := TEngine2DAnimationList.Create(FCritical);
-  FFormatters := TFormatterList.Create(FCritical, Self);
-  FObjects := TObjectsList.Create(FCritical);
+  FModel := TEngine2DModel.Create(FCritical, Self, IsHor);
+
   FOptions.Up([EAnimateForever]);
   FOptions.Down([EClickOnlyTop]);
 
@@ -188,19 +175,17 @@ begin
   FInBeginPaintBehavior := InBeginPaintDefaultBehavior;
   FInEndPaintBehavior := InEndPaintDefaultBehavior;
   prepareFastFields;
-  clearSprites;
+  FModel.ClearSprites;
+
   FBackGround := tBitmap.Create;
 end;
 
 destructor TEngine2d.Destroy;
 begin
   FObjectCreator.Free;
-  clearSprites;
-  FImage.free;
-  FAnimationList.Free;
-  FFormatters.Free;
-  FFastFields.Free;
-  FBackGround.free;
+  FImage.Free;
+  FModel.Free;
+  FBackGround.Free;
 
   inherited;
 end;
@@ -211,8 +196,8 @@ var
 begin
   FCritical.Enter;
   // Форматирвание
-  for i := 0 to FFormatters.Count - 1 do
-    FFormatters[i].Format;
+  for i := 0 to FModel.FormatterList.Count - 1 do
+    FModel.FormatterList[i].Format;
   FCritical.Leave;
 end;
 
@@ -229,40 +214,49 @@ begin
 
   // Анимация
   FCritical.Enter;
-  lA := FAnimationList.Count - 1;
-  for iA := lA downto 0 do
+  with FModel do
   begin
-    if FAnimationList[iA].Animate = TAnimation.CAnimationEnd then
+    lA := AnimationList.Count - 1;
+    for iA := lA downto 0 do
     begin
-      vAnimation := FAnimationList[iA];
-      FAnimationList.Delete(iA);
-      vAnimation.Free;
+      if AnimationList[iA].Animate = TAnimation.CAnimationEnd then
+      begin
+        vAnimation := AnimationList[iA];
+        AnimationList.Delete(iA);
+        vAnimation.Free;
+      end;
     end;
   end;
   FCritical.Leave;
 
   FCritical.Enter;
   if (lA > 0) or (FOptions.ToAnimateForever) then
+
     with FImage do
+    with FModel do
     begin
       if Bitmap.Canvas.BeginScene() then
       try
         FInBeginPaintBehavior;
         FBackgroundBehavior;
 
-        l := (FObjects.Count - 1);
+        l := (ObjectList.Count - 1);
         for i := 1 to l do
-          if FObjects[FObjectOrder[i]].visible then
+          if ObjectList[ObjectOrder[i]].visible then
           begin
-            m := TMatrix.CreateTranslation(-FObjects[FObjectOrder[i]].x, -FObjects[FObjectOrder[i]].y) * TMatrix.CreateScaling(FObjects[FObjectOrder[i]].ScaleX, FObjects[FObjectOrder[i]].ScaleY) * TMatrix.CreateRotation(FObjects[FObjectOrder[i]].rotate * pi180) * TMatrix.CreateTranslation(FObjects[FObjectOrder[i]].x, FObjects[FObjectOrder[i]].y);
+            m := TMatrix.CreateTranslation(
+              -ObjectList[ObjectOrder[i]].x,
+              -ObjectList[ObjectOrder[i]].y) * TMatrix.CreateScaling(ObjectList[ObjectOrder[i]].ScaleX,
+              ObjectList[ObjectOrder[i]].ScaleY) * TMatrix.CreateRotation(ObjectList[ObjectOrder[i]].rotate * pi180) * TMatrix.CreateTranslation(ObjectList[ObjectOrder[i]].x,
+              ObjectList[ObjectOrder[i]].y);
             Bitmap.Canvas.SetMatrix(m);
 
            {$IFDEF DEBUG}
            if FOptions.ToDrawFigures then
-             vSpr := FObjects[FObjectOrder[i]];
+             vSpr := ObjectList[FModel.ObjectOrder[i]];
            {$ENDIF}
 
-           FObjects[FObjectOrder[i]].Repaint;
+           ObjectList[FModel.ObjectOrder[i]].Repaint;
 
            {$IFDEF DEBUG}
            if FOptions.ToDrawFigures then
@@ -279,13 +273,6 @@ begin
       end;
     end;
 
-  FCritical.Leave;
-end;
-
-function TEngine2d.getObject(index: integer): tEngine2DObject;
-begin
-  FCritical.Enter;
-  result := FObjects[index];
   FCritical.Leave;
 end;
 
@@ -358,7 +345,7 @@ begin
   FImage.Bitmap.Width := Round(AImage.Width * getScreenScale);
   FImage.Bitmap.Height := ROund(AImage.Height * getScreenScale);
 
-  FObjectCreator := TEngine2DManager.Create(Self.Status, FImage, FCritical, FResources, FObjects, @FObjectOrder, FAnimationList, FFormatters, FFastFields, FEngineThread, Resize);
+  FObjectCreator := TEngine2DManager.Create(Self.Status, FImage, FCritical, FModel, {FResources, FObjects, @FObjectOrder, FAnimationList, FFormatters, FFastFields,} FEngineThread, Resize);
   prepareShadowObject;
 end;
 
@@ -369,12 +356,12 @@ end;
 
 procedure TEngine2d.LoadResources(const AFileName: string);
 begin
-  FResources.AddResFromLoadFileRes(AFileName);
+  FModel.Resources.AddResFromLoadFileRes(AFileName);
 end;
 
 procedure TEngine2d.LoadSECSS(const AFileName: string);
 begin
-  FFormatters.LoadSECSS(AFileName);
+  FModel.FormatterList.LoadSECSS(AFileName);
 end;
 
 procedure TEngine2d.LoadSEJson(const AFileName: string);
@@ -431,18 +418,18 @@ begin
 
   FlX := x; // * getScreenScale;
   FlY := y; //* getScreenScale;
-  l := FObjects.Count - 1; //length(fSprites) - 1;
+  l := FModel.ObjectList.Count - 1; //length(fSprites) - 1;
 
   setLength(FClicked, 0);
   setLength(FMouseDowned, 0);
 
   for i := l downto 1 do
   begin
-    if FObjects[FObjectOrder[i]].visible then
-      if FObjects[FObjectOrder[i]].underTheMouse(FlX, FlY) then
+    if FModel.ObjectList[FModel.ObjectOrder[i]].visible then
+      if FModel.ObjectList[FModel.ObjectOrder[i]].underTheMouse(FlX, FlY) then
       begin
         setLength(FMouseDowned, length(FMouseDowned) + 1);
-        FMouseDowned[high(FMouseDowned)] := FObjectOrder[i];
+        FMouseDowned[high(FMouseDowned)] := FModel.ObjectOrder[i];
 
       //ПЕРЕНЕСИ w и h в TEngine2DObject и сделай определение положения клика в спрайте
 
@@ -456,7 +443,7 @@ begin
     vCount := Min(ACount, Length(FMouseDowned));
 
   for i := 0 to vCount - 1 do
-    Objects[FMouseDowned[i]].OnMouseDown(Objects[FMouseDowned[i]], Button, Shift, x, y);
+    FModel.Objects[FMouseDowned[i]].OnMouseDown(FModel.Objects[FMouseDowned[i]], Button, Shift, x, y);
 end;
 
 procedure TEngine2d.MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: single; const ACount: Integer = -1; const AClickObjects: Boolean = True);
@@ -467,18 +454,18 @@ begin
 
   FlX := x; //* getScreenScale;
   FlY := y; //* getScreenScale;
-  l := FObjects.Count - 1; //length(fSprites) - 1;
+  l := FModel.ObjectList.Count - 1; //length(fSprites) - 1;
 
   SetLength(FClicked, 0);
   SetLength(FMouseUpped, 0);
 
   for i := l downto 1 do
   begin
-    if FObjects[FObjectOrder[i]].visible then
-      if FObjects[FObjectOrder[i]].underTheMouse(FlX, FlY) then
+    if FModel.ObjectList[FModel.ObjectOrder[i]].visible then
+      if FModel.ObjectList[FModel.ObjectOrder[i]].underTheMouse(FlX, FlY) then
       begin
         SetLength(FMouseUpped, length(FMouseUpped) + 1);
-        FMouseUpped[high(FMouseUpped)] := FObjectOrder[i];
+        FMouseUpped[high(FMouseUpped)] := FModel.ObjectOrder[i];
       end;
   end;
 
@@ -491,7 +478,7 @@ begin
     vCount := Min(ACount, Length(FMouseUpped));
 
   for i := 0 to vCount - 1 do
-    Objects[FMouseUpped[i]].OnMouseUp(Objects[FMouseUpped[i]], Button, Shift, x, y);
+    FModel.Objects[FMouseUpped[i]].OnMouseUp(FModel.Objects[FMouseUpped[i]], Button, Shift, x, y);
 
   if AClickObjects then
     Click(ACount);
@@ -501,12 +488,12 @@ procedure TEngine2d.prepareFastFields;
 var
   vTmp: TFastField;
 begin
-  FFastFields := TFastFields.Create(IsHor);
+//  FModel.FastFields := TFastFields.Create(IsHor);
 //  fFastFields.Parent := Self;
   vTmp := TFastEngineWidth.Create(@FWidth);
-  FFastFields.Add('engine.width', vTmp);
+  FModel.FastFields.Add('engine.width', vTmp);
   vTmp := TFastEngineHeight.Create(@FHeight);
-  FFastFields.Add('engine.height', vTmp);
+  FModel.FastFields.Add('engine.height', vTmp);
 end;
 
 procedure TEngine2d.prepareShadowObject;
@@ -535,13 +522,6 @@ procedure TEngine2d.setHeight(AHeight: integer);
 begin
   FImage.Bitmap.Height := Round(AHeight * getScreenScale + 0.4);
   FHeight := AHeight;
-end;
-
-procedure TEngine2d.setObject(index: integer; newSprite: tEngine2DObject);
-begin
-  FCritical.Enter;
-  FObjects[index] := NewSprite;
-  FCritical.Leave;
 end;
 
 {procedure TEngine2d.setStatus(newStatus: byte);
