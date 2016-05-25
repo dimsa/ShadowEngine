@@ -5,6 +5,7 @@ interface
 uses
   System.Types, FMX.Graphics, System.UITypes,  {$I 'Utils\DelphiCompatability.inc'}
   System.Math, uItemBasePresenter, uIntersectorClasses, uIntersectorMethods,
+  System.Generics.Collections, System.SysUtils,uClasses,
   uIItemView, uNewFigure, uSSBModels, uITableView;
 
 type
@@ -12,6 +13,7 @@ type
   private
     FItemShapeModel: TItemShapeModel;
     FTableView: ITableView;
+    FParams: TDictionary<string, string>;
     FLockedIndex: Integer;
     FLockedPoint: TPointF;
     function GetHeight: Integer;
@@ -20,6 +22,8 @@ type
     procedure SetHeight(const Value: Integer);
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
+    function GetParams: TDictionary<string,string>;
+    procedure SetParams(const AValue: TDictionary<string, string>);
   protected
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
@@ -31,7 +35,7 @@ type
     procedure TranslateFigure(const ATranslate: TPointF);
     procedure Repaint(ABmp: TBitmap; const AColor: TColor = TAlphaColorRec.Aliceblue);
     property Model: TItemShapeModel read FItemShapeModel;
-    property TableView: ITableView write FTableView;
+    property TableView: ITableView read FTableView write FTableView;
   public
     procedure AddPoint;
     procedure DelPoint;
@@ -39,6 +43,8 @@ type
     procedure MouseUp; override;
     procedure MouseMove; override;
     procedure Delete; override;
+    procedure ShowOptions; override;
+    procedure SaveOptions; override;
 
     constructor Create(const AItemView: IItemView; AItemShapeModel: TItemShapeModel);
     destructor Destroy; override;
@@ -104,10 +110,8 @@ constructor TItemShaperPresenter.Create(const AItemView: IItemView;
   AItemShapeModel: TItemShapeModel);
 begin
   inherited Create(AItemView);
+  FParams := TDictionary<string, string>.Create;
   FItemShapeModel := AItemShapeModel;
-//  FTableView := ATableView;
-  //FTableView.Presenter := Self;
-  //FColor := TAlphaColorRec.Aliceblue;
 end;
 
 procedure TItemShaperPresenter.Delete;
@@ -141,12 +145,46 @@ destructor TItemShaperPresenter.Destroy;
 begin
   FItemShapeModel := nil;
   FTableView := nil;
+  FParams.Free;
   inherited;
 end;
 
 function TItemShaperPresenter.GetHeight: Integer;
 begin
   Result := FItemShapeModel.MaxRadius;
+end;
+
+function TItemShaperPresenter.GetParams: TDictionary<string, string>;
+var
+  i: integer;
+  vPoly: TPolygon;
+  vCircle: TCircle;
+begin
+  FParams.Clear;
+
+  case Model.Figure.Kind of
+    TNewFigure.cfCircle:
+    begin
+      vCircle := Model.Figure.AsCircle;
+      FParams.Add('Type', 'Circle');
+      FParams.Add('X', FloatToStr(Round(vCircle.X)));
+      FParams.Add('Y', FloatToStr(Round(vCircle.Y)));
+      FParams.Add('Radius', FloatToStr(Round(vCircle.Radius)));
+    end;
+
+    TNewFigure.cfPoly:
+    begin
+      FParams.Add('Type', 'Poly');
+      vPoly := Model.Figure.AsPoly;
+      for i := 0 to High(vPoly) do
+      begin
+        FParams.Add('X' + IntToStr(i), FloatToStr(Round(vPoly[i].X)));
+        FParams.Add('Y' + IntToStr(i), FloatToStr(Round(vPoly[i].Y)));
+      end;
+    end;
+  end;
+
+  Result := FParams;
 end;
 
 function TItemShaperPresenter.GetPosition: TPoint;
@@ -270,9 +308,51 @@ begin
   ABmp.Canvas.EndScene;
 end;
 
+procedure TItemShaperPresenter.SaveOptions;
+begin
+  inherited;
+
+  if Assigned(FOnOptionsSave) then
+    FOnOptionsSave(Self);
+
+  SetParams(FTableView.TakeParams);
+
+  if Assigned(FTableView) then
+    FTableView := nil;
+end;
+
 procedure TItemShaperPresenter.SetHeight(const Value: Integer);
 begin
 
+end;
+
+procedure TItemShaperPresenter.SetParams(const AValue: TDictionary<string, string>);
+var
+  vErr, vA: Integer;
+  i: integer;
+  vPoly: TPolygon;
+  vCircle: TCircle;
+begin
+
+  case Model.Figure.Kind of
+    TNewFigure.cfCircle:
+    begin
+      vCircle.X := ToFloat(AValue['X']);
+      vCircle.Y := ToFloat(AValue['Y']);
+      vCircle.Radius := ToFloat(AValue['Radius']);
+      Model.Figure.SetData(vCircle);
+    end;
+
+    TNewFigure.cfPoly:
+    begin
+      vPoly := Model.Figure.AsPoly;
+      for i := 0 to High(vPoly) do
+      begin
+        vPoly[i].X := ToFloat(AValue['X' + IntToStr(i)]);
+        vPoly[i].Y := ToFloat(AValue['Y' + IntToStr(i)]);
+      end;
+    end;
+  end;
 end;
 
 procedure TItemShaperPresenter.SetPosition(const Value: TPoint);
@@ -283,6 +363,16 @@ end;
 procedure TItemShaperPresenter.SetWidth(const Value: Integer);
 begin
 
+end;
+
+procedure TItemShaperPresenter.ShowOptions;
+begin
+  inherited;
+  if Assigned(FOnOptionsShow) then
+    FOnOptionsShow(Self);
+
+  if Assigned(FTableView) then
+    FTableView.ShowParams(GetParams);
 end;
 
 procedure TItemShaperPresenter.TranslateFigure(const ATranslate: TPointF);

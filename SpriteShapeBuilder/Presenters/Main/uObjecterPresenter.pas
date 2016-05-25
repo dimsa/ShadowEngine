@@ -214,7 +214,6 @@ begin
 
   vTableView.Presenter := vItem;
   vItem.TableView := vTableView;
-//  View.ShowParams(vItem.Params);
 end;
 
 function TObjecterPresenter.GetView: IWorkSpaceView;

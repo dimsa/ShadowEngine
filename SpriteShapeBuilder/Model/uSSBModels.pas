@@ -131,7 +131,7 @@ begin
   vObj := TJSONObject.Create;
   vObj.AddPair('Name', Self.Name);
   vObj.AddPair('Body', vBody);
-
+  vObj.AddPair('Body', 'fgg');
   Result := vObj;
 end;
 

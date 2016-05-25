@@ -55,6 +55,7 @@ type
   procedure NormalizeAngle(var AAngle: Single);
   function RGBColor(const AR, AG, AB, AA: Byte): TAlphaColorRec;
   function ToInt(const AValue: string): Integer;
+  function ToFloat(const AValue: string): Double;
 
 implementation
 
@@ -67,6 +68,18 @@ begin
   begin
     Result := -1;
     ShowMessage('Can not convert to Integer ' + AValue);
+  end;
+end;
+
+function ToFloat(const AValue: string): Double;
+var
+  vErr: Integer;
+begin
+  Val(AValue, Result, vErr);
+  if vErr <> 0 then
+  begin
+    Result := -1;
+    ShowMessage('Can not convert to Float ' + AValue);
   end;
 end;
 

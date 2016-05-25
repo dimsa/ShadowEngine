@@ -255,7 +255,7 @@ end;
 
 procedure TSSBForm.SaveProjectBtnClick(Sender: TObject);
 begin
-    FMainPresenter.SaveProject;
+  FMainPresenter.SaveProject;
 end;
 
 procedure TSSBForm.SetStatus(const AStatus: TSSBStatus);

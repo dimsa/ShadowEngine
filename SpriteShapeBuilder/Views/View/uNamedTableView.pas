@@ -4,21 +4,20 @@ interface
 
 uses
   System.Generics.Collections,
-  uMVPFrameWork, uITableView, uNamedOptionsForm, uIItemPresenter;
+  uMVPFrameWork, uITableView, uNamedOptionsForm, uItemBasePresenter;
 
 type
   TTableView = class(TInterfacedObject, ITableView, IView)
   private
     FOptionsForm: TNamedOptionsForm;
-    FPresenter: IItemPresenter;
-    function GetPresenter: IItemPresenter;
-    procedure SetPresenter(AValue: IItemPresenter);
+    FPresenter: TItemBasePresenter;
+    function GetPresenter: TItemBasePresenter;
+    procedure SetPresenter(AValue: TItemBasePresenter);
     procedure OnApply(ASender: TObject);
-    procedure OnDestroy(ASender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
-    property Presenter: IItemPresenter read GetPresenter write SetPresenter;
+    property Presenter: TItemBasePresenter read GetPresenter write SetPresenter;
     procedure ShowParams(const AParams: TDictionary<string,string>);
     function TakeParams: TDictionary<string,string>;
   end;
@@ -31,17 +30,17 @@ constructor TTableView.Create;
 begin
   FOptionsForm := TNamedOptionsForm.Create(nil);
   FOptionsForm.ValuesApplied := OnApply;
-  FOptionsForm.OnDestroy := OnDestroy;
 end;
 
 destructor TTableView.Destroy;
 begin
+  Presenter := nil;
   FOptionsForm.Close;
   FOptionsForm.Release;
   inherited;
 end;
 
-function TTableView.GetPresenter: IItemPresenter;
+function TTableView.GetPresenter: TItemBasePresenter;
 begin
   Result := FPresenter;
 end;
@@ -51,12 +50,7 @@ begin
   FPresenter.SaveOptions;
 end;
 
-procedure TTableView.OnDestroy(ASender: TObject);
-begin
-
-end;
-
-procedure TTableView.SetPresenter(AValue: IItemPresenter);
+procedure TTableView.SetPresenter(AValue: TItemBasePresenter);
 begin
   FPresenter := AValue;
 end;

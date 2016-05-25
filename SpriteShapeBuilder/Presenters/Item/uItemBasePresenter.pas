@@ -90,7 +90,7 @@ end;
 
 procedure TItemBasePresenter.SetOnOptionsSave(AHandler: TNotifyEvent);
 begin
-
+  FOnOptionsSave := AHandler;
 end;
 
 procedure TItemBasePresenter.SetOnOptionsShow(AHandler: TNotifyEvent);

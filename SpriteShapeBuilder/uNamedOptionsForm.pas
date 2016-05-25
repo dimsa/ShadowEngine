@@ -85,7 +85,9 @@ var
   i: Integer;
 begin
   inherited Show;
-  FParams := AParams;
+  FParams.Clear;
+  for vS in AParams.Keys do
+    FParams.Add(vS, AParams[vS]);
 
   i := 0;
   Grd.RowCount := FParams.Count;

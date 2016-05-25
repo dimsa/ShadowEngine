@@ -4,7 +4,7 @@ interface
 
 uses
   System.Generics.Collections,
-  uMVPFrameWork, uIItemPresenter;
+  uMVPFrameWork, uItemBasePresenter;
 
 type
 
@@ -13,9 +13,9 @@ ITableView = interface(IView)
   procedure ShowParams(const AParams: TDictionary<string,string>);
   function TakeParams: TDictionary<string,string>;
 
-  function GetPresenter: IItemPresenter;
-  procedure SetPresenter(AValue: IItemPresenter);
-  property Presenter: IItemPresenter read GetPresenter write SetPresenter;
+  function GetPresenter: TItemBasePresenter;
+  procedure SetPresenter(AValue: TItemBasePresenter);
+  property Presenter: TItemBasePresenter read GetPresenter write SetPresenter;
 end;
 
 implementation

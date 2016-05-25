@@ -273,17 +273,15 @@ var
 begin
   vJson := TJSONObject.Create;
   vJson.AddPair('ImageFile', 'test.txt');
-  vObjArr := TJSONArray.Create;
 
+  vObjArr := TJSONArray.Create;
   for i := 0 to FResources.Count - 1 do
   begin
-    vObjArr.AddElement(FResources[i].AsJson);
+    vObjArr.Add(FResources[i].AsJson);
   end;
 
   vJson.AddPair('Resources', vObjArr);
-  vObjArr.Free;
-
-    vObjArr := TJSONArray.Create;
+  vObjArr := nil;
 
   vObjArr := TJSONArray.Create;
   for i := 0 to FObjects.Count - 1 do
@@ -291,7 +289,9 @@ begin
     vObjArr.AddElement(FObjects[i].AsJson);
   end;
 
-  Result := vJson.ToJSON;
+  vObjArr := nil;
+
+  Result := vJson.ToString;
 end;
 
 end.

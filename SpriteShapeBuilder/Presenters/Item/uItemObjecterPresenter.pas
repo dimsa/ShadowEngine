@@ -6,7 +6,7 @@ uses
   System.Types, System.Generics.Collections, uIntersectorClasses, FMX.Graphics,
   System.UITypes, FMX.Types, System.SysUtils, {$I 'Utils\DelphiCompatability.inc'}
   System.Math, uItemBasePresenter, uItemShaperPresenter, uIItemView, uSSBModels,
-  uITableView;
+  uITableView, uIItemPresenter;
 
 type
   // To access protected Fields
@@ -19,6 +19,7 @@ type
     FItemObjectModel: TResourceModel;
     FParams: TDictionary<string, string>;
     FBmp: TBitmap; // Picture of object with Shapes
+//    FShapes: TList<TItemShpPresenter>;
     FShapes: TList<TItemShpPresenter>;
     FIsShapeVisible: Boolean;
     FCaptureType: TCaptureType;
@@ -40,6 +41,8 @@ type
     procedure SetParams(const AValue: TDictionary<string, string>);
     function GetRect: TRectF; override;
     procedure SetRect(const Value: TRectF); override;
+    procedure DoOptionsShow(ASender: TObject);
+    procedure DoOptionsSave(ASender: TObject);
   protected
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
@@ -69,7 +72,7 @@ type
 implementation
 
 uses
-  uIItemPresenter, uClasses;
+   uClasses;
 
 { TObjecterItemPresenter }
 
@@ -186,7 +189,7 @@ var
   i: Integer;
 begin
   for i := 0 to FShapes.Count - 1 do
-    FShapes[i].Free;
+    FShapes[i] := nil;
 
 {  for i := 0 to FShapesTable.Count - 1 do
     FShapesTable[i] := nil;
@@ -197,6 +200,24 @@ begin
   inherited;
 end;
 
+procedure TItemObjecterPresenter.DoOptionsSave(ASender: TObject);
+begin
+  FTableView := nil;
+  OnModelUpdate(nil);
+end;
+
+procedure TItemObjecterPresenter.DoOptionsShow(ASender: TObject);
+  var
+  vItem: TItemShpPresenter;
+  vTableView: ITableView;
+begin
+  vItem := TItemShpPresenter(ASender);
+  vTableView :=FTableView;
+
+  vTableView.Presenter := vItem;
+  vItem.TableView := vTableView;
+end;
+
 function TItemObjecterPresenter.GetHeight: Integer;
 begin
   Result := FItemObjectModel.Height;
@@ -205,7 +226,6 @@ end;
 function TItemObjecterPresenter.GetParams: TDictionary<string,string>;
 begin
   FParams.Clear;
-  FParams.Add('a', 'b');
   FParams.Add('Name', Model.Name);
   FParams.Add('X', IntToStr(Model.Position.X));
   FParams.Add('Y', IntToStr(Model.Position.Y));
@@ -253,9 +273,9 @@ begin
     for i := 0 to FShapes.Count - 1 do
       if FShapes[i].KeyPointLocal(vPoint, vKeyPoint, 5, True) then
       begin
-        FSelectedShape := FShapes[i];
+        FSelectedShape := TItemShpPresenter(FShapes[i]);
         FShapes[i].MouseDown;
-        FCapturedShape := FShapes[i];
+        FCapturedShape := TItemShpPresenter(FShapes[i]);
         FCaptureType := ctKeyPoint;
         FStartCapturePoint := vPoint;
 
@@ -265,11 +285,11 @@ begin
 
     // Test on capturing Figure
     for i := 0 to FShapes.Count - 1 do
-      if FShapes[i].IsPointIn(vPoint) then
+      if TItemShpPresenter(FShapes[i]).IsPointIn(vPoint) then
       begin
-        FSelectedShape := FShapes[i];
+        FSelectedShape := TItemShpPresenter(FShapes[i]);
         FShapes[i].MouseDown;
-        FCapturedShape := FShapes[i];
+        FCapturedShape := TItemShpPresenter(FShapes[i]);
         FCaptureType := ctFigure;
         FStartCapturePoint := vPoint;
 
@@ -304,7 +324,7 @@ begin
     begin
       for i := 0 to FShapes.Count - 1 do
         //if FShapes[i].IsPointIn(vPoint) then
-        if FShapes[i].KeyPointLocal(vPoint, vKeyPoint, 5, True) then
+        if TItemShpPresenter(FShapes[i]).KeyPointLocal(vPoint, vKeyPoint, 5, True) then
         begin
           vNeedRepaint := True;
           FShapes[i].MouseMove;
@@ -338,7 +358,7 @@ begin
 
   if FIsShapeVisible then
     for i := 0 to FShapes.Count - 1 do
-      if FShapes[i].IsPointIn(FView.MousePos) then
+      if TItemShpPresenter(FShapes[i]).IsPointIn(FView.MousePos) then
         FShapes[i].MouseUp;
 
   FCapturedShape := nil;
@@ -372,15 +392,19 @@ begin
   // We creating or destroying TableViews
 
 
-
  // for i := 0 to FShapesTable.Count - 1 do
   //   FShapesTable[i].Presenter := nil;   // After presenter = nil, refcount on ShapePresenter is 0, so it destroying   }
 
   for i := FShapes.Count - 1 downto 0  do
-    if (Assigned(FShapes[i])) and (FShapes[i].RefCount > 0) then
+    if (Assigned(FShapes[i])) {and (FShapes[i].RefCount > 0) }then
     begin
-      vShape := FShapes[i];
-      vShape.Free;
+     vShape := TItemShpPresenter(FShapes[i]);
+     TItemShpPresenter(FShapes[i]).TableView := nil;
+         // vShape.TableView.SetPr := nil;
+//      vShape.TableView := nil
+
+      if Assigned(vShape) then
+        vShape.Free;
     end;
 
   FShapes.Clear;
@@ -388,6 +412,8 @@ begin
   for i := 0 to vModel.ShapesList.Count - 1 do
   begin
     vShape := TItemShpPresenter.Create(FView, vModel.ShapesList[i]);
+    vShape.OnOptionsShow := DoOptionsShow;
+    vShape.OnOptionsSave := DoOptionsSave;
     FShapes.Add(vShape);
   end;
 
@@ -406,10 +432,10 @@ var
 begin
   FBmp := Bitmap;
   for i := 0 to FShapes.Count - 1 do
-  if FShapes[i] = FSelectedShape then
-    FShapes[i].Repaint(FBmp, TAlphaColorRec.Aqua)
+  if TItemShpPresenter(FShapes[i]) = FSelectedShape then
+    TItemShpPresenter(FShapes[i]).Repaint(FBmp, TAlphaColorRec.Aqua)
   else
-    FShapes[i].Repaint(FBmp);
+    TItemShpPresenter(FShapes[i]).Repaint(FBmp);
 
   FView.AssignBitmap(FBmp);
 end;
@@ -422,6 +448,9 @@ begin
     FOnOptionsSave(Self);
 
   SetParams(FTableView.TakeParams);
+
+  if Assigned(FTableView) then
+    FTableView := nil;
 end;
 
 procedure TItemObjecterPresenter.SetHeight(const Value: Integer);
@@ -458,9 +487,23 @@ begin
 end;
 
 procedure TItemObjecterPresenter.ShowOptions;
+var
+  vPoint: TPointF;
 begin
   if Assigned(FOnOptionsShow) then
     FOnOptionsShow(Self);
+
+ if FIsShapeVisible then
+  begin
+    // Test on capturing Figure
+    vPoint := FView.MousePos - PointF(FView.Width / 2, FView.Height / 2);
+    if Assigned(FSelectedShape) then
+      if FSelectedShape.IsPointIn(vPoint) then
+      begin
+        FSelectedShape.ShowOptions;
+        Exit;
+      end;
+  end;
 
   if Assigned(FTableView) then
     FTableView.ShowParams(GetParams);
