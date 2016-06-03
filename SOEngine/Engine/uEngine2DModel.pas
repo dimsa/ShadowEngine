@@ -32,7 +32,7 @@ public
   property FastFields: tFastFields read FFastFields; // Быстрый вызов для экспрешенсов
   property Objects[index: integer]: tEngine2DObject read getObject write setObject;
   procedure ClearSprites; // Очищает массив спрайтов, т.е. является подготовкой к полной перерисовке
-  constructor Create(const ACritical: TCriticalSection; const AEngine: Pointer; const AIsHor: TBooleanFunction);
+  constructor Create(const ACritical: TCriticalSection; const AIsHor: TBooleanFunction);
   destructor Destroy; override;
 end;
 
@@ -50,13 +50,13 @@ begin
   setLength(FObjectOrder, 0);
 end;
 
-constructor TEngine2DModel.Create(const ACritical: TCriticalSection; const AEngine: Pointer; const AIsHor: TBooleanFunction);
+constructor TEngine2DModel.Create(const ACritical: TCriticalSection; const AIsHor: TBooleanFunction);
 begin
   FCritical := ACritical;
   FObjectOrder := TIntArray.Create(0);
   FResources := TEngine2DResources.Create(FCritical);
   FAnimationList := TEngine2DAnimationList.Create(FCritical);
-  FFormatters := TFormatterList.Create(FCritical, AEngine);
+  FFormatters := TFormatterList.Create(FCritical);
   FObjects := TObjectsList.Create(FCritical);
 
   FIsHor := AIsHor;

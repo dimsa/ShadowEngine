@@ -43,7 +43,7 @@ type
     function FastIntersectWith(const AFigure: TNewFigure): Boolean; experimental; // APoint это центры фигур для сравнения. Нужны, т.к. у полигонов нет центра
     function BelongPointLocal(const APoint: TPointF): Boolean;
 
-    procedure Draw(ACanvas: TCanvas; AColor: TColor = TAlphaColorRec.Aqua);
+    procedure Draw(ACanvas: TCanvas; AColor: TAlphaColor = TAlphaColorRec.Aqua);
     procedure DrawPoint(ACanvas: TCanvas; const APoint: TPointF; AColor: TColor = TAlphaColorRec.Aqua);
 
     constructor Create(const AKind: Byte); virtual;
@@ -92,7 +92,7 @@ begin
   Self.Create(cfPoly);
 end;
 
-procedure TNewFigure.Draw(ACanvas: TCanvas; AColor: TColor);
+procedure TNewFigure.Draw(ACanvas: TCanvas; AColor: TAlphaColor);
 begin
    ACanvas.Fill.Color := AColor;
    case FKind of

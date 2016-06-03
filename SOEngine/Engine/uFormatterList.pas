@@ -14,7 +14,6 @@ uses
 type
   TFormatterList = class(TEngine2DNamedList<TEngineFormatter>)
   private
-    FEngine: Pointer;
     FLoadedStyles: TNamedList<string>;
     function GetStyleByName(AName: string): string;
   public
@@ -25,7 +24,7 @@ type
     { TODO : Move it to Engine2D }
 //    function PseudoFormatter(const ASpriteForClone: TSprite; const AText: string): tEngine2DObject;
 //    function PseudoFormatterPosition(const ASpriteForClone: TSprite; const AText: string): TPosition;
-    constructor Create(const ACritical: TCriticalSection; const AEngine: Pointer); reintroduce; virtual;
+    constructor Create(const ACritical: TCriticalSection); reintroduce; virtual;
     destructor Destroy; override;
   end;
 
@@ -66,11 +65,10 @@ begin
   FCriticalSection.Leave;
 end;
 
-constructor TFormatterList.Create(const ACritical: TCriticalSection; const AEngine: Pointer);
+constructor TFormatterList.Create(const ACritical: TCriticalSection);
 begin
   inherited Create(ACritical);
   FLoadedStyles := TNamedList<string>.Create;
-  FEngine := AEngine;
 end;
 
 destructor TFormatterList.Destroy;

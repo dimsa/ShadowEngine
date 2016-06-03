@@ -45,7 +45,7 @@ type
     {FShadowSprite: tSprite; //
     FShadowText: TEngine2dText; }
     FShadowObject: tEngine2DObject;
-    procedure prepareFastFields;
+    procedure PrepareFastFields;
     procedure prepareShadowObject;
     procedure SetWidth(AWidth: integer); // Установка размера поля отрисовки движка
     procedure SetHeight(AHeight: integer); // Установка размера поля отрисовки движка
@@ -82,7 +82,7 @@ type
 
     procedure LoadResources(const AFileName: string);
     procedure LoadSECSS(const AFileName: string);
-    procedure LoadSEJSON(const AFileName: string);
+    procedure LoadSEJSON(const AFileName: string);  experimental; // Working on it! It should be in Manager
     procedure Init(AImage: tImage); // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
     procedure Repaint; virtual;
     procedure Start; virtual; // Включает движок
@@ -113,8 +113,6 @@ procedure TEngine2d.AssignShadowObject(ASpr: tEngine2DObject);
 begin
   //  В данном контексте следует различть наследников TEngine2DObject, т.к. может попасться текст
   FShadowObject.Position := ASpr.Position;
-{  FShadowObject.ScaleX := ASpr.ScaleX;
-  FShadowObject.ScaleY := ASpr.ScaleY;  }
   tSprite(FShadowObject).Resources := tSprite(ASpr).Resources;
 end;
 
@@ -147,9 +145,9 @@ begin
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := Repaint;
-  FStatus := TEngine2DStatus.Create(FEngineThread, @FWidth, @FHeight, @FIsMouseDowned, @FMouseDowned, @FMouseUpped, @FClicked);
 
-  FModel := TEngine2DModel.Create(FCritical, Self, IsHor);
+  FStatus := TEngine2DStatus.Create(FEngineThread, @FWidth, @FHeight, @FIsMouseDowned, @FMouseDowned, @FMouseUpped, @FClicked);
+  FModel := TEngine2DModel.Create(FCritical, IsHor);
 
   FOptions.Up([EAnimateForever]);
   FOptions.Down([EClickOnlyTop]);
@@ -157,7 +155,7 @@ begin
   FBackgroundBehavior := BackgroundDefaultBehavior;
   FInBeginPaintBehavior := InBeginPaintDefaultBehavior;
   FInEndPaintBehavior := InEndPaintDefaultBehavior;
-  prepareFastFields;
+  PrepareFastFields;
   FModel.ClearSprites;
 
   FBackGround := tBitmap.Create;
@@ -467,7 +465,7 @@ begin
     Click(ACount);
 end;
 
-procedure TEngine2d.prepareFastFields;
+procedure TEngine2d.PrepareFastFields;
 var
   vTmp: TFastField;
 begin

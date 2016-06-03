@@ -33,7 +33,6 @@ type
     procedure SendToFront; // Ставит спрайт последним в списке отрисовки. Т.е. Переносит вперед
     function Config(const AGroup: string = ''; const AJustify: TObjectJustify = Center; const AShape: TObjectShape = nil): TEngine2DObject; virtual;
 
-//    procedure Repaint; override;
     procedure RepaintWithShapes;
 
     constructor Create; override;
@@ -97,12 +96,6 @@ procedure tEngine2DObject.EmptyMouseUp(Sender: TObject;
 begin
 
 end;
-
-{procedure tEngine2DObject.Repaint;
-begin
-  inherited;
-
-end;}
 
 procedure tEngine2DObject.RepaintWithShapes;
 begin
