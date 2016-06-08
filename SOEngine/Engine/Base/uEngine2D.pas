@@ -14,12 +14,9 @@ interface
 
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, FMX.Types, FMX.Controls,
-  FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.platform, FMX.Objects, Math, System.SyncObjs, {$I 'Utils\DelphiCompatability.inc'}
-  uClasses, uEngine2DThread, uEngine2DObject, uEngine2DUnclickableObject,
-  uEngine2DSprite, uEngine2DText, uEngine2DClasses, uFormatterList,
-  uEngineFormatter, uSpriteList, uEngine2DManager, uEngine2DResources,
-  uEngine2DAnimation, uNamedList, uEngine2DAnimationList, uFastFields,
-  uEngine2DStatus, uEasyDevice, uEngine2DModel;
+  FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Platform, FMX.Objects, Math, System.SyncObjs, {$I 'Utils\DelphiCompatability.inc'}
+  uClasses, uEngine2DThread, uEngine2DObject, uEngine2DSprite, uEngine2DText, uEngine2DClasses,
+  uEngine2DManager, uEngine2DStatus, uEasyDevice, uEngine2DModel, uEngine2DAnimation, uFastFields;
 
 type
   TEngine2d = class
@@ -101,7 +98,7 @@ const
 implementation
 
 uses
-  System.RegularExpressions, System.JSON, uNewFigure;
+  System.RegularExpressions, System.JSON;
 
 { tEngine2d }
 

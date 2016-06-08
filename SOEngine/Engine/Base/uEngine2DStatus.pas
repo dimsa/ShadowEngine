@@ -23,7 +23,7 @@ private
   function GetIsHor: Boolean;
   function GetIsMouseDowned: Boolean;
   function GetEngineFPS: Single;
-    function GetEngineSpeed: Single;
+  function GetEngineSpeed: Single;
 public
   property Status: Byte read FStatus write FStatus;
   property Clicked: TIntArray read GetClicked;

@@ -45,6 +45,9 @@ type
     function Formatter(const ASubject: tEngine2DObject; const AText: String; const AIndex: Integer = -1): TEngineFormatter; overload;
     function Formatter(const ASubject: tEngine2DObject; const AName: String; const AParam: array of const; const AIndex: Integer = -1): TEngineFormatter; overload;
 
+    procedure ApplyFormatter(const ASubject: tEngine2DObject; const AFormatterName: string);
+    procedure ApplyCollider(const ASubject: tEngine2DObject; const AColliderName: string);
+
     // Adding Created Object
     function Add(const ASprite: TSprite; const AName: string = ''): TSprite; overload;
     function Add(const AShape: TEngine2DShape; const AName: string = ''): TEngine2DShape; overload;
@@ -65,7 +68,7 @@ type
     function ResourceIndex(const AName: string): Integer;
     function AutoSprite(const AResource: string; const AName: string; const AParam: array of const; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TSprite; overload;
 
-    // Deprecated! It's shouldn't be here. You shouldn't you it
+    // Deprecated! It's shouldn't be here. You shouldn't use it
     property EngineWidth: Integer read GetEngineWidth;
     property EngineHeight: Integer read GetEngineHeight;
     property EngineSpeed: Single read GetEngineSpeed;
@@ -118,6 +121,18 @@ procedure TEngine2DManager.AniClearAndRecover(
   const ASubject: tEngine2DObject);
 begin
   FModel.AnimationList.ClearAndRecoverForSubject(ASubject);
+end;
+
+procedure TEngine2DManager.ApplyCollider(const ASubject: tEngine2DObject;
+  const AColliderName: string);
+begin
+
+end;
+
+procedure TEngine2DManager.ApplyFormatter(const ASubject: tEngine2DObject;
+  const AFormatterName: string);
+begin
+
 end;
 
 function TEngine2DManager.Add(

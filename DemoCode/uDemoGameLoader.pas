@@ -73,6 +73,7 @@ begin
   vSpr.Group := 'activeobject';
   vSpr.x := Random(FManager.EngineWidth);
   vSpr.y := Random(FManager.EngineHeight);
+  FManager.ApplyCollider(vSpr, 'AsteroidShape');
   vFigure := TNewFigure.Create(TNewFigure.cfCircle);
   vCircle.X := 0;
   vCircle.Y := 0;
@@ -475,12 +476,15 @@ begin
   SetLength(vSlides, 4);
   for i := 0 to High(vSlides) do
     vSlides[i] := i + 9;
+
   vRes := TSpriteAnimation.Create;
-  vRes.Slides := vSlides;
-  vRes.TimeTotal := 250;
-  vRes.Subject := ASubject;
-  vRes.OnSetup := ASubject.SendToFront;
-  vRes.OnDestroy := vRes.DeleteSubject;
+  with vRes do begin
+    Slides := vSlides;
+    TimeTotal := 250;
+    Subject := ASubject;
+    OnSetup := ASubject.SendToFront;
+    OnDestroy := vRes.DeleteSubject;
+  end;
 
   Result := vRes;
 end;
@@ -489,11 +493,13 @@ function TLoader.FastText(const AName: string; AFont: TFont;
   const AColor: TAlphaColor; const AGroup: string; const AJustify: TObjectJustify): TEngine2DText;
 begin
   Result := TEngine2DText.Create;
-  Result.Group := AGroup;
-  Result.Font := AFont;
-  Result.Color := AColor;
-  Result.Justify := AJustify;
-  Result.TextRect := RectF(-50, -7, 50, 7);
+  with Result do begin
+    Group := AGroup;
+    Font := AFont;
+    Color := AColor;
+    Justify := AJustify;
+    TextRect := RectF(-50, -7, 50, 7);
+  end;
   FManager.Add(Result, AName);
 end;
 
