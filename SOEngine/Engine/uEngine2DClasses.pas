@@ -53,15 +53,15 @@ type
 
   tEngine2DOptions = record
   private
-    FToClickOnlyTop: Boolean; // События кликов передаются только верхнему объекту в клике
-    FToAnimateForever: Boolean; // Сообщает, что надо перерисовывать сцену, даже если нет анимаций
-    FToDrawFigures: Boolean; // Рисовать ли форму объектов
-    FToAutoloadFormatter: Boolean; // Подключать ли форматтерсы сразу же при добавлении объекта
+    FToClickOnlyTop: Boolean; // If true, Engine will be call OnClick only on Top Object  // События кликов передаются только верхнему объекту в клике
+    FToAnimateForever: Boolean; // If True, Engine will repaint scene despite of there are nothing changed by animations // Сообщает, что надо перерисовывать сцену, даже если нет анимаций
+    FToDrawFigures: Boolean; // If true Engine will paint Collider Shape of object // Рисовать ли форму объектов
+    FToAutoloadFormatter: Boolean; // If true it will apply Formatters to object on adding // Подключать ли форматтерсы сразу же при добавлении объекта
   public
     property ToClickOnlyTop: Boolean read FToClickOnlyTop; //write FToClickOnlyTop;
     property ToDrawFigures: Boolean read FToDrawFigures;// write FToDrawFigures;
     property ToAnimateForever: Boolean read FToAnimateForever;// write FToAnimateForever;
-    property ToAutoloadFormatter: Boolean read FToAutoloadFormatter;// write FToAutoloadFormatter;
+    property ToAutoloadFormatter: Boolean read FToAutoloadFormatter; // write FToAutoloadFormatter;
     procedure Swap(const AOptions: array of tEngine2DOptionsEnum);
     procedure Up(const AOptions: array of tEngine2DOptionsEnum);
     procedure Down(const AOptions: array of tEngine2DOptionsEnum);
@@ -72,7 +72,7 @@ type
     bmp: tBitmap;
   end;
 
-  // Потокобезопасный класс именованных листов для енджайна. Обязательно должен быть указан Парент!
+  // Thread-save class for Engine Threads Потокобезопасный класс именованных листов для енджайна. Обязательно должен быть указан Парент!
   TEngine2DNamedList<T> = class(TNamedList<T>)
   protected
     FCriticalSection: TCriticalSection;
@@ -90,8 +90,8 @@ type
   tPointArray = array of TPoint;
 
   tSpriteFrame = record
-    num: integer; // Номер в ресурсе
-    w,h: single; // Заранее опсчитанная ширина и высота
+    num: integer; // Number in Resources // Номер в ресурсе
+    w,h: single; // Precalculated Width and Height  // Заранее опсчитанная ширина и высота
   end;
 
   tFramesArray = array of tSpriteFrame;

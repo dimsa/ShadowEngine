@@ -1,9 +1,5 @@
 unit uFormatterList;
 
-{
-  Список форматировщиков. Позволяет сделать меню и т.д.
-}
-
 interface
 
 uses
@@ -12,6 +8,11 @@ uses
   uNamedList, uIntersectorClasses;
 
 type
+
+
+  // Список форматировщиков. Позволяет сделать меню и т.д.
+  // List of TFormattersm that Engine is used to format menu, maps and etc
+
   TFormatterList = class(TEngine2DNamedList<TEngineFormatter>)
   private
     FLoadedStyles: TNamedList<string>;

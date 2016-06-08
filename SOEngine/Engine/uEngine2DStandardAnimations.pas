@@ -22,7 +22,7 @@ type
   TMouseDownMigrationAnimation = class(TAnimation)
   private
     FAway: Boolean;
-    FPressed: Boolean; // Нажати ли уже кнопка была
+    FPressed: Boolean; // Нажата ли уже кнопка была
     FTempEndPos, FTempStartPos: TPosition;
     FEndPos: TPosition;
   public

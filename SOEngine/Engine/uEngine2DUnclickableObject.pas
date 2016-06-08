@@ -8,6 +8,7 @@ uses
 
 type
   // Базовый класс для объекта отрисовки движка
+  // Base class for SO Engine Object
   tEngine2DUnclickableObject = class abstract
   private
     function GetCenter: TPointF;
@@ -37,7 +38,7 @@ type
     // Связывающие свойства
     property Image: TImage read fImage write fImage; // В этом имедже происходит отрисовка.
 
-    // Геометрические свойства
+    // Geometrical properties Геометрические свойства
     property Position: TPosition read fPosition write SetPosition; // Быстрое получение всех данных о позиции спрайта
     property x: single read fPosition.x write setX; // Координата X на главном битмапе
     property y: single read fPosition.y write setY; // Координата Y на главном битмапе
@@ -50,7 +51,7 @@ type
     property ScaleY: single read fPosition.scaleY write setScaleY;  // Масштаб спрайта во время отрисовки
     property Scale: single write setScale;  // Масштаб спрайта во время отрисовки
 
-    // Параметры для  классификации и модификаций
+    // Paramtres for classification and modification of Object Параметры для  классификации и модификаций
     property Group: string read fGroup write fGroup; // Группа для быстрого скрытия - открытия спрайтов
     property Opacity: single read fOpacity write SetOpacity; // Прозрачность
     property Visible: boolean read fVisible write fVisible; // Риовать спрайт или нет
@@ -71,7 +72,6 @@ uses
 
 constructor tEngine2DUnclickableObject.Create;
 begin
-//  fParent := AParent;
   fPosition.ScaleX := 1;
   fPosition.ScaleY := 1;
   fPosition.rotate := 0;
@@ -80,8 +80,6 @@ begin
   Self.Opacity := 1;
   fVisible := true;
   fSelectable := true;
-//  vEngine := TEngine2D(fParent);
-//  fImage := vEngine.Image;
 end;
 
 destructor tEngine2DUnclickableObject.Destroy;

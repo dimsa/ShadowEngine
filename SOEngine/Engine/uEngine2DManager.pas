@@ -28,10 +28,10 @@ type
     procedure DeleteHandler(ASender: TObject);
     procedure BringToBackHandler(ASender: TObject);
     procedure SendToFrontHandler(ASender: TObject);
-    procedure DelObject(const AObject: tEngine2DObject); // Убирает спрайт из отрисовки
+    procedure DelObject(const AObject: tEngine2DObject); // Del object from paint // Убирает спрайт из отрисовки
     procedure AddObject(const AObject: tEngine2DObject; const AName: String = ''); // Добавляет спрайт на отрисовку
-    procedure SpriteToBack(const n: integer); // Передвигает в массиве отрисовки спрайт
-    procedure SpriteToFront(const n: integer);// Передвигает в массиве отрисовки спрайт
+    procedure SpriteToBack(const n: integer); // Moves sprite to back // Передвигает в массиве отрисовки спрайт
+    procedure SpriteToFront(const n: integer); // Moves sprite to front // Передвигает в массиве отрисовки спрайт
   public
     constructor Create(
       const AStatus: TEngine2DStatus;
@@ -65,7 +65,7 @@ type
     function ResourceIndex(const AName: string): Integer;
     function AutoSprite(const AResource: string; const AName: string; const AParam: array of const; const AGroup: string = ''; const AJustify: TObjectJustify = Center): TSprite; overload;
 
-    // Deprecated!
+    // Deprecated! It's shouldn't be here. You shouldn't you it
     property EngineWidth: Integer read GetEngineWidth;
     property EngineHeight: Integer read GetEngineHeight;
     property EngineSpeed: Single read GetEngineSpeed;
@@ -73,8 +73,8 @@ type
     // Прячем или показывает группы
     procedure ShowGroup(const AGroup: String);
     procedure HideGroup(const AGroup: String);
-    procedure SendToFrontGroup(const AGroup: String); // Ставит группу на передний план
-    procedure BringToBackGroup(const AGroup: String); // Отодвигает группу на задний план
+    procedure SendToFrontGroup(const AGroup: String); // Send all object group to front // Ставит группу на передний план
+    procedure BringToBackGroup(const AGroup: String); // Bring all object group to back Отодвигает группу на задний план
 
     procedure Resize;
     procedure RemoveObject(AObject: tEngine2DObject);

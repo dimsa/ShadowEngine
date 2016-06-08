@@ -10,15 +10,15 @@ Uses
 type
   TEngine2DResources = class(TEngine2DNamedList<TSpriteResource>)
   strict private
-    fInputBmp: tBitmap; // Служебный битмап для временного хранения
+    fInputBmp: tBitmap; // Service Bitmap for temporary storage // Служебный битмап для временного хранения
     procedure RenewBitmap;
   public
     property InputBmp: TBitmap read FInputBmp write FInputBmp;
     procedure LoadBmp(const AFileName: String);
     function AddFromRes(const x, y, w, h: integer): integer; overload; // Добавляет ресурс из бмп
     function AddFromRes(const x, y, w, h: integer; const AName: String): Integer; overload; // Добавляет ресурс из бмп с именем
-    function AddResFromLoadFileRes(const AFileName: String): integer; // Добавляет ресурс из текстового файла особого формата
-    function AddResource(const ABitmap: tBitmap): integer; // Добавляет битмап в массив ресурсов и говорит его номер
+    function AddResFromLoadFileRes(const AFileName: string): integer; // Добавляет ресурс из текстового файла особого формата
+    function AddResource(const ABitmap: tBitmap): integer; // Add Bitmap to resources and returns its number  // Добавляет битмап в массив ресурсов и говорит его номер
     destructor Destroy; override;
   end;
 
@@ -109,10 +109,10 @@ begin
   FCriticalSection.Leave;
 end;
 
-function TEngine2DResources.AddResFromLoadFileRes(const AFileName: String): integer;
+function TEngine2DResources.AddResFromLoadFileRes(const AFileName: string): integer;
 var
   vF: TextFile;
-  vS, vResName: String;
+  vS, vResName: string;
   vX, vY, vW, vH: Integer;
   vRes: Integer;
 begin

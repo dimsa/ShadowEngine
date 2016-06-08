@@ -9,8 +9,7 @@ type
   TEngine2DAnimationList = class(TEngine2DNamedList<TAnimation>)
   strict private
   public
-    // Делает отложенную анимацию, которая начинается не сразу
-  //  procedure AddDelayedAnimation(const ATime: Integer; AAnimation: tAnimation);
+  //  procedure AddDelayedAnimation(const ATime: Integer; AAnimation: tAnimation); // Adding of Delayed Animation
     procedure ClearForSubject(const ASubject: Pointer);
     procedure RecoverStartForSubject(const ASubject: Pointer);
     procedure ClearAndRecoverForSubject(const ASubject: Pointer); experimental; // ClearAndRecoverStartForSubject;

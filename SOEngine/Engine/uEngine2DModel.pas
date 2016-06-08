@@ -14,16 +14,16 @@ private
   FCritical: TCriticalSection;
 
   FObjects: TObjectsList;
-  FFastFields: TFastFields; // Содержит ссылки на TFastField, которые представляют собой найденные значения определенных спрайтов
+  FFastFields: TFastFields; // Pointers to TFastField to do formatting fast // Содержит ссылки на TFastField, которые представляют собой найденные значения определенных спрайтов
   FObjectOrder: TIntArray;
   FResources: TEngine2DResources;
   FFormatters: TFormatterList;
-  FAnimationList: TEngine2DAnimationList; // Массив анимаций
+  FAnimationList: TEngine2DAnimationList;
   FIsHor: TBooleanFunction;
   procedure setObject(AIndex: integer; ASprite: tEngine2DObject);
   function getObject(AIndex: integer): tEngine2DObject;
 public
-  // Ключевые списки движка.
+  // Main lists of Engine
   ObjectOrder: TIntArray; // Массив порядка отрисовки. Нужен для уменьшения кол-ва вычислений, содержит номер спрайта
   property Resources: TEngine2DResources read FResources; //tResourceArray; // Массив битмапов
   property AnimationList: TEngine2DAnimationList read FAnimationList;

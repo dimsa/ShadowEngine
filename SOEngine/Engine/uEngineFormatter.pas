@@ -10,6 +10,7 @@ uses
 
 type
 
+  // It's storage of Expressions for fast formatting in Engine
   TFormatterDirective = class
   protected
     FObject: tEngine2DObject;

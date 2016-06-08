@@ -14,8 +14,8 @@ uses
   function getMinLength: single;
   function getDisplaySizeInDp: tPointF;
   function MousePos: TPointF;
-  function LoadImageFromFile(AFileName: String): TBitmap; // Открывает битмап по пути внезависимости от названия
-  function UniPath(const AFileName: String): String; // Даёт универсальный путь вне зависимости от платформы
+  function LoadImageFromFile(AFileName: String): TBitmap; // Crossplatform opening of file  // Открывает битмап по пути внезависимости от названия
+  function UniPath(const AFileName: String): String; // Gives Unified Path in Win, Android, IOs // Даёт универсальный путь вне зависимости от платформы
   function ReturnPressed(var AKey: Word): Boolean;
   procedure StrStartEnd(const AString: String; var AStart, AEnd: Integer);
   procedure StopApplication;
@@ -55,7 +55,7 @@ begin
   Result := False;
 end;
 
-// У фаерманки Стринги начинаются с 0, а не с 1 как у делфи
+// In FMX Strings are started on 0, not at 1 as in VCL У фаерманки Стринги начинаются с 0, а не с 1 как у делфи
 procedure StrStartEnd(const AString: String; var AStart, AEnd: Integer);
 begin
  {$IFDEF WIN32}
@@ -93,8 +93,8 @@ begin
 
   {$IFDEF WIN32}
   // Это неправильно, но используется только для отладки в Виндоус и демонстрации форматтерсов
-//  res.X := mainForm.ClientWidth;
-//  res.Y := mainForm.ClientHeight;
+  //  res.X := mainForm.ClientWidth;
+  //  res.Y := mainForm.ClientHeight;
   {$ENDIF}
 
   result := res;
@@ -111,7 +111,6 @@ begin
   {$IFDEF ANDROID}
 //    vS := TPath.Combine(TPath.GetSharedDocumentsPath, AFileName); { Внешний доступ }
     vS := System.IOUtils.TPath.Combine(System.IOUtils.TPath.GetDocumentsPath, AFileName); { Внутренний доступ }
-
   {$ENDIF ANDROID}
   Result := vS;
 end;

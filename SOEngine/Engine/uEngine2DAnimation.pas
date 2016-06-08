@@ -14,9 +14,14 @@ type
   // анимирования, т.е. например если данная анимация указана как Next,
   // т.е. следующая за какой-то анимацией.
 
+  // I use Term "Delayed create" but it has another term than DelayedAnimation
+  // "Delayed create" creates animation at this moment, but it don't save the
+  // Initial conditions, because it dont use Setup in this moment/
+  // It can be used in situation like when it's the second animation in animation queue
+
   TAnimation = class
   strict private
-    FSubject: Pointer; // Указатель на объект анимации
+    FSubject: Pointer; // Pointer to object for animation. Указатель на объект анимации
     FOnDeleteSubject: TNotifyEvent;
     FStatus: TEngine2DStatus;
     FNextAnimation: TAnimation;
@@ -31,10 +36,8 @@ type
     FOnFinalize: TProcedure;
     procedure SetSubject(const Value: Pointer);
    public
-//    property Parent: Pointer read FParent write FParent;
     property OnDeleteSubject: TNotifyEvent read FOnDeleteSubject write FOnDeleteSubject;
     property Status: TEngine2DStatus read FStatus write FStatus;
-//    property EngineFPS: TReturnSingleFunction read FEngineFPS write FEngineFPS;
     property Stopped: Boolean read FStopped write FStopped; // Если анимация остановлена, она ничего не делает, что логично
     property Finalized: Boolean read FFinalized; // Финализирована ли анимация
     property Subject: Pointer read FSubject write SetSubject;//GetSubject write
@@ -46,19 +49,20 @@ type
     property OnDestroy: TProcedure read FOnDestroy write FOnDestroy; // Процедура на уничтожение анимации
     property OnSetup: TProcedure read FOnSetup write FOnSetup; // Процедура на сетап анимации
     property OnFinalize: TProcedure read FOnFinalize write FOnFinalize; // Процедура на сетап анимации
-    procedure RecoverStart; virtual; // Данный метод вызывается при вызове метода ClearForSubject в TAnimationList. Он должен приводить состояние объекта к начальному.
-    procedure Finalize; virtual; // Так бывает, что анимация пролетает свою конечную точку из-за скачков фпс. Так вот, это для того, чтобы присвоить конечные координаты
-    function Animate: Byte; virtual; // Главная рабочая функция. Когда True, то значит анимация объекта завершена
+    procedure RecoverStart; virtual; // Set the initial condition for object // Данный метод вызывается при вызове метода ClearForSubject в TAnimationList. Он должен приводить состояние объекта к начальному.
+    procedure Finalize; virtual; // Set the final condtion for object  // Так бывает, что анимация пролетает свою конечную точку из-за скачков фпс. Так вот, это для того, чтобы присвоить конечные координаты
+    function Animate: Byte; virtual; // Main method to animate object // Главная рабочая функция. Когда True, то значит анимация объекта завершена
 
     function AddNextAnimation(AAnimation: TAnimation): Integer; // Добавляет следующую анимацию, а если следующая анимация уже есть, то добавляет следующую анимацию следующей анимации и т.д. Выдает порядквый номер следующей анимации
-    procedure Setup; virtual;// Нужно для отложенного сетапа. На этот метод анимация запоминает стартовые параметры, например начальное положение
+    procedure Setup; virtual; // It's used for delayed create // Нужно для отложенного сетапа. На этот метод анимация запоминает стартовые параметры, например начальное положение
     procedure DeleteSubject;
     procedure HideSubject;
     constructor Create; virtual;
     destructor Destroy; override;
   const
-    CDefaultTotalTime = 500; // Время на анимацию, по умолчанию. Если хотите создать непрерывную, придется отнаследоваться и переписать метод Animate
-    CAnimationEnd = 0; // Когда анимация закончена, она удаляется из списка анимация
+    CDefaultTotalTime = 500; // Default time for animation // Время на анимацию, по умолчанию. Если хотите создать непрерывную, придется отнаследоваться и переписать метод Animate
+    // Animation statues:
+    CAnimationEnd = 0;  // Когда анимация закончена, она удаляется из списка анимация
     CAnimationInProcess = 1;  // Пока анимация не закончилась
     CNextAnimationInProcess = 2;  // Пока анимация не закончилась
   end;

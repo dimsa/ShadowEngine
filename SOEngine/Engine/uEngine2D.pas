@@ -5,6 +5,9 @@ Shadow Object Engine (SO Engine)
 By Dmitriy Sorokin.
 
 Some comments in English, some in Russian. And it depends on mood :-) Sorry!)
+You can write me by email: dimsa@inbox.ru
+You can write me on skype: dimsa87
+
 *******************************************************************************}
 
 interface
@@ -21,35 +24,30 @@ uses
 type
   TEngine2d = class
   strict private
-    FEngineThread: TEngineThread; // Поток в котором происходит отрисовка
+    FEngineThread: TEngineThread; // Thread that paint all sprites (But there are possibility to use not one thread)  // Поток в котором происходит отрисовка
+    FCritical: TCriticalSection; // The critical section for multithread operation, to protect model on changind in paint time // Критическая секция движка
     FModel: TEngine2DModel; // All main lists are in It.
-    FOptions: TEngine2DOptions; // Настройки движка
-    FObjectCreator: TEngine2DManager;
-    FMouseDowned: TIntArray; // Массив спрайтов движка, которые находились под мышкой в момент нажатия
-    FMouseUpped: TIntArray; // Массив спрайтов движка, которые находились под мышкой в момент отжатия
-    FClicked: TIntArray; // Массив спрайтов движка, которые попали под мышь
-//    FStatus: Byte; // Состояние движка 0-пауза, 1-работа
-    FStatus: TEngine2DStatus;
-    FlX, FlY: single; // o_O Для масштабирования на смартфоны что-то
-    FIsMouseDowned: Boolean; // Хранит состояние нажатости мыши
-    FImage: tImage; // Имедж, в котором происходит отрисовка
-    FBackGround: tBitmap; // Бэкграунд. Всегда рисуется в Repaint на весь fImage
-    FCritical: TCriticalSection; // Критическая секция движка
+    FOptions: TEngine2DOptions; // All Engine options. If you add some feature to manage engine, it shoulb be here// Настройки движка
+    FObjectCreator: TEngine2DManager; // This object work with Model items. It's controller/
+    FMouseDowned: TIntArray; // Lists of sprites that were under the mouse on MouseDown  // Массив спрайтов движка, которые находились под мышкой в момент нажатия
+    FMouseUpped: TIntArray; // Lists of sprites that were under the mouse on MouseUp // Массив спрайтов движка, которые находились под мышкой в момент отжатия
+    FClicked: TIntArray; // Lists of sprites that were under the mouse on MouseDown and mouse on MouseUp // Массив спрайтов движка, которые попали под мышь
+    FStatus: TEngine2DStatus; // All Engine status you can get from herem like width-height,speed and etc.
+    FIsMouseDowned: Boolean; // True if Mouse is Downed  // Хранит состояние нажатости мыши
+    FImage: TImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка
+    FBackGround: TBitmap; // Background of Engine that paints on every tick. Not sure if it should be here // Бэкграунд. Всегда рисуется в Repaint на весь fImage
     FWidth, FHeight: integer; // Размер поля имеджа и движка
-//    FDebug: Boolean; // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
-    FBackgroundBehavior: TProcedure;
-    FInBeginPaintBehavior: TProcedure;
-    FInEndPaintBehavior: TProcedure;
+//    FDebug: Boolean; // There are some troubles to debug multithread app, so it for it // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
+    FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
+    FInBeginPaintBehavior: TProcedure; // Method is called before Paint
+    FInEndPaintBehavior: TProcedure; // Method is called after Paint
 
-    // Механизм теневого объекты необычен. Но кроме всего прочего TEngine2DObject не имеет способов определения
-    {FShadowSprite: tSprite; //
-    FShadowText: TEngine2dText; }
-    FShadowObject: tEngine2DObject;
+    FShadowObject: tEngine2DObject; // It's one of the main feature SO Engine (Shadow Object Engine). You can use formatters to change objects position. But in some situation you need you know object position after the formatter would have been applied. So this object can simulate this. // Механизм теневого объекты необычен. Но кроме всего прочего TEngine2DObject не имеет способов определения
     procedure PrepareFastFields;
-    procedure prepareShadowObject;
+    procedure PrepareShadowObject;
     procedure SetWidth(AWidth: integer); // Установка размера поля отрисовки движка
     procedure SetHeight(AHeight: integer); // Установка размера поля отрисовки движка
-    procedure setBackGround(ABmp: tBitmap);
+    procedure setBackGround(ABmp: TBitmap);
     procedure BackgroundDefaultBehavior;
     procedure InBeginPaintDefaultBehavior;
     procedure InEndPaintDefaultBehavior;
@@ -58,7 +56,7 @@ type
   protected
     property EngineThread: TEngineThread read FEngineThread;
   public
-    // Ключевые свойства движка
+    // Main properties of Engine. Ключевые свойства движка
     property Image: TImage read FImage write FImage;
     property BackgroundBehavior: TProcedure read FBackgroundBehavior write SetBackgroundBehavior;
     property InBeginPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
@@ -75,16 +73,14 @@ type
     procedure MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: single; const ACount: Integer = -1; const AClickObjects: Boolean = True); virtual; // ACount is quantity of sorted object that will be MouseUpped -1 is all.
     procedure Click(const ACount: Integer = -1); virtual; // It must be Called after MouseUp if in MouseUp was AClickObjects = False;
 
-    procedure AssignShadowObject(ASpr: tEngine2DObject); // Ассигнет спрайт в ShadowObject
-    property ShadowObject: tEngine2DObject read FShadowObject;  // Указатель на Теневой объект.
+    procedure AssignShadowObject(ASpr: tEngine2DObject); // Assign object properties to Shadow Object// Ассигнет спрайт в ShadowObject
+    property ShadowObject: tEngine2DObject read FShadowObject; // Указатель на Теневой объект.
 
-    procedure ClearTemp; // Очищает массивы выбора и т.д. короче делает кучу полезных вещей.
-
-    procedure LoadResources(const AFileName: string);
-    procedure LoadSECSS(const AFileName: string);
-    procedure LoadSEJSON(const AFileName: string);  experimental; // Working on it! It should be in Manager
-    procedure Init(AImage: tImage); // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
-    procedure Repaint; virtual;
+    procedure LoadResources(const AFileName: string); // Loads resources(animations frames) for sprites. Shoul be in Manager
+    procedure LoadSECSS(const AFileName: string); // Loads SECSS filee to use it Engine. It should Be in Manager
+    procedure LoadSEJSON(const AFileName: string);  experimental; // Working on it! It's loading of object that created by Sprite Shape Builder It should be in Manager
+    procedure Init(AImage: TImage); // Initialization of SO Engine // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
+    procedure Repaint; virtual; // The main Paint procedure.
     procedure Start; virtual; // Включает движок
     procedure Stop; virtual;// Выключает движок
 
@@ -92,7 +88,7 @@ type
     destructor Destroy; override;
 
     // You should use Manager to Work with Engine
-    property Manager: TEngine2DManager read FObjectCreator; // Позволяет быстрее и проще создавать объекты
+    property Manager: TEngine2DManager read FObjectCreator; // It helps to create object faster // Позволяет быстрее и проще создавать объекты
     property Status: TEngine2DStatus read FStatus;
     const
       CGameStarted = 1;
@@ -100,7 +96,7 @@ type
   end;
 
 const
-  pi180 = 0.0174532925; // (1/180)*pi для уменьшение количества пересчетов
+  pi180 = 0.0174532925; // (1/180)*pi  для уменьшение количества пересчетов
 
 implementation
 
@@ -111,7 +107,7 @@ uses
 
 procedure TEngine2d.AssignShadowObject(ASpr: tEngine2DObject);
 begin
-  //  В данном контексте следует различть наследников TEngine2DObject, т.к. может попасться текст
+  //   В данном контексте следует различть наследников TEngine2DObject, т.к. может попасться текст
   FShadowObject.Position := ASpr.Position;
   tSprite(FShadowObject).Resources := tSprite(ASpr).Resources;
 end;
@@ -120,11 +116,6 @@ procedure TEngine2d.BackGroundDefaultBehavior;
 begin
   with Self.Image do
     Bitmap.Canvas.DrawBitmap(FBackGround, RectF(0, 0, FBackGround.width, FBackGround.height), RectF(0, 0, bitmap.width, bitmap.height), 1, true);
-end;
-
-procedure TEngine2d.clearTemp;
-begin
-  setLength(self.FClicked, 0);
 end;
 
 procedure TEngine2d.Click(const ACount: Integer);
@@ -158,7 +149,7 @@ begin
   PrepareFastFields;
   FModel.ClearSprites;
 
-  FBackGround := tBitmap.Create;
+  FBackGround := TBitmap.Create;
 end;
 
 destructor TEngine2d.Destroy;
@@ -176,7 +167,7 @@ var
   i: Integer;
 begin
   FCritical.Enter;
-  // Форматирвание
+  // Appliyng of Formatters
   for i := 0 to FModel.FormatterList.Count - 1 do
     FModel.FormatterList[i].Format;
   FCritical.Leave;
@@ -185,7 +176,7 @@ end;
 procedure TEngine2d.Repaint;
 var
   i, l: integer;
-  iA, lA: Integer; // Счетчики анимации и форматирования
+  iA, lA: Integer; // Animations and Formatters counters Счетчики анимации и форматирования
   m: tMatrix;
   vAnimation: tAnimation;
   {$IFDEF DEBUG}
@@ -318,7 +309,7 @@ begin
   end;
 end;
 
-procedure TEngine2d.Init(AImage: tImage);
+procedure TEngine2d.Init(AImage: TImage);
 begin
   FImage := AImage;
   FWidth := Round(AImage.Width);
@@ -327,7 +318,7 @@ begin
   FImage.Bitmap.Height := ROund(AImage.Height * getScreenScale);
 
   FObjectCreator := TEngine2DManager.Create(Self.Status, FImage, FCritical, FModel, {FResources, FObjects, @FObjectOrder, FAnimationList, FFormatters, FFastFields,} FEngineThread, Resize);
-  prepareShadowObject;
+  PrepareShadowObject;
 end;
 
 function TEngine2d.IsHor: Boolean;
@@ -397,9 +388,7 @@ var
 begin
   FIsMouseDowned := True;
 
-  FlX := x; // * getScreenScale;
-  FlY := y; //* getScreenScale;
-  l := FModel.ObjectList.Count - 1; //length(fSprites) - 1;
+  l := FModel.ObjectList.Count - 1;
 
   setLength(FClicked, 0);
   setLength(FMouseDowned, 0);
@@ -407,7 +396,7 @@ begin
   for i := l downto 1 do
   begin
     if FModel.ObjectList[FModel.ObjectOrder[i]].visible then
-      if FModel.ObjectList[FModel.ObjectOrder[i]].underTheMouse(FlX, FlY) then
+      if FModel.ObjectList[FModel.ObjectOrder[i]].underTheMouse(x, y) then
       begin
         setLength(FMouseDowned, length(FMouseDowned) + 1);
         FMouseDowned[high(FMouseDowned)] := FModel.ObjectOrder[i];
@@ -433,8 +422,6 @@ var
 begin
   FIsMouseDowned := False;
 
-  FlX := x; //* getScreenScale;
-  FlY := y; //* getScreenScale;
   l := FModel.ObjectList.Count - 1; //length(fSprites) - 1;
 
   SetLength(FClicked, 0);
@@ -443,7 +430,7 @@ begin
   for i := l downto 1 do
   begin
     if FModel.ObjectList[FModel.ObjectOrder[i]].visible then
-      if FModel.ObjectList[FModel.ObjectOrder[i]].underTheMouse(FlX, FlY) then
+      if FModel.ObjectList[FModel.ObjectOrder[i]].underTheMouse(x, y) then
       begin
         SetLength(FMouseUpped, length(FMouseUpped) + 1);
         FMouseUpped[high(FMouseUpped)] := FModel.ObjectOrder[i];
@@ -475,13 +462,13 @@ begin
   FModel.FastFields.Add('engine.height', vTmp);
 end;
 
-procedure TEngine2d.prepareShadowObject;
+procedure TEngine2d.PrepareShadowObject;
 begin
   FShadowObject := tSprite.Create;
   FObjectCreator.Add(TSprite(FShadowObject), 'shadow');
 end;
 
-procedure TEngine2d.setBackGround(ABmp: tBitmap);
+procedure TEngine2d.setBackGround(ABmp: TBitmap);
 begin
   if width > height then
   begin

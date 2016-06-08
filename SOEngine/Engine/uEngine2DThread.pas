@@ -11,7 +11,7 @@ type
   private
     FTickCount, FTickBegin, FTickEnd: Int64;
     FLastFPS: Single;
-    FSleep: Integer; // Модификатор FPS
+    FSleep: Integer; // FPS Modificator to leave time for messages Модификатор FPS
     FWorkProcedure: TProcedure;
     procedure SetTickEnd(AValue: Int64);
     procedure SetTickBegin(AValue: Int64);
@@ -20,10 +20,10 @@ type
   protected
     procedure Execute; override; // Процедура выполнения потока
   public
-    property WorkProcedure: TProcedure read FWorkProcedure write FWorkProcedure; // Здесь процедура, которую выполняет тред
+    property WorkProcedure: TProcedure read FWorkProcedure write FWorkProcedure; // Procedure that will be done in thread
     property TickBegin: int64 read FTickBegin write SetTickBegin;
     property TickEnd: int64 read FTickEnd write SetTickEnd;
-    function FPS: Single;// read GetLastFps;
+    function FPS: Single;
     property Speed: Single read GetSpeed;
     constructor Create;
     destructor Destroy; override;
