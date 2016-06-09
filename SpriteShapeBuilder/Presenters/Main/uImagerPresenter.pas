@@ -60,8 +60,6 @@ uses
 procedure TImagerPresenter.AddImg;
 var
   vFileName: string;
-  vViewItem: IItemView;
-  vItemPresenter: TItemImgPresenter;
   vModel: TItemImageModel;
   vImg: TImage;
 begin
@@ -70,26 +68,11 @@ begin
     vImg := TImage.Create(nil);
     vImg.Bitmap.LoadFromFile(vFileName);
 
-    // Creating View
-    vViewItem := View.AddElement;
-
     // Creating Model
     vModel := Model.AddImageElement;
-
-    // Creating Presenter
-    vItemPresenter := TItemImgPresenter.Create(vViewItem, vModel);//TItemPresenterProxy.Create(vViewItem, sPicture);
-    vViewItem.Presenter := vItemPresenter;
-    //vTableView.Presenter := vItemPresenter;
-
+    AddImg(vModel);
     vModel.OriginalImage := vImg;
     vModel.Rect := Rect(0, 0, Round(vImg.Bitmap.Width), Round(vImg.Bitmap.Height)) ;
-
-    vItemPresenter.OnMouseDown := DoMouseDown;
-    vItemPresenter.OnMouseUp := DoMouseUp;
-    vItemPresenter.OnMouseMove := DoMouseMove;
-    vItemPresenter.OnOptionsShow := DoOptionsShow;
-
-    FItems.Add(TItemImgPresenter(vItemPresenter), vViewItem);
   end;
 end;
 
@@ -108,6 +91,7 @@ begin
   vItemPresenter.OnMouseDown := DoMouseDown;
   vItemPresenter.OnMouseUp := DoMouseUp;
   vItemPresenter.OnMouseMove := DoMouseMove;
+  vItemPresenter.OnOptionsShow := DoOptionsShow;
 
   FItems.Add(vItemPresenter, vViewItem);
 end;
@@ -116,7 +100,6 @@ constructor TImagerPresenter.Create(AView: IWorkSpaceView; AModel: TSSBModel);
 begin
   inherited Create(AView, AModel);
   FItems := TDictionary<TItemImgPresenter, IItemView>.Create;
-//  FItems := TDictionary<IItemPresenter, IItemView>.Create;
   FCaptureMode := cmNone;
 end;
 
@@ -145,13 +128,11 @@ var
   vX: Integer;
   vY: Integer;
   vItem: TItemImgPresenter;
-//  vIItem: IInterface;
   vRect: TRectF;
 begin
   vRect := RectF(AItem.Rect.TopLeft.X, AItem.Rect.TopLeft.Y, AItem.Rect.BottomRight.X, AItem.Rect.BottomRight.Y);
   for vItem in FItems.Keys do
   begin
-//    vItem := TItemImgPresenter(vIItem);
     if vItem <> AItem then
     begin
       with vRect do
@@ -181,7 +162,6 @@ begin
   vRect := RectF(AItem.Rect.TopLeft.X, AItem.Rect.TopLeft.Y, AItem.Rect.BottomRight.X, AItem.Rect.BottomRight.Y);
   for vItem in FItems.Keys do
   begin
-   // vItem := TItemImgPresenter(vIItem);
     if vItem <> AItem then
     begin
       with vRect do

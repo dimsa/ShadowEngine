@@ -83,11 +83,14 @@ end;
 
 function TItemImagerPresenter.GetParams: TDictionary<string, string>;
 begin
-  FParams.Clear;
-  FParams.Add('X', IntToStr(Model.Position.X));
-  FParams.Add('Y', IntToStr(Model.Position.Y));
-  FParams.Add('Width', IntToStr(Model.Width));
-  FParams.Add('Height', IntToStr(Model.Height));
+  with FParams do
+  begin
+    Clear;
+    Add('X', IntToStr(Model.Position.X));
+    Add('Y', IntToStr(Model.Position.Y));
+    Add('Width', IntToStr(Model.Width));
+    Add('Height', IntToStr(Model.Height));
+  end;
   Result := FParams;
 end;
 
@@ -133,11 +136,14 @@ end;
 
 procedure TItemImagerPresenter.OnUpdateModel(ASender: TObject);
 begin
-  FView.AssignBitmap(FItemImageModel.OriginalImage.Bitmap);
-  FView.Width := FItemImageModel.Width;
-  FView.Height := FItemImageModel.Height;
-  FView.Left := FItemImageModel.Position.X;
-  FView.Top := FItemImageModel.Position.Y;
+  with FView do
+  begin
+    AssignBitmap(FItemImageModel.OriginalImage.Bitmap);
+    Width := FItemImageModel.Width;
+    Height := FItemImageModel.Height;
+    Left := FItemImageModel.Position.X;
+    Top := FItemImageModel.Position.Y;
+  end;
 end;
 
 procedure TItemImagerPresenter.SaveOptions;
@@ -177,9 +183,9 @@ end;
 
 procedure TItemImagerPresenter.SetRect(const Value: TRectF);
 begin
-    Position := Value.TopLeft.Round;
-    Width := Round(Value.Width);
-    Height := Round(Value.Height);
+  Position := Value.TopLeft.Round;
+  Width := Round(Value.Width);
+  Height := Round(Value.Height);
 end;
 
 procedure TItemImagerPresenter.SetWidth(const Value: Integer);

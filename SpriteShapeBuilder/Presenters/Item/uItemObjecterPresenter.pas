@@ -19,7 +19,6 @@ type
     FItemObjectModel: TResourceModel;
     FParams: TDictionary<string, string>;
     FBmp: TBitmap; // Picture of object with Shapes
-//    FShapes: TList<TItemShpPresenter>;
     FShapes: TList<TItemShpPresenter>;
     FIsShapeVisible: Boolean;
     FCaptureType: TCaptureType;
@@ -65,7 +64,7 @@ type
     procedure ShowOptions; override;
     procedure SaveOptions; override;
 
-    constructor Create(const AItemView: IItemView{; const ATableView: ITableView}; const AItemObjectModel: TResourceModel);
+    constructor Create(const AItemView: IItemView; const AItemObjectModel: TResourceModel);
     destructor Destroy; override;
   end;
 
@@ -80,21 +79,17 @@ procedure TItemObjecterPresenter.AddCircle;
 var
   vShape: TItemShpPresenter;
   vShapeModel: TItemShapeModel;
-//  vTableView: TTableView;
   vCircle: TCircle;
 begin
   // Creating Model
   vShapeModel := TItemShapeModel.CreateCircle(OnModelUpdate);
-//  // Creating View
-//  vTableView := TTableView.Create;
-
+  // Creating View
   vCircle.X := 0;
   vCircle.Y := 0;
   vCircle.Radius := FItemObjectModel.Width / 4;
   vShapeModel.SetData(vCircle);
 
   vShape := TItemShpPresenter.Create(FView, vShapeModel);
-//  vTableView.Presenter := vShape;
   FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
   RepaintShapes;
@@ -153,8 +148,6 @@ constructor TItemObjecterPresenter.Create(const AItemView: IItemView; {const ATa
 begin
   inherited Create(AItemView);
 
-//  FTableView := ATableView;
-
   FIsShapeVisible := True;
   FCaptureType := ctNone;
   FBmp := TBitmap.Create;
@@ -162,7 +155,6 @@ begin
   FItemObjectModel := AItemObjectModel;
   FItemObjectModel.UpdateHander := OnModelUpdate;
   FShapes := TList<TItemShpPresenter>.Create;
-  //FShapesTable := TList<ITableView>.Create;
 end;
 
 procedure TItemObjecterPresenter.Delete;
@@ -191,10 +183,6 @@ begin
   for i := 0 to FShapes.Count - 1 do
     FShapes[i] := nil;
 
-{  for i := 0 to FShapesTable.Count - 1 do
-    FShapesTable[i] := nil;
-
-  FShapesTable.Free;  }
   FShapes.Free;
   FParams.Free;
   inherited;
@@ -225,12 +213,15 @@ end;
 
 function TItemObjecterPresenter.GetParams: TDictionary<string,string>;
 begin
-  FParams.Clear;
-  FParams.Add('Name', Model.Name);
-  FParams.Add('X', IntToStr(Model.Position.X));
-  FParams.Add('Y', IntToStr(Model.Position.Y));
-  FParams.Add('Width', IntToStr(Model.Width));
-  FParams.Add('Height', IntToStr(Model.Height));
+  with FParams do
+  begin
+    Clear;
+    Add('Name', Model.Name);
+    Add('X', IntToStr(Model.Position.X));
+    Add('Y', IntToStr(Model.Position.Y));
+    Add('Width', IntToStr(Model.Width));
+    Add('Height', IntToStr(Model.Height));
+  end;
   Result := FParams;
 end;
 
@@ -323,7 +314,6 @@ begin
     ctNone:
     begin
       for i := 0 to FShapes.Count - 1 do
-        //if FShapes[i].IsPointIn(vPoint) then
         if TItemShpPresenter(FShapes[i]).KeyPointLocal(vPoint, vKeyPoint, 5, True) then
         begin
           vNeedRepaint := True;
@@ -390,18 +380,13 @@ begin
   vModel := FItemObjectModel;
 
   // We creating or destroying TableViews
-
-
- // for i := 0 to FShapesTable.Count - 1 do
-  //   FShapesTable[i].Presenter := nil;   // After presenter = nil, refcount on ShapePresenter is 0, so it destroying   }
+  // After presenter = nil, refcount on ShapePresenter is 0, so it destroying   }
 
   for i := FShapes.Count - 1 downto 0  do
     if (Assigned(FShapes[i])) {and (FShapes[i].RefCount > 0) }then
     begin
      vShape := TItemShpPresenter(FShapes[i]);
      TItemShpPresenter(FShapes[i]).TableView := nil;
-         // vShape.TableView.SetPr := nil;
-//      vShape.TableView := nil
 
       if Assigned(vShape) then
         vShape.Free;
@@ -463,10 +448,13 @@ procedure TItemObjecterPresenter.SetParams(
 var
   vErr, vA: Integer;
 begin
-  Model.Name := AValue['Name'];
-  Model.Position:= Point(ToInt(AValue['X']), ToInt(AValue['Y']));
-  Model.Width := ToInt(AValue['Width']);
-  Model.Height := ToInt(AValue['Height']);
+  with Model do
+  begin
+    Name := AValue['Name'];
+    Position:= Point(ToInt(AValue['X']), ToInt(AValue['Y']));
+    Width := ToInt(AValue['Width']);
+    Height := ToInt(AValue['Height']);
+  end;
 end;
 
 procedure TItemObjecterPresenter.SetPosition(const Value: TPoint);

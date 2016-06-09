@@ -69,68 +69,41 @@ uses
 
 procedure TObjecterPresenter.AddObj;
 var
-  vViewItem: IItemView;
-  vItemPresenter: TItemObjPresenter;
-//  vTableView: TTableView;
   vModel: TResourceModel;
 begin
-    // Creating View
-    vViewItem := View.AddElement;
-//    vTableView := TTableView.Create;
-
     // Creating Model
     vModel := Model.AddResource;
 
-    // Creating Presenter
-    vItemPresenter := TItemObjPresenter.Create(vViewItem, {vTableView,} vModel);
+    AddObj(vModel);
 
     vModel.Width := 50;
     vModel.Height:= 50;
-
-    vViewItem.Presenter := vItemPresenter;
-  //  vTableView.Presenter := vItemPresenter;
-
-    vItemPresenter.OnMouseDown := DoMouseDown;
-    vItemPresenter.OnMouseUp := DoMouseUp;
-    vItemPresenter.OnMouseMove := DoMouseMove;
-    vItemPresenter.OnOptionsShow := DoOptionsShow;
-  //  vItemPresenter.OnOptionsShow := DoOptionsSave;;
-
-    FItems.Add(TItemObjPresenter(vItemPresenter), vViewItem);
-    try
-      vItemPresenter.Repaint;
-    except
-      View.RemoveElement(vViewItem);
-    end;
 end;
 
 procedure TObjecterPresenter.AddObj(const AObject: TResourceModel);
 var
   vViewItem: IItemView;
   vItemPresenter: TItemObjPresenter;
-//  vTableView: TTableView;
 begin
-    // Creating View
-    vViewItem := View.AddElement;
-  //  vTableView := TTableView.Create;
+  // Creating View
+  vViewItem := View.AddElement;
 
-    // Creating Presenter
-    vItemPresenter := TItemObjPresenter.Create(vViewItem,{ vTableView,} AObject);
+  // Creating Presenter
+  vItemPresenter := TItemObjPresenter.Create(vViewItem,{ vTableView,} AObject);
 
-    vViewItem.Presenter := vItemPresenter;
-   // vTableView.Presenter := vItemPresenter;
+  vViewItem.Presenter := vItemPresenter;
 
-    vItemPresenter.OnMouseDown := DoMouseDown;
-    vItemPresenter.OnMouseUp := DoMouseUp;
-    vItemPresenter.OnMouseMove := DoMouseMove;
-    vItemPresenter.OnOptionsShow := DoOptionsShow;
+  vItemPresenter.OnMouseDown := DoMouseDown;
+  vItemPresenter.OnMouseUp := DoMouseUp;
+  vItemPresenter.OnMouseMove := DoMouseMove;
+  vItemPresenter.OnOptionsShow := DoOptionsShow;
 
-    FItems.Add(TItemObjPresenter(vItemPresenter), vViewItem);
-    try
-      vItemPresenter.Repaint;
-    except
-      View.RemoveElement(vViewItem);
-    end;
+  FItems.Add(TItemObjPresenter(vItemPresenter), vViewItem);
+  try
+    vItemPresenter.Repaint;
+  except
+    View.RemoveElement(vViewItem);
+  end;
 end;
 
 procedure TObjecterPresenter.AddPoint;

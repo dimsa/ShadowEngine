@@ -133,7 +133,6 @@ end;
 procedure TSSBForm.BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Single);
 begin
-//  SSBForm.Caption := x.ToString() + ' ' + y.ToString();
   FWorkSpaceView.Imager.MouseMove;
   FWorkSpaceView.Objecter.MouseMove;
 end;
