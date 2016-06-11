@@ -12,17 +12,17 @@ uses
   uDemoGameLoader in 'DemoCode\uDemoGameLoader.pas',
   uDemoObjects in 'DemoCode\uDemoObjects.pas',
   uDemoMenu in 'DemoCode\uDemoMenu.pas',
-  FMX.IniFile.Android in 'Utils\inifile\FMX.IniFile.Android.pas',
-  FMX.IniFile.Apple in 'Utils\inifile\FMX.IniFile.Apple.pas',
-  FMX.IniFile in 'Utils\inifile\FMX.IniFile.pas',
-  uBannerPanel in 'Utils\uBannerPanel.pas' {$R *.res};
+  FMX.IniFile.Android in 'DemoCode\Utils\inifile\FMX.IniFile.Android.pas',
+  FMX.IniFile.Apple in 'DemoCode\Utils\inifile\FMX.IniFile.Apple.pas',
+  FMX.IniFile in 'DemoCode\Utils\inifile\FMX.IniFile.pas',
+  uBannerPanel in 'DemoCode\Utils\uBannerPanel.pas' {$R *.res};
 
 {$R *.res}
 
 begin
   // If GlobalUseGPUCanvas true, you've got more fps, but lower font rendering quality
   // and you can not use #13 for linebreak, use sLineBreak instead
-  GlobalUseGPUCanvas := True;
+//  GlobalUseGPUCanvas := True;
   Application.Initialize;
   Application.CreateForm(TmainForm, mainForm);
   Application.Run;

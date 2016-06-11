@@ -37,6 +37,7 @@ implementation
 procedure TmainForm.FormCreate(Sender: TObject);
 begin
   {$DEFINE DEBUG}
+
   Game := TDemoGame.Create;
   Game.Image := mainImage;
 

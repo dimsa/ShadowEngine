@@ -201,11 +201,14 @@ begin
   FCritical.Enter;
   if (lA > 0) or (FOptions.ToAnimateForever) then
 
+
+
     with FImage do
     with FModel do
     begin
       if Bitmap.Canvas.BeginScene() then
       try
+
         FInBeginPaintBehavior;
         FBackgroundBehavior;
 
@@ -218,6 +221,8 @@ begin
               -ObjectList[ObjectOrder[i]].y) * TMatrix.CreateScaling(ObjectList[ObjectOrder[i]].ScaleX,
               ObjectList[ObjectOrder[i]].ScaleY) * TMatrix.CreateRotation(ObjectList[ObjectOrder[i]].rotate * pi180) * TMatrix.CreateTranslation(ObjectList[ObjectOrder[i]].x,
               ObjectList[ObjectOrder[i]].y);
+
+
             Bitmap.Canvas.SetMatrix(m);
 
            {$IFDEF DEBUG}
@@ -236,6 +241,7 @@ begin
         FInEndPaintBehavior;
 
         Bitmap.Canvas.EndScene();
+
         {$IFDEF POSIX}
         InvalidateRect(RectF(0, 0, Bitmap.Width, Bitmap.Height));
         {$ENDIF}

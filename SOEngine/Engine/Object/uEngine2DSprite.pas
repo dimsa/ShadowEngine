@@ -106,7 +106,7 @@ begin
               y + hHalf * CJustifyPoints[Justify].Top,
               x + wHalf * CJustifyPoints[Justify].Right,
               y + hHalf * CJustifyPoints[Justify].Bottom),
-              Opacity, False
+              1, True
             );
   inherited;
 end;

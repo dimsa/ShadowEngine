@@ -9,7 +9,7 @@ unit uDemoEngine;
 interface
 
 uses
-  System.Types, uEngine2D;
+  System.Types, uEngine2D, System.Math.Vectors;
 
 type
   TDemoEngine = class(TEngine2D)
@@ -35,6 +35,7 @@ end;
 procedure TDemoEngine.ParallaxBackgroundBehavior;
 var
   vProporX, vProporY: Double;
+  m: TMatrix;
 begin
   with Self.Image do
   begin

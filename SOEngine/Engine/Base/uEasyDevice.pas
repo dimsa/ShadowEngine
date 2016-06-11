@@ -112,6 +112,9 @@ begin
 //    vS := TPath.Combine(TPath.GetSharedDocumentsPath, AFileName); { Внешний доступ }
     vS := System.IOUtils.TPath.Combine(System.IOUtils.TPath.GetDocumentsPath, AFileName); { Внутренний доступ }
   {$ENDIF ANDROID}
+  {$IFDEF MACOS}
+   vS :=  'Art/' + AFileName;
+  {$ENDIF MACOS}
   Result := vS;
 end;
 

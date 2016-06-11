@@ -34,6 +34,11 @@ type
     CRightFPSBorder = 120;
     CMiddleFPS = 60;
   {$ENDIF WIN32}
+  {$IFDEF MACOS}
+    CLeftFPSBorder = 30;
+    CRightFPSBorder = 120;
+    CMiddleFPS = 60;
+  {$ENDIF MACOS}
   {$IFDEF ANDROID}
     CLeftFPSBorder = 20;
     CRightFPSBorder = 40;

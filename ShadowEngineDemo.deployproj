@@ -50,6 +50,16 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Win64\Debug\ShadowEngineDemo.exe" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>ShadowEngineDemo.exe</RemoteName>
+            <DeployClass>ProjectOutput</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
+        </DeployFile>
         <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>formatters.secss</RemoteName>
@@ -68,10 +78,10 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="Utils\DelphiCompatability.inc" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>images.load</RemoteName>
-            <DeployClass>File</DeployClass>
+            <RemoteName>DelphiCompatability.inc</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -126,15 +136,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>back.jpg</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Win32\Release\ShadowEngineDemo.exe" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
             <RemoteName>ShadowEngineDemo.exe</RemoteName>
@@ -144,6 +145,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
             <Required>True</Required>
+        </DeployFile>
+        <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\</RemoteDir>
+            <RemoteName>back.jpg</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo\</RemoteDir>
@@ -172,20 +182,20 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\</RemoteDir>
-            <RemoteName>images.load</RemoteName>
+    </ItemGroup>
+    <ItemGroup Condition="'$(Platform)'=='OSX32'">
+        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
+            <RemoteName>res.png</RemoteName>
             <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-    </ItemGroup>
-    <ItemGroup Condition="'$(Platform)'=='OSX32'">
-        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
-            <RemoteName>res.png</RemoteName>
+        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\Art\</RemoteDir>
+            <RemoteName>images.load</RemoteName>
             <DeployClass>File</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
@@ -210,8 +220,17 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="OSX32\Debug\ShadowEngineDemo.info.plist" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo.app\Contents\</RemoteDir>
+            <RemoteName>Info.plist</RemoteName>
+            <DeployClass>ProjectOSXInfoPList</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
+            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\Art\</RemoteDir>
             <RemoteName>res.png</RemoteName>
             <DeployClass>File</DeployClass>
             <Operation>0</Operation>
@@ -228,6 +247,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="OSX32\Debug\ShadowEngineDemo.entitlements" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo.app\../\</RemoteDir>
+            <RemoteName>ShadowEngineDemo.entitlements</RemoteName>
+            <DeployClass>ProjectOSXEntitlements</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
             <RemoteName>images.load</RemoteName>
@@ -237,8 +265,27 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="OSX32\Debug\ShadowEngineDemo" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
+            <RemoteName>ShadowEngineDemo</RemoteName>
+            <DeployClass>ProjectOutput</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
+        </DeployFile>
+        <DeployFile Include="OSX32\Debug\ShadowEngineDemo.rsm" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\</RemoteDir>
+            <RemoteName>ShadowEngineDemo.rsm</RemoteName>
+            <DeployClass>DebugSymbols</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Art\formatters.secss" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
+            <RemoteDir>ShadowEngineDemo.app\Contents\MacOs\Art\</RemoteDir>
             <RemoteName>formatters.secss</RemoteName>
             <DeployClass>File</DeployClass>
             <Operation>0</Operation>
@@ -247,7 +294,7 @@
             <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="Art\back.jpg" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
+            <RemoteDir>ShadowEngineDemo.app\Contents\MacOS\Art\</RemoteDir>
             <RemoteName>back.jpg</RemoteName>
             <DeployClass>File</DeployClass>
             <Operation>0</Operation>
@@ -255,10 +302,10 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="Utils\DelphiCompatability.inc" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ShadowEngineDemo.app\Contents\Resources\StartUp\</RemoteDir>
-            <RemoteName>images.load</RemoteName>
-            <DeployClass>File</DeployClass>
+            <RemoteName>DelphiCompatability.inc</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
             <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -293,11 +340,11 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Source\icons\72.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-hdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon72</DeployClass>
-            <Operation>1</Operation>
+        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
+            <RemoteName>res.png</RemoteName>
+            <DeployClass>File</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -311,11 +358,11 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Art\res.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
-            <RemoteName>res.png</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
+        <DeployFile Include="Source\icons\72.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-hdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon72</DeployClass>
+            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -601,15 +648,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>gdbserver</RemoteName>
-            <DeployClass>AndroidGDBServer</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="$(BDS)\lib\android\release\armeabi\libnative-activity.so" Condition="'$(Config)'=='Release'">
             <RemoteDir>ShadowEngineDemo\library\lib\armeabi\</RemoteDir>
             <RemoteName>libShadowEngineDemo.so</RemoteName>
@@ -682,11 +720,11 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo\assets\internal\</RemoteDir>
-            <RemoteName>images.load</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
+        <DeployFile Include="Source\splashes\splash640x480.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ShadowEngineDemo\res\drawable-large\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage640</DeployClass>
+            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -695,15 +733,6 @@
             <RemoteDir>ShadowEngineDemo\library\lib\x86\</RemoteDir>
             <RemoteName>libShadowEngineDemo.so</RemoteName>
             <DeployClass>AndroidLibnativeX86File</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Source\splashes\splash640x480.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ShadowEngineDemo\res\drawable-large\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage640</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -824,15 +853,6 @@
             <RemoteName>libPCRE.dylib</RemoteName>
             <DeployClass>DependencyModule</DeployClass>
             <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Art\images.load" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ShadowEngineDemo.app\</RemoteDir>
-            <RemoteName>images.load</RemoteName>
-            <DeployClass>File</DeployClass>
-            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
