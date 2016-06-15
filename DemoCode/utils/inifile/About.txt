@@ -1,0 +1,4 @@
+Units from
+https://github.com/freeonterminate/delphi/tree/master/FMX.IniFile
+
+All rights belong to the author(s) 

@@ -9,7 +9,7 @@
         <Platform Condition="'$(Platform)'==''">OSX32</Platform>
         <TargetedPlatforms>17</TargetedPlatforms>
         <AppType>Package</AppType>
-        <Platform>OSX32</Platform>
+        <Platform>iOSSimulator</Platform>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>

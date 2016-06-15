@@ -106,15 +106,18 @@ var
 begin
   vS := AFileName;
   {$IFDEF WIN32}
-    vS := 'art\'+AFileName;
+    vS := 'art' + PathDelim + AFileName;
   {$ENDIF WIN32}
   {$IFDEF ANDROID}
 //    vS := TPath.Combine(TPath.GetSharedDocumentsPath, AFileName); { Внешний доступ }
     vS := System.IOUtils.TPath.Combine(System.IOUtils.TPath.GetDocumentsPath, AFileName); { Внутренний доступ }
   {$ENDIF ANDROID}
   {$IFDEF MACOS}
-   vS :=  'Art/' + AFileName;
+   vS :=  'Art' + PathDelim + AFileName;
   {$ENDIF MACOS}
+  {$IFDEF IOS}
+   vS :=  TPath.GetDocumentsPath + PathDelim  + 'Art' + PathDelim + AFileName;
+  {$ENDIF IOS}
   Result := vS;
 end;
 
