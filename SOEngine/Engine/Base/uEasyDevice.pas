@@ -124,18 +124,9 @@ end;
 function LoadImageFromFile(AFileName: String): TBitmap;
 var
   vBMP: TBitmap;
-  {$IFDEF ANDROID}
-  vs: String;
-  {$ENDIF ANDROID}
 begin
   vBMP := tBitmap.Create;
-  {$IFDEF WIN32}
-    vBMP.LoadFromFile(AFileName);
-  {$ENDIF WIN32}
-  {$IFDEF ANDROID}
-    vS := TPath.Combine(TPath.GetDocumentsPath, AFileName); { Внутренний доступ}
-    vBMP.LoadFromFile(vS);
-  {$ENDIF ANDROID}
+  vBMP.LoadFromFile(AFileName);
   Result := vBMP;
 end;
 
