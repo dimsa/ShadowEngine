@@ -320,7 +320,7 @@ begin
   FImage.Bitmap.Width := Round(AImage.Width * getScreenScale);
   FImage.Bitmap.Height := ROund(AImage.Height * getScreenScale);
 
-  FObjectCreator := TEngine2DManager.Create(Self.Status, FImage, FCritical, FModel, {FResources, FObjects, @FObjectOrder, FAnimationList, FFormatters, FFastFields,} FEngineThread, Resize);
+  FObjectCreator := TEngine2DManager.Create(Self.Status, FImage, FCritical, FModel, FEngineThread, Resize);
   PrepareShadowObject;
 end;
 

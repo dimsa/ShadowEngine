@@ -12,7 +12,6 @@ type
 TEngine2DModel = class
 private
   FCritical: TCriticalSection;
-
   FObjects: TObjectsList;
   FFastFields: TFastFields; // Pointers to TFastField to do formatting fast // Содержит ссылки на TFastField, которые представляют собой найденные значения определенных спрайтов
   FObjectOrder: TIntArray;

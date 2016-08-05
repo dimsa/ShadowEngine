@@ -20,7 +20,6 @@ type
     procedure SetSize(const Value: Single);
     function PointToLocal(const APoint: TPointF): TPointF;
   public
-    property Parent: Pointer read FParent write FParent; // ——ылка на TEngine2D
     property Owner: Pointer read FOwner write FOwner; // ’оз€ин фигуры TEngine2DObject
     property Figures[Index: Integer]: TNewFigure read GetFigure; default;
     property Count: Integer read GetCount;
