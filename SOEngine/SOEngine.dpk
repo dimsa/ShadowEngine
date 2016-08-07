@@ -65,6 +65,7 @@ contains
   uEngine2DSprite in 'Engine\Object\uEngine2DSprite.pas',
   uEngine2DText in 'Engine\Object\uEngine2DText.pas',
   uEngine2DUnclickableObject in 'Engine\Object\uEngine2DUnclickableObject.pas',
-  uEngine2DIntersector in 'Engine\Base\uEngine2DIntersector.pas';
+  uEngine2DIntersector in 'Engine\Base\uEngine2DIntersector.pas',
+  uEngine2DOptions in 'Engine\Base\uEngine2DOptions.pas';
 
 end.

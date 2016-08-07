@@ -6,7 +6,7 @@
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">iOSSimulator</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>17</TargetedPlatforms>
         <AppType>Package</AppType>
         <Platform>iOSSimulator</Platform>
@@ -168,6 +168,7 @@
         <DCCReference Include="Engine\Object\uEngine2DText.pas"/>
         <DCCReference Include="Engine\Object\uEngine2DUnclickableObject.pas"/>
         <DCCReference Include="Engine\Base\uEngine2DIntersector.pas"/>
+        <DCCReference Include="Engine\Base\uEngine2DOptions.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

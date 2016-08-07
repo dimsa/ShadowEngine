@@ -16,7 +16,8 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, FMX.Types, FMX.Controls,
   FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Platform, FMX.Objects, Math, System.SyncObjs, {$I 'Utils\DelphiCompatability.inc'}
   uClasses, uEngine2DThread, uEngine2DObject, uEngine2DSprite, uEngine2DText, uEngine2DClasses,
-  uEngine2DManager, uEngine2DStatus, uEasyDevice, uEngine2DModel, uEngine2DAnimation, uFastFields;
+  uEngine2DManager, uEngine2DStatus, uEasyDevice, uEngine2DModel, uEngine2DAnimation, uFastFields,
+  uEngine2DIntersector, uEngine2DOptions;
 
 type
   TEngine2d = class
@@ -24,6 +25,7 @@ type
     FEngineThread: TEngineThread; // Thread that paint all sprites (But there are possibility to use not one thread)  // Поток в котором происходит отрисовка
     FCritical: TCriticalSection; // The critical section for multithread operation, to protect model on changind in paint time // Критическая секция движка
     FModel: TEngine2DModel; // All main lists are in It.
+    FIntersector: TEngine2DIntersector; // Object tha test for colliding
     FOptions: TEngine2DOptions; // All Engine options. If you add some feature to manage engine, it shoulb be here// Настройки движка
     FObjectCreator: TEngine2DManager; // This object work with Model items. It's controller/
     FMouseDowned: TIntArray; // Lists of sprites that were under the mouse on MouseDown  // Массив спрайтов движка, которые находились под мышкой в момент нажатия
@@ -77,7 +79,7 @@ type
     procedure LoadSECSS(const AFileName: string); // Loads SECSS filee to use it Engine. It should Be in Manager
     procedure LoadSEJSON(const AFileName: string);  experimental; // Working on it! It's loading of object that created by Sprite Shape Builder It should be in Manager
     procedure Init(AImage: TImage); // Initialization of SO Engine // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
-    procedure Repaint; virtual; // The main Paint procedure.
+    procedure WorkProcedure; virtual; // The main Paint procedure.
     procedure Start; virtual; // Включает движок
     procedure Stop; virtual;// Выключает движок
 
@@ -104,7 +106,7 @@ uses
 
 procedure TEngine2d.AssignShadowObject(ASpr: tEngine2DObject);
 begin
-  //   В данном контексте следует различть наследников TEngine2DObject, т.к. может попасться текст
+  // В данном контексте следует различть наследников TEngine2DObject, т.к. может попасться текст
   FShadowObject.Position := ASpr.Position;
   tSprite(FShadowObject).Resources := tSprite(ASpr).Resources;
 end;
@@ -132,12 +134,13 @@ constructor TEngine2d.Create;
 begin
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
-  FEngineThread.WorkProcedure := Repaint;
+  FEngineThread.WorkProcedure := WorkProcedure;
+  FIntersector := TEngine2DIntersector.Create;
 
   FStatus := TEngine2DStatus.Create(FEngineThread, @FWidth, @FHeight, @FIsMouseDowned, @FMouseDowned, @FMouseUpped, @FClicked);
   FModel := TEngine2DModel.Create(FCritical, IsHor);
 
-  FOptions.Up([EAnimateForever]);
+  FOptions.Up([EAnimateForever, EUseCollider]);
   FOptions.Down([EClickOnlyTop]);
 
   FBackgroundBehavior := BackgroundDefaultBehavior;
@@ -153,8 +156,10 @@ destructor TEngine2d.Destroy;
 begin
   FObjectCreator.Free;
   FImage.Free;
+  FIntersector.Free;
   FModel.Free;
   FBackGround.Free;
+
 
   inherited;
 end;
@@ -170,7 +175,7 @@ begin
   FCritical.Leave;
 end;
 
-procedure TEngine2d.Repaint;
+procedure TEngine2d.WorkProcedure;
 var
   i, l: integer;
   iA, lA: Integer; // Animations and Formatters counters Счетчики анимации и форматирования
@@ -180,6 +185,13 @@ var
   vSpr: TEngine2DObject;
   {$ENDIF}
 begin
+
+  if FOptions.ToUseCollider then
+  begin
+    FCritical.Enter;
+    FIntersector.DoWork;
+    FCritical.Leave;
+  end;
 
   // Анимация
   FCritical.Enter;
@@ -200,53 +212,50 @@ begin
 
   FCritical.Enter;
   if (lA > 0) or (FOptions.ToAnimateForever) then
-
-
-
     with FImage do
-    with FModel do
-    begin
-      if Bitmap.Canvas.BeginScene() then
-      try
+      with FModel do
+      begin
+        if Bitmap.Canvas.BeginScene() then
+        try
 
-        FInBeginPaintBehavior;
-        FBackgroundBehavior;
+          FInBeginPaintBehavior;
+          FBackgroundBehavior;
 
-        l := (ObjectList.Count - 1);
-        for i := 1 to l do
-          if ObjectList[ObjectOrder[i]].visible then
-          begin
-            m := TMatrix.CreateTranslation(
-              -ObjectList[ObjectOrder[i]].x,
-              -ObjectList[ObjectOrder[i]].y) * TMatrix.CreateScaling(ObjectList[ObjectOrder[i]].ScaleX,
-              ObjectList[ObjectOrder[i]].ScaleY) * TMatrix.CreateRotation(ObjectList[ObjectOrder[i]].rotate * pi180) * TMatrix.CreateTranslation(ObjectList[ObjectOrder[i]].x,
-              ObjectList[ObjectOrder[i]].y);
+          l := (ObjectList.Count - 1);
+          for i := 1 to l do
+            if ObjectList[ObjectOrder[i]].visible then
+            begin
+              m := TMatrix.CreateTranslation(
+                -ObjectList[ObjectOrder[i]].x,
+                -ObjectList[ObjectOrder[i]].y) * TMatrix.CreateScaling(ObjectList[ObjectOrder[i]].ScaleX,
+                ObjectList[ObjectOrder[i]].ScaleY) * TMatrix.CreateRotation(ObjectList[ObjectOrder[i]].rotate * pi180) * TMatrix.CreateTranslation(ObjectList[ObjectOrder[i]].x,
+                ObjectList[ObjectOrder[i]].y);
 
 
-            Bitmap.Canvas.SetMatrix(m);
+              Bitmap.Canvas.SetMatrix(m);
 
-           {$IFDEF DEBUG}
-           if FOptions.ToDrawFigures then
-             vSpr := ObjectList[FModel.ObjectOrder[i]];
-           {$ENDIF}
+             {$IFDEF DEBUG}
+             if FOptions.ToDrawFigures then
+               vSpr := ObjectList[FModel.ObjectOrder[i]];
+             {$ENDIF}
 
-           ObjectList[FModel.ObjectOrder[i]].Repaint;
+             ObjectList[FModel.ObjectOrder[i]].Repaint;
 
-           {$IFDEF DEBUG}
-           if FOptions.ToDrawFigures then
-             vSpr.RepaintWithShapes;
-           {$ENDIF}
-          end;
-      finally
-        FInEndPaintBehavior;
+             {$IFDEF DEBUG}
+             if FOptions.ToDrawFigures then
+               vSpr.RepaintWithShapes;
+             {$ENDIF}
+            end;
+        finally
+          FInEndPaintBehavior;
 
-        Bitmap.Canvas.EndScene();
+          Bitmap.Canvas.EndScene();
 
-        {$IFDEF POSIX}
-        InvalidateRect(RectF(0, 0, Bitmap.Width, Bitmap.Height));
-        {$ENDIF}
+          {$IFDEF POSIX}
+          InvalidateRect(RectF(0, 0, Bitmap.Width, Bitmap.Height));
+          {$ENDIF}
+        end;
       end;
-    end;
 
   FCritical.Leave;
 end;
