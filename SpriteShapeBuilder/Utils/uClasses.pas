@@ -13,6 +13,7 @@ type
   TProcedure = procedure of Object;
   TVCLProcedure = procedure(ASender: TObject) of object;
   TItemSelectEvent = procedure (Sender: TObject) of object;
+  TDelegate<T> = function: T of object;
 
   ISerializable = interface
     function Serialize: TJSONObject;

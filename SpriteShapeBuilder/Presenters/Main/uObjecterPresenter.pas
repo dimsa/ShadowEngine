@@ -44,7 +44,7 @@ type
     procedure DoMouseMove(ASender: TObject);
     procedure DoOptionsShow(ASender: TObject);
   public
-    constructor Create(AView: IWorkSpaceView; AModel: TSSBModel);
+    constructor Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);
     procedure ShowShapes;
     procedure HideShapes;
     procedure AddPoly;
@@ -124,9 +124,9 @@ begin
     FSelected.AddCircle;
 end;
 
-constructor TObjecterPresenter.Create(AView: IWorkSpaceView; AModel: TSSBModel);
+constructor TObjecterPresenter.Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);
 begin
-  inherited Create(AView, AModel);
+  inherited Create(AView, AModel, AStatus);
   FItems := TDictionary<TItemObjPresenter, IItemView>.Create;
   FView := AView;
 end;
@@ -159,6 +159,9 @@ end;
 
 procedure TObjecterPresenter.DoMouseDown(ASender: TObject);
 begin
+  if Status <> sObject then
+    Exit;
+
   if (ASender is TItemObjPresenter) then
   begin
     FSelected := TItemObjPresenter(ASender);
@@ -169,11 +172,17 @@ end;
 
 procedure TObjecterPresenter.DoMouseMove(ASender: TObject);
 begin
+  if Status <> sObject then
+    Exit;
+
   MouseMove;
 end;
 
 procedure TObjecterPresenter.DoMouseUp(ASender: TObject);
 begin
+  if Status <> sObject then
+    Exit;
+
   MouseUp;
 end;
 
@@ -182,6 +191,9 @@ var
   vItem: TItemObjPresenter;
   vTableView: ITableView;
 begin
+  if Status <> sObject then
+    Exit;
+
   vItem := TItemObjPresenter(ASender);
   vTableView := View.AddTableView;
 

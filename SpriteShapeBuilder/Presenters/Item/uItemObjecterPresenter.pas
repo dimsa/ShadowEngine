@@ -144,7 +144,7 @@ begin
   Result := FBmp;
 end;
 
-constructor TItemObjecterPresenter.Create(const AItemView: IItemView; {const ATableView: ITableView; }const AItemObjectModel: TResourceModel);
+constructor TItemObjecterPresenter.Create(const AItemView: IItemView; const AItemObjectModel: TResourceModel);
 begin
   inherited Create(AItemView);
 

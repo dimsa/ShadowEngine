@@ -48,7 +48,7 @@ type
     procedure MouseMove;
     procedure MouseDown;
     procedure MouseUp;
-    constructor Create(AView: IWorkSpaceView; AModel: TSSBModel); override;
+    constructor Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>); override;
     destructor Destroy; override;
   end;
 
@@ -96,9 +96,9 @@ begin
   FItems.Add(vItemPresenter, vViewItem);
 end;
 
-constructor TImagerPresenter.Create(AView: IWorkSpaceView; AModel: TSSBModel);
+constructor TImagerPresenter.Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);
 begin
-  inherited Create(AView, AModel);
+  inherited Create(AView, AModel, AStatus);
   FItems := TDictionary<TItemImgPresenter, IItemView>.Create;
   FCaptureMode := cmNone;
 end;
@@ -182,6 +182,9 @@ end;
 
 procedure TImagerPresenter.DoMouseDown(ASender: TObject);
 begin
+  if Status <> sPicture then
+    Exit;
+
   if (ASender is TItemImgPresenter) then
   begin
     FSelected := TItemImgPresenter(ASender);
@@ -192,11 +195,17 @@ end;
 
 procedure TImagerPresenter.DoMouseMove(ASender: TObject);
 begin
+  if Status <> sPicture then
+    Exit;
+
   MouseMove;
 end;
 
 procedure TImagerPresenter.DoMouseUp(ASender: TObject);
 begin
+  if Status <> sPicture then
+    Exit;
+
   MouseUp;
 end;
 
@@ -205,6 +214,9 @@ var
   vItem: TItemImgPresenter;
   vTableView: ITableView;
 begin
+  if Status <> sPicture then
+    Exit;
+
   vItem := TItemImgPresenter(ASender);
   vTableView := View.AddTableView;
 

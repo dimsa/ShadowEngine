@@ -23,23 +23,17 @@ type
     FResourceFileName: string;
 
     procedure DoChangeStatus(ASender: TObject);
-
-//    procedure SetStatus(const Value: TSSBStatus);
     function FormTopLeft: TPointF;
     procedure OnModelUpdate(ASender: TObject);
+    function GetStatus: TSSBStatus;
   public
-//    property Status: TSSBStatus read FStatus write SetStatus;
-//    property IsMouseDown: Boolean read FIsMouseDown write FIsMouseDown;
-
     procedure InitImager;
     procedure InitObjecter;
     procedure InitShaper;
-    procedure LoadProject;//(const AFileName: string);
-    procedure SaveProject;//(const AFileName: string);
-    procedure SaveForEngine;//(const AFileName: string);
+    procedure LoadProject;
+    procedure SaveProject;
+    procedure SaveForEngine;
     constructor Create(const AView: IMainView; const AWorkSpaceView: IWorkSpaceView);
-//    (AForm: TForm; APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog);
-//    procedure Init(const AProgForm: TForm);
     property Imager: TImagerPresenter read FImager;
     property Objecter: TObjecterPresenter read FObjecter;
     destructor Destroy; override;
@@ -62,9 +56,10 @@ begin
 //  FForm := AForm;
  // FView := TView.Create(APanel, ABackground, ASelected, AOpenDialog, FormTopLeft);
   FModel := TSSBModel.Create(OnModelUpdate);
-  FImager := TImagerPresenter.Create(AWorkSpaceView, FModel);
-  FObjecter := TObjecterPresenter.Create(AWorkSpaceView, FModel);
+  FImager := TImagerPresenter.Create(AWorkSpaceView, FModel, GetStatus);
+  FObjecter := TObjecterPresenter.Create(AWorkSpaceView, FModel, GetStatus);
   FResourceFileName := 'NoName';
+  InitImager;
 end;
 
 destructor TMainPresenter.Destroy;
@@ -88,63 +83,31 @@ begin
   Result := FView.ClientToScreenPoint(TPoint.Zero); //FForm.ClientToScreen(TPoint.Zero);
 end;
 
+function TMainPresenter.GetStatus: TSSBStatus;
+begin
+  Result := FStatus;
+end;
+
 procedure TMainPresenter.InitImager;
 begin
+  FStatus := TSSBStatus.sPicture;
+  FObjecter.HideShapes;
   FView.SetStatus(TSSBStatus.sPicture);
 end;
 
 procedure TMainPresenter.InitObjecter;
 begin
+  FStatus := TSSBStatus.sObject;
+  FObjecter.HideShapes;
   FView.SetStatus(TSSBStatus.sObject);
 end;
 
 procedure TMainPresenter.InitShaper;
 begin
+  FStatus := TSSBStatus.sShape;
+  FObjecter.ShowShapes;
   FView.SetStatus(TSSBStatus.sShape);
 end;
-
-//function TMainPresenter.GetImager: TImagerPresenter;
-//begin
-//  Result := TImagerPresenter(FImager);
-//end;
-//
-//function TMainPresenter.GetObjecter: TObjecterPresenter;
-//begin
-//  Result := TObjecterPresenter(FObjecter);
-//end;
-
-{procedure TMainPresenter.Init(const AProgForm: TForm);
-begin
-  FPanel := TPanel(AProgForm.FindComponent('MainPanel'));
-  with FPanel do
-  begin
-    try
-      Canvas.BeginScene;
-      Canvas.Fill.Color := TAlphaColorRec.Blanchedalmond;
-      Canvas.FillRect(FPanel.BoundsRect, 0, 0, [], 1, FMX.Types.TCornerType.Round);
-    finally
-      Canvas.EndScene;
-    end;
-
-  end;
-
-  FPanels[sPicture] := TLayout(AProgForm.FindComponent('Picture_Inst'));
-  FPanels[sObject] := TLayout(AProgForm.FindComponent('Object_Inst'));
-  FPanels[sShape] := TLayout(AProgForm.FindComponent('Shape_Inst'));
-
-  Status := sPicture;
-
-  FTabsRect[sPicture] := TRectangle(AProgForm.FindComponent('Picture_Rect'));
-  FTabsRect[sObject] := TRectangle(AProgForm.FindComponent('Object_Rect'));
-  FTabsRect[sShape] := TRectangle(AProgForm.FindComponent('Shape_Rect'));
-
-  FTabsImg[sPicture] := TImage(AProgForm.FindComponent('Picture_Img'));
-  FTabsImg[sObject] := TImage(AProgForm.FindComponent('Object_Img'));
-  FTabsImg[sShape] := TImage(AProgForm.FindComponent('Shape_Img'));
-
-  Status := TSSBStatus.sPicture;
-  Imager.Init;
-end; }
 
 procedure TMainPresenter.LoadProject;//(const AFileName: string);
 var
@@ -214,6 +177,7 @@ begin
       vStream.Free;
   end;
 
+  InitImager;
   {Look at SSBProjectFormatDescription.txt !!!}
 end;
 
