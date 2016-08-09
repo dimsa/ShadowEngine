@@ -36,6 +36,8 @@ type
     procedure MouseMove; virtual; abstract;
     procedure ShowOptions; virtual; abstract;
     procedure SaveOptions; virtual; abstract;
+    procedure Disable;
+    procedure Enable;
     constructor Create(const AItemView: IItemView); reintroduce; virtual;
   end;
 
@@ -46,6 +48,16 @@ implementation
 constructor TItemBasePresenter.Create(const AItemView: IItemView);
 begin
   FView := AItemView;
+end;
+
+procedure TItemBasePresenter.Disable;
+begin
+  FView.Enabled := False;
+end;
+
+procedure TItemBasePresenter.Enable;
+begin
+  FView.Enabled := True;
 end;
 
 function TItemBasePresenter.GetOnMouseDown: TNotifyEvent;

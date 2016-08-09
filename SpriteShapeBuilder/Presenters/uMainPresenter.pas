@@ -92,6 +92,8 @@ procedure TMainPresenter.InitImager;
 begin
   FStatus := TSSBStatus.sPicture;
   FObjecter.HideShapes;
+  FObjecter.DisableItems;
+  FImager.EnableItems;
   FView.SetStatus(TSSBStatus.sPicture);
 end;
 
@@ -99,6 +101,8 @@ procedure TMainPresenter.InitObjecter;
 begin
   FStatus := TSSBStatus.sObject;
   FObjecter.HideShapes;
+  FObjecter.EnableItems;
+  FImager.DisableItems;
   FView.SetStatus(TSSBStatus.sObject);
 end;
 
@@ -106,6 +110,8 @@ procedure TMainPresenter.InitShaper;
 begin
   FStatus := TSSBStatus.sShape;
   FObjecter.ShowShapes;
+  FObjecter.EnableItems;
+  FImager.DisableItems;
   FView.SetStatus(TSSBStatus.sShape);
 end;
 

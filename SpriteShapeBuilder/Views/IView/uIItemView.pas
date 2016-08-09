@@ -17,11 +17,15 @@ type
     procedure SetTop(AValue: Integer);
     function GetLeft: Integer;
     procedure SetLeft(AValue: Integer);
+    function GetEnabled: Boolean;
+    procedure SetEnabled(AValue: Boolean);
     function GetPresenter: IItemPresenter;
     procedure SetPresenter(AValue: IItemPresenter);
 
+
     function MousePos: TPointF;
     procedure ChangeCursor(const ACursor: TCursor);
+    property Enabled: Boolean read GetEnabled write SetEnabled;
 
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;

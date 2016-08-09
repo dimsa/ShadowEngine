@@ -48,6 +48,8 @@ type
     procedure MouseMove;
     procedure MouseDown;
     procedure MouseUp;
+    procedure DisableItems;
+    procedure EnableItems;
     constructor Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>); override;
     destructor Destroy; override;
   end;
@@ -123,6 +125,14 @@ begin
   inherited;
 end;
 
+procedure TImagerPresenter.DisableItems;
+var
+  i: TItemImgPresenter;
+begin
+  for i in FItems.Keys do
+    i.Disable;
+end;
+
 procedure TImagerPresenter.JustifyAnchors(AItem: TItemImgPresenter);
 var
   vX: Integer;
@@ -182,9 +192,6 @@ end;
 
 procedure TImagerPresenter.DoMouseDown(ASender: TObject);
 begin
-  if Status <> sPicture then
-    Exit;
-
   if (ASender is TItemImgPresenter) then
   begin
     FSelected := TItemImgPresenter(ASender);
@@ -195,17 +202,11 @@ end;
 
 procedure TImagerPresenter.DoMouseMove(ASender: TObject);
 begin
-  if Status <> sPicture then
-    Exit;
-
   MouseMove;
 end;
 
 procedure TImagerPresenter.DoMouseUp(ASender: TObject);
 begin
-  if Status <> sPicture then
-    Exit;
-
   MouseUp;
 end;
 
@@ -224,6 +225,14 @@ begin
   vItem.TableView := vTableView;
 end;
 
+procedure TImagerPresenter.EnableItems;
+var
+  i: TItemImgPresenter;
+begin
+  for i in FItems.Keys do
+    i.Enable;
+end;
+
 function TImagerPresenter.GetView: IWorkSpaceView;
 begin
 
@@ -231,6 +240,9 @@ end;
 
 procedure TImagerPresenter.MouseDown;
 begin
+  if Status <> sPicture then
+    Exit;
+
   IsMouseDowned := True;
   if FSelected <> nil then
   begin
@@ -260,6 +272,9 @@ var
   vRect: TRectF;
   vW, vH: Single;
 begin
+  if Status <> sPicture then
+    Exit;
+
   if (FSelected <> nil) then
       ResizeType(FSelected);
 
@@ -297,6 +312,9 @@ end;
 
 procedure TImagerPresenter.MouseUp;
 begin
+  if Status <> sPicture then
+    Exit;
+
   Captured := nil;
   FCaptureMode := cmNone;
   FResizeType := rtNone;

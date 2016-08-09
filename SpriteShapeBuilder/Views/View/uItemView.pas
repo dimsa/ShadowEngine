@@ -29,6 +29,8 @@ type
     procedure MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     function GetPresenter: IItemPresenter;
     procedure SetPresenter(AValue: IItemPresenter);
+    function GetEnabled: Boolean;
+    procedure SetEnabled(AValue: Boolean);
   public
     property Presenter: IItemPresenter read GetPresenter write SetPresenter;
     procedure ChangeCursor(const ACursor: TCursor);
@@ -70,6 +72,11 @@ end;
 destructor TItemView.Destroy;
 begin
   FImage.Free;
+end;
+
+function TItemView.GetEnabled: Boolean;
+begin
+  Result := FImage.Enabled;
 end;
 
 function TItemView.GetHeight: Integer;
@@ -132,6 +139,11 @@ procedure TItemView.MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
   FPresenter.MouseUp;
+end;
+
+procedure TItemView.SetEnabled(AValue: Boolean);
+begin
+  FImage.Enabled := AValue;
 end;
 
 procedure TItemView.SetHeight(AValue: Integer);

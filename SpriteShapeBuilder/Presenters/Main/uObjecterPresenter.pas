@@ -58,6 +58,8 @@ type
     procedure MouseMove;
     procedure MouseUp;
     procedure MouseDown;
+    procedure DisableItems;
+    procedure EnableItems;
   end;
 
 implementation
@@ -157,11 +159,16 @@ begin
     FSelected.Delete;
 end;
 
+procedure TObjecterPresenter.DisableItems;
+var
+  i: TItemObjPresenter;
+begin
+  for i in FItems.Keys do
+    i.Disable;
+end;
+
 procedure TObjecterPresenter.DoMouseDown(ASender: TObject);
 begin
-  if Status <> sObject then
-    Exit;
-
   if (ASender is TItemObjPresenter) then
   begin
     FSelected := TItemObjPresenter(ASender);
@@ -172,17 +179,11 @@ end;
 
 procedure TObjecterPresenter.DoMouseMove(ASender: TObject);
 begin
-  if Status <> sObject then
-    Exit;
-
   MouseMove;
 end;
 
 procedure TObjecterPresenter.DoMouseUp(ASender: TObject);
 begin
-  if Status <> sObject then
-    Exit;
-
   MouseUp;
 end;
 
@@ -199,6 +200,14 @@ begin
 
   vTableView.Presenter := vItem;
   vItem.TableView := vTableView;
+end;
+
+procedure TObjecterPresenter.EnableItems;
+var
+  i: TItemObjPresenter;
+begin
+  for i in FItems.Keys do
+    i.Enable;
 end;
 
 function TObjecterPresenter.GetView: IWorkSpaceView;
@@ -251,6 +260,10 @@ end;
 
 procedure TObjecterPresenter.MouseDown;
 begin
+  if Status <> sObject then
+    Exit;
+
+
   IsMouseDowned := True;
   if FSelected <> nil then
   begin
@@ -276,6 +289,9 @@ end;
 
 procedure TObjecterPresenter.MouseMove;
 begin
+  if Status <> sObject then
+    Exit;
+
   if (FSelected <> nil) then
       ResizeType(FSelected);
 
@@ -312,6 +328,9 @@ end;
 
 procedure TObjecterPresenter.MouseUp;
 begin
+  if Status <> sObject then
+    Exit;
+
   Captured := nil;
   FCaptureMode := cmNone;
   FResizeType := rtNone;

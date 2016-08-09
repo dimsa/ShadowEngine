@@ -55,11 +55,6 @@ begin
 //  FPanel. (FPanel.Position.Point - FParentTopLeft);
 end;
 
-{function TView.ParentScreenToClient(const APoint: TPointF): TPointF;
-begin
-  Result := (FFormPosition(APoint) - FPanel.Position.Point);
-end;  }
-
 function TWorkSpaceView.AddElement: IItemView;
 var
   vImg: TItemView;
