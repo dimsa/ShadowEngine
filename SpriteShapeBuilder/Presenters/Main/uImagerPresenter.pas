@@ -45,6 +45,7 @@ type
     procedure AddImg; overload;
     procedure AddImg(const AModel: TItemImageModel); overload;
     procedure DelImg;
+    procedure CloneImg;
     procedure MouseMove;
     procedure MouseDown;
     procedure MouseUp;
@@ -96,6 +97,27 @@ begin
   vItemPresenter.OnOptionsShow := DoOptionsShow;
 
   FItems.Add(vItemPresenter, vViewItem);
+end;
+
+procedure TImagerPresenter.CloneImg;
+var
+  vFileName: string;
+  vModel, vOldModel: TItemImageModel;
+  vImg: TImage;
+begin
+  if FSelected <> nil then
+  begin
+    vOldModel := FSelected.Model;
+    // Creating Model
+    vModel := Model.AddImageElement;
+    vModel.Rect := vOldModel.Rect;
+    vModel.Width := vOldModel.Width;
+    vModel.Height := vOldModel.Height;
+
+    AddImg(vModel);
+    vModel.OriginalImage := TImage.Create(nil);
+    vModel.OriginalImage.Bitmap.Assign(vOldModel.OriginalImage.Bitmap);
+  end;
 end;
 
 constructor TImagerPresenter.Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);

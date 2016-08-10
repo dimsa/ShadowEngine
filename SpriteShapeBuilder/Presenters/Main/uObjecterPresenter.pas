@@ -52,6 +52,7 @@ type
     procedure AddObj; overload;
     procedure AddObj(const AObject: TResourceModel); overload; // Need to move to protected
     procedure DelObj;
+    procedure CloneObj;
     procedure AddPoint;
     procedure DelPoint;
     procedure DelShape;
@@ -124,6 +125,22 @@ procedure TObjecterPresenter.AddCircle;
 begin
   if FSelected <> nil then
     FSelected.AddCircle;
+end;
+
+procedure TObjecterPresenter.CloneObj;
+var
+  vModel, vOldModel: TResourceModel;
+begin
+  if FSelected <> nil then
+  begin
+    vOldModel := FSelected.Model;
+    // Creating Model
+    vModel := Model.AddResource;
+    AddObj(vModel);
+    vModel.Width := vOldModel.Width;
+    vModel.Height:= vOldModel.Height;
+    vModel.Position:= vOldModel.Position;
+  end;
 end;
 
 constructor TObjecterPresenter.Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);

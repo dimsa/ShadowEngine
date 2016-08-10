@@ -368,11 +368,24 @@ object SSBForm: TSSBForm
           Size.Width = 96.000000000000000000
           Size.Height = 33.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 3
+          TabOrder = 4
           Text = 'Delete Image'
           XRadius = 3.000000000000000000
           YRadius = 3.000000000000000000
-          OnClick = DelPictureBtnClick
+          OnClick = ClonePictureBtnClick
+        end
+        object ClonePictureBtn: TCornerButton
+          Align = Horizontal
+          Position.Y = 84.000000000000000000
+          Sides = [Top, Left, Bottom, Right]
+          Size.Width = 96.000000000000000000
+          Size.Height = 33.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 3
+          Text = 'Clone Image'
+          XRadius = 3.000000000000000000
+          YRadius = 3.000000000000000000
+          OnClick = ClonePictureBtnClick
         end
       end
       object Object_Inst: TLayout
@@ -402,7 +415,7 @@ object SSBForm: TSSBForm
           Size.Width = 96.000000000000000000
           Size.Height = 33.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 3
+          TabOrder = 4
           Text = 'Del Object'
           XRadius = 3.000000000000000000
           YRadius = 3.000000000000000000
@@ -415,10 +428,23 @@ object SSBForm: TSSBForm
           Size.Width = 96.000000000000000000
           Size.Height = 33.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 2
+          TabOrder = 3
           Text = 'Edit Object'
           XRadius = 3.000000000000000000
           YRadius = 3.000000000000000000
+        end
+        object CloneObjectBtn: TCornerButton
+          Align = Horizontal
+          Position.Y = 124.000000000000000000
+          Sides = [Top, Left, Bottom, Right]
+          Size.Width = 96.000000000000000000
+          Size.Height = 33.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 2
+          Text = 'Clone Object'
+          XRadius = 3.000000000000000000
+          YRadius = 3.000000000000000000
+          OnClick = CloneObjectBtnClick
         end
       end
       object Shape_Inst: TLayout
@@ -544,7 +570,7 @@ object SSBForm: TSSBForm
     Top = 8
   end
   object GlowEffect1: TGlowEffect
-    Softness = 0.400000005960464400
+    Softness = 0.400000005960464500
     GlowColor = claGold
     Opacity = 0.899999976158142100
   end

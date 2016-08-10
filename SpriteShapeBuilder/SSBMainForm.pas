@@ -45,11 +45,13 @@ type
     GlowEffect1: TGlowEffect;
     DelPointBtn: TCornerButton;
     AddPointBtn: TCornerButton;
+    ClonePictureBtn: TCornerButton;
+    CloneObjectBtn: TCornerButton;
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
     procedure SaveForEngineBtnClick(Sender: TObject);
-    procedure DelPictureBtnClick(Sender: TObject);
+    procedure ClonePictureBtnClick(Sender: TObject);
     procedure BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean);
     procedure AddPictureBtnClick(Sender: TObject);
@@ -77,6 +79,7 @@ type
     procedure Shape_imgMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
     function FormTopLeft: TPointF;
+    procedure CloneObjectBtnClick(Sender: TObject);
   private
     FPanels: array[TSSBStatus] of TLayout;
     FStatus: TSSBStatus;
@@ -169,9 +172,14 @@ begin
   FWorkSpaceView.Objecter.DelObj;
 end;
 
-procedure TSSBForm.DelPictureBtnClick(Sender: TObject);
+procedure TSSBForm.CloneObjectBtnClick(Sender: TObject);
 begin
-  FWorkSpaceView.Imager.DelImg;
+  FWorkSpaceView.Objecter.CloneObj;
+end;
+
+procedure TSSBForm.ClonePictureBtnClick(Sender: TObject);
+begin
+  FWorkSpaceView.Imager.CloneImg;
 end;
 
 procedure TSSBForm.DelPointBtnClick(Sender: TObject);
