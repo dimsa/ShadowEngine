@@ -5,13 +5,14 @@ interface
 uses
   System.Types, FMX.Graphics, System.UITypes,  {$I 'Utils\DelphiCompatability.inc'}
   System.Math, uItemBasePresenter, uIntersectorClasses, uIntersectorMethods,
-  System.Generics.Collections, System.SysUtils,uClasses,
+  System.Generics.Collections, System.SysUtils, System.Classes,  uClasses,
   uIItemView, uNewFigure, uSSBModels, uITableView;
 
 type
   TItemShaperPresenter = class(TItemBasePresenter)
   private
     FItemShapeModel: TItemShapeModel;
+    FOnCreateShapeModel: TNotifyEvent;
     FTableView: ITableView;
     FParams: TDictionary<string, string>;
     FLockedIndex: Integer;
@@ -24,6 +25,8 @@ type
     procedure SetWidth(const Value: Integer);
     function GetParams: TDictionary<string,string>;
     procedure SetParams(const AValue: TDictionary<string, string>);
+    procedure OnModelUpdate(ASender: TObject);
+    procedure RaiseOnCreateShapeModel;
   protected
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
@@ -37,6 +40,8 @@ type
     property Model: TItemShapeModel read FItemShapeModel;
     property TableView: ITableView read FTableView write FTableView;
   public
+    procedure CreateCircle;
+    procedure CreatePoly;
     procedure AddPoint;
     procedure DelPoint;
     procedure MouseDown; override;
@@ -46,7 +51,8 @@ type
     procedure ShowOptions; override;
     procedure SaveOptions; override;
 
-    constructor Create(const AItemView: IItemView; AItemShapeModel: TItemShapeModel);
+    constructor Create(const AItemView: IItemView; OnCreateShapeModel: TNotifyEvent); overload;
+    constructor Create(const AItemView: IItemView; AShapeModel: TItemShapeModel); overload;
     destructor Destroy; override;
   end;
 
@@ -106,12 +112,63 @@ begin
   end;
 end;
 
-constructor TItemShaperPresenter.Create(const AItemView: IItemView;
-  AItemShapeModel: TItemShapeModel);
+constructor TItemShaperPresenter.Create(const AItemView: IItemView; OnCreateShapeModel: TNotifyEvent);
 begin
   inherited Create(AItemView);
   FParams := TDictionary<string, string>.Create;
-  FItemShapeModel := AItemShapeModel;
+  FOnCreateShapeModel := OnCreateShapeModel;
+end;
+
+constructor TItemShaperPresenter.Create(const AItemView: IItemView; AShapeModel: TItemShapeModel);
+begin
+  inherited Create(AItemView);
+  FParams := TDictionary<string, string>.Create;
+  FItemShapeModel := AShapeModel;
+  FItemShapeModel.UpdateHander := OnModelUpdate;
+end;
+
+procedure TItemShaperPresenter.CreateCircle;
+var
+  vShapeModel: TItemShapeModel;
+  vCircle: TCircle;
+begin
+ // Creating Model
+  vShapeModel := TItemShapeModel.CreateCircle(OnModelUpdate);
+
+  // Creating View
+  vCircle.X := 0;
+  vCircle.Y := 0;
+  vCircle.Radius := 25;//FItemObjectModel.Width / 4;
+  vShapeModel.SetData(vCircle);
+
+  FItemShapeModel := vShapeModel;
+
+  RaiseOnCreateShapeModel;
+//  нужно сюда передать метод, который на вход принимает ShapeModel
+//  FItemObjectModel.AddShape(vShapeModel);
+end;
+
+procedure TItemShaperPresenter.CreatePoly;
+var
+  vShapeModel: TItemShapeModel;
+  vPoly: TPolygon;
+begin
+ // Creating Model
+  vShapeModel := TItemShapeModel.CreatePoly(OnModelUpdate);
+
+  SetLength(vPoly, 3);
+{  vPoly[0] := PointF(0, -FItemObjectModel.Height / 4);
+  vPoly[1] := PointF(-FItemObjectModel.Width / 4, FItemObjectModel.Height / 4);
+  vPoly[2] := PointF(FItemObjectModel.Width / 4, FItemObjectModel.Height / 4);}
+
+  vPoly[0] := PointF(0, -50);
+  vPoly[1] := PointF(-50, 50);
+  vPoly[2] := PointF(50, 50);
+
+  vShapeModel.SetData(vPoly);
+  FItemShapeModel := vShapeModel;
+
+  RaiseOnCreateShapeModel;
 end;
 
 procedure TItemShaperPresenter.Delete;
@@ -147,6 +204,12 @@ begin
   FTableView := nil;
   FParams.Free;
   inherited;
+end;
+
+procedure TItemShaperPresenter.RaiseOnCreateShapeModel;
+begin
+  if Assigned(FOnCreateShapeModel) then
+    FOnCreateShapeModel(FItemShapeModel);
 end;
 
 function TItemShaperPresenter.GetHeight: Integer;
@@ -294,6 +357,11 @@ begin
   inherited;
   if Assigned(FOnMouseUp) then
     FOnMouseUp(Self)
+end;
+
+procedure TItemShaperPresenter.OnModelUpdate(ASender: TObject);
+begin
+
 end;
 
 procedure TItemShaperPresenter.Repaint(ABmp: TBitmap; const AColor: TColor = TAlphaColorRec.Aliceblue);

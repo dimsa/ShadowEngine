@@ -170,8 +170,8 @@ begin
       for i := 0 to vN - 1 do
       begin
         vElement := FModel.AddResource;
-        vElement.ReadFromStream(vStream);
         FObjecter.AddObj(vElement);
+        vElement.ReadFromStream(vStream);
         FObjecter.ShowShapes;
         vElement.RaiseUpdateEvent;
       end;

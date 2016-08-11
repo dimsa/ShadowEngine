@@ -74,13 +74,13 @@ procedure TObjecterPresenter.AddObj;
 var
   vModel: TResourceModel;
 begin
-    // Creating Model
-    vModel := Model.AddResource;
+  // Creating Model
+  vModel := Model.AddResource;
 
-    AddObj(vModel);
+  AddObj(vModel);
 
-    vModel.Width := 50;
-    vModel.Height:= 50;
+  vModel.Width := 50;
+  vModel.Height:= 50;
 end;
 
 procedure TObjecterPresenter.AddObj(const AObject: TResourceModel);

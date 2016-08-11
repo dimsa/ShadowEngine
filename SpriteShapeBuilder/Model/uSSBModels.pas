@@ -17,7 +17,6 @@ type
   public
     property Figure: TNewFigure read FFigure;
     property MaxRadius: Integer read GetMaxRadius;
-
     procedure SetData(const AData: TPolygon); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const AData: TRectF); overload;// Быстрое задание ректангла
     procedure SetData(const AData: uIntersectorClasses.TCircle); overload;// Трактует данные в зависимости от своего типа
@@ -52,6 +51,8 @@ type
     FHeight: Integer;
     FPosition: TPoint;
     FShapes: TList<TItemShapeModel>;
+    FShapeAdded: TNotifyEventList;
+    FShapeRemoved: TNotifyEventList;
     procedure SetHeight(const Value: Integer);
     procedure SetName(const Value: string);
     procedure SetPosition(const Value: TPoint);
@@ -62,8 +63,12 @@ type
     property Width: Integer read FWidth write SetWidth;
     property Height: Integer read FHeight write SetHeight;
     property Position: TPoint read FPosition write SetPosition;
-    property ShapesList: TList<TItemShapeModel> read FShapes write SetShapesList;
-    procedure AddShape(const AShape: TItemShapeModel);
+//    property ShapesList: TList<TItemShapeModel> read FShapes;// write SetShapesList;
+    property ShapeAdded: TNotifyEventList read FShapeAdded;
+    property ShapeRemoved: TNotifyEventList read FShapeRemoved;
+    procedure AddShape(AItem: TItemShapeModel);
+    procedure RemoveShape(AItem: TItemShapeModel);
+    procedure OnAddShapeHandler(ASender: TObject);
     procedure DelShape(const AShape: TItemShapeModel);
     procedure WriteToStream(AStream: TStreamUtil);
     procedure ReadFromStream(AStream: TStreamUtil);
@@ -103,10 +108,10 @@ implementation
 
 { TElement }
 
-procedure TResourceModel.AddShape(const AShape: TItemShapeModel);
+procedure TResourceModel.AddShape(AItem: TItemShapeModel);
 begin
-  FShapes.Add(AShape);
-  RaiseUpdateEvent;
+  FShapes.Add(AItem);
+  FShapeAdded.RaiseEvent(AItem);
 end;
 
 function TResourceModel.AsJson: TJSONObject;
@@ -139,6 +144,8 @@ constructor TResourceModel.Create;
 begin
   inherited;
 
+  FShapeAdded := TNotifyEventList.Create;
+  FShapeRemoved := TNotifyEventList.Create;
   FShapes := TList<TItemShapeModel>.Create;
 end;
 
@@ -146,6 +153,8 @@ constructor TResourceModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
   inherited;
 
+  FShapeAdded := TNotifyEventList.Create;
+  FShapeRemoved := TNotifyEventList.Create;
   FShapes := TList<TItemShapeModel>.Create;
 end;
 
@@ -164,6 +173,8 @@ begin
     FShapes[i].Free;
 
   FShapes.Free;
+  FShapeAdded.Free;
+  FShapeRemoved.Free;
 
   inherited;
 end;
@@ -171,6 +182,12 @@ end;
 procedure TResourceModel.FromJson(const AJson: string);
 begin
   RaiseUpdateEvent;
+end;
+
+procedure TResourceModel.OnAddShapeHandler(ASender: TObject);
+begin
+  if ASender is TItemShapeModel then
+    AddShape(TItemShapeModel(ASender));
 end;
 
 procedure TResourceModel.ReadFromStream(AStream: TStreamUtil);
@@ -199,10 +216,17 @@ begin
     begin
       vShape := TItemShapeModel.Create();
       vShape.ReadFromStream(AStream);
-      FShapes.Add(vShape);
+      AddShape(vShape);
+//      FShapes.Add(vShape);
     end;
     RaiseUpdateEvent;
   end;
+end;
+
+procedure TResourceModel.RemoveShape(AItem: TItemShapeModel);
+begin
+  FShapes.Remove(AItem);
+  FShapeRemoved.RaiseEvent(AItem);
 end;
 
 procedure TResourceModel.SetHeight(const Value: Integer);

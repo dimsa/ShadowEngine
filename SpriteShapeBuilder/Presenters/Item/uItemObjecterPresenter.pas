@@ -42,6 +42,8 @@ type
     procedure SetRect(const Value: TRectF); override;
     procedure DoOptionsShow(ASender: TObject);
     procedure DoOptionsSave(ASender: TObject);
+    procedure OnShapeAdded(ASender: TObject);
+    procedure OnShapeRemoved(ASender: TObject);
   protected
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
@@ -78,19 +80,10 @@ uses
 procedure TItemObjecterPresenter.AddCircle;
 var
   vShape: TItemShpPresenter;
-  vShapeModel: TItemShapeModel;
-  vCircle: TCircle;
 begin
-  // Creating Model
-  vShapeModel := TItemShapeModel.CreateCircle(OnModelUpdate);
-  // Creating View
-  vCircle.X := 0;
-  vCircle.Y := 0;
-  vCircle.Radius := FItemObjectModel.Width / 4;
-  vShapeModel.SetData(vCircle);
+  vShape := TItemShpPresenter.Create(FView, FItemObjectModel.OnAddShapeHandler);
+  vShape.CreateCircle;
 
-  vShape := TItemShpPresenter.Create(FView, vShapeModel);
-  FItemObjectModel.AddShape(vShapeModel);
   FShapes.Add(vShape);
   RepaintShapes;
 end;
@@ -101,27 +94,16 @@ begin
   begin
     FSelectedShape.AddPoint;
     FSelectedShape := nil;
+    RepaintShapes;
   end;
 end;
 
 procedure TItemObjecterPresenter.AddPoly;
 var
   vShape: TItemShpPresenter;
-  vShapeModel: TItemShapeModel;
-  vPoly: TPolygon;
 begin
-  // Creating Model
-  vShapeModel := TItemShapeModel.CreatePoly(OnModelUpdate);
-
-  SetLength(vPoly, 3);
-  vPoly[0] := PointF(0, -FItemObjectModel.Height / 4);
-  vPoly[1] := PointF(-FItemObjectModel.Width / 4, FItemObjectModel.Height / 4);
-  vPoly[2] := PointF(FItemObjectModel.Width / 4, FItemObjectModel.Height / 4);
-
-  vShapeModel.SetData(vPoly);
-
-  vShape := TItemShpPresenter.Create(FView, vShapeModel);
-  FItemObjectModel.AddShape(vShapeModel);
+  vShape := TItemShpPresenter.Create(FView, FItemObjectModel.OnAddShapeHandler{ vShapeModel});
+  vShape.CreatePoly;
   FShapes.Add(vShape);
   RepaintShapes;
 end;
@@ -154,6 +136,8 @@ begin
   FParams := TDictionary<string, string>.Create;
   FItemObjectModel := AItemObjectModel;
   FItemObjectModel.UpdateHander := OnModelUpdate;
+  FItemObjectModel.ShapeAdded.Add(OnShapeAdded);
+  FItemObjectModel.ShapeRemoved.Add(OnShapeRemoved);
   FShapes := TList<TItemShpPresenter>.Create;
 end;
 
@@ -173,7 +157,9 @@ begin
   begin
     FSelectedShape.DelPoint;
     FSelectedShape := nil;
+    RepaintShapes;
   end;
+
 end;
 
 destructor TItemObjecterPresenter.Destroy;
@@ -200,7 +186,7 @@ procedure TItemObjecterPresenter.DoOptionsShow(ASender: TObject);
   vTableView: ITableView;
 begin
   vItem := TItemShpPresenter(ASender);
-  vTableView :=FTableView;
+  vTableView := FTableView;
 
   vTableView.Presenter := vItem;
   vItem.TableView := vTableView;
@@ -382,8 +368,8 @@ begin
   // We creating or destroying TableViews
   // After presenter = nil, refcount on ShapePresenter is 0, so it destroying   }
 
-  for i := FShapes.Count - 1 downto 0  do
-    if (Assigned(FShapes[i])) {and (FShapes[i].RefCount > 0) }then
+  {for i := FShapes.Count - 1 downto 0  do
+    if (Assigned(FShapes[i])) then
     begin
      vShape := TItemShpPresenter(FShapes[i]);
      TItemShpPresenter(FShapes[i]).TableView := nil;
@@ -396,12 +382,43 @@ begin
 
   for i := 0 to vModel.ShapesList.Count - 1 do
   begin
-    vShape := TItemShpPresenter.Create(FView, vModel.ShapesList[i]);
+    vShape := TItemShpPresenter.Create(FView, FItemObjectModel.OnAddShapeHandler);
     vShape.OnOptionsShow := DoOptionsShow;
     vShape.OnOptionsSave := DoOptionsSave;
     FShapes.Add(vShape);
-  end;
+  end;   }
 
+{  if vModel.ShapesList.Count > FShapes.Count then
+  begin
+    for i := FShapes.Count to vModel.ShapesList.Count do
+    begin
+      vShape := TItemShpPresenter.Create(FView, FItemObjectModel.OnAddShapeHandler);
+      vShape.OnOptionsShow := DoOptionsShow;
+      vShape.OnOptionsSave := DoOptionsSave;
+      FShapes.Add(vShape);
+    end;
+  end; }
+
+
+  RepaintShapes;
+end;
+
+procedure TItemObjecterPresenter.OnShapeAdded(ASender: TObject);
+var
+  vShapePresenter: TItemShpPresenter;
+begin
+  vShapePresenter := TItemShpPresenter.Create(FView, TItemShapeModel(ASender));
+  FShapes.Add(vShapePresenter);
+  RepaintShapes;
+end;
+
+procedure TItemObjecterPresenter.OnShapeRemoved(ASender: TObject);
+var
+  i: Integer;
+begin
+  for i := 0 to FShapes.Count - 1 do
+    if FShapes[i].Model = TItemShapeModel(ASender) then
+      FShapes.Remove(FShapes[i]);
   RepaintShapes;
 end;
 
