@@ -134,13 +134,6 @@ var
 begin
  // Creating Model
   vShapeModel := TItemShapeModel.CreateCircle(OnModelUpdate);
-
-  // Creating View
-  vCircle.X := 0;
-  vCircle.Y := 0;
-  vCircle.Radius := 25;//FItemObjectModel.Width / 4;
-  vShapeModel.SetData(vCircle);
-
   FItemShapeModel := vShapeModel;
 
   RaiseOnCreateShapeModel;
@@ -155,17 +148,6 @@ var
 begin
  // Creating Model
   vShapeModel := TItemShapeModel.CreatePoly(OnModelUpdate);
-
-  SetLength(vPoly, 3);
-{  vPoly[0] := PointF(0, -FItemObjectModel.Height / 4);
-  vPoly[1] := PointF(-FItemObjectModel.Width / 4, FItemObjectModel.Height / 4);
-  vPoly[2] := PointF(FItemObjectModel.Width / 4, FItemObjectModel.Height / 4);}
-
-  vPoly[0] := PointF(0, -50);
-  vPoly[1] := PointF(-50, 50);
-  vPoly[2] := PointF(50, 50);
-
-  vShapeModel.SetData(vPoly);
   FItemShapeModel := vShapeModel;
 
   RaiseOnCreateShapeModel;

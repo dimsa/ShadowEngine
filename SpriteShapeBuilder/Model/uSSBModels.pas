@@ -69,7 +69,7 @@ type
     procedure AddShape(AItem: TItemShapeModel);
     procedure RemoveShape(AItem: TItemShapeModel);
     procedure OnAddShapeHandler(ASender: TObject);
-    procedure DelShape(const AShape: TItemShapeModel);
+//    procedure DelShape(const AShape: TItemShapeModel);
     procedure WriteToStream(AStream: TStreamUtil);
     procedure ReadFromStream(AStream: TStreamUtil);
     function AsJson: TJSONObject;
@@ -158,12 +158,12 @@ begin
   FShapes := TList<TItemShapeModel>.Create;
 end;
 
-procedure TResourceModel.DelShape(const AShape: TItemShapeModel);
+{procedure TResourceModel.DelShape(const AShape: TItemShapeModel);
 begin
   FShapes.Remove(AShape);
   AShape.Free;
   RaiseUpdateEvent;
-end;
+end;                    ff  }
 
 destructor TResourceModel.Destroy;
 var
@@ -217,7 +217,6 @@ begin
       vShape := TItemShapeModel.Create();
       vShape.ReadFromStream(AStream);
       AddShape(vShape);
-//      FShapes.Add(vShape);
     end;
     RaiseUpdateEvent;
   end;
@@ -227,6 +226,7 @@ procedure TResourceModel.RemoveShape(AItem: TItemShapeModel);
 begin
   FShapes.Remove(AItem);
   FShapeRemoved.RaiseEvent(AItem);
+  AItem.Free;
 end;
 
 procedure TResourceModel.SetHeight(const Value: Integer);
@@ -330,15 +330,34 @@ begin
 end;
 
 constructor TItemShapeModel.CreateCircle(const AUpdateHandler: TNotifyEvent);
+var
+  vCircle: TCircle;
 begin
   inherited Create(AUpdateHandler);
   FFigure := TNewFigure.Create(TNewFigure.cfCircle);
+  vCircle.X := 0;
+  vCircle.Y := 0;
+  vCircle.Radius := 25;
+  FFigure.SetData(vCircle);
 end;
 
 constructor TItemShapeModel.CreatePoly(const AUpdateHandler: TNotifyEvent);
+var
+  vPoly: TPolygon;
 begin
   inherited Create(AUpdateHandler);
   FFigure := TNewFigure.Create(TNewFigure.cfPoly);
+
+  SetLength(vPoly, 3);
+{  vPoly[0] := PointF(0, -FItemObjectModel.Height / 4);
+  vPoly[1] := PointF(-FItemObjectModel.Width / 4, FItemObjectModel.Height / 4);
+  vPoly[2] := PointF(FItemObjectModel.Width / 4, FItemObjectModel.Height / 4);}
+
+  vPoly[0] := PointF(0, -50);
+  vPoly[1] := PointF(-50, 50);
+  vPoly[2] := PointF(50, 50);
+
+  FFigure.SetData(vPoly);
 end;
 
 destructor TItemShapeModel.Destroy;

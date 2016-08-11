@@ -372,7 +372,7 @@ object SSBForm: TSSBForm
           Text = 'Delete Image'
           XRadius = 3.000000000000000000
           YRadius = 3.000000000000000000
-          OnClick = ClonePictureBtnClick
+          OnClick = DelPictureBtnClick
         end
         object ClonePictureBtn: TCornerButton
           Align = Horizontal

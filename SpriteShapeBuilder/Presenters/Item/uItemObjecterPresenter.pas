@@ -102,7 +102,7 @@ procedure TItemObjecterPresenter.AddPoly;
 var
   vShape: TItemShpPresenter;
 begin
-  vShape := TItemShpPresenter.Create(FView, FItemObjectModel.OnAddShapeHandler{ vShapeModel});
+  vShape := TItemShpPresenter.Create(FView, FItemObjectModel.OnAddShapeHandler);
   vShape.CreatePoly;
   FShapes.Add(vShape);
   RepaintShapes;
@@ -145,8 +145,8 @@ procedure TItemObjecterPresenter.Delete;
 begin
   if FSelectedShape <> nil then
   begin
-    FShapes.Remove(FSelectedShape);
-    Model.DelShape(FSelectedShape.Model);
+//    FShapes.Remove(FSelectedShape);
+    Model.RemoveShape(FSelectedShape.Model);
     FSelectedShape := nil;
   end;
 end;
