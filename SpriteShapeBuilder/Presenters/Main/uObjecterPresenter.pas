@@ -6,11 +6,12 @@ uses
   System.Generics.Collections, FMX.Objects, System.Types, uClasses,
   uIWorkSpaceView, uMVPFrameWork, uSSBModels, uMainModel, uSSBTypes,
   uIItemView, uItemObjecterPresenter,
-  uBasePresenterIncapsulator, uITableView;
+  uBasePresenterIncapsulator, uITableView, uItemBasePresenter;
 
 type
   // To access protected Fields
   TItemObjPresenter = class(TItemObjecterPresenter);
+  TItemBsPresenter = class(TItemBasePresenter);
 
   TObjecterPresenterIncapsulator = class(TBasePresenterIncapsulator)
   strict private
@@ -64,7 +65,6 @@ type
   end;
 
 implementation
-
 uses
   FMX.Types, System.UITypes;
 
@@ -206,16 +206,15 @@ end;
 
 procedure TObjecterPresenter.DoOptionsShow(ASender: TObject);
 var
-  vItem: TItemObjPresenter;
+  vItem: TItemBsPresenter;
   vTableView: ITableView;
 begin
-  if Status <> sObject then
+  if Status = sPicture then
     Exit;
 
-  vItem := TItemObjPresenter(ASender);
+  vItem := TItemBsPresenter(ASender);
   vTableView := View.AddTableView;
-
-  vTableView.Presenter := vItem;
+  vTableView.SetOnTakeParams(vItem.OnOptionsSave);
   vItem.TableView := vTableView;
 end;
 

@@ -6,30 +6,26 @@ uses
   System.Types, FMX.Graphics, System.UITypes,  {$I 'Utils\DelphiCompatability.inc'}
   System.Math, uItemBasePresenter, uIntersectorClasses, uIntersectorMethods,
   System.Generics.Collections, System.SysUtils, System.Classes,  uClasses,
-  uIItemView, uNewFigure, uSSBModels, uITableView;
+  uIItemView, uSSBModels, uITableView;
 
 type
   TItemShaperPresenter = class(TItemBasePresenter)
   private
     FItemShapeModel: TItemShapeModel;
     FOnCreateShapeModel: TNotifyEvent;
-    FTableView: ITableView;
     FParams: TDictionary<string, string>;
     FLockedIndex: Integer;
     FLockedPoint: TPointF;
+    FOnFigureUpdated: TNotifyEvent;
     function GetHeight: Integer;
     function GetPosition: TPoint;
     function GetWidth: Integer;
-    procedure SetHeight(const Value: Integer);
     procedure SetPosition(const Value: TPoint);
-    procedure SetWidth(const Value: Integer);
     function GetParams: TDictionary<string,string>;
-    procedure SetParams(const AValue: TDictionary<string, string>);
+    procedure SetParams(const AValue: TDictionary<string, string>); override;
     procedure OnModelUpdate(ASender: TObject);
     procedure RaiseOnCreateShapeModel;
   protected
-    property Width: Integer read GetWidth write SetWidth;
-    property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
     function IsPointIn(const APoint: TPointF): Boolean;
     function KeyPointLocal(const ATestPosition: TPointF; out AKeyPoint: TPointF;
@@ -38,7 +34,7 @@ type
     procedure TranslateFigure(const ATranslate: TPointF);
     procedure Repaint(ABmp: TBitmap; const AColor: TColor = TAlphaColorRec.Aliceblue);
     property Model: TItemShapeModel read FItemShapeModel;
-    property TableView: ITableView read FTableView write FTableView;
+    property OnFigureUpdated: TNotifyEvent read FOnFigureUpdated write FOnFigureUpdated;
   public
     procedure CreateCircle;
     procedure CreatePoly;
@@ -49,7 +45,6 @@ type
     procedure MouseMove; override;
     procedure Delete; override;
     procedure ShowOptions; override;
-    procedure SaveOptions; override;
 
     constructor Create(const AItemView: IItemView; OnCreateShapeModel: TNotifyEvent); overload;
     constructor Create(const AItemView: IItemView; AShapeModel: TItemShapeModel); overload;
@@ -65,9 +60,10 @@ var
   vPoly: TPolygon;
   i: Integer;
 begin
-  if FItemShapeModel.Figure.Kind = TNewFigure.cfPoly then
+  if FItemShapeModel.FigureKind = fkPoly then
   begin
-    vPoly := FItemShapeModel.Figure.AsPoly;
+    vPoly := FItemShapeModel.AsPoly;
+
     SetLength(vPoly, Length(vPoly) + 1);
     vPoly[High(vPoly)].X := 0;
     vPoly[High(vPoly)].Y := 0;
@@ -79,22 +75,22 @@ end;
 procedure TItemShaperPresenter.ChangeLockedPoint(const ANewPoint: TPointF);
 var
   vD: single;
-  vFigure: TNewFigure;
+ // vFigure: TNewFigure;
   vPoly: TPolygon;
   vCircle: TCircle;
 begin
   if FLockedIndex <> -1 then
   begin
-    vFigure := FItemShapeModel.Figure;
-    if vFigure.Kind = TNewFigure.cfPoly then
+   // vFigure := FItemShapeModel.Figure;
+    if FItemShapeModel.FigureKind = fkPoly then
     begin
-      vPoly := vFigure.AsPoly;
+      vPoly := FItemShapeModel.AsPoly;
       vPoly[FLockedIndex] := ANewPoint;
-      vFigure.SetData(vPoly);
+      FItemShapeModel.SetData(vPoly);
     end;
-    if vFigure.Kind = TNewFigure.cfCircle then
+    if FItemShapeModel.FigureKind = fkCircle then
     begin
-      vCircle := vFigure.AsCircle;
+      vCircle := FItemShapeModel.AsCircle;
       if FLockedIndex = 0 then
       begin
         vCircle.X := ANewPoint.X;
@@ -107,7 +103,7 @@ begin
         vCircle.Radius := vD;
       end;
 
-      vFigure.SetData(vCircle);
+      FItemShapeModel.SetData(vCircle);
     end;
   end;
 end;
@@ -164,9 +160,9 @@ var
   vPoly: TPolygon;
   i: Integer;
 begin
-  if FItemShapeModel.Figure.Kind = TNewFigure.cfPoly then
+  if FItemShapeModel.FigureKind = fkPoly then
   begin
-    vPoly := FItemShapeModel.Figure.AsPoly;
+    vPoly := FItemShapeModel.AsPoly;
     if (FLockedIndex >= 0) and (Length(vPoly) > 3) then
     begin
       for i := FLockedIndex to High(vPoly) - 1 do
@@ -207,20 +203,20 @@ var
 begin
   FParams.Clear;
 
-  case Model.Figure.Kind of
-    TNewFigure.cfCircle:
+  case Model.FigureKind of
+    fkCircle:
     begin
-      vCircle := Model.Figure.AsCircle;
+      vCircle := Model.AsCircle;
       FParams.Add('Type', 'Circle');
       FParams.Add('X', FloatToStr(Round(vCircle.X)));
       FParams.Add('Y', FloatToStr(Round(vCircle.Y)));
       FParams.Add('Radius', FloatToStr(Round(vCircle.Radius)));
     end;
 
-    TNewFigure.cfPoly:
+    fkPoly:
     begin
       FParams.Add('Type', 'Poly');
-      vPoly := Model.Figure.AsPoly;
+      vPoly := Model.AsPoly;
       for i := 0 to High(vPoly) do
       begin
         FParams.Add('X' + IntToStr(i), FloatToStr(Round(vPoly[i].X)));
@@ -244,7 +240,7 @@ end;
 
 function TItemShaperPresenter.IsPointIn(const APoint: TPointF): Boolean;
 begin
-  Result := FItemShapeModel.Figure.BelongPointLocal(APoint);
+  Result := FItemShapeModel.BelongPointLocal(APoint);
 end;
 
 function TItemShaperPresenter.KeyPointLocal(const ATestPosition: TPointF;
@@ -255,14 +251,14 @@ var
   vArcTan: Double;
   vPoly: TPolygon;
   i: Integer;
-  vFigure: TNewFigure;
+ // vFigure: TNewFigure;
   vCircle: TCircle;
 begin
-   vFigure := FItemShapeModel.Figure;
-   case vFigure.Kind of
-    TNewFigure.cfCircle:
+  // vFigure := FItemShapeModel.Figure;
+   case FItemShapeModel.FigureKind of
+    fkCircle:
       begin
-        vCircle := vFigure.AsCircle;
+        vCircle := FItemShapeModel.AsCircle;
         vCenterToPoint := Distance(ATestPosition, vCircle.Center);
         vCenterToRadius := vCircle.Radius;// FData[1].X;//Distance(PointF(0,0), FData[1]);
         if (vCircle.Radius - vCenterToPoint) < vCenterToPoint then
@@ -297,9 +293,9 @@ begin
           end;
         end;
       end;
-    TNewFigure.cfPoly:
+    fkPoly:
       begin
-        vPoly := vFigure.AsPoly;
+        vPoly := FItemShapeModel.AsPoly;
         for i := 0 to Length(vPoly) - 1 do
         begin
           if Distance(vPoly[i], ATestPosition) <= ADistance then
@@ -343,37 +339,13 @@ end;
 
 procedure TItemShaperPresenter.OnModelUpdate(ASender: TObject);
 begin
-
+  if Assigned(FOnFigureUpdated) then
+    FOnFigureUpdated(Self);
 end;
 
 procedure TItemShaperPresenter.Repaint(ABmp: TBitmap; const AColor: TColor = TAlphaColorRec.Aliceblue);
 begin
-  ABmp.Canvas.BeginScene();
-  FItemShapeModel.Figure.TempTranslate(PointF(ABmp.Width / 2, ABmp.Height / 2));
-  FItemShapeModel.Figure.Draw(ABmp.Canvas, AColor{TAlphaColorRec.Aqua});
-
-  if FLockedIndex >= 0 then
-    FItemShapeModel.Figure.DrawPoint(ABmp.Canvas, FLockedPoint, TAlphaColorRec.Red);
-  FItemShapeModel.Figure.Reset;
-  ABmp.Canvas.EndScene;
-end;
-
-procedure TItemShaperPresenter.SaveOptions;
-begin
-  inherited;
-
-  if Assigned(FOnOptionsSave) then
-    FOnOptionsSave(Self);
-
-  SetParams(FTableView.TakeParams);
-
-  if Assigned(FTableView) then
-    FTableView := nil;
-end;
-
-procedure TItemShaperPresenter.SetHeight(const Value: Integer);
-begin
-
+  FItemShapeModel.Repaint(ABmp, FLockedPoint, FLockedIndex, AColor);
 end;
 
 procedure TItemShaperPresenter.SetParams(const AValue: TDictionary<string, string>);
@@ -383,19 +355,18 @@ var
   vPoly: TPolygon;
   vCircle: TCircle;
 begin
-
-  case Model.Figure.Kind of
-    TNewFigure.cfCircle:
+  case Model.FigureKind of
+    fkCircle:
     begin
       vCircle.X := ToFloat(AValue['X']);
       vCircle.Y := ToFloat(AValue['Y']);
       vCircle.Radius := ToFloat(AValue['Radius']);
-      Model.Figure.SetData(vCircle);
+      Model.SetData(vCircle);
     end;
 
-    TNewFigure.cfPoly:
+    fkPoly:
     begin
-      vPoly := Model.Figure.AsPoly;
+      vPoly := Model.AsPoly;
       for i := 0 to High(vPoly) do
       begin
         vPoly[i].X := ToFloat(AValue['X' + IntToStr(i)]);
@@ -406,11 +377,6 @@ begin
 end;
 
 procedure TItemShaperPresenter.SetPosition(const Value: TPoint);
-begin
-
-end;
-
-procedure TItemShaperPresenter.SetWidth(const Value: Integer);
 begin
 
 end;
@@ -427,23 +393,21 @@ end;
 
 procedure TItemShaperPresenter.TranslateFigure(const ATranslate: TPointF);
 var
-  vFigure: TNewFigure;
   vCircle: TCircle;
   vPoly: TPolygon;
 begin
-   vFigure := FItemShapeModel.Figure;
-   case vFigure.Kind of
-     TNewFigure.cfCircle:
+   case FItemShapeModel.FigureKind of
+     fkCircle:
      begin
-       vCircle := vFigure.AsCircle;
+       vCircle := FItemShapeModel.AsCircle;
        Translate(vCircle, ATranslate);
-       vFigure.SetData(vCircle);
+       FItemShapeModel.SetData(vCircle);
      end;
-     TNewFigure.cfPoly:
+     fkPoly:
      begin
-       vPoly := vFigure.AsPoly;
+       vPoly := FItemShapeModel.AsPoly;
        Translate(vPoly, ATranslate);
-       vFigure.SetData(vPoly);
+       FItemShapeModel.SetData(vPoly);
      end;
    end;
 end;

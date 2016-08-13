@@ -3,14 +3,15 @@ unit uItemBasePresenter;
 interface
 
 uses
-  System.Classes, System.Types,
+  System.Classes, System.Types, System.Generics.Collections, uClasses, uITableView,
   uIItemPresenter, uIItemPresenterEvent, uMVPFrameWork, uIItemView, uSSBModels;
 
 type
   TItemBasePresenter = class(TPresenter, IItemPresenter, IPresenterEvent)
   protected
     FView: IItemView;
-    FOnMouseDown, FOnMouseUp, FOnMouseMove, FOnOptionsSave, FOnOptionsShow: TNotifyEvent;
+    FTableView: ITableView;
+    FOnMouseDown, FOnMouseUp, FOnMouseMove, FOnOptionsShow: TNotifyEvent;
     procedure SetOnMouseDown(AHandler: TNotifyEvent); virtual;
     function GetOnMouseDown: TNotifyEvent; virtual;
     procedure SetOnMouseUp(AHandler: TNotifyEvent); virtual;
@@ -19,23 +20,22 @@ type
     function GetOnMouseMove: TNotifyEvent; virtual;
     function GetOnOptionsShow: TNotifyEvent; virtual;
     procedure SetOnOptionsShow(AHandler: TNotifyEvent); virtual;
-    function GetOnOptionsSave: TNotifyEvent; virtual;
-    procedure SetOnOptionsSave(AHandler: TNotifyEvent); virtual;
     function GetRect: TRectF; virtual; abstract;
     procedure SetRect(const Value: TRectF); virtual; abstract;
+    procedure OnOptionsSave(ASender: TObject; AE: TDictionary<string,string>); virtual;
+    procedure SetParams(const AValue: TDictionary<string, string>); virtual; abstract;
+    property TableView: ITableView  write FTableView;
   public
     property OnMouseDown: TNotifyEvent read GetOnMouseDown write SetOnMouseDown;
     property OnMouseUp: TNotifyEvent read GetOnMouseUp write SetOnMouseUp;
     property OnMouseMove: TNotifyEvent read GetOnMouseMove write SetOnMouseMove;
     property OnOptionsShow: TNotifyEvent read GetOnOptionsShow write SetOnOptionsShow;
-    property OnOptionsSave: TNotifyEvent read GetOnOptionsSave write SetOnOptionsSave;
     property Rect: TRectF read GetRect write SetRect;
     procedure Delete; virtual; abstract;
     procedure MouseDown; virtual; abstract;
     procedure MouseUp; virtual; abstract;
     procedure MouseMove; virtual; abstract;
     procedure ShowOptions; virtual; abstract;
-    procedure SaveOptions; virtual; abstract;
     procedure Disable;
     procedure Enable;
     constructor Create(const AItemView: IItemView); reintroduce; virtual;
@@ -75,14 +75,19 @@ begin
   Result := FOnMouseUp;
 end;
 
-function TItemBasePresenter.GetOnOptionsSave: TNotifyEvent;
+{function TItemBasePresenter.GetOnOptionsSave: TNotifyEvent;
 begin
   Result := FOnOptionsSave;
-end;
+end;   }
 
 function TItemBasePresenter.GetOnOptionsShow: TNotifyEvent;
 begin
   Result := FOnOptionsShow;
+end;
+
+procedure TItemBasePresenter.OnOptionsSave(ASender: TObject; AE: TDictionary<string, string>);
+begin
+  SetParams(AE);
 end;
 
 procedure TItemBasePresenter.SetOnMouseDown(AHandler: TNotifyEvent);
@@ -100,10 +105,10 @@ begin
   FOnMouseUp := AHandler;
 end;
 
-procedure TItemBasePresenter.SetOnOptionsSave(AHandler: TNotifyEvent);
+{procedure TItemBasePresenter.SetOnOptionsSave(AHandler: TNotifyEvent);
 begin
   FOnOptionsSave := AHandler;
-end;
+end;   }
 
 procedure TItemBasePresenter.SetOnOptionsShow(AHandler: TNotifyEvent);
 begin

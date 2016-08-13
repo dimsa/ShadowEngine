@@ -26,7 +26,6 @@ type
     FLastTranslate: TPointF;
     FCapturedShape: TItemShpPresenter;
     FSelectedShape: TItemShpPresenter;
-    FTableView: ITableView;
     function GetHeight: Integer;
     function GetPosition: TPoint;
     function GetWidth: Integer;
@@ -37,20 +36,20 @@ type
     function Bitmap: TBitmap;
     procedure RepaintShapes;
     function GetParams: TDictionary<string,string>;
-    procedure SetParams(const AValue: TDictionary<string, string>);
+    procedure SetParams(const AValue: TDictionary<string, string>); override;
     function GetRect: TRectF; override;
     procedure SetRect(const Value: TRectF); override;
     procedure DoOptionsShow(ASender: TObject);
     procedure DoOptionsSave(ASender: TObject);
     procedure OnShapeAdded(ASender: TObject);
     procedure OnShapeRemoved(ASender: TObject);
+    procedure OnFigureUpdated(ASender: TObject);
   protected
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
     property Rect: TRectF read GetRect write SetRect;
     property Model: TResourceModel read FItemObjectModel;
-    property TableView: ITableView write FTableView;
   public
     procedure ShowShapes;
     procedure HideShapes;
@@ -64,7 +63,6 @@ type
     procedure MouseMove; override;
     procedure Delete; override;
     procedure ShowOptions; override;
-    procedure SaveOptions; override;
 
     constructor Create(const AItemView: IItemView; const AItemObjectModel: TResourceModel);
     destructor Destroy; override;
@@ -188,7 +186,8 @@ begin
   vItem := TItemShpPresenter(ASender);
   vTableView := FTableView;
 
-  vTableView.Presenter := vItem;
+//  vTableView.Presenter := vItem;
+  vTableView.SetOnTakeParams(vItem.OnOptionsSave);
   vItem.TableView := vTableView;
 end;
 
@@ -347,9 +346,13 @@ begin
     FOnMouseUp(Self)
 end;
 
+procedure TItemObjecterPresenter.OnFigureUpdated(ASender: TObject);
+begin
+  RepaintShapes;
+end;
+
 procedure TItemObjecterPresenter.OnModelUpdate(ASender: TObject);
 var
-  vModel: TResourceModel;
   vShape: TItemShpPresenter;
   vITableView:ITableView;
   i: Integer;
@@ -363,43 +366,6 @@ begin
   if ASender = nil then
     Exit;
 
-  vModel := FItemObjectModel;
-
-  // We creating or destroying TableViews
-  // After presenter = nil, refcount on ShapePresenter is 0, so it destroying   }
-
-  {for i := FShapes.Count - 1 downto 0  do
-    if (Assigned(FShapes[i])) then
-    begin
-     vShape := TItemShpPresenter(FShapes[i]);
-     TItemShpPresenter(FShapes[i]).TableView := nil;
-
-      if Assigned(vShape) then
-        vShape.Free;
-    end;
-
-  FShapes.Clear;
-
-  for i := 0 to vModel.ShapesList.Count - 1 do
-  begin
-    vShape := TItemShpPresenter.Create(FView, FItemObjectModel.OnAddShapeHandler);
-    vShape.OnOptionsShow := DoOptionsShow;
-    vShape.OnOptionsSave := DoOptionsSave;
-    FShapes.Add(vShape);
-  end;   }
-
-{  if vModel.ShapesList.Count > FShapes.Count then
-  begin
-    for i := FShapes.Count to vModel.ShapesList.Count do
-    begin
-      vShape := TItemShpPresenter.Create(FView, FItemObjectModel.OnAddShapeHandler);
-      vShape.OnOptionsShow := DoOptionsShow;
-      vShape.OnOptionsSave := DoOptionsSave;
-      FShapes.Add(vShape);
-    end;
-  end; }
-
-
   RepaintShapes;
 end;
 
@@ -408,6 +374,8 @@ var
   vShapePresenter: TItemShpPresenter;
 begin
   vShapePresenter := TItemShpPresenter.Create(FView, TItemShapeModel(ASender));
+  vShapePresenter.OnOptionsShow := OnOptionsShow;
+  vShapePresenter.OnFigureUpdated := OnFigureUpdated;
   FShapes.Add(vShapePresenter);
   RepaintShapes;
 end;
@@ -440,19 +408,6 @@ begin
     TItemShpPresenter(FShapes[i]).Repaint(FBmp);
 
   FView.AssignBitmap(FBmp);
-end;
-
-procedure TItemObjecterPresenter.SaveOptions;
-begin
-  inherited;
-
-  if Assigned(FOnOptionsSave) then
-    FOnOptionsSave(Self);
-
-  SetParams(FTableView.TakeParams);
-
-  if Assigned(FTableView) then
-    FTableView := nil;
 end;
 
 procedure TItemObjecterPresenter.SetHeight(const Value: Integer);

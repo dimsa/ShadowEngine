@@ -12,7 +12,6 @@ type
   TItemImagerPresenter = class(TItemBasePresenter)
   private
     FItemImageModel: TItemImageModel;
-    FTableView: ITableView;
     FParams: TDictionary<string, string>;
     function GetHeight: Integer;
     function GetImage: TImage;
@@ -26,9 +25,8 @@ type
     function GetRect: TRectF; override;
     procedure SetRect(const Value: TRectF); override;
     function GetParams: TDictionary<string, string>;
-    procedure SetParams(const AValue: TDictionary<string, string>);
+    procedure SetParams(const AValue: TDictionary<string, string>); override;
   protected
-    property TableView: ITableView  write FTableView;
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property Position: TPoint read GetPosition write SetPosition;
@@ -41,7 +39,6 @@ type
     procedure MouseUp; override;
     procedure MouseMove; override;
     procedure ShowOptions; override;
-    procedure SaveOptions; override;
 
     constructor Create(const AItemView: IItemView; const AItemImageModel: TItemImageModel); reintroduce;
     destructor Destroy; override;
@@ -146,7 +143,7 @@ begin
   end;
 end;
 
-procedure TItemImagerPresenter.SaveOptions;
+{procedure TItemImagerPresenter.SaveOptions;
 begin
   inherited;
 
@@ -154,7 +151,7 @@ begin
     FOnOptionsSave(Self);
 
   SetParams(FTableView.TakeParams);
-end;
+end;  }
 
 procedure TItemImagerPresenter.SetHeight(const Value: Integer);
 begin

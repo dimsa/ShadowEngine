@@ -3,23 +3,21 @@ unit uNamedTableView;
 interface
 
 uses
-  System.Generics.Collections,
-  uMVPFrameWork, uITableView, uNamedOptionsForm, uItemBasePresenter;
+  System.Generics.Collections, uClasses,
+  uMVPFrameWork, uITableView, uNamedOptionsForm;
 
 type
   TTableView = class(TInterfacedObject, ITableView, IView)
   private
     FOptionsForm: TNamedOptionsForm;
-    FPresenter: TItemBasePresenter;
-    function GetPresenter: TItemBasePresenter;
-    procedure SetPresenter(AValue: TItemBasePresenter);
+    FOnTakeParams: TEvent<TDictionary<string,string>>;
     procedure OnApply(ASender: TObject);
+    procedure SetOnTakeParams(const Value: TEvent<TDictionary<string,string>>);
   public
     constructor Create;
     destructor Destroy; override;
-    property Presenter: TItemBasePresenter read GetPresenter write SetPresenter;
     procedure ShowParams(const AParams: TDictionary<string,string>);
-    function TakeParams: TDictionary<string,string>;
+    property OnTakeParams: TEvent<TDictionary<string,string>> read FOnTakeParams write SetOnTakeParams;
   end;
 
 implementation
@@ -34,35 +32,25 @@ end;
 
 destructor TTableView.Destroy;
 begin
-  Presenter := nil;
   FOptionsForm.Close;
   FOptionsForm.Release;
   inherited;
 end;
 
-function TTableView.GetPresenter: TItemBasePresenter;
-begin
-  Result := FPresenter;
-end;
-
 procedure TTableView.OnApply(ASender: TObject);
 begin
-  FPresenter.SaveOptions;
+  if Assigned(FOnTakeParams) then
+    FOnTakeParams(Self, FOptionsForm.Params);
 end;
 
-procedure TTableView.SetPresenter(AValue: TItemBasePresenter);
+procedure TTableView.SetOnTakeParams(const Value: TEvent<TDictionary<string,string>>);
 begin
-  FPresenter := AValue;
+  FOnTakeParams := Value;
 end;
 
 procedure TTableView.ShowParams(const AParams: TDictionary<string, string>);
 begin
   FOptionsForm.Show(AParams);
-end;
-
-function TTableView.TakeParams: TDictionary<string, string>;
-begin
-  Result := FOptionsForm.Params;
 end;
 
 end.

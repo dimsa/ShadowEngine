@@ -243,7 +243,7 @@ begin
   vItem := TItemImgPresenter(ASender);
   vTableView := View.AddTableView;
 
-  vTableView.Presenter := vItem;
+  vTableView.SetOnTakeParams(vItem.OnOptionsSave);
   vItem.TableView := vTableView;
 end;
 

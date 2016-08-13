@@ -4,22 +4,29 @@ interface
 
 uses
   FMX.Graphics, System.Generics.Collections, System.Classes, {$I 'Utils\DelphiCompatability.inc'}
-  System.Math, System.JSON, System.SysUtils, FMX.Types,
+  System.Math, System.JSON, System.SysUtils, FMX.Types, System.UITypes,
   FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, uStreamUtil,
   uNamedList, uClasses, uSSBTypes, uMVPFrameWork, uNewFigure, uIntersectorClasses;
 
 type
+  TFigureKind = (fkCircle, fkPoly);
 
   TItemShapeModel = class(TModel)
   private
     FFigure: TNewFigure;
     function GetMaxRadius: Integer;
-  public
+    function GetFigureKind: TFigureKind;
     property Figure: TNewFigure read FFigure;
+  public
+    procedure Repaint(ABmp: TBitmap; const ALockedPoint: TPointF; const APointIndex: Integer; const AColor: TColor);
+    function AsPoly: TPolygon;
+    function AsCircle: TCircle;
     property MaxRadius: Integer read GetMaxRadius;
+    function BelongPointLocal(APoint: TPointF): Boolean;
     procedure SetData(const AData: TPolygon); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const AData: TRectF); overload;// Быстрое задание ректангла
     procedure SetData(const AData: uIntersectorClasses.TCircle); overload;// Трактует данные в зависимости от своего типа
+    property FigureKind: TFigureKind read GetFigureKind;
     function AsJson: TJSONObject;
     procedure WriteToStream(AStream: TStreamUtil);
     procedure ReadFromStream(AStream: TStreamUtil);
@@ -292,6 +299,11 @@ end;
 
 { TItemShapeModel }
 
+function TItemShapeModel.AsCircle: TCircle;
+begin
+  Result := FFigure.AsCircle;
+end;
+
 function TItemShapeModel.AsJson: TJSONObject;
 var
   vObj: TJSONObject;
@@ -329,6 +341,16 @@ begin
   Result := vObj;
 end;
 
+function TItemShapeModel.AsPoly: TPolygon;
+begin
+  Result := FFigure.AsPoly;
+end;
+
+function TItemShapeModel.BelongPointLocal(APoint: TPointF): Boolean;
+begin
+  Result := FFigure.BelongPointLocal(APoint);
+end;
+
 constructor TItemShapeModel.CreateCircle(const AUpdateHandler: TNotifyEvent);
 var
   vCircle: TCircle;
@@ -364,6 +386,17 @@ destructor TItemShapeModel.Destroy;
 begin
   FFigure.Free;
   inherited;
+end;
+
+function TItemShapeModel.GetFigureKind: TFigureKind;
+begin
+  if FFigure.Kind = 1 then
+    Exit(fkCircle);
+
+  if FFigure.Kind = 2 then
+    Exit(fkPoly);
+
+  raise Exception.Create('Unknown figure kind'); 
 end;
 
 function TItemShapeModel.GetMaxRadius: Integer;
@@ -412,14 +445,28 @@ begin
   RaiseUpdateEvent;
 end;
 
+procedure TItemShapeModel.Repaint(ABmp: TBitmap; const ALockedPoint: TPointF; const APointIndex: Integer; const AColor: TColor);
+begin
+  ABmp.Canvas.BeginScene();
+  FFigure.TempTranslate(PointF(ABmp.Width / 2, ABmp.Height / 2));
+  FFigure.Draw(ABmp.Canvas, AColor);
+
+  if APointIndex >= 0 then
+    FFigure.DrawPoint(ABmp.Canvas, ALockedPoint, TAlphaColorRec.Red);
+  FFigure.Reset;
+  ABmp.Canvas.EndScene;
+end;
+
 procedure TItemShapeModel.SetData(const AData: TPolygon);
 begin
   FFigure.SetData(AData);
+  RaiseUpdateEvent;
 end;
 
 procedure TItemShapeModel.SetData(const AData: TRectF);
 begin
   FFigure.SetData(AData);
+  RaiseUpdateEvent;
 end;
 
 procedure TItemShapeModel.WriteToStream(AStream: TStreamUtil);
@@ -456,6 +503,7 @@ end;
 procedure TItemShapeModel.SetData(const AData: uIntersectorClasses.TCircle);
 begin
   FFigure.SetData(AData);
+  RaiseUpdateEvent;
 end;
 
 constructor TItemImageModel.Create(const AUpdateHandler: TNotifyEvent);
