@@ -372,6 +372,7 @@ begin
         vPoly[i].X := ToFloat(AValue['X' + IntToStr(i)]);
         vPoly[i].Y := ToFloat(AValue['Y' + IntToStr(i)]);
       end;
+      Model.SetData(vPoly);
     end;
   end;
 end;
