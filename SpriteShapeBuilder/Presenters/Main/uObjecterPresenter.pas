@@ -62,6 +62,7 @@ type
     procedure MouseDown;
     procedure DisableItems;
     procedure EnableItems;
+    procedure ShowOptions;
   end;
 
 implementation
@@ -173,7 +174,7 @@ end;
 procedure TObjecterPresenter.DelShape;
 begin
   if FSelected <> nil then
-    FSelected.Delete;
+    FSelected.DelShape;
 end;
 
 procedure TObjecterPresenter.DisableItems;
@@ -401,6 +402,13 @@ begin
         Exit(TResizeType.rtCenter);
 
    Exit(TResizeType.rtNone)
+end;
+
+procedure TObjecterPresenter.ShowOptions;
+begin
+  if FSelected <> nil then
+    FSelected.ShowOptions;
+
 end;
 
 procedure TObjecterPresenter.ShowShapes;

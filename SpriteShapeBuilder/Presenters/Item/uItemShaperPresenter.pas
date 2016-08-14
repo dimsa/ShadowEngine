@@ -43,7 +43,6 @@ type
     procedure MouseDown; override;
     procedure MouseUp; override;
     procedure MouseMove; override;
-    procedure Delete; override;
     procedure ShowOptions; override;
 
     constructor Create(const AItemView: IItemView; OnCreateShapeModel: TNotifyEvent); overload;
@@ -147,12 +146,6 @@ begin
   FItemShapeModel := vShapeModel;
 
   RaiseOnCreateShapeModel;
-end;
-
-procedure TItemShaperPresenter.Delete;
-begin
-  inherited;
-
 end;
 
 procedure TItemShaperPresenter.DelPoint;

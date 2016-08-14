@@ -207,8 +207,6 @@ begin
   begin
     ReadStr('ObjectName');
     FName := ReadStr;
-{    ReadStr('ObjectGroup');
-    FGroup := ReadStr; }
     ReadStr('ObjectBody');
     ReadStr('Position');
     FPosition.X := ReadInt;

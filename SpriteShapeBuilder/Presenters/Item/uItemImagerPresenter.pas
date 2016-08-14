@@ -34,7 +34,6 @@ type
     property Image: TImage read GetImage write SetImage;
     property Model: TItemImageModel read FItemImageModel;
   public
-    procedure Delete; override;
     procedure MouseDown; override;
     procedure MouseUp; override;
     procedure MouseMove; override;
@@ -55,11 +54,6 @@ begin
   FParams := TDictionary<string, string>.Create;
   FItemImageModel := AItemImageModel;
   FItemImageModel.UpdateHander := OnUpdateModel;
-end;
-
-procedure TItemImagerPresenter.Delete;
-begin
-
 end;
 
 destructor TItemImagerPresenter.Destroy;

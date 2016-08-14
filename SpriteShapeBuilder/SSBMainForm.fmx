@@ -110,7 +110,7 @@ object SSBForm: TSSBForm
     Top = 8
   end
   object GlowEffect1: TGlowEffect
-    Softness = 0.400000005960464500
+    Softness = 0.400000005960464400
     GlowColor = claGold
     Opacity = 0.899999976158142100
   end
@@ -409,7 +409,7 @@ object SSBForm: TSSBForm
         Size.Width = 96.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 4
+        TabOrder = 5
         Text = 'Delete Image'
         XRadius = 3.000000000000000000
         YRadius = 3.000000000000000000
@@ -417,16 +417,29 @@ object SSBForm: TSSBForm
       end
       object ClonePictureBtn: TCornerButton
         Align = Horizontal
+        Position.Y = 124.000000000000000000
+        Sides = [Top, Left, Bottom, Right]
+        Size.Width = 96.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 4
+        Text = 'Clone Image'
+        XRadius = 3.000000000000000000
+        YRadius = 3.000000000000000000
+        OnClick = ClonePictureBtnClick
+      end
+      object EditPictureBtn: TCornerButton
+        Align = Horizontal
         Position.Y = 84.000000000000000000
         Sides = [Top, Left, Bottom, Right]
         Size.Width = 96.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 3
-        Text = 'Clone Image'
+        Text = 'Edit Image'
         XRadius = 3.000000000000000000
         YRadius = 3.000000000000000000
-        OnClick = ClonePictureBtnClick
+        OnClick = EditPictureBtnClick
       end
     end
     object Object_Inst: TLayout
@@ -473,6 +486,7 @@ object SSBForm: TSSBForm
         Text = 'Edit Object'
         XRadius = 3.000000000000000000
         YRadius = 3.000000000000000000
+        OnClick = EdtObjectBtnClick
       end
       object CloneObjectBtn: TCornerButton
         Align = Horizontal
@@ -545,6 +559,7 @@ object SSBForm: TSSBForm
         Text = 'Edit Shape'
         XRadius = 3.000000000000000000
         YRadius = 3.000000000000000000
+        OnClick = EdtShapeBtnClick
       end
       object DelPointBtn: TCornerButton
         Position.Y = 122.000000000000000000

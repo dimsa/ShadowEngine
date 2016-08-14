@@ -49,6 +49,7 @@ type
     procedure MouseMove;
     procedure MouseDown;
     procedure MouseUp;
+    procedure ShowOptions;
     procedure DisableItems;
     procedure EnableItems;
     constructor Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>); override;
@@ -393,6 +394,12 @@ begin
         Exit(TResizeType.rtCenter);
 
    Exit(TResizeType.rtNone)
+end;
+
+procedure TImagerPresenter.ShowOptions;
+begin
+  if FSelected <> nil then
+    FSelected.ShowOptions;
 end;
 
 procedure TImagerPresenterIncapsulator.SetCaptured(

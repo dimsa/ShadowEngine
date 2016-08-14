@@ -61,7 +61,7 @@ type
     procedure MouseDown; override;
     procedure MouseUp; override;
     procedure MouseMove; override;
-    procedure Delete; override;
+    procedure DelShape;
     procedure ShowOptions; override;
 
     constructor Create(const AItemView: IItemView; const AItemObjectModel: TResourceModel);
@@ -81,8 +81,6 @@ var
 begin
   vShape := TItemShpPresenter.Create(FView, FItemObjectModel.OnAddShapeHandler);
   vShape.CreateCircle;
-
-  FShapes.Add(vShape);
   RepaintShapes;
 end;
 
@@ -102,7 +100,6 @@ var
 begin
   vShape := TItemShpPresenter.Create(FView, FItemObjectModel.OnAddShapeHandler);
   vShape.CreatePoly;
-  FShapes.Add(vShape);
   RepaintShapes;
 end;
 
@@ -139,16 +136,6 @@ begin
   FShapes := TList<TItemShpPresenter>.Create;
 end;
 
-procedure TItemObjecterPresenter.Delete;
-begin
-  if FSelectedShape <> nil then
-  begin
-//    FShapes.Remove(FSelectedShape);
-    Model.RemoveShape(FSelectedShape.Model);
-    FSelectedShape := nil;
-  end;
-end;
-
 procedure TItemObjecterPresenter.DelPoint;
 begin
   if FSelectedShape <> nil then
@@ -158,6 +145,17 @@ begin
     RepaintShapes;
   end;
 
+end;
+
+procedure TItemObjecterPresenter.DelShape;
+begin
+  inherited;
+
+  if FSelectedShape <> nil then
+  begin
+    Model.RemoveShape(FSelectedShape.Model);
+    FSelectedShape := nil;
+  end;
 end;
 
 destructor TItemObjecterPresenter.Destroy;
@@ -450,10 +448,13 @@ procedure TItemObjecterPresenter.ShowOptions;
 var
   vPoint: TPointF;
 begin
-  if Assigned(FOnOptionsShow) then
-    FOnOptionsShow(Self);
+  // For Objecter Mode
+  if not FIsShapeVisible then
+    if Assigned(FOnOptionsShow) then
+      FOnOptionsShow(Self);
 
- if FIsShapeVisible then
+  // For Shaper Mode
+  if FIsShapeVisible then
   begin
     // Test on capturing Figure
     vPoint := FView.MousePos - PointF(FView.Width / 2, FView.Height / 2);

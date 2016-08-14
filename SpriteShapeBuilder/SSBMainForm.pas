@@ -47,6 +47,7 @@ type
     AddPointBtn: TCornerButton;
     ClonePictureBtn: TCornerButton;
     CloneObjectBtn: TCornerButton;
+    EditPictureBtn: TCornerButton;
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
@@ -82,6 +83,9 @@ type
     procedure CloneObjectBtnClick(Sender: TObject);
     procedure ClonePictureBtnClick(Sender: TObject);
     procedure BackgroundPaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
+    procedure EditPictureBtnClick(Sender: TObject);
+    procedure EdtObjectBtnClick(Sender: TObject);
+    procedure EdtShapeBtnClick(Sender: TObject);
   private
     FPanels: array[TSSBStatus] of TLayout;
     FStatus: TSSBStatus;
@@ -206,6 +210,21 @@ end;
 procedure TSSBForm.DelShapeBtnClick(Sender: TObject);
 begin
   FWorkSpaceView.Objecter.DelShape;
+end;
+
+procedure TSSBForm.EditPictureBtnClick(Sender: TObject);
+begin
+  FWorkSpaceView.Imager.ShowOptions;
+end;
+
+procedure TSSBForm.EdtObjectBtnClick(Sender: TObject);
+begin
+  FWorkSpaceView.Objecter.ShowOptions;
+end;
+
+procedure TSSBForm.EdtShapeBtnClick(Sender: TObject);
+begin
+    FWorkSpaceView.Objecter.ShowOptions;
 end;
 
 function TSSBForm.FilenameFromDlg(out AFileName: string): boolean;
