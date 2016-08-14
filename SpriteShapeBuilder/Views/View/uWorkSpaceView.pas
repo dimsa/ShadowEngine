@@ -35,6 +35,7 @@ type
     procedure ClearAndFreeImg;
     function GetMousePos: TPoint;
     function AddElement: IItemView;
+    function GetScale: Single;
     procedure RemoveElement(const AElement: IItemView);
     procedure SelectElement(const AElement: IItemView);
     procedure SetBackground(const AImg: TImage);
@@ -132,12 +133,17 @@ end;
 
 function TWorkSpaceView.GetMousePos: TPoint;
 begin
-  Result := (uEasyDevice.MousePos - FPanel.Position.Point - FParentTopLeft).Round;
+  Result := ((uEasyDevice.MousePos- FPanel.Position.Point - FParentTopLeft)  / FPanel.Scale.X).Round;
 end;
 
 function TWorkSpaceView.GetObjecter: TObjecterPresenter;
 begin
   Result := TObjecterPresenter(FObjecter);
+end;
+
+function TWorkSpaceView.GetScale: Single;
+begin
+  Result := FPanel.Scale.X;
 end;
 
 procedure TWorkSpaceView.MouseDown(Sender: TObject; Button: TMouseButton;

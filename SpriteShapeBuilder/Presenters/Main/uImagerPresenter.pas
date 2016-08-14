@@ -293,6 +293,7 @@ var
   vItem: TItemImgPresenter;
   vRect: TRectF;
   vW, vH: Single;
+  vP: TPoint;
 begin
   if Status <> sPicture then
     Exit;
@@ -305,6 +306,7 @@ begin
     begin
       if FCaptureMode = TCaptureMode.cmMove then
       begin
+//        vP := Point(Round(View.GetMousePos.X * View.GetScale), Round(View.GetMousePos.Y * View.GetScale));
         Captured.Position := ElementStart.TopLeft - MouseStart + View.GetMousePos;
         JustifyAnchors(Captured);
       end;

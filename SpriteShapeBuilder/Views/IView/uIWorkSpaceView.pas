@@ -14,6 +14,7 @@ type
     procedure RemoveElement(const AElement: IItemView);
     procedure SelectElement(const AElement: IItemView);
     function GetMousePos: TPoint;
+    function GetScale: Single;
     procedure ClearAndFreeImg;
     procedure SetBackground(const AImg: TImage);
     function AddTableView: ITableView;

@@ -50,11 +50,10 @@ uses
 { TSpriteShapeBuilder }
 
 constructor TMainPresenter.Create(const AView: IMainView; const AWorkSpaceView: IWorkSpaceView);
-//; APanel: TPanel; ABackground, ASelected: TImage; AOpenDialog: TOpenDialog);
+var
+  vImg: TImage;
 begin
   FView := AView;
-//  FForm := AForm;
- // FView := TView.Create(APanel, ABackground, ASelected, AOpenDialog, FormTopLeft);
   FModel := TSSBModel.Create(OnModelUpdate);
   FImager := TImagerPresenter.Create(AWorkSpaceView, FModel, GetStatus);
   FObjecter := TObjecterPresenter.Create(AWorkSpaceView, FModel, GetStatus);

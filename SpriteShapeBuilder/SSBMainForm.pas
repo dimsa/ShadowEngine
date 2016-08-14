@@ -81,6 +81,7 @@ type
     function FormTopLeft: TPointF;
     procedure CloneObjectBtnClick(Sender: TObject);
     procedure ClonePictureBtnClick(Sender: TObject);
+    procedure BackgroundPaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
   private
     FPanels: array[TSSBStatus] of TLayout;
     FStatus: TSSBStatus;
@@ -155,7 +156,16 @@ begin
   begin
     MainPanel.Scale.X := MainPanel.Scale.X + ((WheelDelta / 120) * 0.1);
     MainPanel.Scale.Y := MainPanel.Scale.X;
+    MainPanel.RecalcSize;
   end;
+end;
+
+procedure TSSBForm.BackgroundPaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
+begin
+  Canvas.BeginScene();
+  Canvas.Fill.Color := TAlphaColorRec.White;
+  Canvas.FillRect(ARect, 0, 0, [], 1, FMX.Types.TCornerType.ctBevel);
+  Canvas.EndScene();
 end;
 
 procedure TSSBForm.BackgroundResize(Sender: TObject);
@@ -224,6 +234,7 @@ begin
 
   // MVP
   FWorkSpaceView := TWorkSpaceView.Create(MainPanel, Background, Selected, OpenDialog, FormTopLeft);
+
   FMainPresenter := TMainPresenter.Create(Self, FWorkSpaceView);
 
   FWorkSpaceView.Imager := FMainPresenter.Imager;
