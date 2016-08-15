@@ -14,14 +14,19 @@ type
   TItemShapeModel = class(TModel)
   private
     FFigure: TNewFigure;
+    FDensity, FFriction: Single; // For the box2d
     function GetMaxRadius: Integer;
     function GetFigureKind: TFigureKind;
+    procedure SetDensity(const Value: Single);
+    procedure SetFriction(const Value: Single);
     property Figure: TNewFigure read FFigure;
   public
     procedure Repaint(ABmp: TBitmap; const ALockedPoint: TPointF; const APointIndex: Integer; const AColor: TColor);
     function AsPoly: TPolygon;
     function AsCircle: TCircle;
     property MaxRadius: Integer read GetMaxRadius;
+    property Density: Single read FDensity write SetDensity;
+    property Friction: Single read FFriction write SetFriction;
     function BelongPointLocal(APoint: TPointF): Boolean;
     procedure SetData(const AData: TPolygon); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const AData: TRectF); overload;// Быстрое задание ректангла
@@ -346,6 +351,8 @@ begin
        vArr.AddElement(vVal);
      end;
      vObj.AddPair('Points', vArr);
+     vObj.AddPair('Density', FDensity.ToString());
+     vObj.AddPair('Friction', FFriction.ToString());
     end;
   end;
 
@@ -372,6 +379,8 @@ begin
   vCircle.Y := 0;
   vCircle.Radius := 25;
   FFigure.SetData(vCircle);
+  FDensity := 1;
+  FFriction := 0.1;
 end;
 
 constructor TItemShapeModel.CreatePoly(const AUpdateHandler: TNotifyEvent);
@@ -391,6 +400,8 @@ begin
   vPoly[2] := PointF(50, 50);
 
   FFigure.SetData(vPoly);
+  FDensity := 1;
+  FFriction := 0.1;
 end;
 
 destructor TItemShapeModel.Destroy;
@@ -452,6 +463,11 @@ begin
       end;
       FFigure.SetData(vPoly);
     end;
+
+    ReadStr('Density');
+    FDensity := ReadSingle;
+    ReadStr('Friction');
+    FFriction := ReadSingle;
   end;
   RaiseUpdateEvent;
 end;
@@ -508,6 +524,10 @@ begin
         end;
       end;
     end;
+    WriteStr('Density');
+    WriteSingle(FDensity);
+    WriteStr('Friction');
+    WriteSingle(FFriction);
   end;
 end;
 
@@ -517,10 +537,21 @@ begin
   RaiseUpdateEvent;
 end;
 
+procedure TItemShapeModel.SetDensity(const Value: Single);
+begin
+  FDensity := Value;
+  RaiseUpdateEvent;
+end;
+
+procedure TItemShapeModel.SetFriction(const Value: Single);
+begin
+  FFriction := Value;
+  RaiseUpdateEvent;
+end;
+
 constructor TItemImageModel.Create(const AUpdateHandler: TNotifyEvent);
 begin
   inherited;
-
 end;
 
 destructor TItemImageModel.Destroy;

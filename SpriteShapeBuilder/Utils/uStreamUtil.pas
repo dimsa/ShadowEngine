@@ -31,11 +31,13 @@ type
     function ReadStr: TStreamString; overload; // Read TStreamString if Size is writed
     function ReadStr(const ACheck: TStreamString): TStreamString; overload;// Read TStreamString if Size is writed and compares it with parameter ACheck
     function ReadInt: Int64; // Read TStreamString if Size is writed
+    function ReadSingle: Single; // Read TStreamString if Size is writed
     function ReadStream(const ASize: Int64): TMemoryStream;
     function ReadStrWithLength(const ASize: Integer): TStreamString; // Read TStreamString if Size is writed
     procedure WriteStr(const AText: TStreamString);
     procedure WriteStrOnly(const AText: TStreamString);
     procedure WriteInt(const AInt: Int64);
+    procedure WriteSingle(const ASingle: Single);
     procedure WriteStream(AStream: TStream);
   end;
 
@@ -96,6 +98,22 @@ begin
       FreeAndNil(FFileName);
 
     raise Exception.Create('Can not read TStreamString with Size before It from stream');
+  end;
+end;
+
+function TStreamUtil.ReadSingle: Single;
+var
+  vVal: Single;
+begin
+  TestCanRead;
+  try
+    FFileStream.ReadBuffer(vVal, SizeOf(vVal));
+    Result := vVal;
+  except
+    if FFileStream <> nil then
+      FreeAndNil(FFileName);
+
+    raise Exception.Create('Can not read Single from stream');
   end;
 end;
 
@@ -222,6 +240,12 @@ procedure TStreamUtil.WriteInt(const AInt: Int64);
 begin
   TestCanWrite;
   FFileStream.WriteBuffer(AInt, SizeOf(AInt));
+end;
+
+procedure TStreamUtil.WriteSingle(const ASingle: Single);
+begin
+  TestCanWrite;
+  FFileStream.WriteBuffer(ASingle, SizeOf(ASingle));
 end;
 
 procedure TStreamUtil.WriteStr(const AText: TStreamString);

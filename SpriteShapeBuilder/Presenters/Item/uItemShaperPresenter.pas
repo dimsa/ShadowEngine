@@ -218,6 +218,9 @@ begin
     end;
   end;
 
+  FParams.Add('Density', FloatToStr(Model.Density));
+  FParams.Add('Friction', FloatToStr(Model.Friction));
+
   Result := FParams;
 end;
 
@@ -368,6 +371,9 @@ begin
       Model.SetData(vPoly);
     end;
   end;
+
+  Model.Friction := ToFloat(AValue['Friction']);
+  Model.Density := ToFloat(AValue['Density']);
 end;
 
 procedure TItemShaperPresenter.SetPosition(const Value: TPoint);
