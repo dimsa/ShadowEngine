@@ -65,6 +65,7 @@ type
     procedure SetPosition(const Value: TPoint);
     procedure SetWidth(const Value: Integer);
     procedure SetShapesList(const Value: TList<TItemShapeModel>);
+    function GetIsHasShapes: Boolean;
   public
     property Name: string read FName write SetName;
     property Width: Integer read FWidth write SetWidth;
@@ -73,14 +74,15 @@ type
 //    property ShapesList: TList<TItemShapeModel> read FShapes;// write SetShapesList;
     property ShapeAdded: TNotifyEventList read FShapeAdded;
     property ShapeRemoved: TNotifyEventList read FShapeRemoved;
+    property IsHasShapes: Boolean read GetIsHasShapes;
     procedure AddShape(AItem: TItemShapeModel);
     procedure RemoveShape(AItem: TItemShapeModel);
     procedure OnAddShapeHandler(ASender: TObject);
 //    procedure DelShape(const AShape: TItemShapeModel);
     procedure WriteToStream(AStream: TStreamUtil);
     procedure ReadFromStream(AStream: TStreamUtil);
-    function AsJson: TJSONObject;
-    function ToJson: string;
+    function AsJson: TJSONObject; // Save Resource
+    function AsJsonCollider: TJSONObject; // Saves shapes
     procedure FromJson(const AJson: string);
     constructor Create(const AUpdateHandler: TNotifyEvent); override;
     constructor Create; override;
@@ -134,16 +136,27 @@ begin
     IntToStr(Self.Position.X + Self.Width) + ',' + IntToStr(Self.Position.Y + Self.Height)
   );
 
+  vObj := TJSONObject.Create;
+  vObj.AddPair('Name', Self.Name);
+  vObj.AddPair('Body', vBody);
+  Result := vObj;
+end;
+
+function TResourceModel.AsJsonCollider: TJSONObject;
+var
+  i: Integer;
+  vObj: TJSONObject;
+  vShapes: TJSONArray;
+begin
+  vObj := TJSONObject.Create;
+
   vShapes := TJSONArray.Create;
   for i := 0 to FShapes.Count - 1 do
     vShapes.AddElement(FShapes[i].AsJson);
 
-  vBody.AddPair('Figures', vShapes);
-
   vObj := TJSONObject.Create;
   vObj.AddPair('Name', Self.Name);
-  vObj.AddPair('Body', vBody);
-  vObj.AddPair('Body', 'fgg');
+  vObj.AddPair('Body', vShapes);
   Result := vObj;
 end;
 
@@ -189,6 +202,11 @@ end;
 procedure TResourceModel.FromJson(const AJson: string);
 begin
   RaiseUpdateEvent;
+end;
+
+function TResourceModel.GetIsHasShapes: Boolean;
+begin
+  Result := FShapes.Count > 0;
 end;
 
 procedure TResourceModel.OnAddShapeHandler(ASender: TObject);
@@ -262,11 +280,6 @@ procedure TResourceModel.SetWidth(const Value: Integer);
 begin
   FWidth := Value;
   RaiseUpdateEvent;
-end;
-
-function TResourceModel.ToJson: string;
-begin
-
 end;
 
 procedure TResourceModel.WriteToStream(AStream: TStreamUtil);
