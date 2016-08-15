@@ -39,7 +39,6 @@ contains
   uOperandGroup in 'ExpressionParser\uOperandGroup.pas',
   uParserValue in 'ExpressionParser\uParserValue.pas',
   uTextProc in 'ExpressionParser\uTextProc.pas',
-  uIntersectorClasses in 'Intersector\uIntersectorClasses.pas',
   uIntersectorMethods in 'Intersector\uIntersectorMethods.pas',
   uNewFigure in 'Intersector\uNewFigure.pas',
   uClasses in 'Utils\uClasses.pas',
@@ -66,6 +65,8 @@ contains
   uEngine2DText in 'Engine\Object\uEngine2DText.pas',
   uEngine2DUnclickableObject in 'Engine\Object\uEngine2DUnclickableObject.pas',
   uEngine2DIntersector in 'Engine\Base\uEngine2DIntersector.pas',
-  uEngine2DOptions in 'Engine\Base\uEngine2DOptions.pas';
+  uEngine2DOptions in 'Engine\Base\uEngine2DOptions.pas',
+  uBaseContainer in 'Engine\Template\uBaseContainer.pas',
+  uGeometryClasses in 'Common\uGeometryClasses.pas';
 
 end.

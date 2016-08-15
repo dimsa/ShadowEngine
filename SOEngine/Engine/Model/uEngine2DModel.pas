@@ -5,7 +5,7 @@ interface
 uses
   System.Generics.Collections, System.SyncObjs,
   uEngine2DClasses, uSpriteList, uFastFields, uEngine2DAnimationList,
-  uFormatterList, uEngine2DResources, uEngine2DObject, uClasses;
+  uFormatterList, uEngine2DResources, uEngine2DObject, uEngine2DIntersector, uClasses;
 
 type
 
@@ -19,6 +19,7 @@ private
   FFormatters: TFormatterList;
   FAnimationList: TEngine2DAnimationList;
   FIsHor: TBooleanFunction;
+  FIntersector: TEngine2DIntersector; // Object tha test for colliding
   procedure setObject(AIndex: integer; ASprite: tEngine2DObject);
   function getObject(AIndex: integer): tEngine2DObject;
 public

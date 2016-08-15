@@ -6,7 +6,7 @@
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">iOSSimulator</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>17</TargetedPlatforms>
         <AppType>Package</AppType>
         <Platform>iOSSimulator</Platform>
@@ -141,7 +141,6 @@
         <DCCReference Include="ExpressionParser\uOperandGroup.pas"/>
         <DCCReference Include="ExpressionParser\uParserValue.pas"/>
         <DCCReference Include="ExpressionParser\uTextProc.pas"/>
-        <DCCReference Include="Intersector\uIntersectorClasses.pas"/>
         <DCCReference Include="Intersector\uIntersectorMethods.pas"/>
         <DCCReference Include="Intersector\uNewFigure.pas"/>
         <DCCReference Include="Utils\uClasses.pas"/>
@@ -169,6 +168,8 @@
         <DCCReference Include="Engine\Object\uEngine2DUnclickableObject.pas"/>
         <DCCReference Include="Engine\Base\uEngine2DIntersector.pas"/>
         <DCCReference Include="Engine\Base\uEngine2DOptions.pas"/>
+        <DCCReference Include="Engine\Template\uBaseContainer.pas"/>
+        <DCCReference Include="Common\uGeometryClasses.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

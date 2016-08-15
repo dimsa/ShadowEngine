@@ -9,7 +9,7 @@ uses
   FMX.Objects, System.Generics.Collections, System.Math, System.SysUtils,
   FMX.IniFile,
   uEasyDevice, uDemoEngine, uDemoGameLoader, uDemoObjects, uEngine2DObjectShape,
-  uEngine2DAnimation, uIntersectorClasses, uDemoMenu, uClasses, uEngine2DText,
+  uEngine2DAnimation, uGeometryClasses, uDemoMenu, uClasses, uEngine2DText,
   uEngine2DSprite, uEngineFormatter, uNamedList, uEngine2DClasses, uBannerPanel,
   uEngine2DManager, uEngine2DOptions;
 

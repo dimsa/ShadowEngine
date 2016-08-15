@@ -5,7 +5,7 @@ interface
 uses
   SysUtils, System.Types, System.Math, System.Generics.Collections, System.UITypes,
   FMX.Graphics, {$I 'Utils\DelphiCompatability.inc'}
-  uEngine2D, uEngine2DSprite, uEngine2DObject, uDemoObjects, uIntersectorClasses,
+  uEngine2D, uEngine2DSprite, uEngine2DObject, uDemoObjects, uGeometryClasses,
   uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses, uEngineFormatter,
   uEngine2DText, uNamedList, uEngine2DShape, uEngine2DManager,
   uNewFigure, uIntersectorMethods, uEasyDevice, uClasses;

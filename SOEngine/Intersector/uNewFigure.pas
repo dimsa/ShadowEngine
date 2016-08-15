@@ -5,7 +5,7 @@ interface
 uses
   System.Generics.Collections, System.Types, System.Classes,
   System.Math, {$I 'Utils\DelphiCompatability.inc'}
-  uIntersectorClasses, uIntersectorMethods, FMX.Objects, System.UITypes, FMX.Graphics,
+  uGeometryClasses, uIntersectorMethods, FMX.Objects, System.UITypes, FMX.Graphics,
   uClasses;
 
 type
@@ -15,7 +15,7 @@ type
     FTempMaxRadius: Single;
     FTempCenter: TPointF;
     procedure RecalcMaxRadius;
-    function GetCircle: uIntersectorClasses.TCircle;
+    function GetCircle: uGeometryClasses.TCircle;
     function GetPoly: TPolygon; // Вызывается в SetData
   protected
     FKind: Byte;
@@ -24,7 +24,7 @@ type
     property Kind: Byte read FKind; // Тип. Круг или полигон пока что
     property Temp: TPolygon read FTemp write FTemp;
     property TempMaxRadius: Single read FTempMaxRadius; // Временный радиус. Т.е. с учетом масштаба
-    property AsCircle: uIntersectorClasses.TCircle read GetCircle;
+    property AsCircle: uGeometryClasses.TCircle read GetCircle;
     property AsPoly: TPolygon read GetPoly;
     property TempCenter: TPointF read FTempCenter;
 
@@ -32,7 +32,7 @@ type
 //    procedure SetData(const vData: TArray<TPointF>); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const AData: TPolygon); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const AData: TRectF); overload;// Быстрое задание ректангла
-    procedure SetData(const AData: uIntersectorClasses.TCircle); overload;// Трактует данные в зависимости от своего типа
+    procedure SetData(const AData: uGeometryClasses.TCircle); overload;// Трактует данные в зависимости от своего типа
     procedure AddPoint(const APoint: TPointF); // Добавляет точку фигуре и пересчитывает её
 
     procedure TempTranslate(const APoint: TPointF);
@@ -195,7 +195,7 @@ begin
     Sqr(AFigure.TempMaxRadius) + Sqr(Self.TempMaxRadius);
 end;
 
-function TNewFigure.GetCircle: uIntersectorClasses.TCircle;
+function TNewFigure.GetCircle: uGeometryClasses.TCircle;
 begin
   Result.X := FTemp[0].X;
   Result.Y := FTemp[0].Y;
@@ -277,7 +277,7 @@ begin
   Reset;
 end; }
 
-procedure TNewFigure.SetData(const AData: uIntersectorClasses.TCircle);
+procedure TNewFigure.SetData(const AData: uGeometryClasses.TCircle);
 begin
   if Length(FData) < 2 then
     SetLength(FData, 2);

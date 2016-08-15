@@ -5,7 +5,7 @@ interface
 uses
   System.Types, System.Generics.Collections, System.UITypes, System.Math,
   {$I 'Utils\DelphiCompatability.inc'}
-  uEngine2DClasses, uIntersectorMethods, uIntersectorClasses, uNewFigure;
+  uEngine2DClasses, uIntersectorMethods, uGeometryClasses, uNewFigure;
 
 type
   TObjectShape = class

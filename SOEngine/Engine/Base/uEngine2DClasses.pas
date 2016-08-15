@@ -4,7 +4,7 @@ interface
 
 uses
   FMX.Graphics, System.SyncObjs, System.SysUtils, System.Types,
-  FMX.Types, uIntersectorClasses, uClasses,
+  FMX.Types, uGeometryClasses, uClasses,
   System.Generics.Collections, uNamedList, System.Generics.Defaults;
 
 type

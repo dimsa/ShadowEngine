@@ -3,7 +3,7 @@ unit uEngine2DStandardAnimations;
 interface
 
 uses
-  uIntersectorClasses,
+  uGeometryClasses,
   uEngine2DClasses, uEngine2DAnimation, uEngine2DObject, uEngine2D,
   uEngine2DSprite, uClasses;
 

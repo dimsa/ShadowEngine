@@ -4,7 +4,7 @@ interface
 
 uses
   FMX.Objects, System.Types, System.Generics.Collections,
-  uEngine2DClasses, uIntersectorClasses;
+  uEngine2DClasses, uGeometryClasses;
 
 type
   // Базовый класс для объекта отрисовки движка
@@ -51,7 +51,7 @@ type
     property ScaleY: single read fPosition.scaleY write setScaleY;  // Масштаб спрайта во время отрисовки
     property Scale: single write setScale;  // Масштаб спрайта во время отрисовки
 
-    // Paramtres for classification and modification of Object Параметры для  классификации и модификаций
+    // Parametres for classification and modification of Object Параметры для  классификации и модификаций
     property Group: string read fGroup write fGroup; // Группа для быстрого скрытия - открытия спрайтов
     property Opacity: single read fOpacity write SetOpacity; // Прозрачность
     property Visible: boolean read fVisible write fVisible; // Риовать спрайт или нет

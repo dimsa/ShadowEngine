@@ -5,7 +5,7 @@ interface
 uses
   System.SyncObjs, System.Classes, System.RegularExpressions,
   uEngineFormatter, uEngine2DObject, uEngine2DSprite, uEngine2DClasses,
-  uNamedList, uIntersectorClasses;
+  uNamedList, uGeometryClasses;
 
 type
 

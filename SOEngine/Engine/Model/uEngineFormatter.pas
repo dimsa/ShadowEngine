@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, System.RegularExpressions, System.Generics.Collections,
-  uIntersectorClasses, uSpriteList,
+  uGeometryClasses, uSpriteList,
   uExpressionParser, uNamedList, uEngine2DClasses, uTextProc, uEngine2DObject,
   uEngine2DUnclickableObject, uFastFields, uConstantGroup, uParserValue, uClasses;
 

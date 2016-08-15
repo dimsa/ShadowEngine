@@ -4,7 +4,7 @@ interface
 
 uses
   System.Types, System.Math, {$I 'Utils\DelphiCompatability.inc'}
-  uIntersectorClasses;
+  uGeometryClasses;
 
   function SqrDistance(const APoint1, APoint2: TPointF): Double; overload; // Находит сумму квадратов
   function SqrDistance(const AX1, AY1, AX2, AY2: Double): Double; overload; // Находит сумму квадратов

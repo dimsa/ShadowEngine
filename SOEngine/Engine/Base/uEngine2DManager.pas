@@ -54,7 +54,7 @@ type
     function Add(const AText: TEngine2DText; const AName: string = ''): TEngine2DText; overload;
     function Add(const AAnimation: TAnimation): TAnimation; overload;
 
-    // Created  and Add Object
+    // Created and Add Object
     function Sprite(const AName: string = ''): TSprite;
     function Text(const AName: string = ''): TEngine2DText;
     function FillEllipse(const AName: string = ''): TFillEllipse;

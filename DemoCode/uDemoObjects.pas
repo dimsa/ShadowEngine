@@ -6,7 +6,7 @@ uses
   FMX.Types, System.UITypes, System.Classes, System.Types, System.SysUtils, System.Math,
   System.Generics.Collections,
   uEngine2DSprite, uEngine2DText, uEngine2DAnimation, uEngine2DStandardAnimations, uEngine2DClasses,
-  uEngine2DManager, uEngine2DObject, uIntersectorClasses, uClasses;
+  uEngine2DManager, uEngine2DObject, uGeometryClasses, uClasses;
 
 type
   TShipFire = class(TSprite)

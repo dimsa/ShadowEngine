@@ -1,4 +1,4 @@
-unit uIntersectorClasses;
+unit uGeometryClasses;
 
 interface
 

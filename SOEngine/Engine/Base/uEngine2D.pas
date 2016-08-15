@@ -17,7 +17,7 @@ uses
   FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Platform, FMX.Objects, Math, System.SyncObjs, {$I 'Utils\DelphiCompatability.inc'}
   uClasses, uEngine2DThread, uEngine2DObject, uEngine2DSprite, uEngine2DText, uEngine2DClasses,
   uEngine2DManager, uEngine2DStatus, uEasyDevice, uEngine2DModel, uEngine2DAnimation, uFastFields,
-  uEngine2DIntersector, uEngine2DOptions;
+  uEngine2DOptions;
 
 type
   TEngine2d = class
@@ -25,7 +25,6 @@ type
     FEngineThread: TEngineThread; // Thread that paint all sprites (But there are possibility to use not one thread)  // Поток в котором происходит отрисовка
     FCritical: TCriticalSection; // The critical section for multithread operation, to protect model on changind in paint time // Критическая секция движка
     FModel: TEngine2DModel; // All main lists are in It.
-    FIntersector: TEngine2DIntersector; // Object tha test for colliding
     FOptions: TEngine2DOptions; // All Engine options. If you add some feature to manage engine, it shoulb be here// Настройки движка
     FObjectCreator: TEngine2DManager; // This object work with Model items. It's controller/
     FMouseDowned: TIntArray; // Lists of sprites that were under the mouse on MouseDown  // Массив спрайтов движка, которые находились под мышкой в момент нажатия
@@ -135,7 +134,6 @@ begin
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
-  FIntersector := TEngine2DIntersector.Create;
 
   FStatus := TEngine2DStatus.Create(FEngineThread, @FWidth, @FHeight, @FIsMouseDowned, @FMouseDowned, @FMouseUpped, @FClicked);
   FModel := TEngine2DModel.Create(FCritical, IsHor);
@@ -156,7 +154,6 @@ destructor TEngine2d.Destroy;
 begin
   FObjectCreator.Free;
   FImage.Free;
-  FIntersector.Free;
   FModel.Free;
   FBackGround.Free;
 
@@ -189,7 +186,7 @@ begin
   if FOptions.ToUseCollider then
   begin
     FCritical.Enter;
-    FIntersector.DoWork;
+    //FIntersector.DoWork;
     FCritical.Leave;
   end;
 
