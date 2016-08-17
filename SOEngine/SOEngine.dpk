@@ -67,6 +67,7 @@ contains
   uEngine2DIntersector in 'Engine\Base\uEngine2DIntersector.pas',
   uEngine2DOptions in 'Engine\Base\uEngine2DOptions.pas',
   uBaseContainer in 'Engine\Template\uBaseContainer.pas',
-  uGeometryClasses in 'Common\uGeometryClasses.pas';
+  uGeometryClasses in 'Common\uGeometryClasses.pas',
+  uEngine2DRendition in 'Engine\Base\uEngine2DRendition.pas';
 
 end.
