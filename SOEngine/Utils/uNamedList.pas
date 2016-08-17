@@ -93,19 +93,16 @@ var
   vIndex: Integer;
   vT: T;
 begin
-  // Если это имя уже есть, то выходим с индексом существующего
- { vExisting := IndexOf(AName);
-  if vExisting >= 0 then
-    Exit(vExisting);   }
 
-{  if IsHere(AName) then
-    Exit;}
-  Inc(FAdded);
-  FDict.Add(AName, AValue);
-  vIndex := FList.Add(AValue);
-  FLink.Add(AName);
-
-  Result := vIndex;
+  if AName <> '' then
+  begin
+    Inc(FAdded);
+    FDict.Add(AName, AValue);
+    vIndex := FList.Add(AValue);
+    FLink.Add(AName);
+    Result := vIndex;
+  end else
+    REsult := Add(AValue);
 end;
 
 function TNamedList<T>.Add(AValue: T): Integer;

@@ -52,8 +52,8 @@ const
 
 type
   tSpriteResource = record
-    rect: tRectF;
-    bmp: tBitmap;
+    Rect: tRectF;
+    Bmp: tBitmap;
   end;
 
   // Thread-save class for Engine Threads Потокобезопасный класс именованных листов для енджайна. Обязательно должен быть указан Парент!

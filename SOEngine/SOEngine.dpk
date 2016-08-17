@@ -68,6 +68,9 @@ contains
   uEngine2DOptions in 'Engine\Base\uEngine2DOptions.pas',
   uBaseContainer in 'Engine\Template\uBaseContainer.pas',
   uGeometryClasses in 'Common\uGeometryClasses.pas',
-  uEngine2DRendition in 'Engine\Base\uEngine2DRendition.pas';
+  uEngine2DRendition in 'Engine\Base\uEngine2DRendition.pas',
+  uE2DSprite in 'Engine\Object\uE2DSprite.pas',
+  uE2DResource in 'Engine\Object\uE2DResource.pas',
+  uEngine2DResourceList in 'Engine\Object\uEngine2DResourceList.pas';
 
 end.

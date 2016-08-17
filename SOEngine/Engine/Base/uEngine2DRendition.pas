@@ -12,11 +12,11 @@ uses
 type
   TEngine2DRendition = class abstract
   strict private
-    FSubject: TBaseUnitContainer;
-    FJustify: TObjectJustify;
     FBringToBack, FSendToFront: TNotifyEvent;
-    FImage: TImage;
   protected
+    FSubject: TBaseUnitContainer;
+    FImage: TImage;
+    FJustify: TObjectJustify;
     procedure SetJustify(const Value: TObjectJustify); virtual;
   public
     property Justify: TObjectJustify read FJustify write SetJustify;
