@@ -13,15 +13,23 @@ type
   TEngine2DRendition = class abstract
   strict private
     FBringToBack, FSendToFront: TNotifyEvent;
+  private
+    procedure SetOpacity(const Value: Single);
   protected
     FSubject: TBaseUnitContainer;
     FImage: TImage;
+    FOpacity: Single;
     FJustify: TObjectJustify;
     procedure SetJustify(const Value: TObjectJustify); virtual;
+    function GetHeight: Single; virtual; abstract;
+    function GetWidth: Single; virtual; abstract;
   public
     property Justify: TObjectJustify read FJustify write SetJustify;
+    property Opacity: Single read FOpacity write SetOpacity;
     property OnBringToBack: TNotifyEvent read FBringToBack write FBringToBack;
     property OnSendToFront: TNotifyEvent read FSendToFront write FSendToFront;
+    property Width: Single read GetWidth;
+    property Height: Single read GetHeight;
     procedure BringToBack; // Ставит спрайт первым в списке отрисовки. Т.е. Переносит назад
     procedure SendToFront; // Ставит спрайт последним в списке отрисовки. Т.е. Переносит вперед
     procedure Repaint; virtual; abstract; // Процедура отрисовки объекта, переписывается спрайтом или текстом и т.д.
@@ -62,6 +70,11 @@ end;
 procedure TEngine2DRendition.SetJustify(const Value: TObjectJustify);
 begin
   FJustify := Value;
+end;
+
+procedure TEngine2DRendition.SetOpacity(const Value: Single);
+begin
+  FOpacity := Value;
 end;
 
 end.

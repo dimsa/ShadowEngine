@@ -8,11 +8,16 @@ uses
 
 type
 
-  TEngine2DSPrite = class(TEngine2DRendition)
+  TEngine2DSprite = class(TEngine2DRendition)
   private
     FCurRes: Integer;
     FResourceList: TEngine2DResourceList;
+    procedure SetCurRes(const Value: Integer);
+  protected
+    function GetHeight: Single; override;
+    function GetWidth: Single; override;
   public
+    property CurRes: Integer read FCurRes write SetCurRes;
     procedure Repaint; override;
     constructor Create(const ASubject: TBaseUnitContainer; const AImage: TImage; const AResourceList: TEngine2DResourceList);
     destructor Destroy; override;
@@ -22,20 +27,30 @@ implementation
 
 { TEngine2DSPrite }
 
-constructor TEngine2DSPrite.Create(const ASubject: TBaseUnitContainer; const AImage: TImage;
+constructor TEngine2DSprite.Create(const ASubject: TBaseUnitContainer; const AImage: TImage;
   const AResourceList: TEngine2DResourceList);
 begin
   inherited Create(ASubject, AImage);
   FResourceList := AResourceList;
 end;
 
-destructor TEngine2DSPrite.Destroy;
+destructor TEngine2DSprite.Destroy;
 begin
   FResourceList := nil;
   inherited;
 end;
 
-procedure TEngine2DSPrite.Repaint;
+function TEngine2DSprite.GetHeight: Single;
+begin
+  Result := FResourceList[FCurRes].Height;
+end;
+
+function TEngine2DSprite.GetWidth: Single;
+begin
+  Result := FResourceList[FCurRes].Width;
+end;
+
+procedure TEngine2DSprite.Repaint;
 begin
   FImage.Bitmap.Canvas.DrawBitmap(
     FResourceList[FCurRes].Picture,
@@ -47,6 +62,11 @@ begin
       FSubject.Y + FResourceList[FCurRes].HHalf * FSubject.ScaleY * CJustifyPoints[Justify].Bottom),
     1,
     True);
+end;
+
+procedure TEngine2DSprite.SetCurRes(const Value: Integer);
+begin
+  FCurRes := Value;
 end;
 
 end.
