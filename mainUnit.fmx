@@ -23,4 +23,11 @@ object mainForm: TmainForm
     Size.PlatformDefault = False
     WrapMode = Stretch
   end
+  object Edit1: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    TabOrder = 1
+    Position.X = 120.000000000000000000
+    Position.Y = 288.000000000000000000
+    OnKeyDown = Edit1KeyDown
+  end
 end

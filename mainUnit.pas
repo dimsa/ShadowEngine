@@ -6,17 +6,19 @@ uses
   System.Types, System.UITypes, FMX.Forms, FMX.Objects, FMX.Controls,
   System.Classes, FMX.Types, FMX.Dialogs, FMX.StdCtrls,
   FMX.Advertising,
-  uEasyDevice, uDemoGame, uBannerPanel, FMX.Layouts;
+  uEasyDevice, uDemoGame, uBannerPanel, FMX.Layouts, FMX.Controls.Presentation, FMX.Edit;
 
 type
   TmainForm = class(TForm)
     mainImage: TImage;
+    Edit1: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
+    procedure Edit1KeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
   private
     Game: TDemoGame;
     {$IFDEF RELEASE}
