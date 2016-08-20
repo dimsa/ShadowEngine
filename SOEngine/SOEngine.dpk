@@ -72,6 +72,7 @@ contains
   uE2DSprite in 'Engine\Object\uE2DSprite.pas',
   uE2DResource in 'Engine\Object\uE2DResource.pas',
   uEngine2DResourceList in 'Engine\Object\uEngine2DResourceList.pas',
-  uE2DText in 'Engine\Object\uE2DText.pas';
+  uE2DText in 'Engine\Object\uE2DText.pas',
+  uE2DShape in 'Engine\Object\uE2DShape.pas';
 
 end.

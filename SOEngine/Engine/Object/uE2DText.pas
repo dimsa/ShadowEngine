@@ -17,7 +17,6 @@ type
   //  FFontSizeRatio: Single;
  //   FAutoSize: Boolean;
     FWordWrap: Boolean;
-  private
     FTextRect: TRectF;
     function GetFontSize: Single;
     procedure SetFont(const Value: tFont);
@@ -25,6 +24,7 @@ type
     procedure SetText(const Value: string);
     procedure SetTextRect(const Value: TRectF);
     procedure SetWordWrap(const Value: Boolean); // True for wrap words
+  protected
     function GetHeight: Single; override;
     function GetWidth: Single; override;
   public
@@ -39,7 +39,7 @@ type
 //    property FontSizeRatio: Single read FFontSizeRatio write FFontSizeRatio;
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
     constructor Create(const ASubject: TBaseUnitContainer; const AImage: TImage);
-    destructor Destroy;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -112,8 +112,14 @@ begin
     Bitmap.Canvas.Fill.Color := FColor;
 
     Bitmap.Canvas.Font.Assign(FFont);
-    Bitmap.Canvas.FillText(FTextRect, FText, FWordWrap, FOpacity, FFillTextFlags,
-    FHorAlign, FVerAlign);
+    Bitmap.Canvas.FillText(
+      FTextRect,
+      FText,
+      FWordWrap,
+      FOpacity,
+      FFillTextFlags,
+      FHorAlign,
+      FVerAlign);
   end;
 end;
 
