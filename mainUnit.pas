@@ -11,14 +11,12 @@ uses
 type
   TmainForm = class(TForm)
     mainImage: TImage;
-    Edit1: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
-    procedure Edit1KeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
   private
     Game: TDemoGame;
     {$IFDEF RELEASE}
