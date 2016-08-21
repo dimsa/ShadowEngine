@@ -74,6 +74,7 @@ contains
   uEngine2DResourceList in 'Engine\Object\uEngine2DResourceList.pas',
   uE2DText in 'Engine\Object\uE2DText.pas',
   uE2DShape in 'Engine\Object\uE2DShape.pas',
-  uEngine2DKeyboardProcessor in 'Engine\InputProcessor\uEngine2DKeyboardProcessor.pas';
+  uEngine2DKeyboardProcessor in 'Engine\InputProcessor\uEngine2DKeyboardProcessor.pas',
+  uEngine2DMouseProcessor in 'Engine\InputProcessor\uEngine2DMouseProcessor.pas';
 
 end.

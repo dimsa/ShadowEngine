@@ -23,6 +23,7 @@ type
     procedure KeyDown(Key: Word; KeyChar: Char; Shift: TShiftState);
     procedure KeyUp(Key: Word; KeyChar: Char; Shift: TShiftState);
     constructor Create(const ASubject: TBaseUnitContainer);
+    destructor Destroy; override;
   end;
 
 implementation
@@ -36,6 +37,12 @@ begin
   FOnKeyUp := EmptyKeyHandler;
 end;
 
+
+destructor TEngine2DKeyboardProcessor.Destroy;
+begin
+  FSubject := nil;
+  inherited;
+end;
 
 procedure TEngine2DKeyboardProcessor.EmptyKeyHandler(Sender: TObject; var Key: Word;
   var KeyChar: Char; Shift: TShiftState);

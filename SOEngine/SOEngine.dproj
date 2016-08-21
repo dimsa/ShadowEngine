@@ -177,6 +177,7 @@
         <DCCReference Include="Engine\Object\uE2DText.pas"/>
         <DCCReference Include="Engine\Object\uE2DShape.pas"/>
         <DCCReference Include="Engine\InputProcessor\uEngine2DKeyboardProcessor.pas"/>
+        <DCCReference Include="Engine\InputProcessor\uEngine2DMouseProcessor.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
