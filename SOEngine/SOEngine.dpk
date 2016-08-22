@@ -76,7 +76,7 @@ contains
   uE2DSprite in 'Parts\Rendition\uE2DSprite.pas',
   uE2DText in 'Parts\Rendition\uE2DText.pas',
   uEngine2DModel in 'Main\uEngine2DModel.pas',
-  uBaseContainer in 'Template\uBaseContainer.pas',
-  uEngine2DResourceList in 'Parts\Rendition\uEngine2DResourceList.pas';
+  uSoContainer in 'Template\uSoContainer.pas',
+  uE2DResourceList in 'Parts\Rendition\uE2DResourceList.pas';
 
 end.

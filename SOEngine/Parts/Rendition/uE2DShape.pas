@@ -4,7 +4,7 @@ interface
 
 uses
   System.Types, FMX.Graphics, FMX.Types, FMX.Objects, System.UITypes,
-  uEngine2DRendition, uBaseContainer;
+  uEngine2DRendition, uSoContainer;
 
 type
   TEngine2DShape = class(TEngine2DRendition)
@@ -23,7 +23,7 @@ type
     property Pen: TStrokeBrush read FPen write SetPen;
     property Brush: TBrush read FBrush write SetBrush;
     property FigureRect: TRectF read FFigureRect write SetFigureRect;
-    constructor Create(const ASubject: TBaseUnitContainer; const AImage: TImage);
+    constructor Create(const ASubject: TSoContainer; const AImage: TImage);
     destructor Destroy; override;
   end;
 
@@ -45,7 +45,7 @@ uses
 
 { TEngine2DShape }
 
-constructor TEngine2DShape.Create(const ASubject: TBaseUnitContainer; const AImage: TImage);
+constructor TEngine2DShape.Create(const ASubject: TSoContainer; const AImage: TImage);
 begin
   inherited Create(ASubject, AImage);
 

@@ -7,7 +7,7 @@ interface
 
 uses
   System.Classes, FMX.Objects,
-  uBaseContainer, uEngine2DClasses;
+  uSoContainer, uEngine2DClasses;
 
 type
   TEngine2DRendition = class abstract
@@ -16,7 +16,7 @@ type
   private
     procedure SetOpacity(const Value: Single);
   protected
-    FSubject: TBaseUnitContainer;
+    FSubject: TSoContainer;
     FImage: TImage;
     FOpacity: Single;
     FJustify: TObjectJustify;
@@ -34,7 +34,7 @@ type
     procedure SendToFront; // Ставит спрайт последним в списке отрисовки. Т.е. Переносит вперед
     procedure Repaint; virtual; abstract; // Процедура отрисовки объекта, переписывается спрайтом или текстом и т.д.
 
-    constructor Create(const ASubject: TBaseUnitContainer; const AImage: TImage);
+    constructor Create(const ASubject: TSoContainer; const AImage: TImage);
     destructor Destroy; override;
   end;
 
@@ -47,7 +47,7 @@ begin
   FBringToBack(Self);
 end;
 
-constructor TEngine2DRendition.Create(const ASubject: TBaseUnitContainer; const AImage: TImage);
+constructor TEngine2DRendition.Create(const ASubject: TSoContainer; const AImage: TImage);
 begin
   FSubject := ASubject;
   FImage := AImage;

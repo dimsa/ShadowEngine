@@ -178,8 +178,8 @@
         <DCCReference Include="Parts\Rendition\uE2DSprite.pas"/>
         <DCCReference Include="Parts\Rendition\uE2DText.pas"/>
         <DCCReference Include="Main\uEngine2DModel.pas"/>
-        <DCCReference Include="Template\uBaseContainer.pas"/>
-        <DCCReference Include="Parts\Rendition\uEngine2DResourceList.pas"/>
+        <DCCReference Include="Template\uSoContainer.pas"/>
+        <DCCReference Include="Parts\Rendition\uE2DResourceList.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

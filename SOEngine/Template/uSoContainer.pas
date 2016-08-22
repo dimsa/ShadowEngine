@@ -1,4 +1,4 @@
-unit uBaseContainer;
+unit uSoContainer;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   uGeometryClasses, System.Types;
 
 type
-  TBaseUnitContainer = class
+  TSoContainer = class
   protected
     FPosition: TPosition;
     function GetCenter: TPointF;
@@ -37,33 +37,33 @@ implementation
 
 { TBaseUnitContainer }
 
-function TBaseUnitContainer.GetCenter: TPointF;
+function TSoContainer.GetCenter: TPointF;
 begin
   Result := FPosition.XY;
 end;
 
-function TBaseUnitContainer.GetScalePoint: TPointF;
+function TSoContainer.GetScalePoint: TPointF;
 begin
   Result := FPosition.Scale;
 end;
 
-procedure TBaseUnitContainer.SetCenter(const Value: TPointF);
+procedure TSoContainer.SetCenter(const Value: TPointF);
 begin
   FPosition.X := Value.X;
   FPosition.Y := Value.Y;
 end;
 
-procedure TBaseUnitContainer.SetPosition(const Value: TPosition);
+procedure TSoContainer.SetPosition(const Value: TPosition);
 begin
   FPosition := Value;
 end;
 
-procedure TBaseUnitContainer.SetRotate(const Value: Single);
+procedure TSoContainer.SetRotate(const Value: Single);
 begin
   FPosition.Rotate := Value;
 end;
 
-procedure TBaseUnitContainer.SetScale(const Value: Single);
+procedure TSoContainer.SetScale(const Value: Single);
 var
   vSoot: Single;
 begin
@@ -79,28 +79,28 @@ begin
   FPosition.scaleY := vSoot * Value;
 end;
 
-procedure TBaseUnitContainer.SetScalePoint(const Value: TPointF);
+procedure TSoContainer.SetScalePoint(const Value: TPointF);
 begin
   FPosition.ScaleX := Value.X;
   FPosition.ScaleY := Value.Y
 end;
 
-procedure TBaseUnitContainer.SetScaleX(const Value: Single);
+procedure TSoContainer.SetScaleX(const Value: Single);
 begin
   FPosition.ScaleX := Value;
 end;
 
-procedure TBaseUnitContainer.SetScaleY(const Value: Single);
+procedure TSoContainer.SetScaleY(const Value: Single);
 begin
   FPosition.ScaleY := Value;
 end;
 
-procedure TBaseUnitContainer.SetX(const Value: Single);
+procedure TSoContainer.SetX(const Value: Single);
 begin
   FPosition.X := Value;
 end;
 
-procedure TBaseUnitContainer.SetY(const Value: Single);
+procedure TSoContainer.SetY(const Value: Single);
 begin
   FPosition.Y := Value;
 end;

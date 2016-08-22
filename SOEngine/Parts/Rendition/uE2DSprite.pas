@@ -4,7 +4,7 @@ interface
 
 uses
   FMX.Objects, System.Types,
-  uEngine2DRendition, uEngine2DResourceList, uBaseContainer, uEngine2DClasses;
+  uEngine2DRendition, uE2DResourceList, uSoContainer, uEngine2DClasses;
 
 type
 
@@ -19,7 +19,7 @@ type
   public
     property CurRes: Integer read FCurRes write SetCurRes;
     procedure Repaint; override;
-    constructor Create(const ASubject: TBaseUnitContainer; const AImage: TImage; const AResourceList: TEngine2DResourceList);
+    constructor Create(const ASubject: TSoContainer; const AImage: TImage; const AResourceList: TEngine2DResourceList);
     destructor Destroy; override;
   end;
 
@@ -27,7 +27,7 @@ implementation
 
 { TEngine2DSPrite }
 
-constructor TEngine2DSprite.Create(const ASubject: TBaseUnitContainer; const AImage: TImage;
+constructor TEngine2DSprite.Create(const ASubject: TSoContainer; const AImage: TImage;
   const AResourceList: TEngine2DResourceList);
 begin
   inherited Create(ASubject, AImage);

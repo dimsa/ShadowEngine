@@ -1,4 +1,4 @@
-unit uEngine2DResourceList;
+unit uE2DResourceList;
 
 interface
 
