@@ -141,8 +141,6 @@
         <DCCReference Include="ExpressionParser\uOperandGroup.pas"/>
         <DCCReference Include="ExpressionParser\uParserValue.pas"/>
         <DCCReference Include="ExpressionParser\uTextProc.pas"/>
-        <DCCReference Include="Intersector\uIntersectorMethods.pas"/>
-        <DCCReference Include="Intersector\uNewFigure.pas"/>
         <DCCReference Include="Utils\uClasses.pas"/>
         <DCCReference Include="Utils\uNamedList.pas"/>
         <DCCReference Include="Engine\Model\uEngine2DAnimation.pas"/>
@@ -171,15 +169,17 @@
         <DCCReference Include="Engine\Template\uBaseContainer.pas"/>
         <DCCReference Include="Common\uGeometryClasses.pas"/>
         <DCCReference Include="Engine\Base\uEngine2DRendition.pas"/>
-        <DCCReference Include="Engine\Object\uE2DSprite.pas"/>
-        <DCCReference Include="Engine\Object\uE2DResource.pas"/>
-        <DCCReference Include="Engine\Object\uEngine2DResourceList.pas"/>
-        <DCCReference Include="Engine\Object\uE2DText.pas"/>
-        <DCCReference Include="Engine\Object\uE2DShape.pas"/>
-        <DCCReference Include="Engine\InputProcessor\uEngine2DKeyboardProcessor.pas"/>
-        <DCCReference Include="Engine\InputProcessor\uEngine2DMouseProcessor.pas"/>
         <DCCReference Include="Engine\Parts\Animation\uSoAnimationList.pas"/>
         <DCCReference Include="Engine\Parts\Animation\uSoAnimation.pas"/>
+        <DCCReference Include="Engine\Parts\InputProcessor\uEngine2DKeyboardProcessor.pas"/>
+        <DCCReference Include="Engine\Parts\InputProcessor\uEngine2DMouseProcessor.pas"/>
+        <DCCReference Include="Engine\Parts\Intersector\uIntersectorMethods.pas"/>
+        <DCCReference Include="Engine\Parts\Intersector\uNewFigure.pas"/>
+        <DCCReference Include="Engine\Parts\Rendition\uE2DResource.pas"/>
+        <DCCReference Include="Engine\Parts\Rendition\uE2DShape.pas"/>
+        <DCCReference Include="Engine\Parts\Rendition\uE2DSprite.pas"/>
+        <DCCReference Include="Engine\Parts\Rendition\uE2DText.pas"/>
+        <DCCReference Include="Engine\Parts\Rendition\uEngine2DResourceList.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

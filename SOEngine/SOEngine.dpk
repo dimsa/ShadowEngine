@@ -39,8 +39,6 @@ contains
   uOperandGroup in 'ExpressionParser\uOperandGroup.pas',
   uParserValue in 'ExpressionParser\uParserValue.pas',
   uTextProc in 'ExpressionParser\uTextProc.pas',
-  uIntersectorMethods in 'Intersector\uIntersectorMethods.pas',
-  uNewFigure in 'Intersector\uNewFigure.pas',
   uClasses in 'Utils\uClasses.pas',
   uNamedList in 'Utils\uNamedList.pas',
   uEngine2DAnimation in 'Engine\Model\uEngine2DAnimation.pas',
@@ -69,14 +67,16 @@ contains
   uBaseContainer in 'Engine\Template\uBaseContainer.pas',
   uGeometryClasses in 'Common\uGeometryClasses.pas',
   uEngine2DRendition in 'Engine\Base\uEngine2DRendition.pas',
-  uE2DSprite in 'Engine\Object\uE2DSprite.pas',
-  uE2DResource in 'Engine\Object\uE2DResource.pas',
-  uEngine2DResourceList in 'Engine\Object\uEngine2DResourceList.pas',
-  uE2DText in 'Engine\Object\uE2DText.pas',
-  uE2DShape in 'Engine\Object\uE2DShape.pas',
-  uEngine2DKeyboardProcessor in 'Engine\InputProcessor\uEngine2DKeyboardProcessor.pas',
-  uEngine2DMouseProcessor in 'Engine\InputProcessor\uEngine2DMouseProcessor.pas',
   uSoAnimationList in 'Engine\Parts\Animation\uSoAnimationList.pas',
-  uSoAnimation in 'Engine\Parts\Animation\uSoAnimation.pas';
+  uSoAnimation in 'Engine\Parts\Animation\uSoAnimation.pas',
+  uEngine2DKeyboardProcessor in 'Engine\Parts\InputProcessor\uEngine2DKeyboardProcessor.pas',
+  uEngine2DMouseProcessor in 'Engine\Parts\InputProcessor\uEngine2DMouseProcessor.pas',
+  uIntersectorMethods in 'Engine\Parts\Intersector\uIntersectorMethods.pas',
+  uNewFigure in 'Engine\Parts\Intersector\uNewFigure.pas',
+  uE2DResource in 'Engine\Parts\Rendition\uE2DResource.pas',
+  uE2DShape in 'Engine\Parts\Rendition\uE2DShape.pas',
+  uE2DSprite in 'Engine\Parts\Rendition\uE2DSprite.pas',
+  uE2DText in 'Engine\Parts\Rendition\uE2DText.pas',
+  uEngine2DResourceList in 'Engine\Parts\Rendition\uEngine2DResourceList.pas';
 
 end.

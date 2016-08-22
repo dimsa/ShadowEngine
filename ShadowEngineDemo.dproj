@@ -346,7 +346,7 @@
         <BT_BuildType>Debug</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <DCC_UnitSearchPath>.\SOEngine\Common;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>.\SOEngine\Common;.\SOEngine\Engine\Parts\Intersector;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
@@ -393,9 +393,6 @@
         <DCCReference Include="DemoCode\Utils\inifile\FMX.IniFile.Apple.pas"/>
         <DCCReference Include="DemoCode\Utils\inifile\FMX.IniFile.pas"/>
         <DCCReference Include="DemoCode\Utils\uBannerPanel.pas">
-            <Form>$R *.res</Form>
-        </DCCReference>
-        <DCCReference Include="SOEngine\Engine\Model\uE2DAnimation.pas">
             <Form>$R *.res</Form>
         </DCCReference>
         <None Include="Utils\DelphiCompatability.inc"/>
