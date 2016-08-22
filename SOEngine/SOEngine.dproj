@@ -143,43 +143,43 @@
         <DCCReference Include="ExpressionParser\uTextProc.pas"/>
         <DCCReference Include="Utils\uClasses.pas"/>
         <DCCReference Include="Utils\uNamedList.pas"/>
-        <DCCReference Include="Engine\Model\uEngine2DAnimation.pas"/>
-        <DCCReference Include="Engine\Model\uEngine2DAnimationList.pas"/>
-        <DCCReference Include="Engine\Model\uEngine2DModel.pas"/>
-        <DCCReference Include="Engine\Model\uEngine2DObjectShape.pas"/>
-        <DCCReference Include="Engine\Model\uEngine2DResources.pas"/>
-        <DCCReference Include="Engine\Model\uEngine2DSpriteAnimation.pas"/>
-        <DCCReference Include="Engine\Model\uEngine2DStandardAnimations.pas"/>
-        <DCCReference Include="Engine\Model\uEngineFormatter.pas"/>
-        <DCCReference Include="Engine\Model\uFormatterList.pas"/>
-        <DCCReference Include="Engine\Model\uSpriteList.pas"/>
-        <DCCReference Include="Engine\Base\uEasyDevice.pas"/>
-        <DCCReference Include="Engine\Base\uEngine2D.pas"/>
-        <DCCReference Include="Engine\Base\uEngine2DClasses.pas"/>
-        <DCCReference Include="Engine\Base\uEngine2DManager.pas"/>
-        <DCCReference Include="Engine\Base\uEngine2DStatus.pas"/>
-        <DCCReference Include="Engine\Base\uEngine2DThread.pas"/>
-        <DCCReference Include="Engine\Object\uEngine2DObject.pas"/>
-        <DCCReference Include="Engine\Object\uEngine2DShape.pas"/>
-        <DCCReference Include="Engine\Object\uEngine2DSprite.pas"/>
-        <DCCReference Include="Engine\Object\uEngine2DText.pas"/>
-        <DCCReference Include="Engine\Object\uEngine2DUnclickableObject.pas"/>
-        <DCCReference Include="Engine\Base\uEngine2DIntersector.pas"/>
-        <DCCReference Include="Engine\Base\uEngine2DOptions.pas"/>
-        <DCCReference Include="Engine\Template\uBaseContainer.pas"/>
         <DCCReference Include="Common\uGeometryClasses.pas"/>
-        <DCCReference Include="Engine\Base\uEngine2DRendition.pas"/>
-        <DCCReference Include="Engine\Parts\Animation\uSoAnimationList.pas"/>
-        <DCCReference Include="Engine\Parts\Animation\uSoAnimation.pas"/>
-        <DCCReference Include="Engine\Parts\InputProcessor\uEngine2DKeyboardProcessor.pas"/>
-        <DCCReference Include="Engine\Parts\InputProcessor\uEngine2DMouseProcessor.pas"/>
-        <DCCReference Include="Engine\Parts\Intersector\uIntersectorMethods.pas"/>
-        <DCCReference Include="Engine\Parts\Intersector\uNewFigure.pas"/>
-        <DCCReference Include="Engine\Parts\Rendition\uE2DResource.pas"/>
-        <DCCReference Include="Engine\Parts\Rendition\uE2DShape.pas"/>
-        <DCCReference Include="Engine\Parts\Rendition\uE2DSprite.pas"/>
-        <DCCReference Include="Engine\Parts\Rendition\uE2DText.pas"/>
-        <DCCReference Include="Engine\Parts\Rendition\uEngine2DResourceList.pas"/>
+        <DCCReference Include="Main\uEasyDevice.pas"/>
+        <DCCReference Include="Main\uEngine2D.pas"/>
+        <DCCReference Include="Main\uEngine2DClasses.pas"/>
+        <DCCReference Include="Main\uEngine2DIntersector.pas"/>
+        <DCCReference Include="Main\uEngine2DManager.pas"/>
+        <DCCReference Include="Main\uEngine2DOptions.pas"/>
+        <DCCReference Include="Main\uEngine2DRendition.pas"/>
+        <DCCReference Include="Main\uEngine2DStatus.pas"/>
+        <DCCReference Include="Main\uEngine2DThread.pas"/>
+        <DCCReference Include="Parts\Animation\uEngine2DAnimation.pas"/>
+        <DCCReference Include="Parts\Animation\uEngine2DAnimationList.pas"/>
+        <DCCReference Include="Parts\Animation\uEngine2DSpriteAnimation.pas"/>
+        <DCCReference Include="Parts\Animation\uEngine2DStandardAnimations.pas"/>
+        <DCCReference Include="Parts\Animation\uSoAnimation.pas"/>
+        <DCCReference Include="Parts\Animation\uSoAnimationList.pas"/>
+        <DCCReference Include="Parts\Formatters\uEngineFormatter.pas"/>
+        <DCCReference Include="Parts\Formatters\uFormatterList.pas"/>
+        <DCCReference Include="Parts\InputProcessor\uEngine2DKeyboardProcessor.pas"/>
+        <DCCReference Include="Parts\InputProcessor\uEngine2DMouseProcessor.pas"/>
+        <DCCReference Include="Parts\Intersector\uEngine2DObjectShape.pas"/>
+        <DCCReference Include="Parts\Intersector\uIntersectorMethods.pas"/>
+        <DCCReference Include="Parts\Intersector\uNewFigure.pas"/>
+        <DCCReference Include="Parts\Object_Deprecated\uEngine2DObject.pas"/>
+        <DCCReference Include="Parts\Object_Deprecated\uEngine2DResources.pas"/>
+        <DCCReference Include="Parts\Object_Deprecated\uEngine2DShape.pas"/>
+        <DCCReference Include="Parts\Object_Deprecated\uEngine2DSprite.pas"/>
+        <DCCReference Include="Parts\Object_Deprecated\uEngine2DText.pas"/>
+        <DCCReference Include="Parts\Object_Deprecated\uEngine2DUnclickableObject.pas"/>
+        <DCCReference Include="Parts\Object_Deprecated\uSpriteList.pas"/>
+        <DCCReference Include="Parts\Rendition\uE2DResource.pas"/>
+        <DCCReference Include="Parts\Rendition\uE2DShape.pas"/>
+        <DCCReference Include="Parts\Rendition\uE2DSprite.pas"/>
+        <DCCReference Include="Parts\Rendition\uE2DText.pas"/>
+        <DCCReference Include="Main\uEngine2DModel.pas"/>
+        <DCCReference Include="Template\uBaseContainer.pas"/>
+        <DCCReference Include="Parts\Rendition\uEngine2DResourceList.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
@@ -229,16 +229,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
                 <DeployClass Name="ProjectOSXResource">
                     <Platform Name="OSX32">
                         <RemoteDir>Contents\Resources</RemoteDir>
@@ -552,7 +543,16 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                </DeployClass>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

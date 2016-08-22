@@ -89,9 +89,6 @@ type
 
 implementation
 
-uses
-  uEngine2D;
-
 function ClearPosition: TPosition;
 var
   vRes: TPosition;
@@ -188,4 +185,3 @@ begin
 end;
 
 end.
-
