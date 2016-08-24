@@ -4,7 +4,7 @@ interface
 
 uses
   uSoContainer, System.Classes,
-  uEngine2DStatus, uEngine2DClasses;
+  uEngine2DStatus, uEngine2DClasses, uSoBasePart;
 
 type
   TEngineThreadParams = class
@@ -18,18 +18,16 @@ type
     constructor Create(const AEngineStatus: TEngine2DStatus);
   end;
 
-  TSoAnimation = class abstract
+  TSoAnimation = class abstract(TSoBasePart)
   strict private
-    FSubject: TSoContainer; // Pointer to object thay you animate. Указатель на объект анимации
     FThreadParams: TEngineThreadParams;
     FTimeTotal: Integer; // How many milliseconds this animation will run
     FTimePassed: Double; // How many millisecnds passed
-    procedure Finalize; virtual; abstract; // Set the final values that animates for object  // Так бывает, что анимация пролетает свою конечную точку из-за скачков фпс. Так вот, это для того, чтобы присвоить конечные координаты
-    procedure RecoverStart; virtual; abstract;
-  private
     FOnFinish: TNotifyEvent;
     FOnCancel: TNotifyEvent;
     FOnStart: TNotifyEvent; // Set the initial condition for object // Данный метод вызывается при вызове метода ClearForSubject в TAnimationList. Он должен приводить состояние объекта к начальному.
+    procedure Finalize; virtual; abstract; // Set the final values that animates for object  // Так бывает, что анимация пролетает свою конечную точку из-за скачков фпс. Так вот, это для того, чтобы присвоить конечные координаты
+    procedure RecoverStart; virtual; abstract;
    public
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
@@ -74,13 +72,14 @@ end;
 constructor TSoAnimation.Create(const ASubject: TSoContainer;
   const AThreadParams: TEngineThreadParams);
 begin
-  FSubject := ASubject;
+  inherited Create(ASubject);
+
+  FSubject.AddDestroyHandler(OnSubjectDestroy);
   FThreadParams := AThreadParams;
 end;
 
 destructor TSoAnimation.Destroy;
 begin
-  FSubject := nil;
   FThreadParams := nil;
   inherited;
 end;

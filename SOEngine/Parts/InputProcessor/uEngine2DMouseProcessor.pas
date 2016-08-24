@@ -4,12 +4,11 @@ interface
 
 uses
   System.Classes, FMX.Types, System.UITypes,
-  uSoContainer;
+  uSoContainer, uSoBasePart;
 
 type
-  TEngine2DKeyboardProcessor = class
+  TEngine2DKeyboardProcessor = class(TSoBasePart)
   private
-    FSubject: TSoContainer;
     FEnabled: Boolean;
     FOnMouseDown: TMouseEvent;
     FOnMouseEnter: TNotifyEvent;
@@ -31,7 +30,7 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write SetOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write SetOnMouseLeave;
     property OnClick: TNotifyEvent read FOnClick write SetOnClick;
-    constructor Create(const ASubject: TSoContainer);
+    constructor Create(const ASubject: TSoContainer); override;
     destructor Destroy; override;
   end;
 
@@ -41,7 +40,7 @@ implementation
 
 constructor TEngine2DKeyboardProcessor.Create(const ASubject: TSoContainer);
 begin
-  FSubject := ASubject;
+  inherited Create(ASubject);
   FOnMouseLeave := EmptyNotifyEvent;
   FOnMouseEnter := EmptyNotifyEvent;
   FOnClick := EmptyNotifyEvent;
@@ -51,7 +50,7 @@ end;
 
 destructor TEngine2DKeyboardProcessor.Destroy;
 begin
-  FSubject := nil;
+
   inherited;
 end;
 

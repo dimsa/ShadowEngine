@@ -48,7 +48,6 @@ contains
   uEngine2DIntersector in 'Main\uEngine2DIntersector.pas',
   uEngine2DManager in 'Main\uEngine2DManager.pas',
   uEngine2DOptions in 'Main\uEngine2DOptions.pas',
-  uEngine2DRendition in 'Main\uEngine2DRendition.pas',
   uEngine2DStatus in 'Main\uEngine2DStatus.pas',
   uEngine2DThread in 'Main\uEngine2DThread.pas',
   uEngine2DAnimation in 'Parts\Animation\uEngine2DAnimation.pas',
@@ -77,6 +76,9 @@ contains
   uE2DText in 'Parts\Rendition\uE2DText.pas',
   uEngine2DModel in 'Main\uEngine2DModel.pas',
   uSoContainer in 'Template\uSoContainer.pas',
-  uE2DResourceList in 'Parts\Rendition\uE2DResourceList.pas';
+  uE2DResourceList in 'Parts\Rendition\uE2DResourceList.pas',
+  uCommonClasses in 'Common\uCommonClasses.pas',
+  uSoBasePart in 'Parts\Base\uSoBasePart.pas',
+  uE2DRendition in 'Parts\Rendition\uE2DRendition.pas';
 
 end.

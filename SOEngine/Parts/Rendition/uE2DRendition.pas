@@ -1,22 +1,20 @@
 // It's base class for views of objects. It's may be Sprite, Figure, Text and etc.
 // It's only for rendering. It doesnt't know anything except Image where paint and object position
 
-unit uEngine2DRendition;
+unit uE2DRendition;
 
 interface
 
 uses
   System.Classes, FMX.Objects,
-  uSoContainer, uEngine2DClasses;
+  uSoContainer, uEngine2DClasses, uSoBasePart;
 
 type
-  TEngine2DRendition = class abstract
+  TEngine2DRendition = class abstract(TSoBasePart)
   strict private
     FBringToBack, FSendToFront: TNotifyEvent;
-  private
     procedure SetOpacity(const Value: Single);
   protected
-    FSubject: TSoContainer;
     FImage: TImage;
     FOpacity: Single;
     FJustify: TObjectJustify;
@@ -49,13 +47,12 @@ end;
 
 constructor TEngine2DRendition.Create(const ASubject: TSoContainer; const AImage: TImage);
 begin
-  FSubject := ASubject;
+  inherited Create(ASubject);
   FImage := AImage;
 end;
 
 destructor TEngine2DRendition.Destroy;
 begin
-  FSubject := nil;
   FImage := nil;
   FBringToBack := nil;
   FSendToFront := nil;

@@ -4,12 +4,11 @@ interface
 
 uses
   FMX.Types, System.Classes,
-  uSoContainer;
+  uSoContainer, uSoBasePart;
 
 type
-  TEngine2DKeyboardProcessor = class
+  TEngine2DKeyboardProcessor = class(TSoBasePart)
   private
-    FSubject: TSoContainer;
     FOnKeyDown, FOnKeyUp: TKeyEvent;
     FEnabled: Boolean;
     procedure SetOnKeyDown(const Value: TKeyEvent);
@@ -22,7 +21,7 @@ type
     property OnKeyUp: TKeyEvent read FOnKeyUp write SetOnKeyUp; // May be move it to constructor?
     procedure KeyDown(Key: Word; KeyChar: Char; Shift: TShiftState);
     procedure KeyUp(Key: Word; KeyChar: Char; Shift: TShiftState);
-    constructor Create(const ASubject: TSoContainer);
+    constructor Create(const ASubject: TSoContainer); override;
     destructor Destroy; override;
   end;
 
@@ -32,7 +31,8 @@ implementation
 
 constructor TEngine2DKeyboardProcessor.Create(const ASubject: TSoContainer);
 begin
-  FSubject := ASubject;
+  inherited Create(ASubject);
+
   FOnKeyDown := EmptyKeyHandler;
   FOnKeyUp := EmptyKeyHandler;
 end;
@@ -40,7 +40,7 @@ end;
 
 destructor TEngine2DKeyboardProcessor.Destroy;
 begin
-  FSubject := nil;
+
   inherited;
 end;
 

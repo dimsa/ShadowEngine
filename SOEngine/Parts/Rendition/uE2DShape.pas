@@ -4,7 +4,7 @@ interface
 
 uses
   System.Types, FMX.Graphics, FMX.Types, FMX.Objects, System.UITypes,
-  uEngine2DRendition, uSoContainer;
+  uE2DRendition, uSoContainer;
 
 type
   TEngine2DShape = class(TEngine2DRendition)

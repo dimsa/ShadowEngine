@@ -11,8 +11,6 @@ type
 
 
   TProcedure = procedure of Object;
-  TVCLProcedure = procedure(ASender: TObject) of object;
-  TItemSelectEvent = procedure (Sender: TObject) of object;
   TDelegate<T> = function: T of object;
   TEvent<T> = procedure(ASender: TObject; AEventArgs: T) of object;
 

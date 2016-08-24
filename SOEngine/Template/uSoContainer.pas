@@ -3,12 +3,13 @@ unit uSoContainer;
 interface
 
 uses
-  uGeometryClasses, System.Types;
+  uGeometryClasses, System.Types, System.Classes, uCommonClasses;
 
 type
   TSoContainer = class
   protected
     FPosition: TPosition;
+    FOnDestroyHandlers: TNotifyEventList;
     function GetCenter: TPointF;
     function GetScalePoint: TPointF;
     procedure SetCenter(const Value: TPointF);
@@ -31,11 +32,33 @@ type
     property ScaleX: Single read FPosition.ScaleX write SetScaleX;  // Масштаб спрайта во время отрисовки
     property ScaleY: Single read FPosition.ScaleY write SetScaleY;  // Масштаб спрайта во время отрисовки
     property Scale: Single write SetScale;  // Масштаб спрайта во время отрисовки
+    procedure AddDestroyHandler(const AHandler: TNotifyEvent);
+    procedure RemoveDestroyHandler(const AHandler: TNotifyEvent);
+    constructor Create;
+    destructor Destroy; override;
   end;
 
 implementation
 
 { TBaseUnitContainer }
+
+procedure TSoContainer.AddDestroyHandler(const AHandler: TNotifyEvent);
+begin
+  FOnDestroyHandlers.Add(AHandler);
+end;
+
+constructor TSoContainer.Create;
+begin
+  FOnDestroyHandlers := TNotifyEventList.Create;
+end;
+
+destructor TSoContainer.Destroy;
+begin
+  FOnDestroyHandlers.RaiseEvent(Self);
+  FOnDestroyHandlers.Free;
+
+  inherited;
+end;
 
 function TSoContainer.GetCenter: TPointF;
 begin
@@ -45,6 +68,11 @@ end;
 function TSoContainer.GetScalePoint: TPointF;
 begin
   Result := FPosition.Scale;
+end;
+
+procedure TSoContainer.RemoveDestroyHandler(const AHandler: TNotifyEvent);
+begin
+  FOnDestroyHandlers.Remove(AHandler);
 end;
 
 procedure TSoContainer.SetCenter(const Value: TPointF);
