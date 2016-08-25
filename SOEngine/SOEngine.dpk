@@ -55,7 +55,7 @@ contains
   uEngine2DSpriteAnimation in 'Parts\Animation\uEngine2DSpriteAnimation.pas',
   uEngine2DStandardAnimations in 'Parts\Animation\uEngine2DStandardAnimations.pas',
   uSoAnimation in 'Parts\Animation\uSoAnimation.pas',
-  uSoAnimationList in 'Parts\Animation\uSoAnimationList.pas',
+  uSoAnimator in 'Parts\Animation\uSoAnimator.pas',
   uEngineFormatter in 'Parts\Formatters\uEngineFormatter.pas',
   uFormatterList in 'Parts\Formatters\uFormatterList.pas',
   uEngine2DKeyboardProcessor in 'Parts\InputProcessor\uEngine2DKeyboardProcessor.pas',
@@ -79,6 +79,15 @@ contains
   uE2DResourceList in 'Parts\Rendition\uE2DResourceList.pas',
   uCommonClasses in 'Common\uCommonClasses.pas',
   uSoBasePart in 'Parts\Base\uSoBasePart.pas',
-  uE2DRendition in 'Parts\Rendition\uE2DRendition.pas';
+  uE2DRendition in 'Parts\Rendition\uE2DRendition.pas',
+  uSoEngine in 'Main\uSoEngine.pas',
+  uSoModel in 'Main\uSoModel.pas',
+  uSoContainerKeeper in 'Template\uSoContainerKeeper.pas',
+  uSoRenderer in 'Parts\Rendition\uSoRenderer.pas',
+  uSoBaseOperator in 'Parts\Base\uSoBaseOperator.pas',
+  uSoIntersector in 'Parts\Intersector\uSoIntersector.pas',
+  uSoFormattor in 'Parts\Formatters\uSoFormattor.pas',
+  uSoKeyProcessor in 'Parts\InputProcessor\uSoKeyProcessor.pas',
+  uSoMouseProcessor in 'Parts\InputProcessor\uSoMouseProcessor.pas';
 
 end.
