@@ -7,6 +7,10 @@ uses
 
 type
   TSoContainer = class
+  private
+ {   FOnExecute: TNotifyEvent<TSoContainer>;
+    FExecutable: Boolean;   }
+    //procedure SetExecutable(const Value: Boolean);
   protected
     FPosition: TPosition;
     FOnDestroyHandlers: TNotifyEventList;

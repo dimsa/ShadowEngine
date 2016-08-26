@@ -58,8 +58,8 @@ contains
   uSoAnimator in 'Parts\Animation\uSoAnimator.pas',
   uEngineFormatter in 'Parts\Formatters\uEngineFormatter.pas',
   uFormatterList in 'Parts\Formatters\uFormatterList.pas',
-  uEngine2DKeyboardProcessor in 'Parts\InputProcessor\uEngine2DKeyboardProcessor.pas',
-  uEngine2DMouseProcessor in 'Parts\InputProcessor\uEngine2DMouseProcessor.pas',
+  uSoKeyHandler in 'Parts\InputProcessor\uSoKeyHandler.pas',
+  uSoMouseHandler in 'Parts\InputProcessor\uSoMouseHandler.pas',
   uEngine2DObjectShape in 'Parts\Intersector\uEngine2DObjectShape.pas',
   uIntersectorMethods in 'Parts\Intersector\uIntersectorMethods.pas',
   uNewFigure in 'Parts\Intersector\uNewFigure.pas',
@@ -85,9 +85,12 @@ contains
   uSoContainerKeeper in 'Template\uSoContainerKeeper.pas',
   uSoRenderer in 'Parts\Rendition\uSoRenderer.pas',
   uSoBaseOperator in 'Parts\Base\uSoBaseOperator.pas',
-  uSoIntersector in 'Parts\Intersector\uSoIntersector.pas',
+  uSoCollider in 'Parts\Intersector\uSoCollider.pas',
   uSoFormattor in 'Parts\Formatters\uSoFormattor.pas',
   uSoKeyProcessor in 'Parts\InputProcessor\uSoKeyProcessor.pas',
-  uSoMouseProcessor in 'Parts\InputProcessor\uSoMouseProcessor.pas';
+  uSoMouseProcessor in 'Parts\InputProcessor\uSoMouseProcessor.pas',
+  uSoLogic in 'Parts\Logic\uSoLogic.pas',
+  uSoLogicKeeper in 'Parts\Logic\uSoLogicKeeper.pas',
+  uSoColliderObject in 'Parts\Intersector\uSoColliderObject.pas';
 
 end.

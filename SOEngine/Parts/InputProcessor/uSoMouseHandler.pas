@@ -1,4 +1,4 @@
-unit uEngine2DMouseProcessor;
+unit uSoMouseHandler;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   uSoContainer, uSoBasePart;
 
 type
-  TEngine2DKeyboardProcessor = class(TSoBasePart)
+  TSoMouseHandler = class(TSoBasePart)
   private
     FEnabled: Boolean;
     FOnMouseDown: TMouseEvent;
@@ -38,7 +38,7 @@ implementation
 
 { TEngine2DKeyboardProcessor }
 
-constructor TEngine2DKeyboardProcessor.Create(const ASubject: TSoContainer);
+constructor TSoMouseHandler.Create(const ASubject: TSoContainer);
 begin
   inherited Create(ASubject);
   FOnMouseLeave := EmptyNotifyEvent;
@@ -48,49 +48,49 @@ begin
   FOnMouseUp := EmptyMouseEvent;
 end;
 
-destructor TEngine2DKeyboardProcessor.Destroy;
+destructor TSoMouseHandler.Destroy;
 begin
 
   inherited;
 end;
 
-procedure TEngine2DKeyboardProcessor.EmptyMouseEvent(Sender: TObject; Button: TMouseButton;
+procedure TSoMouseHandler.EmptyMouseEvent(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
 
 end;
 
-procedure TEngine2DKeyboardProcessor.EmptyNotifyEvent(ASender: TObject);
+procedure TSoMouseHandler.EmptyNotifyEvent(ASender: TObject);
 begin
 
 end;
 
-procedure TEngine2DKeyboardProcessor.SetEnabled(const Value: Boolean);
+procedure TSoMouseHandler.SetEnabled(const Value: Boolean);
 begin
   FEnabled := Value;
 end;
 
-procedure TEngine2DKeyboardProcessor.SetOnClick(const Value: TNotifyEvent);
+procedure TSoMouseHandler.SetOnClick(const Value: TNotifyEvent);
 begin
   FOnClick := Value;
 end;
 
-procedure TEngine2DKeyboardProcessor.SetOnMouseDown(const Value: TMouseEvent);
+procedure TSoMouseHandler.SetOnMouseDown(const Value: TMouseEvent);
 begin
   FOnMouseDown := Value;
 end;
 
-procedure TEngine2DKeyboardProcessor.SetOnMouseEnter(const Value: TNotifyEvent);
+procedure TSoMouseHandler.SetOnMouseEnter(const Value: TNotifyEvent);
 begin
   FOnMouseEnter := Value;
 end;
 
-procedure TEngine2DKeyboardProcessor.SetOnMouseLeave(const Value: TNotifyEvent);
+procedure TSoMouseHandler.SetOnMouseLeave(const Value: TNotifyEvent);
 begin
   FOnMouseLeave := Value;
 end;
 
-procedure TEngine2DKeyboardProcessor.SetOnMouseUp(const Value: TMouseEvent);
+procedure TSoMouseHandler.SetOnMouseUp(const Value: TMouseEvent);
 begin
   FOnMouseUp := Value;
 end;

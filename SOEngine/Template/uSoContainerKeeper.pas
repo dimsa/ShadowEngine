@@ -3,16 +3,14 @@ unit uSoContainerKeeper;
 interface
 
 uses
-  uEngine2DClasses, uSoContainer, uSoBaseOperator;
+  uSoContainer, uSoBaseOperator;
 
 type
 
-  TSoContainerKeeper = class(TSoOperator<TSoContainer>)
-  public
-
-  end;
-
+  TSoContainerKeeper = class(TSoOperator<TSoContainer>);
 
 implementation
+
+{ TSoContainerKeeper }
 
 end.

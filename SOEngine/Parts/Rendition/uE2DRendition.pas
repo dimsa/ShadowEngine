@@ -27,7 +27,6 @@ type
     property Opacity: Single read FOpacity write SetOpacity;
     property OnBringToBack: TNotifyEvent read FBringToBack write FBringToBack;
     property OnSendToFront: TNotifyEvent read FSendToFront write FSendToFront;
-    property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property Width: Single read GetWidth;
     property Height: Single read GetHeight;
     procedure BringToBack; // Ставит спрайт первым в списке отрисовки. Т.е. Переносит назад

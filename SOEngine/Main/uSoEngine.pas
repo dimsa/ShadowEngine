@@ -53,12 +53,6 @@ type
     procedure MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: single; const ACount: Integer = -1; const AClickObjects: Boolean = True); virtual; // ACount is quantity of sorted object that will be MouseUpped -1 is all.
     procedure Click(const ACount: Integer = -1); virtual; // It must be Called after MouseUp if in MouseUp was AClickObjects = False;
 
-//    procedure AssignShadowObject(ASpr: tEngine2DObject); // Assign object properties to Shadow Object// Ассигнет спрайт в ShadowObject
-//    property ShadowObject: tEngine2DObject read FShadowObject; // Указатель на Теневой объект.
-
-//    procedure LoadResources(const AFileName: string); // Loads resources(animations frames) for sprites. Shoul be in Manager
-//    procedure LoadSECSS(const AFileName: string); // Loads SECSS filee to use it Engine. It should Be in Manager
-//    procedure LoadSEJSON(const AFileName: string);  experimental; // Working on it! It's loading of object that created by Sprite Shape Builder It should be in Manager
     procedure Init(AImage: TImage); // Initialization of SO Engine // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
     procedure WorkProcedure; virtual; // The main Paint procedure.
     procedure Start; virtual; // Включает движок
@@ -91,7 +85,21 @@ end;
 
 constructor TSoEngine.Create;
 begin
+  FCritical := TCriticalSection.Create;
+  FEngineThread := tEngineThread.Create;
+  FEngineThread.WorkProcedure := WorkProcedure;
 
+//  FStatus := TEngine2DStatus.Create(FEngineThread, @FWidth, @FHeight, @FIsMouseDowned, @FMouseDowned, @FMouseUpped, @FClicked);
+  FModel := TSoModel.Create(FCritical, IsHor);
+
+  FOptions.Up([EAnimateForever, EUseCollider]);
+  FOptions.Down([EClickOnlyTop]);
+
+  FBackgroundBehavior := BackgroundDefaultBehavior;
+  FInBeginPaintBehavior := InBeginPaintDefaultBehavior;
+  FInEndPaintBehavior := InEndPaintDefaultBehavior;
+
+  FBackGround := TBitmap.Create;
 end;
 
 destructor TSoEngine.Destroy;
@@ -170,7 +178,7 @@ end;
 
 procedure TSoEngine.WorkProcedure;
 begin
-
+  FModel.ExecuteOnTick;
 end;
 
 end.

@@ -17,6 +17,8 @@ type
     procedure FormResize(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
+    procedure mainImageMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Single);
   private
     Game: TDemoGame;
     {$IFDEF RELEASE}
@@ -94,6 +96,7 @@ begin
   BannerPanel.Resize;
   {$ENDIF}
 end;
+
 
 end.
 

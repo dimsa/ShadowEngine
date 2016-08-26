@@ -235,6 +235,7 @@ begin
   FLink.Free;
   FDict.Free;
   FList.Free;
+
   inherited;
 end;
 

@@ -9,14 +9,15 @@ uses
   uEngine2DClasses;
 
 type
-  TSoOperator<T> = class
+  TSoOperator<T> = class abstract
   protected
     FList: TEngine2DNamedList<T>;
+    FAddedObjects: Integer;
     FCritical: TCriticalSection;
     procedure OnItemDestroy(ASender: T);
   public
     procedure Add(const AItem: T; const AName: string = ''); virtual;
-    constructor Create(const ACritical: TCriticalSection);
+    constructor Create(const ACritical: TCriticalSection); virtual;
     destructor Destroy; override;
   end;
 
@@ -38,7 +39,13 @@ end;
 destructor TSoOperator<T>.Destroy;
 var
   i: Integer;
+  vObj: TObject;
 begin
+  for i := 0 to FList.Count - 1 do
+  begin
+    vObj := @FList;
+    vObj.Free;
+  end;
 
   FList.Clear;
   FList.Free;

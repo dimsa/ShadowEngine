@@ -1,4 +1,4 @@
-unit uEngine2DKeyboardProcessor;
+unit uSoKeyHandler;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   uSoContainer, uSoBasePart;
 
 type
-  TEngine2DKeyboardProcessor = class(TSoBasePart)
+  TSoKeyHandler = class(TSoBasePart)
   private
     FOnKeyDown, FOnKeyUp: TKeyEvent;
     FEnabled: Boolean;
@@ -29,7 +29,7 @@ implementation
 
 { TEngine2DKeyboardProcessor }
 
-constructor TEngine2DKeyboardProcessor.Create(const ASubject: TSoContainer);
+constructor TSoKeyHandler.Create(const ASubject: TSoContainer);
 begin
   inherited Create(ASubject);
 
@@ -38,39 +38,39 @@ begin
 end;
 
 
-destructor TEngine2DKeyboardProcessor.Destroy;
+destructor TSoKeyHandler.Destroy;
 begin
 
   inherited;
 end;
 
-procedure TEngine2DKeyboardProcessor.EmptyKeyHandler(Sender: TObject; var Key: Word;
+procedure TSoKeyHandler.EmptyKeyHandler(Sender: TObject; var Key: Word;
   var KeyChar: Char; Shift: TShiftState);
 begin
 
 end;
 
-procedure TEngine2DKeyboardProcessor.KeyDown(Key: Word; KeyChar: Char; Shift: TShiftState);
+procedure TSoKeyHandler.KeyDown(Key: Word; KeyChar: Char; Shift: TShiftState);
 begin
   FOnKeyDown(FSubject, Key, KeyChar, Shift);
 end;
 
-procedure TEngine2DKeyboardProcessor.KeyUp(Key: Word; KeyChar: Char; Shift: TShiftState);
+procedure TSoKeyHandler.KeyUp(Key: Word; KeyChar: Char; Shift: TShiftState);
 begin
   FOnKeyUp(FSubject, Key, KeyChar, Shift);
 end;
 
-procedure TEngine2DKeyboardProcessor.SetEnabled(const Value: Boolean);
+procedure TSoKeyHandler.SetEnabled(const Value: Boolean);
 begin
   FEnabled := Value;
 end;
 
-procedure TEngine2DKeyboardProcessor.SetOnKeyDown(const Value: TKeyEvent);
+procedure TSoKeyHandler.SetOnKeyDown(const Value: TKeyEvent);
 begin
   FOnKeyDown := Value;
 end;
 
-procedure TEngine2DKeyboardProcessor.SetOnKeyUp(const Value: TKeyEvent);
+procedure TSoKeyHandler.SetOnKeyUp(const Value: TKeyEvent);
 begin
   FOnKeyUp := Value;
 end;
