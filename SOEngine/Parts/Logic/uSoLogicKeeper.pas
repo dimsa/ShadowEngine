@@ -44,7 +44,8 @@ var
 begin
   inherited;
   for i := 0 to FList.Count - 1 do
-    FList[i].Execute;
+    if FList[i].Enabled then
+      FList[i].Execute;
 end;
 
 procedure TSoLogicKeeper.OnItemDestroy(ASender: TObject);

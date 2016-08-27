@@ -23,6 +23,11 @@ type
     procedure SetOnMouseUp(const Value: TMouseEvent);
     procedure EmptyNotifyEvent(ASender: TObject);
     procedure EmptyMouseEvent(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+  protected
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure MouseEnter;
+    procedure MouseLeave;
   public
     property Enabled: Boolean read FEnabled write SetEnabled;
     property OnMouseDown: TMouseEvent read FOnMouseDown write SetOnMouseDown;
@@ -63,6 +68,32 @@ end;
 procedure TSoMouseHandler.EmptyNotifyEvent(ASender: TObject);
 begin
 
+end;
+
+procedure TSoMouseHandler.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Single);
+begin
+//  if Assigned(FOnMouseDown) then
+    FOnMouseDown(Self, Button, Shift, X, Y);
+end;
+
+procedure TSoMouseHandler.MouseEnter;
+begin
+//  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Subject);
+end;
+
+procedure TSoMouseHandler.MouseLeave;
+begin
+//  if Assigned(FOnMouseEnter) then
+    FOnMouseLeave(Subject);
+end;
+
+procedure TSoMouseHandler.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Single);
+begin
+//  if Assigned(FOnMouseUp) then
+    FOnMouseUp(Self, Button, Shift, X, Y);
 end;
 
 procedure TSoMouseHandler.SetEnabled(const Value: Boolean);

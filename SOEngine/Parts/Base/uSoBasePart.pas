@@ -16,6 +16,7 @@ type
     procedure OnSubjectDestroy(ASender: TObject); virtual;
     procedure SetEnabled(AValue: Boolean); virtual;
   public
+    property Subject: TSoContainer read FSubject;
     property Enabled: Boolean read FEnabled write SetEnabled;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     constructor Create(const ASubject: TSoContainer); virtual;
@@ -30,6 +31,7 @@ constructor TSoBasePart.Create(const ASubject: TSoContainer);
 begin
   FSubject := ASubject;
   FSubject.AddDestroyHandler(OnSubjectDestroy);
+  FEnabled := True;
 end;
 
 destructor TSoBasePart.Destroy;

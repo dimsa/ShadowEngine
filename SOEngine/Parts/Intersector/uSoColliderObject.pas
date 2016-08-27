@@ -13,6 +13,7 @@ type
     procedure SetOnExecute(const Value: TNotifyEvent<TSoContainer>);
   public
     property OnCollide: TEvent<TSoContainer> read FOnCollide write FOnCollide;
+    function IsContainsPoint(const AX, AY: Single): Boolean;
     constructor Create(const ASubject: TSoContainer); override;
   end;
 
@@ -27,6 +28,11 @@ begin
 end;
 
 procedure TSoColliderObj.EmptyHandler(ASender: TObject; AE: TSoContainer);
+begin
+
+end;
+
+function TSoColliderObj.IsContainsPoint(const AX, AY: Single): Boolean;
 begin
 
 end;
