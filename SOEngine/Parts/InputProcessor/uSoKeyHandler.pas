@@ -15,12 +15,13 @@ type
     procedure SetOnKeyUp(const Value: TKeyEvent);
     procedure EmptyKeyHandler(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure SetEnabled(const Value: Boolean);
+  protected
+    procedure KeyDown(Key: Word; KeyChar: Char; Shift: TShiftState);
+    procedure KeyUp(Key: Word; KeyChar: Char; Shift: TShiftState);
   public
     property Enabled: Boolean read FEnabled write SetEnabled;
     property OnKeyDown: TKeyEvent read FOnKeyDown write SetOnKeyDown; // May be move it to constructor?
     property OnKeyUp: TKeyEvent read FOnKeyUp write SetOnKeyUp; // May be move it to constructor?
-    procedure KeyDown(Key: Word; KeyChar: Char; Shift: TShiftState);
-    procedure KeyUp(Key: Word; KeyChar: Char; Shift: TShiftState);
     constructor Create(const ASubject: TSoContainer); override;
     destructor Destroy; override;
   end;

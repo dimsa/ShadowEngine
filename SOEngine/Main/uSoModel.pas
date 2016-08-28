@@ -20,16 +20,16 @@ type
     FAnimator: TSoAnimator;
     FKeyProcessor: TSoKeyProcessor;
     FMouseProcessor: TSoMouseProcessor;
-public
-  procedure ExecuteOnTick;
-  procedure ExecuteKeyUp(Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
-  procedure ExecuteKeyDown(Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
-  procedure ExecuteMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-  procedure ExecuteMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-  procedure ExecuteMouseMove(X, Y: Single);
-  constructor Create(const ACritical: TCriticalSection; const AIsHor: TBooleanFunction);
-  destructor Destroy; override;
-end;
+  public
+    procedure ExecuteOnTick;
+    procedure ExecuteKeyUp(Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
+    procedure ExecuteKeyDown(Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
+    procedure ExecuteMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure ExecuteMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure ExecuteMouseMove(X, Y: Single);
+    constructor Create(const ACritical: TCriticalSection; const AIsHor: TBooleanFunction);
+    destructor Destroy; override;
+  end;
 
 implementation
 
@@ -43,7 +43,7 @@ begin
   FLogicKeper := TSoLogicKeeper.Create(FCritical);
   FRenderer := TSoRenderer.Create(FCritical);
   FCollider := TSoCollider.Create(FCritical);
-
+  FFormattor := TSoFormattor.Create(FCritical);
   FAnimator := TSoAnimator.Create(FCritical);
   FKeyProcessor := TSoKeyProcessor.Create(FCritical);
   FMouseProcessor := TSoMouseProcessor.Create(FCritical, FCollider);
@@ -51,7 +51,14 @@ end;
 
 destructor TSoModel.Destroy;
 begin
-
+    FContainerKeeper.Free;
+    FLogicKeper.Free;
+    FRenderer.Free;
+    FCollider.Free;
+    FFormattor.Free;
+    FAnimator.Free;
+    FKeyProcessor.Free;
+    FMouseProcessor.Free;
   inherited;
 end;
 

@@ -20,7 +20,6 @@ type
     constructor Create(const ACritical: TCriticalSection); override;
   end;
 
-
 implementation
 
 { TSoLogicKeeper }

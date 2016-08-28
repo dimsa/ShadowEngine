@@ -7,14 +7,15 @@ uses
   uSoBaseOperator, uSoKeyHandler, System.SysUtils;
 
 type
+  TSoKeyHandlerFriend = class(TSoKeyHandler);
 
-  TSoKeyProcessor = class(TSoOperator<TSoKeyHandler>)
+  TSoKeyProcessor = class(TSoOperator<TSoKeyHandlerFriend>)
   private
     procedure OnItemDestroy(ASender: TObject);
   public
     procedure ExecuteKeyUp(Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
     procedure ExecuteKeyDown(Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
-    procedure Add(const AItem: TSoKeyHandler; const AName: string = ''); override;
+    procedure Add(const AItem: TSoKeyHandlerFriend; const AName: string = ''); override;
     constructor Create(const ACritical: TCriticalSection); override;
   end;
 
@@ -22,7 +23,7 @@ implementation
 
 { TSoKeyProcessor }
 
-procedure TSoKeyProcessor.Add(const AItem: TSoKeyHandler; const AName: string);
+procedure TSoKeyProcessor.Add(const AItem: TSoKeyHandlerFriend; const AName: string);
 var
   vName: string;
 begin
@@ -52,7 +53,7 @@ end;
 
 procedure TSoKeyProcessor.OnItemDestroy(ASender: TObject);
 begin
-  FList.Delete(TSoKeyHandler(ASender));
+  FList.Delete(TSoKeyHandlerFriend(ASender));
 end;
 
 end.

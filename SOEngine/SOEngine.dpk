@@ -91,6 +91,7 @@ contains
   uSoMouseProcessor in 'Parts\InputProcessor\uSoMouseProcessor.pas',
   uSoLogic in 'Parts\Logic\uSoLogic.pas',
   uSoLogicKeeper in 'Parts\Logic\uSoLogicKeeper.pas',
-  uSoColliderObject in 'Parts\Intersector\uSoColliderObject.pas';
+  uSoColliderObject in 'Parts\Intersector\uSoColliderObject.pas',
+  uSoFormatter in 'Parts\Formatters\uSoFormatter.pas';
 
 end.
