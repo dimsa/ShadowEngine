@@ -6,7 +6,7 @@ type
 
   tEngine2DOptionsEnum = (EClickOnlyTop, EAnimateForever, EDrawFigures, EAutoloadFormatter, EUseCollider);
 
-  tEngine2DOptions = record
+  tEngine2DOptions = class
   private
     FToClickOnlyTop: Boolean; // If true, Engine will be call OnClick only on Top Object  // События кликов передаются только верхнему объекту в клике
     FToAnimateForever: Boolean; // If True, Engine will repaint scene despite of there are nothing changed by animations // Сообщает, что надо перерисовывать сцену, даже если нет анимаций
@@ -22,11 +22,17 @@ type
     procedure Swap(const AOptions: array of tEngine2DOptionsEnum);
     procedure Up(const AOptions: array of tEngine2DOptionsEnum);
     procedure Down(const AOptions: array of tEngine2DOptionsEnum);
+    constructor Create;
   end;
 
 implementation
 
 { tEngine2DOptions }
+
+constructor tEngine2DOptions.Create;
+begin
+
+end;
 
 procedure tEngine2DOptions.Down(const AOptions: array of tEngine2DOptionsEnum);
 var

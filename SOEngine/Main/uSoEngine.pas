@@ -19,36 +19,37 @@ type
     FIsMouseDowned: Boolean; // True if Mouse is Downed  // Хранит состояние нажатости мыши
     FImage: TImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка
     FBackGround: TBitmap; // Background of Engine that paints on every tick. Not sure if it should be here // Бэкграунд. Всегда рисуется в Repaint на весь fImage
-    FWidth, FHeight: integer; // Размер поля имеджа и движка
+    FWidth, FHeight: Single; // Размер поля имеджа и движка
 //    FDebug: Boolean; // There are some troubles to debug multithread app, so it for it // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
     FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
     FInBeginPaintBehavior: TProcedure; // Method is called before Paint
     FInEndPaintBehavior: TProcedure; // Method is called after Paint
 
-    procedure SetWidth(AWidth: integer); // Установка размера поля отрисовки движка
-    procedure SetHeight(AHeight: integer); // Установка размера поля отрисовки движка
+//    procedure SetWidth(AWidth: integer); // Установка размера поля отрисовки движка
+//    procedure SetHeight(AHeight: integer); // Установка размера поля отрисовки движка
+    procedure OnImageResize(ASender: TObject);
     procedure setBackGround(ABmp: TBitmap);
     procedure BackgroundDefaultBehavior;
     procedure InBeginPaintDefaultBehavior;
     procedure InEndPaintDefaultBehavior;
     procedure SetBackgroundBehavior(const Value: TProcedure);
-    function IsHor: Boolean; // Return True, if Engine.Width > Engine.Height
+    function IsHor: Boolean;
+    procedure SetImage(const Value: TImage);
   protected
     property EngineThread: TEngineThread read FEngineThread;
   public
     // Main properties of Engine. Ключевые свойства движка
-    property Image: TImage read FImage write FImage;
+    property Image: TImage read FImage write SetImage;
     property BackgroundBehavior: TProcedure read FBackgroundBehavior write SetBackgroundBehavior;
     property InBeginPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
     property InEndPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
     property Critical: TCriticalSection read FCritical;
 
-    property Width: integer read FWidth write setWidth;
-    property Height: integer read FHeight write setHeight;
+    property Width: Single read FWidth;// write setWidth;
+    property Height: Single read FHeight;// write setHeight;
 
     property Background: TBitmap read FBackGround write setBackGround;
-    property Options: TEngine2dOptions read FOptions write FOptions;
-    procedure Resize;
+    property Options: TEngine2dOptions read FOptions;
     procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: single; const ACount: Integer = -1); virtual; // ACount is quantity of sorted object that will be MouseDowned -1 is all.
     procedure MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: single; const ACount: Integer = -1; const AClickObjects: Boolean = True); virtual; // ACount is quantity of sorted object that will be MouseUpped -1 is all.
     procedure Click(const ACount: Integer = -1); virtual; // It must be Called after MouseUp if in MouseUp was AClickObjects = False;
@@ -85,6 +86,8 @@ end;
 
 constructor TSoEngine.Create;
 begin
+  FOptions := TEngine2DOptions.Create;
+
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
@@ -104,6 +107,9 @@ end;
 
 destructor TSoEngine.Destroy;
 begin
+  FModel.Free;
+  FEngineThread.Free;
+  FCritical.Free;
 
   inherited;
 end;
@@ -120,12 +126,12 @@ end;
 
 procedure TSoEngine.Init(AImage: TImage);
 begin
-
+  Image := AImage;
 end;
 
 function TSoEngine.IsHor: Boolean;
 begin
-
+  Result := FWidth > FHeight;
 end;
 
 procedure TSoEngine.MouseDown(Sender: TObject; Button: TMouseButton;
@@ -141,9 +147,10 @@ begin
 
 end;
 
-procedure TSoEngine.Resize;
+procedure TSoEngine.OnImageResize(ASender: TObject);
 begin
-
+  FWidth := TImage(ASender).Width;
+  FHeight := TImage(ASender).Height;
 end;
 
 procedure TSoEngine.setBackGround(ABmp: TBitmap);
@@ -156,14 +163,15 @@ begin
 
 end;
 
-procedure TSoEngine.SetHeight(AHeight: integer);
+
+procedure TSoEngine.SetImage(const Value: TImage);
 begin
+  if Assigned(FImage) then
+  FImage.OnResize := nil;
 
-end;
+  FImage := Value;
 
-procedure TSoEngine.SetWidth(AWidth: integer);
-begin
-
+  FImage.OnResize := OnImageResize;
 end;
 
 procedure TSoEngine.Start;

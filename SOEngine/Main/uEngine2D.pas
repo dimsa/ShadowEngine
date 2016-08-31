@@ -131,6 +131,7 @@ end;
 
 constructor TEngine2d.Create;
 begin
+  FOptions := tEngine2DOptions.Create;
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
@@ -156,7 +157,7 @@ begin
   FImage.Free;
   FModel.Free;
   FBackGround.Free;
-
+  FOptions.Free;
 
   inherited;
 end;
