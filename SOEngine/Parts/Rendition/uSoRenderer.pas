@@ -5,16 +5,19 @@ interface
 
 uses
   System.SyncObjs, System.Classes, System.SysUtils,
-  uEngine2DClasses, uE2DRendition, uSoBaseOperator;
+  uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoContainer;
 
 type
 
   TSoRenderer = class(TSoOperator<TEngine2DRendition>)
   private
+    FImage: TAnonImage;
     procedure OnItemDestroy(ASender: TObject);
   public
+    constructor Create(const ACritical: TCriticalSection; const AImage: TAnonImage);
     procedure Execute; // Render On Tick
     procedure Add(const AItem: TEngine2DRendition; const AName: string = ''); override;
+    function AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string): TEngine2DRendition;
   end;
 
 implementation
@@ -26,6 +29,20 @@ var
   vName: string;
 begin
   {$I .\Template\uItemAdd.inc}
+end;
+
+
+function TSoRenderer.AddFromTemplate(const ASubject: TSoContainer;
+  const ATemplateName: string): TEngine2DRendition;
+begin
+  Result := TEngine2DRendition.Create(ASubject, FImage);
+end;
+
+constructor TSoRenderer.Create(const ACritical: TCriticalSection;
+  const AImage: TAnonImage);
+begin
+  inherited Create(ACritical);
+  FImage := AImage;
 end;
 
 procedure TSoRenderer.Execute;

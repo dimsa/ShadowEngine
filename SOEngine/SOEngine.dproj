@@ -195,6 +195,7 @@
         <DCCReference Include="Parts\Logic\uSoLogicKeeper.pas"/>
         <DCCReference Include="Parts\Intersector\uSoColliderObject.pas"/>
         <DCCReference Include="Parts\Formatters\uSoFormatter.pas"/>
+        <DCCReference Include="Main\uSoManager.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <BuildConfiguration Include="Release">

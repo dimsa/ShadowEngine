@@ -3,11 +3,15 @@ unit uSoContainerKeeper;
 interface
 
 uses
-  uSoContainer, uSoBaseOperator;
+  uSoContainer, uSoBaseOperator, System.Generics.Collections;
 
 type
 
-  TSoContainerKeeper = class(TSoOperator<TSoContainer>);
+  TSoContainerKeeper = class(TSoOperator<TSoContainer>)
+  private
+
+  public
+  end;
 
 implementation
 

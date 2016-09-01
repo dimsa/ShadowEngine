@@ -5,7 +5,7 @@ interface
 uses
   System.SyncObjs, FMX.Objects, FMX.Graphics, System.UITypes, System.Classes,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
-  uEngine2DManager, uEngine2DStatus;
+  uEngine2DManager, uEngine2DStatus, uSoManager, uSoContainer;
 
 type
   TSoEngine = class
@@ -24,9 +24,7 @@ type
     FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
     FInBeginPaintBehavior: TProcedure; // Method is called before Paint
     FInEndPaintBehavior: TProcedure; // Method is called after Paint
-
-//    procedure SetWidth(AWidth: integer); // Установка размера поля отрисовки движка
-//    procedure SetHeight(AHeight: integer); // Установка размера поля отрисовки движка
+    FManager: TSoManager;
     procedure OnImageResize(ASender: TObject);
     procedure setBackGround(ABmp: TBitmap);
     procedure BackgroundDefaultBehavior;
@@ -45,13 +43,11 @@ type
     property InEndPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
     property Critical: TCriticalSection read FCritical;
 
-    property Width: Single read FWidth;// write setWidth;
-    property Height: Single read FHeight;// write setHeight;
+    property Width: Single read FWidth;
+    property Height: Single read FHeight;
 
     property Background: TBitmap read FBackGround write setBackGround;
     property Options: TEngine2dOptions read FOptions;
-    procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: single; const ACount: Integer = -1); virtual; // ACount is quantity of sorted object that will be MouseDowned -1 is all.
-    procedure MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: single; const ACount: Integer = -1; const AClickObjects: Boolean = True); virtual; // ACount is quantity of sorted object that will be MouseUpped -1 is all.
     procedure Click(const ACount: Integer = -1); virtual; // It must be Called after MouseUp if in MouseUp was AClickObjects = False;
 
     procedure Init(AImage: TImage); // Initialization of SO Engine // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
@@ -62,8 +58,9 @@ type
     constructor Create; virtual;
     destructor Destroy; override;
 
+    function Manage(const AContainer: TSoContainer): TSoManager;
     // You should use Manager to Work with Engine
-    property Manager: TEngine2DManager read FObjectCreator; // It helps to create object faster // Позволяет быстрее и проще создавать объекты
+//    property Manager: TSoManager read FManager; // It helps to create object faster // Позволяет быстрее и проще создавать объекты
     property Status: TEngine2DStatus read FStatus;
     const
       CGameStarted = 1;
@@ -93,7 +90,7 @@ begin
   FEngineThread.WorkProcedure := WorkProcedure;
 
 //  FStatus := TEngine2DStatus.Create(FEngineThread, @FWidth, @FHeight, @FIsMouseDowned, @FMouseDowned, @FMouseUpped, @FClicked);
-  FModel := TSoModel.Create(FCritical, IsHor);
+  FModel := TSoModel.Create(TAnonImage(FImage), FCritical, IsHor);
 
   FOptions.Up([EAnimateForever, EUseCollider]);
   FOptions.Down([EClickOnlyTop]);
@@ -134,18 +131,23 @@ begin
   Result := FWidth > FHeight;
 end;
 
-procedure TSoEngine.MouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; x, y: single; const ACount: Integer);
+function TSoEngine.Manage(const AContainer: TSoContainer): TSoManager;
 begin
-
+  FManager.Activate(AContainer);
+  Result := FManager; // /oManager.Create(AContainer);
 end;
 
-procedure TSoEngine.MouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; x, y: single; const ACount: Integer;
-  const AClickObjects: Boolean);
+{rocedure TSoEngine.OnMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; x, y: single);
+begin
+  FModel.ExecuteMouseDown()
+end;
+
+procedure TSoEngine.OnMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; x, y: single);
 begin
 
-end;
+end;  }
 
 procedure TSoEngine.OnImageResize(ASender: TObject);
 begin
@@ -167,11 +169,17 @@ end;
 procedure TSoEngine.SetImage(const Value: TImage);
 begin
   if Assigned(FImage) then
-  FImage.OnResize := nil;
+  begin
+    FImage.OnResize := nil;
+    FImage.OnMouseDown := nil;
+    FImage.OnMouseUp := nil;
+  end;
 
   FImage := Value;
 
   FImage.OnResize := OnImageResize;
+  FImage.OnMouseDown := FModel.ExecuteMouseDown;
+  FImage.OnMouseUp := FModel.ExecuteMouseUp;
 end;
 
 procedure TSoEngine.Start;

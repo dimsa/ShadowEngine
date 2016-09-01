@@ -92,6 +92,7 @@ contains
   uSoLogic in 'Parts\Logic\uSoLogic.pas',
   uSoLogicKeeper in 'Parts\Logic\uSoLogicKeeper.pas',
   uSoColliderObject in 'Parts\Intersector\uSoColliderObject.pas',
-  uSoFormatter in 'Parts\Formatters\uSoFormatter.pas';
+  uSoFormatter in 'Parts\Formatters\uSoFormatter.pas',
+  uSoManager in 'Main\uSoManager.pas';
 
 end.

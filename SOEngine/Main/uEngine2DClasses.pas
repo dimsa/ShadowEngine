@@ -3,7 +3,7 @@ unit uEngine2DClasses;
 interface
 
 uses
-  FMX.Graphics, System.SyncObjs, System.SysUtils, System.Types,
+  FMX.Graphics, System.SyncObjs, System.SysUtils, System.Types, FMX.Objects,
   FMX.Types, uGeometryClasses, uClasses,
   System.Generics.Collections, uNamedList, System.Generics.Defaults;
 
@@ -11,6 +11,8 @@ type
   TReturnSingleFunction = function: Single of object;
   TIntArray = array of Integer;
   PIntArray = ^TIntArray;
+
+  TAnonImage = TImage;
 
   TEvent<T> = procedure(ASender: TObject; E: T) of object;
 
