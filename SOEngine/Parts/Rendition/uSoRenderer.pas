@@ -17,7 +17,7 @@ type
     constructor Create(const ACritical: TCriticalSection; const AImage: TAnonImage);
     procedure Execute; // Render On Tick
     procedure Add(const AItem: TEngine2DRendition; const AName: string = ''); override;
-    function AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string): TEngine2DRendition;
+    function AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): TEngine2DRendition; override;
   end;
 
 implementation
@@ -32,8 +32,7 @@ begin
 end;
 
 
-function TSoRenderer.AddFromTemplate(const ASubject: TSoContainer;
-  const ATemplateName: string): TEngine2DRendition;
+function TSoRenderer.AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): TEngine2DRendition;
 begin
   Result := TEngine2DRendition.Create(ASubject, FImage);
 end;

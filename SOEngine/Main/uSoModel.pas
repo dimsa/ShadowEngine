@@ -12,16 +12,29 @@ type
   private
     FCritical: TCriticalSection;
     FImage: TAnonImage;
-    FContainerKeeper: TSoContainerKeeper;
-    FLogicKeper: TSoLogicKeeper;
+    // Workers
     FRenderer: TSoRenderer;
     FCollider: TSoCollider;
     FFormattor: TSoFormattor;
     FAnimator: TSoAnimator;
+    // Keepers
+    FContainerKeeper: TSoContainerKeeper;
+    FLogicKeper: TSoLogicKeeper;
+    // Processors
     FKeyProcessor: TSoKeyProcessor;
     FMouseProcessor: TSoMouseProcessor;
-  public
+  protected
     property Renderer: TSoRenderer read FRenderer;
+    property Collider: TSoCollider read FCollider;
+    property Formattor: TSoFormattor read FFormattor;
+    property Animator: TSoAnimator read FAnimator;
+
+    property ContainerKeeper: TSoContainerKeeper read FContainerKeeper;
+    property LogicKeeper: TSoLogicKeeper read FLogicKeper;
+
+    property KeyProcessor: TSoKeyProcessor read FKeyProcessor;
+    property MouseProcessor: TSoMouseProcessor read FMouseProcessor;
+  public
     procedure ExecuteOnTick;
     procedure ExecuteKeyUp(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
     procedure ExecuteKeyDown(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick

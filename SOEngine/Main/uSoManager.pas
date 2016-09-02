@@ -4,30 +4,29 @@ interface
 
 uses
   uSoModel, uSoContainer,
-  uE2DRendition;
+  uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler;
 
 type
+  TSoModelFriend = class(TSoModel);
+
   TSoManager = class
   private
-    FModel: TSoModel;
+    FModel: TSoModelFriend;
     FActiveContainer: TSoContainer;
-//    function GetItems(Index: Integer): TSoContainer;
   public
-    function AddRendition(const AName: string): TEngine2DRendition;
-    procedure AddShape(const AName: string);
-    procedure AddMouseHandler(const AName: string);
-    procedure AddKeyBoardHandler(const AName: string);
+    function AddRendition(const ATemplateName: string): TEngine2DRendition; overload;
+    function AddRendition(const AObject: TEngine2DRendition): TEngine2DRendition; overload;
+
+    function AddColliderObj(const ATemplateName: string): TSoColliderObj; overload;
+    function AddColliderObj(const AObject: TSoColliderObj): TSoColliderObj; overload;
+
+    function AddMouseHandler(const ATemplateName: string): TSoMouseHandler; overload;
+    function AddMouseHandler(const AObject: TSoMouseHandler): TSoMouseHandler; overload;
+
+    function AddKeyHandler(const ATemplateName: string): TSoKeyHandler; overload;
+    function AddKeyHandler(const AObject: TSoKeyHandler): TSoKeyHandler; overload;
+
     procedure Activate(const AContainer: TSoContainer);
-
-
-    {
-        AddRendition('AsteroidPicture');
-    AddShape('Asteroid', DoSmth2);
-    AddMouseDownHandler(DoSmth);
-    AddKeyboardHandler('h',DoSmth3);
-
-    }
-//    property Items[Index: Integer]: TSoContainer read GetItems; default;
     constructor Create(const AModel: TSoModel);
   end;
 
@@ -40,31 +39,52 @@ begin
   FActiveContainer := AContainer;
 end;
 
-procedure TSoManager.AddKeyBoardHandler(const AName: string);
+function TSoManager.AddColliderObj(const ATemplateName: string): TSoColliderObj;
 begin
-
+  Result := FModel.Collider.AddFromTemplate(FActiveContainer, ATemplateName);
 end;
 
-procedure TSoManager.AddMouseHandler(const AName: string);
+function TSoManager.AddColliderObj(const AObject: TSoColliderObj): TSoColliderObj;
 begin
-
+  FModel.Collider.Add(AObject);
+  Result := AObject;
 end;
 
-function TSoManager.AddRendition(const AName: string): TEngine2DRendition;
+function TSoManager.AddKeyHandler(const ATemplateName: string): TSoKeyHandler;
 begin
-
-  FModel.Renderer.AddFromTemplate(FActiveContainer, AName);
-
+  Result := FModel.KeyProcessor.AddFromTemplate(FActiveContainer, ATemplateName);
 end;
 
-procedure TSoManager.AddShape(const AName: string);
+function TSoManager.AddKeyHandler(const AObject: TSoKeyHandler): TSoKeyHandler;
 begin
+  FModel.KeyProcessor.Add(AObject);
+  Result := AObject;
+end;
 
+function TSoManager.AddMouseHandler(const AObject: TSoMouseHandler): TSoMouseHandler;
+begin
+  FModel.MouseProcessor.Add(AObject);
+  Result := AObject;
+end;
+
+function TSoManager.AddMouseHandler(const ATemplateName: string): TSoMouseHandler;
+begin
+  Result := FModel.MouseProcessor.AddFromTemplate(FActiveContainer, ATemplateName);
+end;
+
+function TSoManager.AddRendition(const AObject: TEngine2DRendition): TEngine2DRendition;
+begin
+  FModel.Renderer.Add(AObject);
+end;
+
+function TSoManager.AddRendition(const ATemplateName: string): TEngine2DRendition;
+begin
+  FModel.Renderer.AddFromTemplate(FActiveContainer, ATemplateName);
 end;
 
 constructor TSoManager.Create(const AModel: TSoModel);
 begin
-  FModel := AModel;
+  FModel := TSoModelFriend(AModel);
 end;
 
 end.

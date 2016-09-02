@@ -6,7 +6,7 @@ interface
 
 uses
   System.SyncObjs, System.SysUtils,
-  uEngine2DClasses;
+  uEngine2DClasses, uSoContainer;
 
 type
   TSoOperator<T> = class abstract
@@ -17,6 +17,7 @@ type
     procedure OnItemDestroy(ASender: T);
   public
     procedure Add(const AItem: T; const AName: string = ''); virtual;
+    function AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): T; virtual; abstract;
     constructor Create(const ACritical: TCriticalSection); virtual;
     destructor Destroy; override;
   end;
