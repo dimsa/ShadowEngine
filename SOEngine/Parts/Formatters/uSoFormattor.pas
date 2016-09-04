@@ -4,7 +4,7 @@ interface
 
 uses
   System.SyncObjs, System.Classes, System.SysUtils,
-  uSoBaseOperator, uSoFormatter, uNamedList;
+  uSoBaseOperator, uSoFormatter, uNamedList, uSoContainer;
 
 type
   TSoFormatterTemplate = class
@@ -18,7 +18,7 @@ type
     procedure LoadTemplates(const AFileName: string);
     procedure Execute;
     procedure Add(const AItem: TSoFormatter; const AName: string = ''); override;
-    procedure AddFromTemplate(const AAnimationName: string);
+    function AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): TSoFormatter; override;
     constructor Create(const ACritical: TCriticalSection); override;
     destructor Destroy; override;
   end;
@@ -34,7 +34,7 @@ begin
   {$I .\Template\uItemAdd.inc}
 end;
 
-procedure TSoFormattor.AddFromTemplate(const AAnimationName: string);
+function TSoFormattor.AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): TSoFormatter;
 begin
 
 end;

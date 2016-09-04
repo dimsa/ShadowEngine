@@ -5,18 +5,18 @@ interface
 
 uses
   System.SysUtils, System.SyncObjs,
-  uSoLogic, uSoBaseOperator;
+  uSoLogic, uSoBaseOperator, uSoContainer;
 
 type
   TSoLogicFriend = class(TSoLogic);
 
-  TSoLogicKeeper = class(TSoOperator<TSoLogicFriend>)
+  TSoLogicKeeper = class(TSoOperator<TSoLogic>)
   private
-    FAddedObjects: Integer;
     procedure OnItemDestroy(ASender: TObject);
   public
     procedure Execute; // Do some logic on tick
-    procedure Add(const AItem: TSoLogicFriend; const AName: string = ''); override;
+    procedure Add(const AItem: TSoLogic; const AName: string = ''); override;
+    function AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): TSoLogic; override;
     constructor Create(const ACritical: TCriticalSection); override;
   end;
 
@@ -24,11 +24,17 @@ implementation
 
 { TSoLogicKeeper }
 
-procedure TSoLogicKeeper.Add(const AItem: TSoLogicFriend; const AName: string);
+procedure TSoLogicKeeper.Add(const AItem: TSoLogic; const AName: string);
 var
   vName: string;
 begin
   {$I .\Template\uItemAdd.inc}
+end;
+
+function TSoLogicKeeper.AddFromTemplate(const ASubject: TSoContainer; const ATemplateName,
+  AName: string): TSoLogic;
+begin
+
 end;
 
 constructor TSoLogicKeeper.Create(const ACritical: TCriticalSection);
@@ -44,12 +50,12 @@ begin
   inherited;
   for i := 0 to FList.Count - 1 do
     if FList[i].Enabled then
-      FList[i].Execute;
+      TSoLogicFriend(FList[i]).Execute;
 end;
 
 procedure TSoLogicKeeper.OnItemDestroy(ASender: TObject);
 begin
-  FList.Delete(TSoLogicFriend(ASender));
+  FList.Delete(TSoLogic(ASender));
 end;
 
 end.

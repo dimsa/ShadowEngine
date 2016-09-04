@@ -9,13 +9,13 @@ uses
 type
   TSoKeyHandlerFriend = class(TSoKeyHandler);
 
-  TSoKeyProcessor = class(TSoOperator<TSoKeyHandlerFriend>)
+  TSoKeyProcessor = class(TSoOperator<TSoKeyHandler>)
   private
     procedure OnItemDestroy(ASender: TObject);
   public
     procedure ExecuteKeyUp(Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
     procedure ExecuteKeyDown(Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
-    procedure Add(const AItem: TSoKeyHandlerFriend; const AName: string = ''); override;
+    procedure Add(const AItem: TSoKeyHandler; const AName: string = ''); override;
     constructor Create(const ACritical: TCriticalSection); override;
   end;
 
@@ -23,7 +23,7 @@ implementation
 
 { TSoKeyProcessor }
 
-procedure TSoKeyProcessor.Add(const AItem: TSoKeyHandlerFriend; const AName: string);
+procedure TSoKeyProcessor.Add(const AItem: TSoKeyHandler; const AName: string);
 var
   vName: string;
 begin
@@ -40,7 +40,7 @@ var
   i: Integer;
 begin
   for i := 0 to FList.Count - 1 do
-    FList[i].KeyDown(Key, KeyChar, Shift);
+    TSoKeyHandlerFriend(FList[i]).KeyDown(Key, KeyChar, Shift);
 end;
 
 procedure TSoKeyProcessor.ExecuteKeyUp(Key: Word; KeyChar: Char; Shift: TShiftState);
@@ -48,12 +48,12 @@ var
   i: Integer;
 begin
   for i := 0 to FList.Count - 1 do
-    FList[i].KeyUp(Key, KeyChar, Shift);
+    TSoKeyHandlerFriend(FList[i]).KeyUp(Key, KeyChar, Shift);
 end;
 
 procedure TSoKeyProcessor.OnItemDestroy(ASender: TObject);
 begin
-  FList.Delete(TSoKeyHandlerFriend(ASender));
+  FList.Delete(TSoKeyHandler(ASender));
 end;
 
 end.

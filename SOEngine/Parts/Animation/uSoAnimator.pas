@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils,
-  uEngine2DClasses, uNamedList, uSoAnimation, uSoBaseOperator;
+  uEngine2DClasses, uNamedList, uSoAnimation, uSoBaseOperator, uSoContainer;
 type
   TSoAnimationTemplate = class
 
@@ -18,7 +18,7 @@ type
     procedure Execute; // Render On Tick
     procedure Add(const AItem: TSoAnimation; const AName: string = ''); override;
     procedure LoadTemplates(const AFileName: string);
-    procedure AddFromTemplate(const AAnimationName: string);
+    function AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): TSoAnimation; override;
   end;
 
 implementation
@@ -32,7 +32,7 @@ begin
   {$I .\Template\uItemAdd.inc}
 end;
 
-procedure TSoAnimator.AddFromTemplate(const AAnimationName: string);
+function TSoAnimator.AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): TSoAnimation;
 begin
 
 end;

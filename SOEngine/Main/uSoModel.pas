@@ -24,14 +24,15 @@ type
     FKeyProcessor: TSoKeyProcessor;
     FMouseProcessor: TSoMouseProcessor;
   protected
+    // Workers
     property Renderer: TSoRenderer read FRenderer;
     property Collider: TSoCollider read FCollider;
     property Formattor: TSoFormattor read FFormattor;
     property Animator: TSoAnimator read FAnimator;
-
+    // Keepers
     property ContainerKeeper: TSoContainerKeeper read FContainerKeeper;
     property LogicKeeper: TSoLogicKeeper read FLogicKeper;
-
+    // Processors
     property KeyProcessor: TSoKeyProcessor read FKeyProcessor;
     property MouseProcessor: TSoMouseProcessor read FMouseProcessor;
   public

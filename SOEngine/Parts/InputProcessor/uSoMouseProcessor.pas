@@ -9,17 +9,17 @@ uses
 type
   TSoMouseHandlerFriend = class(TSoMouseHandler);
 
-  TSoMouseProcessor = class(TSoOperator<TSoMouseHandlerFriend>)
+  TSoMouseProcessor = class(TSoOperator<TSoMouseHandler>)
   private
     FCollider: TSoCollider;
-    FContainers: TDictionary<TSoContainer, TSoMouseHandlerFriend>;
+    FContainers: TDictionary<TSoContainer, TSoMouseHandler>;
     FMouseOver, FOldMouseOver, FMouseDowned, FMouseUpped: TArray<TSoContainer>;
     procedure OnItemDestroy(ASender: TObject);
   public
     procedure ExecuteMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single); // Process mouse on tick
     procedure ExecuteMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single); // Process mouse on tick
     procedure ExecuteMouseMove(X, Y: Single); // Process mouse position on tick
-    procedure Add(const AItem: TSoMouseHandlerFriend; const AName: string = ''); override;
+    procedure Add(const AItem: TSoMouseHandler; const AName: string = ''); override;
     constructor Create(const ACritical: TCriticalSection; const ACollider: TSoCollider);
     destructor Destroy; override;
   end;
@@ -28,7 +28,7 @@ implementation
 
 { TSoMouseProcessor }
 
-procedure TSoMouseProcessor.Add(const AItem: TSoMouseHandlerFriend;
+procedure TSoMouseProcessor.Add(const AItem: TSoMouseHandler;
   const AName: string);
 var
   vName: string;
@@ -40,7 +40,7 @@ end;
 constructor TSoMouseProcessor.Create(const ACritical: TCriticalSection; const ACollider: TSoCollider);
 begin
   inherited Create(ACritical);
-  FContainers := TDictionary<TSoContainer, TSoMouseHandlerFriend>.Create;
+  FContainers := TDictionary<TSoContainer, TSoMouseHandler>.Create;
   FCollider := ACollider;
 end;
 
@@ -57,7 +57,7 @@ var
   i: Integer;
 begin
   for i := 0 to Length(FMouseOver) - 1 do
-    FContainers[FMouseOver[i]].MouseDown(Button, Shift, X, Y);
+    TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseDown(Button, Shift, X, Y);
   FMouseDowned := FMouseOver;
 end;
 
@@ -81,12 +81,12 @@ begin
       end;
     end;
     if vWas then
-      FContainers[FMouseOver[i]].MouseLeave;
+      TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseLeave;
   end;
 
   for j := 0 to Length(FOldMouseOver) - 1 do
     if FOldMouseOver[j] <> nil then
-      FContainers[FOldMouseOver[i]].MouseEnter;
+      TSoMouseHandlerFriend(FContainers[FOldMouseOver[i]]).MouseEnter;
 
   FOldMouseOver := FMouseOver;
 end;
@@ -98,14 +98,14 @@ var
   i: Integer;
 begin
   for i := 0 to Length(FMouseOver) - 1 do
-    FContainers[FMouseOver[i]].MouseDown(Button, Shift, X, Y);
+    TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseDown(Button, Shift, X, Y);
   FMouseUpped := FMouseOver;
 end;
 
 procedure TSoMouseProcessor.OnItemDestroy(ASender: TObject);
 begin
-  FList.Delete(TSoMouseHandlerFriend(ASender));
-  FContainers.Remove(TSoMouseHandlerFriend(ASender).Subject);
+  FList.Delete(TSoMouseHandler(ASender));
+  FContainers.Remove(TSoMouseHandler(ASender).Subject);
 end;
 
 end.
