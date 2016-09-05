@@ -35,6 +35,7 @@ constructor TSoOperator<T>.Create(const ACritical: TCriticalSection);
 begin
   FCritical := ACritical;
   FList := TEngine2DNamedList<T>.Create(ACritical);
+  FAddedObjects := 0;
 end;
 
 destructor TSoOperator<T>.Destroy;

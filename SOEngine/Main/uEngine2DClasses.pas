@@ -26,6 +26,7 @@ type
   end;
 
 const
+  pi180 = 0.0174532925;
 {  CJustifyPoints: array[TObjectJustify] of TPoint = (
     (X: -2; Y: -1), (X: 0; Y: -1), (X: 1; Y: -1),
     (X: -1; Y:  0), (X: 0; Y:  0), (X: 1; Y:  0),

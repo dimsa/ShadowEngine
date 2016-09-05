@@ -40,7 +40,7 @@ end;
 constructor TSoLogicKeeper.Create(const ACritical: TCriticalSection);
 begin
   inherited;
-  FAddedObjects := 0;
+
 end;
 
 procedure TSoLogicKeeper.Execute;
