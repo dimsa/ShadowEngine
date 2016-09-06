@@ -17,8 +17,7 @@ type
     FObjectCreator: TEngine2DManager; // This object work with Model items. It's controller/
     FStatus: TEngine2DStatus; // All Engine status you can get from herem like width-height,speed and etc.
     FIsMouseDowned: Boolean; // True if Mouse is Downed  // Хранит состояние нажатости мыши
-    FImage: TImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка
-    FBackGround: TBitmap; // Background of Engine that paints on every tick. Not sure if it should be here // Бэкграунд. Всегда рисуется в Repaint на весь fImage
+    FImage: TImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка\
     FWidth, FHeight: Single; // Размер поля имеджа и движка
 //    FDebug: Boolean; // There are some troubles to debug multithread app, so it for it // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
     FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
@@ -26,11 +25,6 @@ type
     FInEndPaintBehavior: TProcedure; // Method is called after Paint
     FManager: TSoManager;
     procedure OnImageResize(ASender: TObject);
-    procedure setBackGround(ABmp: TBitmap);
-    procedure BackgroundDefaultBehavior;
-    procedure InBeginPaintDefaultBehavior;
-    procedure InEndPaintDefaultBehavior;
-    procedure SetBackgroundBehavior(const Value: TProcedure);
     function IsHor: Boolean;
     procedure SetImage(const Value: TImage);
   protected
@@ -38,24 +32,20 @@ type
   public
     // Main properties of Engine. Ключевые свойства движка
     property Image: TImage read FImage write SetImage;
-    property BackgroundBehavior: TProcedure read FBackgroundBehavior write SetBackgroundBehavior;
-    property InBeginPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
-    property InEndPaintBehavior: TProcedure read FInBeginPaintBehavior write FInBeginPaintBehavior;
     property Critical: TCriticalSection read FCritical;
 
     property Width: Single read FWidth;
     property Height: Single read FHeight;
 
-    property Background: TBitmap read FBackGround write setBackGround;
     property Options: TEngine2dOptions read FOptions;
-    procedure Click(const ACount: Integer = -1); virtual; // It must be Called after MouseUp if in MouseUp was AClickObjects = False;
+//    procedure Click(const ACount: Integer = -1); virtual; // It must be Called after MouseUp if in MouseUp was AClickObjects = False;
 
-    procedure Init(AImage: TImage); // Initialization of SO Engine // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
+   // procedure Init(AImage: TImage); // Initialization of SO Engine // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
     procedure WorkProcedure; virtual; // The main Paint procedure.
     procedure Start; virtual; // Включает движок
     procedure Stop; virtual;// Выключает движок
 
-    constructor Create; virtual;
+    constructor Create(const AImage: TAnonImage); virtual;
     destructor Destroy; override;
 
     function Manage(const AContainer: TSoContainer): TSoManager;
@@ -71,35 +61,19 @@ implementation
 
 { TSoEngine }
 
-procedure TSoEngine.BackgroundDefaultBehavior;
+constructor TSoEngine.Create(const AImage: TAnonImage);
 begin
-
-end;
-
-procedure TSoEngine.Click(const ACount: Integer);
-begin
-
-end;
-
-constructor TSoEngine.Create;
-begin
+  FImage := AImage;
   FOptions := TEngine2DOptions.Create;
 
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
 
-//  FStatus := TEngine2DStatus.Create(FEngineThread, @FWidth, @FHeight, @FIsMouseDowned, @FMouseDowned, @FMouseUpped, @FClicked);
   FModel := TSoModel.Create(TAnonImage(FImage), FCritical, IsHor);
 
   FOptions.Up([EAnimateForever, EUseCollider]);
   FOptions.Down([EClickOnlyTop]);
-
-  FBackgroundBehavior := BackgroundDefaultBehavior;
-  FInBeginPaintBehavior := InBeginPaintDefaultBehavior;
-  FInEndPaintBehavior := InEndPaintDefaultBehavior;
-
-  FBackGround := TBitmap.Create;
 end;
 
 destructor TSoEngine.Destroy;
@@ -107,24 +81,15 @@ begin
   FModel.Free;
   FEngineThread.Free;
   FCritical.Free;
+  FOptions.Free;
 
   inherited;
 end;
 
-procedure TSoEngine.InBeginPaintDefaultBehavior;
-begin
-
-end;
-
-procedure TSoEngine.InEndPaintDefaultBehavior;
-begin
-
-end;
-
-procedure TSoEngine.Init(AImage: TImage);
+{procedure TSoEngine.Init(AImage: TImage);
 begin
   Image := AImage;
-end;
+end;   }
 
 function TSoEngine.IsHor: Boolean;
 begin
@@ -154,17 +119,6 @@ begin
   FWidth := TImage(ASender).Width;
   FHeight := TImage(ASender).Height;
 end;
-
-procedure TSoEngine.setBackGround(ABmp: TBitmap);
-begin
-
-end;
-
-procedure TSoEngine.SetBackgroundBehavior(const Value: TProcedure);
-begin
-
-end;
-
 
 procedure TSoEngine.SetImage(const Value: TImage);
 begin

@@ -5,6 +5,7 @@ interface
 
 uses
   System.SyncObjs, System.Classes, System.SysUtils, {$I 'Utils\DelphiCompatability.inc'}
+  FMX.Graphics,
   uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoContainer;
 
 type
@@ -12,8 +13,21 @@ type
   TSoRenderer = class(TSoOperator<TEngine2DRendition>)
   private
     FImage: TAnonImage;
+    FBackground: TBitmap; // Background of Engine that paints on every tick. Not sure if it should be here // Бэкграунд. Всегда рисуется в Repaint на весь fImage
+    FOnPaintBackground, FOnBeginPaint, FOnEndPaint: TEvent<TAnonImage>;
     procedure OnItemDestroy(ASender: TObject);
+    procedure SetBackground(const Value: TBitmap);
+    procedure SetOnBeginPaint(const Value: TEvent<TAnonImage>);
+    procedure SetOnEndPaint(const Value: TEvent<TAnonImage>);
+    procedure SetOnPaintBackground(const Value: TEvent<TAnonImage>);
   public
+    property OnPaintBackground: TEvent<TAnonImage> write SetOnPaintBackground;
+    property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint;
+    property OnEndPaint: TEvent<TAnonImage> write SetOnEndPaint;
+  //  property BackgroundBehavior: TProcedure write SetBackgroundBehavior;
+//    property InBeginPaintBehavior: TProcedure write SetInBeginPaintBehavior;
+//    property InEndPaintBehavior: TProcedure write SetInBeginPaintBehavior;
+    property Background: TBitmap write SetBackground;
     constructor Create(const ACritical: TCriticalSection; const AImage: TAnonImage);
     procedure Execute; // Render On Tick
     procedure Add(const AItem: TEngine2DRendition; const AName: string = ''); override;
@@ -41,25 +55,25 @@ constructor TSoRenderer.Create(const ACritical: TCriticalSection;
   const AImage: TAnonImage);
 begin
   inherited Create(ACritical);
+
+  FBackGround := TBitmap.Create;
   FImage := AImage;
 end;
 
 procedure TSoRenderer.Execute;
 var
-  i: Integer;
   IRend: TEngine2DRendition;
   m: tMatrix;
 begin
   with FImage do
-  // with FModel do
   begin
     if Bitmap.Canvas.BeginScene() then
       try
+        if Assigned(FOnBeginPaint) then
+          FOnBeginPaint(Self, FImage);
+        if Assigned(FOnPaintBackground) then
+          FOnPaintBackground(Self, FImage);
 
-        // FInBeginPaintBehavior;
-        // FBackgroundBehavior;
-
-        // l := (ObjectList.Count - 1);
         for IRend in FList do
           if IRend.Enabled then
           begin
@@ -82,7 +96,8 @@ begin
             {$ENDIF}
           end;
       finally
-      //  FInEndPaintBehavior;
+        if Assigned(FOnEndPaint) then
+          FOnEndPaint(Self, FImage);
 
         Bitmap.Canvas.EndScene();
 
@@ -96,6 +111,34 @@ end;
 procedure TSoRenderer.OnItemDestroy(ASender: TObject);
 begin
   FList.Delete(TEngine2DRendition(ASender));
+end;
+
+procedure TSoRenderer.SetBackground(const Value: TBitmap);
+begin
+  FCritical.Enter;
+  FBackground := Value;
+  FCritical.Leave;
+end;
+
+procedure TSoRenderer.SetOnBeginPaint(const Value: TEvent<TAnonImage>);
+begin
+  FCritical.Enter;
+  FOnBeginPaint := Value;
+  FCritical.Leave;
+end;
+
+procedure TSoRenderer.SetOnEndPaint(const Value: TEvent<TAnonImage>);
+begin
+  FCritical.Enter;
+  FOnEndPaint := Value;
+  FCritical.Leave;
+end;
+
+procedure TSoRenderer.SetOnPaintBackground(const Value: TEvent<TAnonImage>);
+begin
+  FCritical.Enter;
+  FOnPaintBackground := Value;
+  FCritical.Leave;
 end;
 
 end.
