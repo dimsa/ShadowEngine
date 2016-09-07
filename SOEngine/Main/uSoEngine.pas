@@ -5,7 +5,7 @@ interface
 uses
   System.SyncObjs, FMX.Objects, FMX.Graphics, System.UITypes, System.Classes,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
-  uEngine2DManager, uEngine2DStatus, uSoManager, uSoContainer;
+  uEngine2DManager, uEngine2DStatus, uSoManager, uSoContainer, uWorldManager, uUnitManager;
 
 type
   TSoEngine = class
@@ -24,9 +24,13 @@ type
     FInBeginPaintBehavior: TProcedure; // Method is called before Paint
     FInEndPaintBehavior: TProcedure; // Method is called after Paint
     FManager: TSoManager;
+    FUnitManager: TUnitManager;
+    FWorldManager: TWorldManager;
     procedure OnImageResize(ASender: TObject);
     function IsHor: Boolean;
     procedure SetImage(const Value: TImage);
+  private
+    function GetFps: Single;
   protected
     property EngineThread: TEngineThread read FEngineThread;
     procedure WorkProcedure; virtual; // The main Paint procedure.
@@ -46,7 +50,10 @@ type
     destructor Destroy; override;
 
     function Manage(const AContainer: TSoContainer): TSoManager; // You should use Manager to Work with Engine
+    property WorldManager: TWorldManager read FWorldManager;
+    property UnitManager: TUnitManager read FUnitManager;
     property Status: TEngine2DStatus read FStatus;
+    property Fps: Single read GetFps;
     const
       CGameStarted = 1;
       CGameStopped = 255;
@@ -61,11 +68,16 @@ begin
   FImage := AImage;
   FOptions := TEngine2DOptions.Create;
 
+
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
 
   FModel := TSoModel.Create(TAnonImage(FImage), FCritical, IsHor);
+  FUnitManager := TUnitManager.Create(FModel);
+  FWorldManager := TWorldManager.Create(FModel);
+
+
 
   FOptions.Up([EAnimateForever, EUseCollider]);
   FOptions.Down([EClickOnlyTop]);
@@ -79,6 +91,11 @@ begin
   FOptions.Free;
 
   inherited;
+end;
+
+function TSoEngine.GetFps: Single;
+begin
+  Result := FEngineThread.FPS;
 end;
 
 {procedure TSoEngine.Init(AImage: TImage);

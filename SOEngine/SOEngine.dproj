@@ -6,7 +6,7 @@
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">iOSSimulator</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>17</TargetedPlatforms>
         <AppType>Package</AppType>
         <Platform>iOSSimulator</Platform>
@@ -200,6 +200,8 @@
         <DCCReference Include="Parts\Formatters\uSoFormatter.pas"/>
         <DCCReference Include="Main\uSoManager.pas"/>
         <DCCReference Include="Utils\SimpleIoC.pas"/>
+        <DCCReference Include="Manager\uUnitManager.pas"/>
+        <DCCReference Include="Manager\uWorldManager.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>

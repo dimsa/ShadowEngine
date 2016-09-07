@@ -5,7 +5,8 @@ interface
 
 uses
   System.SyncObjs, System.Classes, System.SysUtils, {$I 'Utils\DelphiCompatability.inc'}
-  FMX.Graphics, uEasyDevice,
+  FMX.Graphics, System.UITypes, System.Types,
+  uEasyDevice,
   uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoContainer;
 
 type
@@ -15,7 +16,7 @@ type
     FImage: TAnonImage;
     FBackground: TBitmap; // Background of Engine that paints on every tick. Not sure if it should be here // Бэкграунд. Всегда рисуется в Repaint на весь fImage
     FOnPaintBackground, FOnBeginPaint, FOnEndPaint: TEvent<TAnonImage>;
-    procedure OnItemDestroy(ASender: TObject);
+   procedure OnItemDestroy(ASender: TObject);
     procedure OnImageResize(ASender: TObject);
     procedure SetBackground(const Value: TBitmap);
     procedure SetOnBeginPaint(const Value: TEvent<TAnonImage>);
