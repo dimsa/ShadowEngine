@@ -17,10 +17,11 @@ type
     procedure SetTickBegin(AValue: Int64);
     procedure DoNothing;
     function GetSpeed: Single;
+    procedure SetWorkProcedure(const Value: TProcedure);
   protected
     procedure Execute; override; // Процедура выполнения потока
   public
-    property WorkProcedure: TProcedure read FWorkProcedure write FWorkProcedure; // Procedure that will be done in thread
+    property WorkProcedure: TProcedure write SetWorkProcedure; // Procedure that will be done in thread
     property TickBegin: int64 read FTickBegin write SetTickBegin;
     property TickEnd: int64 read FTickEnd write SetTickEnd;
     function FPS: Single;
@@ -126,6 +127,11 @@ begin
   end
   else
     fTickCount := fTickCount + 1;
+end;
+
+procedure TEngineThread.SetWorkProcedure(const Value: TProcedure);
+begin
+  FWorkProcedure := Value;
 end;
 
 end.

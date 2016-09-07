@@ -12,6 +12,9 @@
         <Projects Include="SOEngine\SOEngine.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="AsteroidsDemo\AsteroidsDemo.dproj">
+            <Dependencies>SOEngine\SOEngine.dproj</Dependencies>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -47,14 +50,23 @@
     <Target Name="SOEngine:Make">
         <MSBuild Projects="SOEngine\SOEngine.dproj" Targets="Make"/>
     </Target>
+    <Target Name="AsteroidsDemo" DependsOnTargets="SOEngine">
+        <MSBuild Projects="AsteroidsDemo\AsteroidsDemo.dproj"/>
+    </Target>
+    <Target Name="AsteroidsDemo:Clean" DependsOnTargets="SOEngine:Clean">
+        <MSBuild Projects="AsteroidsDemo\AsteroidsDemo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="AsteroidsDemo:Make" DependsOnTargets="SOEngine:Make">
+        <MSBuild Projects="AsteroidsDemo\AsteroidsDemo.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ShadowEngineDemo;SpriteShapeBuilder;SOEngine"/>
+        <CallTarget Targets="ShadowEngineDemo;SpriteShapeBuilder;SOEngine;AsteroidsDemo"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ShadowEngineDemo:Clean;SpriteShapeBuilder:Clean;SOEngine:Clean"/>
+        <CallTarget Targets="ShadowEngineDemo:Clean;SpriteShapeBuilder:Clean;SOEngine:Clean;AsteroidsDemo:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ShadowEngineDemo:Make;SpriteShapeBuilder:Make;SOEngine:Make"/>
+        <CallTarget Targets="ShadowEngineDemo:Make;SpriteShapeBuilder:Make;SOEngine:Make;AsteroidsDemo:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

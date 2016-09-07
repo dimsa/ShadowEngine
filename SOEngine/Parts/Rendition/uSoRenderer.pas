@@ -5,7 +5,7 @@ interface
 
 uses
   System.SyncObjs, System.Classes, System.SysUtils, {$I 'Utils\DelphiCompatability.inc'}
-  FMX.Graphics,
+  FMX.Graphics, uEasyDevice,
   uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoContainer;
 
 type
@@ -16,6 +16,7 @@ type
     FBackground: TBitmap; // Background of Engine that paints on every tick. Not sure if it should be here // Бэкграунд. Всегда рисуется в Repaint на весь fImage
     FOnPaintBackground, FOnBeginPaint, FOnEndPaint: TEvent<TAnonImage>;
     procedure OnItemDestroy(ASender: TObject);
+    procedure OnImageResize(ASender: TObject);
     procedure SetBackground(const Value: TBitmap);
     procedure SetOnBeginPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnEndPaint(const Value: TEvent<TAnonImage>);
@@ -24,9 +25,6 @@ type
     property OnPaintBackground: TEvent<TAnonImage> write SetOnPaintBackground;
     property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint;
     property OnEndPaint: TEvent<TAnonImage> write SetOnEndPaint;
-  //  property BackgroundBehavior: TProcedure write SetBackgroundBehavior;
-//    property InBeginPaintBehavior: TProcedure write SetInBeginPaintBehavior;
-//    property InEndPaintBehavior: TProcedure write SetInBeginPaintBehavior;
     property Background: TBitmap write SetBackground;
     constructor Create(const ACritical: TCriticalSection; const AImage: TAnonImage);
     procedure Execute; // Render On Tick
@@ -55,19 +53,19 @@ constructor TSoRenderer.Create(const ACritical: TCriticalSection;
   const AImage: TAnonImage);
 begin
   inherited Create(ACritical);
-
-  FBackGround := TBitmap.Create;
   FImage := AImage;
+  FImage.OnResize := OnImageResize;
+  OnImageResize(FImage);
+  FBackGround := TBitmap.Create;
 end;
 
 procedure TSoRenderer.Execute;
 var
   IRend: TEngine2DRendition;
-  m: tMatrix;
 begin
-  with FImage do
-  begin
-    if Bitmap.Canvas.BeginScene() then
+  FCritical.Enter;
+    if FImage.Bitmap.Canvas.BeginScene() then
+    with FImage do
       try
         if Assigned(FOnBeginPaint) then
           FOnBeginPaint(Self, FImage);
@@ -77,12 +75,13 @@ begin
         for IRend in FList do
           if IRend.Enabled then
           begin
-            m := tMatrix.CreateTranslation(-IRend.Subject.x, -IRend.Subject.y) *
+
+            Bitmap.Canvas.SetMatrix(
+              tMatrix.CreateTranslation(-IRend.Subject.x, -IRend.Subject.y) *
               tMatrix.CreateScaling(IRend.Subject.ScaleX, IRend.Subject.ScaleY) *
               tMatrix.CreateRotation(IRend.Subject.rotate * pi180) *
-              tMatrix.CreateTranslation(IRend.Subject.x, IRend.Subject.y);
-
-            Bitmap.Canvas.SetMatrix(m);
+              tMatrix.CreateTranslation(IRend.Subject.x, IRend.Subject.y)
+            );
 
             {$IFDEF DEBUG}
          //   if FOptions.ToDrawFigures then
@@ -105,12 +104,20 @@ begin
         InvalidateRect(RectF(0, 0, Bitmap.Width, Bitmap.Height));
         {$ENDIF}
       end;
-  end;
+      FCritical.Leave;
+end;
+
+procedure TSoRenderer.OnImageResize(ASender: TObject);
+begin
+  FImage.Bitmap.Width := Round(FImage.Width * getScreenScale);
+  FImage.Bitmap.Height := ROund(FImage.Height * getScreenScale);
 end;
 
 procedure TSoRenderer.OnItemDestroy(ASender: TObject);
 begin
+  FCritical.Enter;
   FList.Delete(TEngine2DRendition(ASender));
+  FCritical.Leave;
 end;
 
 procedure TSoRenderer.SetBackground(const Value: TBitmap);

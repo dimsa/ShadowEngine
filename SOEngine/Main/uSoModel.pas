@@ -11,7 +11,6 @@ type
   TSoModel = class
   private
     FCritical: TCriticalSection;
-    FImage: TAnonImage;
     // Workers
     FRenderer: TSoRenderer;
     FCollider: TSoCollider;
@@ -56,7 +55,7 @@ begin
   FCritical := ACritical;
   FContainerKeeper := TSoContainerKeeper.Create(FCritical);
   FLogicKeper := TSoLogicKeeper.Create(FCritical);
-  FRenderer := TSoRenderer.Create(FCritical, FImage);
+  FRenderer := TSoRenderer.Create(FCritical, AImage);
   FCollider := TSoCollider.Create(FCritical);
   FFormattor := TSoFormattor.Create(FCritical);
   FAnimator := TSoAnimator.Create(FCritical);

@@ -1,0 +1,22 @@
+object AsteroidsVsYou: TAsteroidsVsYou
+  Left = 0
+  Top = 0
+  Caption = 'Asteroids Vs You'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  DesignerMasterStyle = 0
+  object MainImg: TImage
+    MultiResBitmap = <
+      item
+      end>
+    Align = Client
+    Size.Width = 640.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    WrapMode = Stretch
+  end
+end

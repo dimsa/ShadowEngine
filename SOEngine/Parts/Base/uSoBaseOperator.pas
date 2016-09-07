@@ -28,7 +28,9 @@ implementation
 
 procedure TSoOperator<T>.Add(const AItem: T; const AName: string);
 begin
+  FCritical.Leave;
   FList.Add(AName, AItem);
+  FCritical.Leave;
 end;
 
 constructor TSoOperator<T>.Create(const ACritical: TCriticalSection);
@@ -43,6 +45,7 @@ var
   i: Integer;
   vObj: TObject;
 begin
+  FCritical.Enter;
   for i := 0 to FList.Count - 1 do
   begin
     vObj := @FList;
@@ -51,13 +54,15 @@ begin
 
   FList.Clear;
   FList.Free;
-
+  FCritical.Leave;
   inherited;
 end;
 
 procedure TSoOperator<T>.OnItemDestroy(ASender: T);
 begin
+  FCritical.Enter;
   FList.Delete(ASender);
+  FCritical.Leave;
 end;
 
 end.

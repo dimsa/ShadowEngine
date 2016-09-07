@@ -29,28 +29,23 @@ type
     procedure SetImage(const Value: TImage);
   protected
     property EngineThread: TEngineThread read FEngineThread;
+    procedure WorkProcedure; virtual; // The main Paint procedure.
   public
     // Main properties of Engine. Ключевые свойства движка
     property Image: TImage read FImage write SetImage;
-    property Critical: TCriticalSection read FCritical;
 
     property Width: Single read FWidth;
     property Height: Single read FHeight;
 
     property Options: TEngine2dOptions read FOptions;
-//    procedure Click(const ACount: Integer = -1); virtual; // It must be Called after MouseUp if in MouseUp was AClickObjects = False;
 
-   // procedure Init(AImage: TImage); // Initialization of SO Engine // Инициализация движка, задаёт рисунок на форме, на которому присваиватся fImage
-    procedure WorkProcedure; virtual; // The main Paint procedure.
     procedure Start; virtual; // Включает движок
     procedure Stop; virtual;// Выключает движок
 
     constructor Create(const AImage: TAnonImage); virtual;
     destructor Destroy; override;
 
-    function Manage(const AContainer: TSoContainer): TSoManager;
-    // You should use Manager to Work with Engine
-//    property Manager: TSoManager read FManager; // It helps to create object faster // Позволяет быстрее и проще создавать объекты
+    function Manage(const AContainer: TSoContainer): TSoManager; // You should use Manager to Work with Engine
     property Status: TEngine2DStatus read FStatus;
     const
       CGameStarted = 1;
