@@ -5,7 +5,8 @@ uses
   FMX.Forms,
   uMain in 'uMain.pas' {AsteroidsVsYou},
   uModel in 'Model\uModel.pas',
-  uGame in 'Model\uGame.pas';
+  uGame in 'Model\uGame.pas',
+  uMapPainter in 'Other\uMapPainter.pas';
 
 {$R *.res}
 
