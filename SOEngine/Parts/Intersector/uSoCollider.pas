@@ -14,6 +14,7 @@ type
     procedure Execute; // Test for collide on tick
     function Contains(const AX, AY: Single): TArray<TSoContainer>;
     procedure Add(const AItem: TSoColliderObj; const AName: string = ''); override;
+    procedure LoadTemplateFromSeJson(const AFilename: string);
   end;
 
 implementation
@@ -49,6 +50,11 @@ procedure TSoCollider.Execute;
 begin
   inherited;
   { TODO : Add method for colliding }
+end;
+
+procedure TSoCollider.LoadTemplateFromSeJson(const AFilename: string);
+begin
+
 end;
 
 procedure TSoCollider.OnItemDestroy(ASender: TObject);

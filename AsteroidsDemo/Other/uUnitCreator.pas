@@ -3,6 +3,7 @@ unit uUnitCreator;
 interface
 
 uses
+  System.SysUtils, System.Types,
   uUnitManager, uModel;
 
 type
@@ -34,6 +35,7 @@ function TUnitCreator.NewShip: TShip;
 var
   vName: string;
 begin
+  // vName is the name of template
   vName := 'Ship';
   with FManageNew('Ship') do begin
     AddRendition(vName);
@@ -46,8 +48,10 @@ function TUnitCreator.NewSpaceDebris(const ASize: integer): TBigAsteroid;
 var
   vName: string;
 begin
+  // vName is the name of template
   vName := 'Asteroid';
   with FManageNew do begin
+    ActiveContainer.Scale := ASize * 0.25;
     AddRendition(vName);
     AddColliderObj(vName);
     AddLogic(vName);
@@ -58,6 +62,7 @@ function TUnitCreator.NewSpaceDust: TLtlAsteroid;
 var
   vName: string;
 begin
+  // vName is the name of template
   if Random(2) = 0 then
     vName := 'Star'
   else

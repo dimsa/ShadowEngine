@@ -5,7 +5,8 @@ interface
 uses
   System.SyncObjs, FMX.Objects, FMX.Graphics, System.UITypes, System.Classes,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
-  uEngine2DManager, uEngine2DStatus, uSoContainer, uWorldManager, uUnitManager;
+  uEngine2DManager, uEngine2DStatus, uSoContainer,
+  uWorldManager, uUnitManager, uTemplateManager;
 
 type
   TManageDelegate = function(const AContainer: TSoContainer): TUnitManager;
@@ -25,9 +26,9 @@ type
     FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
     FInBeginPaintBehavior: TProcedure; // Method is called before Paint
     FInEndPaintBehavior: TProcedure; // Method is called after Paint
-    FManager: TUnitManager;
     FUnitManager: TUnitManager;
     FWorldManager: TWorldManager;
+    FTemplateManager: TTemplateManager;
     procedure OnImageResize(ASender: TObject);
     function IsHor: Boolean;
     procedure SetImage(const Value: TImage);
@@ -51,9 +52,10 @@ type
     constructor Create(const AImage: TAnonImage); virtual;
     destructor Destroy; override;
 
-    function Manage(const AContainer: TSoContainer): TUnitManager; // You should use Manager to Work with Engine
+    // You should use Managers to Work with Engine
     property WorldManager: TWorldManager read FWorldManager;
     property UnitManager: TUnitManager read FUnitManager;
+    property TemplateManager: TTemplateManager read FTemplateManager;
     property Status: TEngine2DStatus read FStatus;
     property Fps: Single read GetFps;
     const
@@ -70,7 +72,6 @@ begin
   FImage := AImage;
   FOptions := TEngine2DOptions.Create;
 
-
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
@@ -78,6 +79,7 @@ begin
   FModel := TSoModel.Create(TAnonImage(FImage), FCritical, IsHor);
   FUnitManager := TUnitManager.Create(FModel);
   FWorldManager := TWorldManager.Create(FModel);
+  FTemplateManager := TTemplateManager.Create(FModel);
 
   FOptions.Up([EAnimateForever, EUseCollider]);
   FOptions.Down([EClickOnlyTop]);
@@ -106,12 +108,6 @@ end;   }
 function TSoEngine.IsHor: Boolean;
 begin
   Result := FWidth > FHeight;
-end;
-
-function TSoEngine.Manage(const AContainer: TSoContainer): TUnitManager;
-begin
-  FManager.Activate(AContainer);
-  Result := FManager; // /oManager.Create(AContainer);
 end;
 
 {rocedure TSoEngine.OnMouseDown(Sender: TObject; Button: TMouseButton;

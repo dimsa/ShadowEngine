@@ -27,6 +27,7 @@ type
     property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint;
     property OnEndPaint: TEvent<TAnonImage> write SetOnEndPaint;
     property Background: TBitmap write SetBackground;
+    procedure LoadTemplateFromSeJson(const AFilename: string);
     constructor Create(const ACritical: TCriticalSection; const AImage: TAnonImage);
     procedure Execute; // Render On Tick
     procedure Add(const AItem: TEngine2DRendition; const AName: string = ''); override;
@@ -106,6 +107,11 @@ begin
         {$ENDIF}
       end;
       FCritical.Leave;
+end;
+
+procedure TSoRenderer.LoadTemplateFromSeJson(const AFilename: string);
+begin
+
 end;
 
 procedure TSoRenderer.OnImageResize(ASender: TObject);

@@ -95,6 +95,7 @@ contains
   uSoFormatter in 'Parts\Formatters\uSoFormatter.pas',
   SimpleIoC in 'Utils\SimpleIoC.pas',
   uWorldManager in 'Manager\uWorldManager.pas',
-  uUnitManager in 'Manager\uUnitManager.pas';
+  uUnitManager in 'Manager\uUnitManager.pas',
+  uTemplateManager in 'Manager\uTemplateManager.pas';
 
 end.

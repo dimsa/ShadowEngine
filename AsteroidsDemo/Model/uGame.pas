@@ -24,7 +24,6 @@ constructor TGame.Create(const AWorldManager: TWorldManager; const AUnitManager:
 begin
   FWorldManager := AWorldManager;
   FUnitManager :=  AUnitManager;
-
   //Prepairing of background
   FMapPainter := TMapPainter.Create(FWorldManager, UniPath('../../../../art/back.jpg') );
   FUnitCreator := TUnitCreator.Create(FUnitManager);
