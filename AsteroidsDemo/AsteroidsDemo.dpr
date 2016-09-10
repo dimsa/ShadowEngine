@@ -6,7 +6,8 @@ uses
   uMain in 'uMain.pas' {AsteroidsVsYou},
   uModel in 'Model\uModel.pas',
   uGame in 'Model\uGame.pas',
-  uMapPainter in 'Other\uMapPainter.pas';
+  uMapPainter in 'Other\uMapPainter.pas',
+  uUnitCreator in 'Other\uUnitCreator.pas';
 
 {$R *.res}
 

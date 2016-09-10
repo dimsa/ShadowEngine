@@ -3,12 +3,13 @@ unit uGame;
 interface
 
 uses
-  uClasses, uEngine2DClasses, uWorldManager, uUnitManager, uEasyDevice, uMapPainter;
+  uClasses, uEngine2DClasses, uWorldManager, uUnitManager, uEasyDevice, uMapPainter, uUnitCreator;
 
 type
   TGame = class
   private
     FMapPainter: TMapPainter; // Some object to draw parallax or map or etc
+    FUnitCreator: TUnitCreator;
     FWorldManager: TWorldManager;
     FUnitManager: TUnitManager;
   public
@@ -26,6 +27,7 @@ begin
 
   //Prepairing of background
   FMapPainter := TMapPainter.Create(FWorldManager, UniPath('../../../../art/back.jpg') );
+  FUnitCreator := TUnitCreator.Create(FUnitManager);
 end;
 
 end.

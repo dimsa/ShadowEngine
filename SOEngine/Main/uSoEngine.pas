@@ -5,9 +5,11 @@ interface
 uses
   System.SyncObjs, FMX.Objects, FMX.Graphics, System.UITypes, System.Classes,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
-  uEngine2DManager, uEngine2DStatus, uSoManager, uSoContainer, uWorldManager, uUnitManager;
+  uEngine2DManager, uEngine2DStatus, uSoContainer, uWorldManager, uUnitManager;
 
 type
+  TManageDelegate = function(const AContainer: TSoContainer): TUnitManager;
+
   TSoEngine = class
   strict private
     FEngineThread: TEngineThread; // Thread that paint all sprites (But there are possibility to use not one thread)  // ѕоток в котором происходит отрисовка
@@ -23,7 +25,7 @@ type
     FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
     FInBeginPaintBehavior: TProcedure; // Method is called before Paint
     FInEndPaintBehavior: TProcedure; // Method is called after Paint
-    FManager: TSoManager;
+    FManager: TUnitManager;
     FUnitManager: TUnitManager;
     FWorldManager: TWorldManager;
     procedure OnImageResize(ASender: TObject);
@@ -49,7 +51,7 @@ type
     constructor Create(const AImage: TAnonImage); virtual;
     destructor Destroy; override;
 
-    function Manage(const AContainer: TSoContainer): TSoManager; // You should use Manager to Work with Engine
+    function Manage(const AContainer: TSoContainer): TUnitManager; // You should use Manager to Work with Engine
     property WorldManager: TWorldManager read FWorldManager;
     property UnitManager: TUnitManager read FUnitManager;
     property Status: TEngine2DStatus read FStatus;
@@ -76,8 +78,6 @@ begin
   FModel := TSoModel.Create(TAnonImage(FImage), FCritical, IsHor);
   FUnitManager := TUnitManager.Create(FModel);
   FWorldManager := TWorldManager.Create(FModel);
-
-
 
   FOptions.Up([EAnimateForever, EUseCollider]);
   FOptions.Down([EClickOnlyTop]);
@@ -108,7 +108,7 @@ begin
   Result := FWidth > FHeight;
 end;
 
-function TSoEngine.Manage(const AContainer: TSoContainer): TSoManager;
+function TSoEngine.Manage(const AContainer: TSoContainer): TUnitManager;
 begin
   FManager.Activate(AContainer);
   Result := FManager; // /oManager.Create(AContainer);
