@@ -17,7 +17,6 @@ type
     FCritical: TCriticalSection; // The critical section for multithread operation, to protect model on changind in paint time // Критическая секция движка
     FModel: TSoModel; // All main lists are in It.
     FOptions: TEngine2DOptions; // All Engine options. If you add some feature to manage engine, it shoulb be here// Настройки движка
-    FObjectCreator: TEngine2DManager; // This object work with Model items. It's controller/
     FStatus: TEngine2DStatus; // All Engine status you can get from herem like width-height,speed and etc.
     FIsMouseDowned: Boolean; // True if Mouse is Downed  // Хранит состояние нажатости мыши
     FImage: TImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка\
@@ -26,9 +25,9 @@ type
     FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
     FInBeginPaintBehavior: TProcedure; // Method is called before Paint
     FInEndPaintBehavior: TProcedure; // Method is called after Paint
-    FUnitManager: TUnitManager;
-    FWorldManager: TWorldManager;
-    FTemplateManager: TTemplateManager;
+    FUnitManager: TUnitManager; // Controller for creating units form template and etc
+    FWorldManager: TWorldManager; // Controller to create different lowlevel world render.
+    FTemplateManager: TTemplateManager; // Controller to Load Templates if their loaders are ready
     procedure OnImageResize(ASender: TObject);
     function IsHor: Boolean;
     procedure SetImage(const Value: TImage);

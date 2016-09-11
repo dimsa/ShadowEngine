@@ -3,7 +3,8 @@ unit uGame;
 interface
 
 uses
-  uClasses, uEngine2DClasses, uWorldManager, uUnitManager, uEasyDevice, uMapPainter, uUnitCreator;
+  uClasses, uEngine2DClasses, uWorldManager, uUnitManager, uMapPainter, uUnitCreator, uTemplateManager,
+  uUtils;
 
 type
   TGame = class
@@ -12,21 +13,28 @@ type
     FUnitCreator: TUnitCreator;
     FWorldManager: TWorldManager;
     FUnitManager: TUnitManager;
+    FTemplateManager: TTemplateManager;
   public
-    constructor Create(const AWorldManager: TWorldManager; const AUnitManager: TUnitManager);
+    constructor Create(const ATemplateManager: TTemplateManager; const AWorldManager: TWorldManager;
+      const AUnitManager: TUnitManager);
   end;
 
 implementation
 
 { TGame }
 
-constructor TGame.Create(const AWorldManager: TWorldManager; const AUnitManager: TUnitManager);
+constructor TGame.Create(const ATemplateManager: TTemplateManager; const AWorldManager: TWorldManager;
+  const AUnitManager: TUnitManager);
 begin
   FWorldManager := AWorldManager;
   FUnitManager :=  AUnitManager;
+  FTemplateManager := ATemplateManager;
   //Prepairing of background
-  FMapPainter := TMapPainter.Create(FWorldManager, UniPath('../../../../art/back.jpg') );
+  FMapPainter := TMapPainter.Create(FWorldManager, ResourcePath('Back.jpg'));
   FUnitCreator := TUnitCreator.Create(FUnitManager);
+
+  FTemplateManager.LoadSeJson(ResourcePath('Asteroids.sejson'));
+  FTemplateManager.LoadSeCss( ResourcePath('Formatters.secss'));
 end;
 
 end.

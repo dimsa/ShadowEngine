@@ -7,7 +7,7 @@ uses
   System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
   System.Math.Vectors,
-  uSoEngine, uGame, uEngine2DClasses, uEasyDevice;
+  uSoEngine, uGame, uEngine2DClasses;
 
 type
   TAsteroidsVsYou = class(TForm)
@@ -33,10 +33,8 @@ implementation
 procedure TAsteroidsVsYou.FormCreate(Sender: TObject);
 begin
   FEngine := TSoEngine.Create(MainImg);
-  FEngine.TemplateManager.LoadSeJson(UniPath('../../../../art/Asteroids.sejson'));
-  FEngine.TemplateManager.LoadSeCss(UniPath('../../../../art/Formatters.secss'));
   FEngine.WorldManager.OnEndPaint := OnEndPaintDefault;
-  FGame := TGame.Create(FEngine.WorldManager, FEngine.UnitManager);
+  FGame := TGame.Create(FEngine.TemplateManager, FEngine.WorldManager, FEngine.UnitManager);
 
   FEngine.Start;
 end;
