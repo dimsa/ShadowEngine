@@ -53,7 +53,8 @@ implementation
 
 constructor TEngineThread.Create;
 begin
-  inherited Create;
+  inherited Create(True);
+  FreeOnTerminate := True;
 
   FWorkProcedure := doNothing;
 {$IFDEF WINDOWS}
@@ -64,6 +65,7 @@ begin
   FTickEnd := 0;
   FLastFPS := CLeftFPSBorder;
   FSleep := CMinSleep;
+
 end;
 
 destructor tEngineThread.Destroy;

@@ -31,7 +31,6 @@ type
     procedure OnImageResize(ASender: TObject);
     function IsHor: Boolean;
     procedure SetImage(const Value: TImage);
-  private
     function GetFps: Single;
   protected
     property EngineThread: TEngineThread read FEngineThread;
@@ -45,8 +44,9 @@ type
 
     property Options: TEngine2dOptions read FOptions;
 
-    procedure Start; virtual; // Включает движок
-    procedure Stop; virtual;// Выключает движок
+    procedure Start; virtual; // Start Engine. Need to run only once Включает движок
+    procedure Suspend; virtual;// Suspend main thread
+    procedure Resume; virtual;// Resume main thread
 
     constructor Create(const AImage: TAnonImage); virtual;
     destructor Destroy; override;
@@ -127,6 +127,11 @@ begin
   FHeight := TImage(ASender).Height;
 end;
 
+procedure TSoEngine.Resume;
+begin
+  FEngineThread.Suspended := False;
+end;
+
 procedure TSoEngine.SetImage(const Value: TImage);
 begin
   if Assigned(FImage) then
@@ -145,12 +150,12 @@ end;
 
 procedure TSoEngine.Start;
 begin
-
+  FEngineThread.Start;
 end;
 
-procedure TSoEngine.Stop;
+procedure TSoEngine.Suspend;
 begin
-
+  FEngineThread.Suspended := True;
 end;
 
 procedure TSoEngine.WorkProcedure;
