@@ -17,7 +17,7 @@ type
     procedure OnItemDestroy(ASender: T);
   public
     procedure Add(const AItem: T; const AName: string = ''); virtual;
-    function AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): T; virtual; abstract;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): T; virtual; abstract;
     constructor Create(const ACritical: TCriticalSection); virtual;
     destructor Destroy; override;
   end;

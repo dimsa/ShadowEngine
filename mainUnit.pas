@@ -54,6 +54,7 @@ begin
   Game.Banners := BannerPanel;
   {$ENDIF}
   Game.Prepare;
+  Game.Start;
 end;
 
 procedure TmainForm.FormKeyDown(Sender: TObject; var Key: Word;

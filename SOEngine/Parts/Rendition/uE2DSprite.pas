@@ -19,7 +19,7 @@ type
   public
     property CurRes: Integer read FCurRes write SetCurRes;
     procedure Repaint; override;
-    constructor Create(const ASubject: TSoContainer; const AImage: TImage; const AResourceList: TEngine2DResourceList);
+    constructor Create(const ASubject: TSoObject; const AImage: TImage; const AResourceList: TEngine2DResourceList);
     destructor Destroy; override;
   end;
 
@@ -27,7 +27,7 @@ implementation
 
 { TEngine2DSPrite }
 
-constructor TEngine2DSprite.Create(const ASubject: TSoContainer; const AImage: TImage;
+constructor TEngine2DSprite.Create(const ASubject: TSoObject; const AImage: TImage;
   const AResourceList: TEngine2DResourceList);
 begin
   inherited Create(ASubject, AImage);

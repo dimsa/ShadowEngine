@@ -164,6 +164,7 @@ type
 
     procedure Prepare;
     procedure Resize(const AWidth, AHeight: Integer);
+    procedure Start;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -426,6 +427,11 @@ begin
   Value.OnMouseDown := Self.MouseDown;
   Value.OnMouseUp := Self.MouseUp;
   Value.OnMouseMove := Self.MouseMove;
+end;
+
+procedure TDemoGame.Start;
+begin
+  FEngine.Start;
 end;
 
 procedure TDemoGame.StartRelax(ASender: TObject);

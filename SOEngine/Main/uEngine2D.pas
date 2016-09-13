@@ -183,7 +183,6 @@ var
   vSpr: TEngine2DObject;
   {$ENDIF}
 begin
-
   if FOptions.ToUseCollider then
   begin
     FCritical.Enter;
@@ -508,6 +507,7 @@ end;
 
 procedure TEngine2d.start;
 begin
+  FEngineThread.Resume;
   FStatus.Status := CGameStarted;
 end;
 

@@ -18,7 +18,7 @@ type
     procedure Execute; // Render On Tick
     procedure Add(const AItem: TSoAnimation; const AName: string = ''); override;
     procedure LoadTemplates(const AFileName: string);
-    function AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): TSoAnimation; override;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoAnimation; override;
   end;
 
 implementation
@@ -32,7 +32,7 @@ begin
   {$I .\Template\uItemAdd.inc}
 end;
 
-function TSoAnimator.AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): TSoAnimation;
+function TSoAnimator.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoAnimation;
 begin
 
 end;

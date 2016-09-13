@@ -96,6 +96,7 @@ contains
   SimpleIoC in 'Utils\SimpleIoC.pas',
   uWorldManager in 'Manager\uWorldManager.pas',
   uUnitManager in 'Manager\uUnitManager.pas',
-  uTemplateManager in 'Manager\uTemplateManager.pas';
+  uTemplateManager in 'Manager\uTemplateManager.pas',
+  uWorldStatus in 'Manager\uWorldStatus.pas';
 
 end.

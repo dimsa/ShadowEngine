@@ -8,20 +8,20 @@ uses
 type
   TSoLogic = class(TSoBasePart)
   private
-    FOnExecute: TNotifyEvent<TSoContainer>;
-    procedure EmptyHandler(ASender: TSoContainer);
-    procedure SetOnExecute(const Value: TNotifyEvent<TSoContainer>);
+    FOnExecute: TNotifyEvent<TSoObject>;
+    procedure EmptyHandler(ASender: TSoObject);
+    procedure SetOnExecute(const Value: TNotifyEvent<TSoObject>);
   protected
     procedure Execute;
   public
-    property OnExecute: TNotifyEvent<TSoContainer> read FOnExecute write SetOnExecute;
+    property OnExecute: TNotifyEvent<TSoObject> read FOnExecute write SetOnExecute;
   end;
 
 implementation
 
 { TSoLogic }
 
-procedure TSoLogic.EmptyHandler(ASender: TSoContainer);
+procedure TSoLogic.EmptyHandler(ASender: TSoObject);
 begin
 
 end;
@@ -31,7 +31,7 @@ begin
   FOnExecute(FSubject);
 end;
 
-procedure TSoLogic.SetOnExecute(const Value: TNotifyEvent<TSoContainer>);
+procedure TSoLogic.SetOnExecute(const Value: TNotifyEvent<TSoObject>);
 begin
   FOnExecute := Value;
 end;

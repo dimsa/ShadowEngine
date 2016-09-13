@@ -7,20 +7,20 @@ uses
 
 type
 
-  TSoContainerKeeper = class(TSoOperator<TSoContainer>)
+  TSoContainerKeeper = class(TSoOperator<TSoObject>)
   private
 
   public
-    function AddNewContainer(const AName: string = ''): TSoContainer;
+    function AddNewContainer(const AName: string = ''): TSoObject;
   end;
 
 implementation
 
 { TSoContainerKeeper }
 
-function TSoContainerKeeper.AddNewContainer(const AName: string): TSoContainer;
+function TSoContainerKeeper.AddNewContainer(const AName: string): TSoObject;
 begin
-  Result := TSoContainer.Create;
+  Result := TSoObject.Create;
   Add(Result, AName);
 end;
 

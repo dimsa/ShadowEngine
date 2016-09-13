@@ -38,7 +38,7 @@ type
 //    property AutoSizeFont: Boolean read FAutoSize write FAutoSize;
 //    property FontSizeRatio: Single read FFontSizeRatio write FFontSizeRatio;
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
-    constructor Create(const ASubject: TSoContainer; const AImage: TImage);
+    constructor Create(const ASubject: TSoObject; const AImage: TImage);
     destructor Destroy; override;
   end;
 
@@ -46,7 +46,7 @@ implementation
 
 { TEngine2DText }
 
-constructor TEngine2DText.Create(const ASubject: TSoContainer; const AImage: TImage);
+constructor TEngine2DText.Create(const ASubject: TSoObject; const AImage: TImage);
 begin
   inherited Create(ASubject, AImage);
   FFont := TFont.Create; // Font of Text

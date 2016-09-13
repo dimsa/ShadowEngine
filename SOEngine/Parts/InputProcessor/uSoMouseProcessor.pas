@@ -12,8 +12,8 @@ type
   TSoMouseProcessor = class(TSoOperator<TSoMouseHandler>)
   private
     FCollider: TSoCollider;
-    FContainers: TDictionary<TSoContainer, TSoMouseHandler>;
-    FMouseOver, FOldMouseOver, FMouseDowned, FMouseUpped: TArray<TSoContainer>;
+    FContainers: TDictionary<TSoObject, TSoMouseHandler>;
+    FMouseOver, FOldMouseOver, FMouseDowned, FMouseUpped: TArray<TSoObject>;
     procedure OnItemDestroy(ASender: TObject);
   public
     procedure ExecuteMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single); // Process mouse on tick
@@ -40,7 +40,7 @@ end;
 constructor TSoMouseProcessor.Create(const ACritical: TCriticalSection; const ACollider: TSoCollider);
 begin
   inherited Create(ACritical);
-  FContainers := TDictionary<TSoContainer, TSoMouseHandler>.Create;
+  FContainers := TDictionary<TSoObject, TSoMouseHandler>.Create;
   FCollider := ACollider;
 end;
 

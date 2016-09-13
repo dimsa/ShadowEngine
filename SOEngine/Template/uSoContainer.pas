@@ -6,7 +6,7 @@ uses
   uGeometryClasses, System.Types, System.Classes, uCommonClasses;
 
 type
-  TSoContainer = class
+  TSoObject = class
   private
  {   FOnExecute: TNotifyEvent<TSoContainer>;
     FExecutable: Boolean;   }
@@ -46,17 +46,17 @@ implementation
 
 { TBaseUnitContainer }
 
-procedure TSoContainer.AddDestroyHandler(const AHandler: TNotifyEvent);
+procedure TSoObject.AddDestroyHandler(const AHandler: TNotifyEvent);
 begin
   FOnDestroyHandlers.Add(AHandler);
 end;
 
-constructor TSoContainer.Create;
+constructor TSoObject.Create;
 begin
   FOnDestroyHandlers := TNotifyEventList.Create;
 end;
 
-destructor TSoContainer.Destroy;
+destructor TSoObject.Destroy;
 begin
   FOnDestroyHandlers.RaiseEvent(Self);
   FOnDestroyHandlers.Free;
@@ -64,38 +64,38 @@ begin
   inherited;
 end;
 
-function TSoContainer.GetCenter: TPointF;
+function TSoObject.GetCenter: TPointF;
 begin
   Result := FPosition.XY;
 end;
 
-function TSoContainer.GetScalePoint: TPointF;
+function TSoObject.GetScalePoint: TPointF;
 begin
   Result := FPosition.Scale;
 end;
 
-procedure TSoContainer.RemoveDestroyHandler(const AHandler: TNotifyEvent);
+procedure TSoObject.RemoveDestroyHandler(const AHandler: TNotifyEvent);
 begin
   FOnDestroyHandlers.Remove(AHandler);
 end;
 
-procedure TSoContainer.SetCenter(const Value: TPointF);
+procedure TSoObject.SetCenter(const Value: TPointF);
 begin
   FPosition.X := Value.X;
   FPosition.Y := Value.Y;
 end;
 
-procedure TSoContainer.SetPosition(const Value: TPosition);
+procedure TSoObject.SetPosition(const Value: TPosition);
 begin
   FPosition := Value;
 end;
 
-procedure TSoContainer.SetRotate(const Value: Single);
+procedure TSoObject.SetRotate(const Value: Single);
 begin
   FPosition.Rotate := Value;
 end;
 
-procedure TSoContainer.SetScale(const Value: Single);
+procedure TSoObject.SetScale(const Value: Single);
 var
   vSoot: Single;
 begin
@@ -111,28 +111,28 @@ begin
   FPosition.scaleY := vSoot * Value;
 end;
 
-procedure TSoContainer.SetScalePoint(const Value: TPointF);
+procedure TSoObject.SetScalePoint(const Value: TPointF);
 begin
   FPosition.ScaleX := Value.X;
   FPosition.ScaleY := Value.Y
 end;
 
-procedure TSoContainer.SetScaleX(const Value: Single);
+procedure TSoObject.SetScaleX(const Value: Single);
 begin
   FPosition.ScaleX := Value;
 end;
 
-procedure TSoContainer.SetScaleY(const Value: Single);
+procedure TSoObject.SetScaleY(const Value: Single);
 begin
   FPosition.ScaleY := Value;
 end;
 
-procedure TSoContainer.SetX(const Value: Single);
+procedure TSoObject.SetX(const Value: Single);
 begin
   FPosition.X := Value;
 end;
 
-procedure TSoContainer.SetY(const Value: Single);
+procedure TSoObject.SetY(const Value: Single);
 begin
   FPosition.Y := Value;
 end;

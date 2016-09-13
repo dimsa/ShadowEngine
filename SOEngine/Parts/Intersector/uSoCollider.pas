@@ -12,7 +12,7 @@ type
     procedure OnItemDestroy(ASender: TObject);
   public
     procedure Execute; // Test for collide on tick
-    function Contains(const AX, AY: Single): TArray<TSoContainer>;
+    function Contains(const AX, AY: Single): TArray<TSoObject>;
     procedure Add(const AItem: TSoColliderObj; const AName: string = ''); override;
     procedure LoadTemplateFromSeJson(const AFilename: string);
   end;
@@ -28,10 +28,10 @@ begin
   {$I .\Template\uItemAdd.inc}
 end;
 
-function TSoCollider.Contains(const AX, AY: Single): TArray<TSoContainer>;
+function TSoCollider.Contains(const AX, AY: Single): TArray<TSoObject>;
 var
   i, vN: Integer;
-  vRes: TArray<TSoContainer>;
+  vRes: TArray<TSoObject>;
 begin
   SetLength(vRes, FList.Count);
   vN := 0;

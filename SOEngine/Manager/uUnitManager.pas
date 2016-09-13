@@ -13,7 +13,7 @@ type
   TUnitManager = class
   private
     FModel: TSoModelFriend;
-    FActiveContainer: TSoContainer;
+    FActiveContainer: TSoObject;
   public
     function AddRendition(const ATemplateName: string): TEngine2DRendition; overload;
     function AddRendition(const AObject: TEngine2DRendition): TEngine2DRendition; overload;
@@ -36,23 +36,23 @@ type
     function AddLogic(const ATemplateName: string): TSoLogic; overload;
     function AddLogic(const AObject: TSoLogic): TSoLogic; overload;
 
-    function AddContainer(const AName: string = ''): TSoContainer;
-    function Manage(const AContainer: TSoContainer): TUnitManager;
+    function AddContainer(const AName: string = ''): TSoObject;
+    function Manage(const AContainer: TSoObject): TUnitManager;
     function ManageNew(const AName: string = ''): TUnitManager;
 
-    property ActiveContainer: TSoContainer read FActiveContainer;
-    procedure Activate(const AContainer: TSoContainer);
+    property ActiveContainer: TSoObject read FActiveContainer;
+    procedure Activate(const AContainer: TSoObject);
     constructor Create(const AModel: TSoModel);
   end;
 
-  TManageDelegate = function(const AContainer: TSoContainer): TUnitManager of object;
+  TManageDelegate = function(const AContainer: TSoObject): TUnitManager of object;
   TManageNewDelegate = function(const AName: string = ''): TUnitManager of object;
 
 implementation
 
 { TSoManager }
 
-procedure TUnitManager.Activate(const AContainer: TSoContainer);
+procedure TUnitManager.Activate(const AContainer: TSoObject);
 begin
   FActiveContainer := AContainer;
 end;
@@ -79,7 +79,7 @@ begin
   Result := AObject;
 end;
 
-function TUnitManager.AddContainer(const AName: string): TSoContainer;
+function TUnitManager.AddContainer(const AName: string): TSoObject;
 begin
   Result := FModel.ContainerKeeper.AddNewContainer(AName)
 end;
@@ -143,7 +143,7 @@ begin
   FModel := TSoModelFriend(AModel);
 end;
 
-function TUnitManager.Manage(const AContainer: TSoContainer): TUnitManager;
+function TUnitManager.Manage(const AContainer: TSoObject): TUnitManager;
 begin
   FActiveContainer := AContainer;
   Result := Self;

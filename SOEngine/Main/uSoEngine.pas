@@ -6,10 +6,10 @@ uses
   System.SyncObjs, FMX.Objects, FMX.Graphics, System.UITypes, System.Classes,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
   uEngine2DManager, uEngine2DStatus, uSoContainer,
-  uWorldManager, uUnitManager, uTemplateManager;
+  uWorldManager, uUnitManager, uTemplateManager, uWorldStatus;
 
 type
-  TManageDelegate = function(const AContainer: TSoContainer): TUnitManager;
+  TManageDelegate = function(const AContainer: TSoObject): TUnitManager;
 
   TSoEngine = class
   strict private
@@ -28,6 +28,7 @@ type
     FUnitManager: TUnitManager; // Controller for creating units form template and etc
     FWorldManager: TWorldManager; // Controller to create different lowlevel world render.
     FTemplateManager: TTemplateManager; // Controller to Load Templates if their loaders are ready
+    FWorldStatus: TWorldStatus;
     procedure OnImageResize(ASender: TObject);
     function IsHor: Boolean;
     procedure SetImage(const Value: TImage);
@@ -39,6 +40,7 @@ type
     // Main properties of Engine. Ключевые свойства движка
     property Image: TImage read FImage write SetImage;
 
+    //property Container: TSoContainer read GetContainer; // SoEngine as SoContainer
     property Width: Single read FWidth;
     property Height: Single read FHeight;
 
@@ -55,6 +57,7 @@ type
     property WorldManager: TWorldManager read FWorldManager;
     property UnitManager: TUnitManager read FUnitManager;
     property TemplateManager: TTemplateManager read FTemplateManager;
+    property WorldStatus: TWorldStatus read FWorldStatus;
     property Status: TEngine2DStatus read FStatus;
     property Fps: Single read GetFps;
     const
@@ -69,6 +72,7 @@ implementation
 constructor TSoEngine.Create(const AImage: TAnonImage);
 begin
   FImage := AImage;
+
   FOptions := TEngine2DOptions.Create;
 
   FCritical := TCriticalSection.Create;
@@ -79,6 +83,7 @@ begin
   FUnitManager := TUnitManager.Create(FModel);
   FWorldManager := TWorldManager.Create(FModel);
   FTemplateManager := TTemplateManager.Create(FModel);
+  FWorldStatus := TWorldStatus.Create(FModel, @FWidth, @FHeight);
 
   FOptions.Up([EAnimateForever, EUseCollider]);
   FOptions.Down([EClickOnlyTop]);

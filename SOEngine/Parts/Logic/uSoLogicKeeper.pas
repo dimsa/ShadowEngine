@@ -16,7 +16,7 @@ type
   public
     procedure Execute; // Do some logic on tick
     procedure Add(const AItem: TSoLogic; const AName: string = ''); override;
-    function AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): TSoLogic; override;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoLogic; override;
     constructor Create(const ACritical: TCriticalSection); override;
   end;
 
@@ -31,7 +31,7 @@ begin
   {$I .\Template\uItemAdd.inc}
 end;
 
-function TSoLogicKeeper.AddFromTemplate(const ASubject: TSoContainer; const ATemplateName,
+function TSoLogicKeeper.AddFromTemplate(const ASubject: TSoObject; const ATemplateName,
   AName: string): TSoLogic;
 begin
 

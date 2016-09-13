@@ -10,7 +10,7 @@ type
   TSoFormatter = class(TSoBasePart)
   public
     procedure Format;
-    constructor Create(const ASubject: TSoContainer); override;
+    constructor Create(const ASubject: TSoObject); override;
     destructor Destroy; override;
   end;
 
@@ -18,7 +18,7 @@ implementation
 
 { TSoFormatter }
 
-constructor TSoFormatter.Create(const ASubject: TSoContainer);
+constructor TSoFormatter.Create(const ASubject: TSoObject);
 begin
   inherited;
 

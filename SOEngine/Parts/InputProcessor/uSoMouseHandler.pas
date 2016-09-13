@@ -35,7 +35,7 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write SetOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write SetOnMouseLeave;
     property OnClick: TNotifyEvent read FOnClick write SetOnClick;
-    constructor Create(const ASubject: TSoContainer); override;
+    constructor Create(const ASubject: TSoObject); override;
     destructor Destroy; override;
   end;
 
@@ -43,7 +43,7 @@ implementation
 
 { TEngine2DKeyboardProcessor }
 
-constructor TSoMouseHandler.Create(const ASubject: TSoContainer);
+constructor TSoMouseHandler.Create(const ASubject: TSoObject);
 begin
   inherited Create(ASubject);
   FOnMouseLeave := EmptyNotifyEvent;

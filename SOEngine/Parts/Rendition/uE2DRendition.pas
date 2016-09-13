@@ -33,7 +33,7 @@ type
     procedure SendToFront; // Ставит спрайт последним в списке отрисовки. Т.е. Переносит вперед
     procedure Repaint; virtual; abstract; // Процедура отрисовки объекта, переписывается спрайтом или текстом и т.д.
 
-    constructor Create(const ASubject: TSoContainer; const AImage: TAnonImage);
+    constructor Create(const ASubject: TSoObject; const AImage: TAnonImage);
     destructor Destroy; override;
   end;
 
@@ -46,7 +46,7 @@ begin
   FBringToBack(Self);
 end;
 
-constructor TEngine2DRendition.Create(const ASubject: TSoContainer; const AImage: TAnonImage);
+constructor TEngine2DRendition.Create(const ASubject: TSoObject; const AImage: TAnonImage);
 begin
   inherited Create(ASubject);
   FImage := AImage;

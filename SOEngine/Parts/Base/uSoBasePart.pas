@@ -12,14 +12,14 @@ type
     FOnDestroy: TNotifyEvent;
     FEnabled: Boolean;
   protected
-    FSubject: TSoContainer;
+    FSubject: TSoObject;
     procedure OnSubjectDestroy(ASender: TObject); virtual;
     procedure SetEnabled(AValue: Boolean); virtual;
   public
-    property Subject: TSoContainer read FSubject;
+    property Subject: TSoObject read FSubject;
     property Enabled: Boolean read FEnabled write SetEnabled;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
-    constructor Create(const ASubject: TSoContainer); virtual;
+    constructor Create(const ASubject: TSoObject); virtual;
     destructor Destroy; override;
   end;
 
@@ -27,7 +27,7 @@ implementation
 
 { TSoBasePart }
 
-constructor TSoBasePart.Create(const ASubject: TSoContainer);
+constructor TSoBasePart.Create(const ASubject: TSoObject);
 begin
   FSubject := ASubject;
   FSubject.AddDestroyHandler(OnSubjectDestroy);

@@ -65,7 +65,6 @@ begin
   FTickEnd := 0;
   FLastFPS := CLeftFPSBorder;
   FSleep := CMinSleep;
-
 end;
 
 destructor tEngineThread.Destroy;
@@ -137,5 +136,6 @@ begin
 end;
 
 end.
+
 
 

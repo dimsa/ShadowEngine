@@ -22,7 +22,7 @@ type
     property Enabled: Boolean read FEnabled write SetEnabled;
     property OnKeyDown: TKeyEvent read FOnKeyDown write SetOnKeyDown; // May be move it to constructor?
     property OnKeyUp: TKeyEvent read FOnKeyUp write SetOnKeyUp; // May be move it to constructor?
-    constructor Create(const ASubject: TSoContainer); override;
+    constructor Create(const ASubject: TSoObject); override;
     destructor Destroy; override;
   end;
 
@@ -30,7 +30,7 @@ implementation
 
 { TEngine2DKeyboardProcessor }
 
-constructor TSoKeyHandler.Create(const ASubject: TSoContainer);
+constructor TSoKeyHandler.Create(const ASubject: TSoObject);
 begin
   inherited Create(ASubject);
 

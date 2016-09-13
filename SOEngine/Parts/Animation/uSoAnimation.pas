@@ -32,12 +32,12 @@ type
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
-    property Subject: TSoContainer read FSubject;// write SetSubject;//GetSubject write
+    property Subject: TSoObject read FSubject;// write SetSubject;//GetSubject write
     property TimeTotal: Integer read FTimeTotal; // Время в мс, сколько анимация будет длиться
     property TimePassed: Double read FTimePassed;// Время в мс, сколько анимация уже длится
     procedure Cancel; virtual; abstract; // Returns subject properties to Start and stop animation;
     function Animate: Byte; virtual; // Main method to animate object // Главная рабочая функция. Когда True, то значит анимация объекта завершена
-    constructor Create(const ASubject: TSoContainer; const AThreadParams: TEngineThreadParams); virtual;
+    constructor Create(const ASubject: TSoObject; const AThreadParams: TEngineThreadParams); virtual;
     destructor Destroy; override;
   const
     CDefaultTotalTime = 500; // Default time for animation // Время на анимацию, по умолчанию. Если хотите создать непрерывную, придется отнаследоваться и переписать метод Animate
@@ -69,7 +69,7 @@ begin
 
 end;
 
-constructor TSoAnimation.Create(const ASubject: TSoContainer;
+constructor TSoAnimation.Create(const ASubject: TSoObject;
   const AThreadParams: TEngineThreadParams);
 begin
   inherited Create(ASubject);

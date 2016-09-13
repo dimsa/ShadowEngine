@@ -18,7 +18,7 @@ type
     procedure LoadTemplates(const AFileName: string);
     procedure Execute;
     procedure Add(const AItem: TSoFormatter; const AName: string = ''); override;
-    function AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): TSoFormatter; override;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoFormatter; override;
     constructor Create(const ACritical: TCriticalSection); override;
     destructor Destroy; override;
   end;
@@ -34,7 +34,7 @@ begin
   {$I .\Template\uItemAdd.inc}
 end;
 
-function TSoFormattor.AddFromTemplate(const ASubject: TSoContainer; const ATemplateName: string; const AName: string = ''): TSoFormatter;
+function TSoFormattor.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoFormatter;
 begin
 
 end;
