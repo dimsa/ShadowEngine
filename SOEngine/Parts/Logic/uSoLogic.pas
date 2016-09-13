@@ -3,7 +3,7 @@ unit uSoLogic;
 interface
 
 uses
-  uCommonClasses, uSoBasePart, uSoContainer;
+  uCommonClasses, uSoBasePart, uSoObject;
 
 type
   TSoLogic = class(TSoBasePart)

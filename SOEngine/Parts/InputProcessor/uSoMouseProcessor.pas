@@ -4,7 +4,7 @@ interface
 
 uses
   System.SyncObjs, System.Classes, System.UITypes, System.SysUtils, System.Generics.Collections,
-  uSoBaseOperator, uSoMouseHandler, uSoCollider, uSoContainer;
+  uSoBaseOperator, uSoMouseHandler, uSoCollider, uSoObject;
 
 type
   TSoMouseHandlerFriend = class(TSoMouseHandler);

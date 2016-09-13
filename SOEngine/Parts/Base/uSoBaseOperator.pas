@@ -6,7 +6,7 @@ interface
 
 uses
   System.SyncObjs, System.SysUtils,
-  uEngine2DClasses, uSoContainer;
+  uEngine2DClasses, uSoObject;
 
 type
   TSoOperator<T> = class abstract

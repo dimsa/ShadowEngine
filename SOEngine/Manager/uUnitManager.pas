@@ -3,7 +3,7 @@ unit uUnitManager;
 interface
 
 uses
-  uSoModel, uSoContainer,
+  uSoModel, uSoObject,
   uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoFormatter, uSoAnimation,
   uSoLogic;
 
@@ -81,7 +81,7 @@ end;
 
 function TUnitManager.AddContainer(const AName: string): TSoObject;
 begin
-  Result := FModel.ContainerKeeper.AddNewContainer(AName)
+  Result := FModel.ObjectKeeper.AddNewObject(AName)
 end;
 
 function TUnitManager.AddFormatter(const ATemplateName: string): TSoFormatter;

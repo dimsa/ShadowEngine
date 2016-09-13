@@ -1,4 +1,4 @@
-unit uSoContainer;
+unit uSoObject;
 
 interface
 

@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, FMX.Types, System.UITypes,
-  uSoContainer, uSoBasePart;
+  uSoObject, uSoBasePart;
 
 type
   TSoMouseHandler = class(TSoBasePart)

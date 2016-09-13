@@ -5,7 +5,7 @@ interface
 
 uses
   System.SysUtils, System.SyncObjs,
-  uSoLogic, uSoBaseOperator, uSoContainer;
+  uSoLogic, uSoBaseOperator, uSoObject;
 
 type
   TSoLogicFriend = class(TSoLogic);

@@ -3,7 +3,7 @@ unit uSoColliderObject;
 interface
 
 uses
-  uCommonClasses, uSoBasePart, uSoContainer;
+  uCommonClasses, uSoBasePart, uSoObject;
 
 type
   TSoColliderObj = class(TSoBasePart)

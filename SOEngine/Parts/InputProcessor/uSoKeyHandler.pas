@@ -4,7 +4,7 @@ interface
 
 uses
   FMX.Types, System.Classes,
-  uSoContainer, uSoBasePart;
+  uSoObject, uSoBasePart;
 
 type
   TSoKeyHandler = class(TSoBasePart)

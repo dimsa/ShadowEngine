@@ -4,7 +4,7 @@ interface
 
 uses
   FMX.Graphics, FMX.Types, System.UITypes, System.Types, FMX.Objects,
-  uSoContainer, uE2DRendition;
+  uSoObject, uE2DRendition;
 
 type
   TEngine2DText = class(TEngine2DRendition)

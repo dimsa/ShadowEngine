@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils,
-  uEngine2DClasses, uNamedList, uSoAnimation, uSoBaseOperator, uSoContainer;
+  uEngine2DClasses, uNamedList, uSoAnimation, uSoBaseOperator, uSoObject;
 type
   TSoAnimationTemplate = class
 

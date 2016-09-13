@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes,
-  uSoContainer;
+  uSoObject;
 
 type
   TSoBasePart = class abstract

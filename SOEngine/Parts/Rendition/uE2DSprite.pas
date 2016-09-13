@@ -4,7 +4,7 @@ interface
 
 uses
   FMX.Objects, System.Types,
-  uE2DRendition, uE2DResourceList, uSoContainer, uEngine2DClasses;
+  uE2DRendition, uE2DResourceList, uSoObject, uEngine2DClasses;
 
 type
 

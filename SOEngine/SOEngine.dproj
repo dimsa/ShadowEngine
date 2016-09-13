@@ -180,14 +180,14 @@
         <DCCReference Include="Parts\Rendition\uE2DSprite.pas"/>
         <DCCReference Include="Parts\Rendition\uE2DText.pas"/>
         <DCCReference Include="Main\uEngine2DModel.pas"/>
-        <DCCReference Include="Template\uSoContainer.pas"/>
+        <DCCReference Include="Template\uSoObject.pas"/>
         <DCCReference Include="Parts\Rendition\uE2DResourceList.pas"/>
         <DCCReference Include="Common\uCommonClasses.pas"/>
         <DCCReference Include="Parts\Base\uSoBasePart.pas"/>
         <DCCReference Include="Parts\Rendition\uE2DRendition.pas"/>
         <DCCReference Include="Main\uSoEngine.pas"/>
         <DCCReference Include="Main\uSoModel.pas"/>
-        <DCCReference Include="Template\uSoContainerKeeper.pas"/>
+        <DCCReference Include="Template\uSoObjectKeeper.pas"/>
         <DCCReference Include="Parts\Rendition\uSoRenderer.pas"/>
         <DCCReference Include="Parts\Base\uSoBaseOperator.pas"/>
         <DCCReference Include="Parts\Intersector\uSoCollider.pas"/>
@@ -258,7 +258,16 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="ProjectOSXResource">
                     <Platform Name="OSX32">
                         <RemoteDir>Contents\Resources</RemoteDir>
@@ -572,16 +581,7 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

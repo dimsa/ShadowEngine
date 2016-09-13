@@ -4,7 +4,7 @@ interface
 
 uses
   System.SyncObjs, System.Classes, System.SysUtils,
-  uSoBaseOperator, uSoFormatter, uNamedList, uSoContainer;
+  uSoBaseOperator, uSoFormatter, uNamedList, uSoObject;
 
 type
   TSoFormatterTemplate = class

@@ -4,8 +4,8 @@ interface
 
 uses
   System.SyncObjs, System.Classes, System.UITypes, uEngine2DClasses,
-  uClasses, uSoContainerKeeper, uSoRenderer, uSoCollider, uSoFormattor,
-  uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper, uSoContainer;
+  uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
+  uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper;
 
 type
   TSoModel = class
@@ -17,7 +17,7 @@ type
     FFormattor: TSoFormattor;
     FAnimator: TSoAnimator;
     // Keepers
-    FContainerKeeper: TSoContainerKeeper;
+    FObjectKeeper: TSoObjectKeeper;
     FLogicKeper: TSoLogicKeeper;
     // Processors
     FKeyProcessor: TSoKeyProcessor;
@@ -29,7 +29,7 @@ type
     property Formattor: TSoFormattor read FFormattor;
     property Animator: TSoAnimator read FAnimator;
     // Keepers
-    property ContainerKeeper: TSoContainerKeeper read FContainerKeeper;
+    property ObjectKeeper: TSoObjectKeeper read FObjectKeeper;
     property LogicKeeper: TSoLogicKeeper read FLogicKeper;
     // Processors
     property KeyProcessor: TSoKeyProcessor read FKeyProcessor;
@@ -53,7 +53,7 @@ constructor TSoModel.Create(const AImage: TAnonImage; const ACritical: TCritical
   const AIsHor: TBooleanFunction);
 begin
   FCritical := ACritical;
-  FContainerKeeper := TSoContainerKeeper.Create(FCritical);
+  FObjectKeeper := TSoObjectKeeper.Create(FCritical);
   FLogicKeper := TSoLogicKeeper.Create(FCritical);
   FRenderer := TSoRenderer.Create(FCritical, AImage);
   FCollider := TSoCollider.Create(FCritical);
@@ -65,7 +65,7 @@ end;
 
 destructor TSoModel.Destroy;
 begin
-    FContainerKeeper.Free;
+    FObjectKeeper.Free;
     FLogicKeper.Free;
     FRenderer.Free;
     FCollider.Free;

@@ -3,7 +3,7 @@ unit uModel;
 interface
 
 uses
-  uSoContainer;
+  uSoObject;
 
 type
   TGameUnit = class

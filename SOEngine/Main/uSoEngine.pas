@@ -5,7 +5,7 @@ interface
 uses
   System.SyncObjs, FMX.Objects, FMX.Graphics, System.UITypes, System.Classes,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
-  uEngine2DManager, uEngine2DStatus, uSoContainer,
+  uEngine2DManager, uEngine2DStatus, uSoObject,
   uWorldManager, uUnitManager, uTemplateManager, uWorldStatus;
 
 type
