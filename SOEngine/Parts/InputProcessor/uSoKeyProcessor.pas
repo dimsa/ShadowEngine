@@ -3,8 +3,8 @@ unit uSoKeyProcessor;
 interface
 
 uses
-  System.SyncObjs, System.Classes,
-  uSoBaseOperator, uSoKeyHandler, System.SysUtils;
+  System.SyncObjs, System.Classes, System.SysUtils,
+  uSoBaseOperator, uSoKeyHandler, uSoContainerTypes, uSoBasePart;
 
 type
   TSoKeyHandlerFriend = class(TSoKeyHandler);

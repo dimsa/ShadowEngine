@@ -10,6 +10,11 @@
     Exit;
   end;
 
+  if Assigned(FOnAdd) then
+  begin
+    FOnAdd(Self, TOnAddContainerEventArgs.Create(TSoBasePart(AItem).Subject, AItem) );
+  end;
+
   AItem.OnDestroy := OnItemDestroy;
 
   inherited Add(AItem, AName);

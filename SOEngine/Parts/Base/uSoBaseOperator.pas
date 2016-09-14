@@ -6,7 +6,7 @@ interface
 
 uses
   System.SyncObjs, System.SysUtils,
-  uEngine2DClasses, uSoObject;
+  uEngine2DClasses, uSoObject, uSoContainerTypes;
 
 type
   TSoOperator<T> = class abstract
@@ -14,9 +14,11 @@ type
     FList: TEngine2DNamedList<T>;
     FAddedObjects: Integer;
     FCritical: TCriticalSection;
+    FOnAdd: TEvent<TOnAddContainerEventArgs>;
     procedure OnItemDestroy(ASender: T);
   public
     procedure Add(const AItem: T; const AName: string = ''); virtual;
+    property OnAdd: TEvent<TOnAddContainerEventArgs> read FOnAdd write FOnAdd;
     function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): T; virtual; abstract;
     constructor Create(const ACritical: TCriticalSection); virtual;
     destructor Destroy; override;

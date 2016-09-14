@@ -203,6 +203,9 @@
         <DCCReference Include="Manager\uUnitManager.pas"/>
         <DCCReference Include="Manager\uTemplateManager.pas"/>
         <DCCReference Include="Manager\uWorldStatus.pas"/>
+        <DCCReference Include="Parts\ContainerKeeper\uSoContainerKeeper.pas"/>
+        <DCCReference Include="Parts\ContainerKeeper\uSoContainer.pas"/>
+        <DCCReference Include="Parts\ContainerKeeper\uSoContainerTypes.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>

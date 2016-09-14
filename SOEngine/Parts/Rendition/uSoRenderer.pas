@@ -7,7 +7,7 @@ uses
   System.SyncObjs, System.Classes, System.SysUtils, {$I 'Utils\DelphiCompatability.inc'}
   FMX.Graphics, System.UITypes, System.Types,
   uEasyDevice,
-  uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoObject;
+  uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart;
 
 type
 

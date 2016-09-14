@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.SyncObjs,
-  uSoColliderObject, uSoBaseOperator, uSoObject;
+  uSoColliderObject, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart;
 
 type
   TSoCollider = class(TSoOperator<TSoColliderObj>)

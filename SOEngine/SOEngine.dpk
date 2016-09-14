@@ -97,6 +97,9 @@ contains
   uWorldManager in 'Manager\uWorldManager.pas',
   uUnitManager in 'Manager\uUnitManager.pas',
   uTemplateManager in 'Manager\uTemplateManager.pas',
-  uWorldStatus in 'Manager\uWorldStatus.pas';
+  uWorldStatus in 'Manager\uWorldStatus.pas',
+  uSoContainerKeeper in 'Parts\ContainerKeeper\uSoContainerKeeper.pas',
+  uSoContainer in 'Parts\ContainerKeeper\uSoContainer.pas',
+  uSoContainerTypes in 'Parts\ContainerKeeper\uSoContainerTypes.pas';
 
 end.

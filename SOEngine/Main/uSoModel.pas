@@ -5,12 +5,13 @@ interface
 uses
   System.SyncObjs, System.Classes, System.UITypes, uEngine2DClasses,
   uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
-  uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper;
+  uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper, uSoContainerKeeper;
 
 type
   TSoModel = class
   private
     FCritical: TCriticalSection;
+    FContainerKeeper: TSoContainerKeeper;
     // Workers
     FRenderer: TSoRenderer;
     FCollider: TSoCollider;
@@ -53,6 +54,7 @@ constructor TSoModel.Create(const AImage: TAnonImage; const ACritical: TCritical
   const AIsHor: TBooleanFunction);
 begin
   FCritical := ACritical;
+  FContainerKeeper := TSoContainerKeeper.Create;
   FObjectKeeper := TSoObjectKeeper.Create(FCritical);
   FLogicKeper := TSoLogicKeeper.Create(FCritical);
   FRenderer := TSoRenderer.Create(FCritical, AImage);
@@ -61,10 +63,20 @@ begin
   FAnimator := TSoAnimator.Create(FCritical);
   FKeyProcessor := TSoKeyProcessor.Create(FCritical);
   FMouseProcessor := TSoMouseProcessor.Create(FCritical, FCollider);
+
+  // Container Keeper changes on adding of unitpart
+  FLogicKeper.OnAdd := FContainerKeeper.OnAdd;
+  FRenderer.OnAdd := FContainerKeeper.OnAdd;
+  FCollider.OnAdd := FContainerKeeper.OnAdd;
+  FFormattor.OnAdd := FContainerKeeper.OnAdd;
+  FAnimator.OnAdd := FContainerKeeper.OnAdd;
+  FKeyProcessor.OnAdd := FContainerKeeper.OnAdd;
+  FMouseProcessor.OnAdd := FContainerKeeper.OnAdd;
 end;
 
 destructor TSoModel.Destroy;
 begin
+    FContainerKeeper.Free;
     FObjectKeeper.Free;
     FLogicKeper.Free;
     FRenderer.Free;

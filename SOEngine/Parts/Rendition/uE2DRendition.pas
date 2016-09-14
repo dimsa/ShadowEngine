@@ -7,7 +7,7 @@ interface
 
 uses
   System.Classes, FMX.Objects,
-  uSoObject, uEngine2DClasses, uSoBasePart;
+  uSoObject, uEngine2DClasses, uSoBasePart, uSoContainerTypes;
 
 type
   TEngine2DRendition = class abstract(TSoBasePart)
