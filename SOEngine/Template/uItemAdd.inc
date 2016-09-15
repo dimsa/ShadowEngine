@@ -15,6 +15,6 @@
     FOnAdd(Self, TOnAddContainerEventArgs.Create(TSoBasePart(AItem).Subject, AItem) );
   end;
 
-  AItem.OnDestroy := OnItemDestroy;
+  AItem.AddDestroyHandler(OnItemDestroy);
 
   inherited Add(AItem, AName);

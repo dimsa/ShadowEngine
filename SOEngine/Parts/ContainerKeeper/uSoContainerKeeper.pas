@@ -7,12 +7,15 @@ uses
   uSoObject, uSoBasePart, uSoContainer, uSoContainerTypes;
 
 type
-  TSoContainerFriend = class (TSoContainer);
+  TSoContainerFriend = class(TSoContainer);
+
+  TSoObjectFriend = class(TSoObject);
 
   TSoContainerKeeper = class
   private
     FContainers: TDictionary<TSoObject, TSoContainer>;
     function GetContainer(Index: TSoObject): TSoContainer;
+    procedure OnObjectDestroy(ASender: TObject);
   public
     procedure OnAdd(ASender: TObject; AEventArgs: TOnAddContainerEventArgs);
     property Items[Index: TSoObject]: TSoContainer read GetContainer;
@@ -48,17 +51,27 @@ end;
 
 
 procedure TSoContainerKeeper.OnAdd(ASender: TObject; AEventArgs: TOnAddContainerEventArgs);
+var
+  vContainer: TSoContainer;
 begin
   if not FContainers.ContainsKey(AEventArgs.Subject) then
-    FContainers.Add(AEventArgs.Subject, TSoContainer.Create);
+  begin
+    vContainer := TSoContainer.Create;
+    FContainers.Add(AEventArgs.Subject, vContainer);
+    TSoObjectFriend(AEventArgs.Subject).SetContainer(vContainer);
+    AEventArgs.Subject.AddDestroyHandler(OnObjectDestroy);
+  end;
 
-  TSoContainerFriend(FContainers[AEventArgs.Subject]).Add(AEventArgs.BasePart);
+  TSoContainerFriend(vContainer).Add(AEventArgs.BasePart);
+end;
 
- { if not FContainers[AEventArgs.Subject].ContainsKey(TSoBasePartClass(AEventArgs.BasePart.ClassType)) then
-    FContainers.Add(AEventArgs.Subject, TPartDict.Create);
-
-  //if FContainers[AEventArgs.Subject].ContainsKey(TSoBasePartClass(AEventArgs.BasePart.ClassType)) then
-    FContainers[AEventArgs.Subject][TSoBasePartClass(AEventArgs.BasePart.ClassType)].Add(AEventArgs.BasePart);    }
+procedure TSoContainerKeeper.OnObjectDestroy(ASender: TObject);
+var
+  vCont: TSoContainer;
+begin
+  vCont := FContainers[TSoObject(ASender)];
+  FContainers.Remove(TSoObject(ASender));
+  vCont.Free;
 end;
 
 end.

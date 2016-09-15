@@ -3,10 +3,11 @@ unit uSoContainer;
 interface
 
 uses
-  System.Generics.Collections, uSoBasePart, uSoContainerTypes;
+  System.Generics.Collections, uSoBasePart, uSoContainerTypes,
+  uSoAnimation, uSoColliderObject, uSoKeyHandler, uSoMouseHandler, uE2DRendition, uSoLogic;
 
 type
- TSoBasePartClass = class of TSoBasePart;
+  TSoBasePartClass = class of TSoBasePart;
 
   TPartDict = TDictionary<TSoBasePartClass, TList<TSoBasePart>>;
 
@@ -14,6 +15,7 @@ type
   private
     FParts: TPartDict;
     function GetItem(AIndex: TSoBasePartClass): TList<TSoBasePart>;
+    procedure OnBasePartDestroy(ASender: TObject);
   protected
     procedure Add(APart: TSoBasePart);
   public
@@ -29,6 +31,7 @@ implementation
 procedure TSoContainer.Add(APart: TSoBasePart);
 begin
   FParts[TSoBasePartClass(APart.ClassType)].Add(APart);
+  APart.AddDestroyHandler(OnBasePartDestroy);
 end;
 
 constructor TSoContainer.Create;
@@ -45,6 +48,17 @@ end;
 function TSoContainer.GetItem(AIndex: TSoBasePartClass): TList<TSoBasePart>;
 begin
   Result := FParts[AIndex];
+end;
+
+procedure TSoContainer.OnBasePartDestroy(ASender: TObject);
+var
+  vBasePart: TSoBasePart;
+begin
+  vBasePart := TSoBasePart(ASender);
+  FParts[TSoBasePartClass(vBasePart.ClassType)].Remove(vBasePart);
+  if FParts[TSoBasePartClass(vBasePart.ClassType)].Count <= 0 then
+    FParts.Remove(TSoBasePartClass(vBasePart.ClassType));
+  vBasePart.Free;
 end;
 
 end.

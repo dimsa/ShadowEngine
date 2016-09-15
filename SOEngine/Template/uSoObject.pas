@@ -11,6 +11,7 @@ type
  {   FOnExecute: TNotifyEvent<TSoContainer>;
     FExecutable: Boolean;   }
     //procedure SetExecutable(const Value: Boolean);
+    FContainer: TObject; // Pointer to TSoContainer
   protected
     FPosition: TPosition;
     FOnDestroyHandlers: TNotifyEventList;
@@ -25,6 +26,7 @@ type
     procedure SetScaleY(const Value: Single);
     procedure SetX(const Value: Single);
     procedure SetY(const Value: Single);
+    procedure SetContainer(const AContainer: TObject);
   public
     // Geometrical properties Геометрические свойства
     property Position: TPosition read FPosition write SetPosition; // Быстрое получение всех данных о позиции спрайта
@@ -36,6 +38,7 @@ type
     property ScaleX: Single read FPosition.ScaleX write SetScaleX;  // Масштаб спрайта во время отрисовки
     property ScaleY: Single read FPosition.ScaleY write SetScaleY;  // Масштаб спрайта во время отрисовки
     property Scale: Single write SetScale;  // Масштаб спрайта во время отрисовки
+    property Container: TObject read FContainer;
     procedure AddDestroyHandler(const AHandler: TNotifyEvent);
     procedure RemoveDestroyHandler(const AHandler: TNotifyEvent);
     constructor Create;
@@ -83,6 +86,11 @@ procedure TSoObject.SetCenter(const Value: TPointF);
 begin
   FPosition.X := Value.X;
   FPosition.Y := Value.Y;
+end;
+
+procedure TSoObject.SetContainer(const AContainer: TObject);
+begin
+  FContainer := AContainer;
 end;
 
 procedure TSoObject.SetPosition(const Value: TPosition);
