@@ -9,7 +9,7 @@ type
   TGameUnit = class
   protected
     FContainer: TSoObject;
-    procedure OnLogicTick; virtual; abstract;
+    procedure OnLogicTick(ASender: TSoObject); virtual; abstract;
   public
     constructor Create(const AContainer: TSoObject); virtual;
   end;
@@ -17,7 +17,7 @@ type
   TMovingUnit = class(TGameUnit)
   protected
     FDx, FDy, FDa: Single;
-    procedure OnLogicTick; override;
+    procedure OnLogicTick(ASender: TSoObject); override;
   public
     constructor Create(const AContainer: TSoObject); override;
   end;
@@ -52,11 +52,16 @@ begin
   FDa := pi / 90;
 end;
 
-procedure TMovingUnit.OnLogicTick;
+procedure TMovingUnit.OnLogicTick(ASender: TSoObject);
+var
+   vObj: TSoObject;
 begin
-  FContainer.X := FContainer.X + FDx;
-  FContainer.Y := FContainer.Y + FDy;
-  FContainer.Rotate := FContainer.Rotate + FDa;
+  vObj := TSoObject(ASender);
+  with vObj do begin
+    X := X + FDx;
+    Y := Y + FDy;
+    Rotate := Rotate + FDa;
+  end;
 end;
 
 end.

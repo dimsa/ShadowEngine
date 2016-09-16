@@ -9,18 +9,15 @@ uses
 type
   TSoBasePart = class abstract
   private
-    FOnDestroy: TNotifyEvent;
     FOnDestroyHandlers: TNotifyEventList;
     FEnabled: Boolean;
   protected
     FSubject: TSoObject;
-
     procedure OnSubjectDestroy(ASender: TObject); virtual;
     procedure SetEnabled(AValue: Boolean); virtual;
   public
     property Subject: TSoObject read FSubject;
     property Enabled: Boolean read FEnabled write SetEnabled;
-   // property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     procedure AddDestroyHandler(const AHandler: TNotifyEvent);
     procedure RemoveDestroyHandler(const AHandler: TNotifyEvent);
     constructor Create(const ASubject: TSoObject); virtual;
@@ -49,9 +46,6 @@ begin
   FOnDestroyHandlers.RaiseEvent(Self);
 
   FOnDestroyHandlers.Free;
-
-  if Assigned(FOnDestroy) then
-    FOnDestroy(Self);
 
   FSubject := nil;
   inherited;

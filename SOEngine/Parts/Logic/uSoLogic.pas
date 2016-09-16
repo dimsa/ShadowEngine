@@ -12,7 +12,7 @@ type
     procedure EmptyHandler(ASender: TSoObject);
     procedure SetOnExecute(const Value: TNotifyEvent<TSoObject>);
   protected
-    procedure Execute;
+    procedure Execute; virtual;
   public
     property OnExecute: TNotifyEvent<TSoObject> read FOnExecute write SetOnExecute;
   end;

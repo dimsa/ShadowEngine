@@ -4,9 +4,11 @@ interface
 
 uses
   System.SysUtils, System.Types,
-  uUnitManager, uModel;
+  uUnitManager, uModel, uSoObject;
 
 type
+  TGameUnitFriend = class(TGameUnit);
+
   TUnitCreator = class
   private
     FUnitManager: TUnitManager;
@@ -38,10 +40,13 @@ begin
   // vName is the name of template
   vName := 'Ship';
   with FManageNew('Ship') do begin
+    Result := TShip.Create(ActiveContainer);
     AddRendition(vName);
     AddColliderObj(vName);
-    AddLogic(vName);
+    AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
   end;
+
+
 end;
 
 function TUnitCreator.NewSpaceDebris(const ASize: integer): TBigAsteroid;
@@ -51,10 +56,11 @@ begin
   // vName is the name of template
   vName := 'Asteroid';
   with FManageNew do begin
+    Result := TBigAsteroid.Create(ActiveContainer);
     ActiveContainer.Scale := ASize * 0.25;
     AddRendition(vName);
     AddColliderObj(vName);
-    AddLogic(vName);
+    AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
   end;
 end;
 
@@ -69,9 +75,10 @@ begin
     vName := 'LittleAsteroid' + IntToStr(Random(3));
 
   with FManageNew do begin
+    Result := TLtlAsteroid.Create(ActiveContainer);
     AddRendition(vName);
     AddColliderObj(vName);
-    AddLogic(vName);
+    AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
   end;
 end;
 

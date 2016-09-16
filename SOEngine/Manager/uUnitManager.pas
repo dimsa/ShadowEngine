@@ -3,6 +3,7 @@ unit uUnitManager;
 interface
 
 uses
+  uCommonClasses,
   uSoModel, uSoObject,
   uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoFormatter, uSoAnimation,
   uSoLogic;
@@ -33,8 +34,10 @@ type
     function AddAnimation(const ATemplateName: string): TSoAnimation; overload;
     function AddAnimation(const AObject: TSoAnimation): TSoAnimation; overload;
 
-    function AddLogic(const ATemplateName: string): TSoLogic; overload;
-    function AddLogic(const AObject: TSoLogic): TSoLogic; overload;
+    function AddLogic(const ATemplateName: string; const AName: string = ''): TSoLogic; overload;
+    function AddLogic(const AObject: TSoLogic; const AName: string = ''): TSoLogic; overload;
+    function AddNewLogic(const AName: string = ''): TSoLogic; overload;
+    function AddNewLogic(const AHandler: TNotifyEvent<TSoObject>; const AName: string = ''): TSoLogic; overload;
 
     function AddContainer(const AName: string = ''): TSoObject;
     function Manage(const AContainer: TSoObject): TUnitManager;
@@ -106,14 +109,14 @@ begin
   Result := AObject;
 end;
 
-function TUnitManager.AddLogic(const ATemplateName: string): TSoLogic;
+function TUnitManager.AddLogic(const ATemplateName: string; const AName: string): TSoLogic;
 begin
-  Result := FModel.LogicKeeper.AddFromTemplate(FActiveContainer, ATemplateName);
+  Result := FModel.LogicKeeper.AddFromTemplate(FActiveContainer, ATemplateName, AName);
 end;
 
-function TUnitManager.AddLogic(const AObject: TSoLogic): TSoLogic;
+function TUnitManager.AddLogic(const AObject: TSoLogic; const AName: string): TSoLogic;
 begin
-  FModel.LogicKeeper.Add(AObject);
+  FModel.LogicKeeper.Add(AObject, AName);
   Result := AObject;
 end;
 
@@ -121,6 +124,12 @@ function TUnitManager.AddMouseHandler(const AObject: TSoMouseHandler): TSoMouseH
 begin
   FModel.MouseProcessor.Add(AObject);
   Result := AObject;
+end;
+
+function TUnitManager.AddNewLogic(const AHandler: TNotifyEvent<TSoObject>; const AName: string): TSoLogic;
+begin
+  Result := AddNewLogic(AName);
+  Result.OnExecute := AHandler;
 end;
 
 function TUnitManager.AddMouseHandler(const ATemplateName: string): TSoMouseHandler;
@@ -152,6 +161,12 @@ end;
 function TUnitManager.ManageNew(const AName: string = ''): TUnitManager;
 begin
   Result := Manage(AddContainer(AName));
+end;
+
+function TUnitManager.AddNewLogic(const AName: string): TSoLogic;
+begin
+  Result := TSoLogic.Create(FActiveContainer);
+  FModel.LogicKeeper.Add(Result, AName);
 end;
 
 end.
