@@ -100,6 +100,8 @@ contains
   uWorldStatus in 'Manager\uWorldStatus.pas',
   uSoContainerKeeper in 'Parts\ContainerKeeper\uSoContainerKeeper.pas',
   uSoContainer in 'Parts\ContainerKeeper\uSoContainer.pas',
-  uSoContainerTypes in 'Parts\ContainerKeeper\uSoContainerTypes.pas';
+  uSoContainerTypes in 'Parts\ContainerKeeper\uSoContainerTypes.pas',
+  uSoProperties in 'Parts\Properties\uSoProperties.pas',
+  uSoProperty in 'Parts\Properties\uSoProperty.pas';
 
 end.

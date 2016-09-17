@@ -49,6 +49,7 @@ function TSoRenderer.AddFromTemplate(const ASubject: TSoObject;
   const ATemplateName: string; const AName: string = ''): TEngine2DRendition;
 begin
   Result := TEngine2DRendition.Create(ASubject, FImage);
+  Add(Result, AName);
 end;
 
 constructor TSoRenderer.Create(const ACritical: TCriticalSection;
