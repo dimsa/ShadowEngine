@@ -102,6 +102,7 @@ contains
   uSoContainer in 'Parts\ContainerKeeper\uSoContainer.pas',
   uSoContainerTypes in 'Parts\ContainerKeeper\uSoContainerTypes.pas',
   uSoProperties in 'Parts\Properties\uSoProperties.pas',
-  uSoProperty in 'Parts\Properties\uSoProperty.pas';
+  uSoProperty in 'Parts\Properties\uSoProperty.pas',
+  uSoPropertyKeeper in 'Parts\Properties\uSoPropertyKeeper.pas';
 
 end.
