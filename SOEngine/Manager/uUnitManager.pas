@@ -6,7 +6,7 @@ uses
   uCommonClasses,
   uSoModel, uSoObject,
   uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoFormatter, uSoAnimation,
-  uSoLogic;
+  uSoLogic, uSoProperties;
 
 type
   TSoModelFriend = class(TSoModel);
@@ -38,6 +38,9 @@ type
     function AddLogic(const AObject: TSoLogic; const AName: string = ''): TSoLogic; overload;
     function AddNewLogic(const AName: string = ''): TSoLogic; overload;
     function AddNewLogic(const AHandler: TNotifyEvent<TSoObject>; const AName: string = ''): TSoLogic; overload;
+
+    function AddProperty(const ATemplateName: string): TSoProperties; overload;
+    function AddProperty(const AObject: TSoProperties): TSoProperties; overload;
 
     function AddContainer(const AName: string = ''): TSoObject;
     function Manage(const AContainer: TSoObject): TUnitManager;
@@ -130,6 +133,16 @@ function TUnitManager.AddNewLogic(const AHandler: TNotifyEvent<TSoObject>; const
 begin
   Result := AddNewLogic(AName);
   Result.OnExecute := AHandler;
+end;
+
+function TUnitManager.AddProperty(const ATemplateName: string): TSoProperties;
+begin
+  Result := FModel.PropertyKeeper.AddFromTemplate(FActiveContainer, ATemplateName);
+end;
+
+function TUnitManager.AddProperty(const AObject: TSoProperties): TSoProperties;
+begin
+  FModel.PropertyKeeper.Add(AObject);
 end;
 
 function TUnitManager.AddMouseHandler(const ATemplateName: string): TSoMouseHandler;
