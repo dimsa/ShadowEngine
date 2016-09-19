@@ -3,7 +3,7 @@ unit uSoObject;
 interface
 
 uses
-  uGeometryClasses, System.Types, System.Classes, uCommonClasses;
+  uGeometryClasses, System.Types, System.Classes, uCommonClasses, uSoProperties;
 
 type
   TSoObject = class
@@ -14,6 +14,7 @@ type
     FContainer: TObject; // Pointer to TSoContainer
   protected
     FPosition: TPosition;
+    FProperties: TSoProperties;
     FOnDestroyHandlers: TNotifyEventList;
     function GetCenter: TPointF;
     function GetScalePoint: TPointF;
@@ -38,6 +39,7 @@ type
     property ScaleX: Single read FPosition.ScaleX write SetScaleX;  // Масштаб спрайта во время отрисовки
     property ScaleY: Single read FPosition.ScaleY write SetScaleY;  // Масштаб спрайта во время отрисовки
     property Scale: Single write SetScale;  // Масштаб спрайта во время отрисовки
+    property Properties: TSoProperties read FProperties;
     property Container: TObject read FContainer;
     procedure AddDestroyHandler(const AHandler: TNotifyEvent);
     procedure RemoveDestroyHandler(const AHandler: TNotifyEvent);
@@ -57,12 +59,14 @@ end;
 constructor TSoObject.Create;
 begin
   FOnDestroyHandlers := TNotifyEventList.Create;
+  FProperties := TSoProperties.Create;
 end;
 
 destructor TSoObject.Destroy;
 begin
   FOnDestroyHandlers.RaiseEvent(Self);
   FOnDestroyHandlers.Free;
+  FProperties.Free;
 
   inherited;
 end;

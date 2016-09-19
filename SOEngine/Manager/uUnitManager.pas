@@ -39,8 +39,8 @@ type
     function AddNewLogic(const AName: string = ''): TSoLogic; overload;
     function AddNewLogic(const AHandler: TNotifyEvent<TSoObject>; const AName: string = ''): TSoLogic; overload;
 
-    function AddProperty(const ATemplateName: string): TSoProperties; overload;
-    function AddProperty(const AObject: TSoProperties): TSoProperties; overload;
+//    function AddProperty(const ATemplateName: string): TSoProperties; overload;
+//    function AddProperty(const AObject: TSoProperties): TSoProperties; overload;
 
     function AddContainer(const AName: string = ''): TSoObject;
     function Manage(const AContainer: TSoObject): TUnitManager;
@@ -135,7 +135,7 @@ begin
   Result.OnExecute := AHandler;
 end;
 
-function TUnitManager.AddProperty(const ATemplateName: string): TSoProperties;
+{function TUnitManager.AddProperty(const ATemplateName: string): TSoProperties;
 begin
   Result := FModel.PropertyKeeper.AddFromTemplate(FActiveContainer, ATemplateName);
 end;
@@ -143,7 +143,7 @@ end;
 function TUnitManager.AddProperty(const AObject: TSoProperties): TSoProperties;
 begin
   FModel.PropertyKeeper.Add(AObject);
-end;
+end;}
 
 function TUnitManager.AddMouseHandler(const ATemplateName: string): TSoMouseHandler;
 begin

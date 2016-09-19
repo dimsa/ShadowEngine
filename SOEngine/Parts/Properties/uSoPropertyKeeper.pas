@@ -25,7 +25,7 @@ procedure TSoPropertyKeeper.Add(const AItem: TSoProperties;
 var
   vName: string;
 begin
-  {$I .\Template\uItemAdd.inc}
+//  {$I .\Template\uItemAdd.inc}
 end;
 
 function TSoPropertyKeeper.AddFromTemplate(const ASubject: TSoObject;

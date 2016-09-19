@@ -21,7 +21,7 @@ type
     // Keepers
     FObjectKeeper: TSoObjectKeeper;
     FLogicKeper: TSoLogicKeeper;
-    FPropertyKeeper: TSoPropertyKeeper;
+//    FPropertyKeeper: TSoPropertyKeeper;
     // Processors
     FKeyProcessor: TSoKeyProcessor;
     FMouseProcessor: TSoMouseProcessor;
@@ -34,7 +34,7 @@ type
     // Keepers
     property ObjectKeeper: TSoObjectKeeper read FObjectKeeper;
     property LogicKeeper: TSoLogicKeeper read FLogicKeper;
-    property PropertyKeeper: TSoPropertyKeeper read FPropertyKeeper;
+//    property PropertyKeeper: TSoPropertyKeeper read FPropertyKeeper;
     // Processors
     property KeyProcessor: TSoKeyProcessor read FKeyProcessor;
     property MouseProcessor: TSoMouseProcessor read FMouseProcessor;
@@ -66,7 +66,7 @@ begin
   FAnimator := TSoAnimator.Create(FCritical);
   FKeyProcessor := TSoKeyProcessor.Create(FCritical);
   FMouseProcessor := TSoMouseProcessor.Create(FCritical, FCollider);
-  FPropertyKeeper := TSoPropertyKeeper.Create(FCritical);
+//  FPropertyKeeper := TSoPropertyKeeper.Create(FCritical);
 
   // Container Keeper changes on adding of unitpart
   FLogicKeper.OnAdd := FContainerKeeper.OnAdd;
@@ -76,7 +76,7 @@ begin
   FAnimator.OnAdd := FContainerKeeper.OnAdd;
   FKeyProcessor.OnAdd := FContainerKeeper.OnAdd;
   FMouseProcessor.OnAdd := FContainerKeeper.OnAdd;
-  FPropertyKeeper.OnAdd := FContainerKeeper.OnAdd;
+ // FPropertyKeeper.OnAdd := FContainerKeeper.OnAdd;
 end;
 
 destructor TSoModel.Destroy;
@@ -90,7 +90,7 @@ begin
     FAnimator.Free;
     FKeyProcessor.Free;
     FMouseProcessor.Free;
-    FPropertyKeeper.Free;
+//    FPropertyKeeper.Free;
   inherited;
 end;
 

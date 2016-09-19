@@ -4,12 +4,12 @@ interface
 
 uses
   System.Generics.Collections,
-  uCommonClasses, uSoBasePart, uSoObject, uSoProperty;
+  uCommonClasses, uSoProperty;
 
 type
   TSoPropertyFriend = class(TSoProperty);
 
-  TSoProperties = class(TSoBasePart)
+  TSoProperties = class
   private
     FDict: TDictionary<string, TSoProperty>;
     FKeys: TDictionary<TSoProperty, string>;
@@ -21,7 +21,7 @@ type
     property Data[AName: string]: TSoProperty read GetProperty write SetProperty; default;
     procedure AddOnChangeHandler(const AHandler: TEvent<string>);
     procedure RemOnChangeHandler(const AHandler: TEvent<string>);
-    constructor Create(const ASubject: TSoObject); override;
+    constructor Create;
     destructor Destroy; override;
   end;
 
@@ -34,9 +34,9 @@ begin
   FPropertyChanged.Add(AHandler);
 end;
 
-constructor TSoProperties.Create(const ASubject: TSoObject);
+constructor TSoProperties.Create;
 begin
-  inherited;
+//  inherited;
   FPropertyChanged := TEventList<string>.Create;
   FDict := TDictionary<string, TSoProperty>.Create;
   FKeys := TDictionary<TSoProperty, string>.Create;
