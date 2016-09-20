@@ -30,6 +30,11 @@ implementation
 
 procedure TSoContainer.Add(APart: TSoBasePart);
 begin
+  if not FParts.ContainsKey(TSoBasePartClass(APart.ClassType)) then
+  begin
+    FParts.Add(TSoBasePartClass(APart.ClassType), TList<TSoBasePart>.Create);
+  end;
+
   FParts[TSoBasePartClass(APart.ClassType)].Add(APart);
   APart.AddDestroyHandler(OnBasePartDestroy);
 end;

@@ -14,6 +14,7 @@ type
     FWorldManager: TWorldManager;
     FUnitManager: TUnitManager;
     FTemplateManager: TTemplateManager;
+    procedure StartGame;
   public
     constructor Create(const ATemplateManager: TTemplateManager; const AWorldManager: TWorldManager;
       const AUnitManager: TUnitManager);
@@ -31,10 +32,17 @@ begin
   FTemplateManager := ATemplateManager;
   //Prepairing of background
   FMapPainter := TMapPainter.Create(FWorldManager, ResourcePath('Back.jpg'));
-  FUnitCreator := TUnitCreator.Create(FUnitManager);
+  FUnitCreator := TUnitCreator.Create(FUnitManager, FWorldManager);
 
   FTemplateManager.LoadSeJson(ResourcePath('Asteroids.sejson'));
   FTemplateManager.LoadSeCss( ResourcePath('Formatters.secss'));
+
+  StartGame;
+end;
+
+procedure TGame.StartGame;
+begin
+  FUnitCreator.NewShip;
 end;
 
 end.

@@ -3,7 +3,8 @@ unit uSoModel;
 interface
 
 uses
-  System.SyncObjs, System.Classes, System.UITypes, uEngine2DClasses,
+  System.SyncObjs, System.Classes, System.Types,
+  System.UITypes, uEngine2DClasses,
   uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper, uSoContainerKeeper,
   uSoPropertyKeeper;
@@ -12,6 +13,7 @@ type
   TSoModel = class
   private
     FCritical: TCriticalSection;
+    FImage: TAnonImage;
     FContainerKeeper: TSoContainerKeeper;
     // Workers
     FRenderer: TSoRenderer;
@@ -25,6 +27,7 @@ type
     // Processors
     FKeyProcessor: TSoKeyProcessor;
     FMouseProcessor: TSoMouseProcessor;
+    function GetEngineSize: TPointF;
   protected
     // Workers
     property Renderer: TSoRenderer read FRenderer;
@@ -38,6 +41,8 @@ type
     // Processors
     property KeyProcessor: TSoKeyProcessor read FKeyProcessor;
     property MouseProcessor: TSoMouseProcessor read FMouseProcessor;
+    // Common
+    property EngineSize: TPointF read GetEngineSize;
   public
     procedure ExecuteOnTick;
     procedure ExecuteKeyUp(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
@@ -57,6 +62,7 @@ constructor TSoModel.Create(const AImage: TAnonImage; const ACritical: TCritical
   const AIsHor: TBooleanFunction);
 begin
   FCritical := ACritical;
+  FImage := AImage;
   FContainerKeeper := TSoContainerKeeper.Create;
   FObjectKeeper := TSoObjectKeeper.Create(FCritical);
   FLogicKeper := TSoLogicKeeper.Create(FCritical);
@@ -127,6 +133,11 @@ begin
   FLogicKeper.Execute;
   FCollider.Execute;
   FRenderer.Execute;
+end;
+
+function TSoModel.GetEngineSize: TPointF;
+begin
+  Result := PointF(FImage.Width, FImage.Height);
 end;
 
 end.

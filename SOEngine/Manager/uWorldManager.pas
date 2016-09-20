@@ -3,7 +3,7 @@ unit uWorldManager;
 interface
 
 uses
-  uClasses, uEngine2DClasses, uSoModel;
+  uClasses, uEngine2DClasses, uSoModel, uCommonClasses, System.Types;
 
 type
   TSoModelFriend = class(TSoModel);
@@ -11,23 +11,35 @@ type
   TWorldManager = class
   private
     FModel: TSoModelFriend;
+    FEngineSize: TPointF;
+    FOnResize: TEventList<TAnonImage>;
     procedure SetOnPaintBackground(const Value: TEvent<TAnonImage>);
     procedure SetOnBeginPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnEndPaint(const Value: TEvent<TAnonImage>);
+    function GetSize: TPointF;
   public
-    constructor Create(const AModel: TSoModel);
+    constructor Create(const AModel: TSoModel; const AOnResize: TEventList<TAnonImage>);
+    property Size: TPointF read GetSize;
     property OnPaintBackground: TEvent<TAnonImage> write SetOnPaintBackground;
     property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint;
     property OnEndPaint: TEvent<TAnonImage> write SetOnEndPaint;
+    property OnResize: TEventList<TAnonImage> read FOnResize;
+    property EngineSize: TPointF read FEngineSize;
   end;
 
 implementation
 
 { TWorldManager }
 
-constructor TWorldManager.Create(const AModel: TSoModel);
+constructor TWorldManager.Create(const AModel: TSoModel; const AOnResize: TEventList<TAnonImage>);
 begin
   FModel := TSoModelFriend(AModel);
+  FOnResize := AOnResize;
+end;
+
+function TWorldManager.GetSize: TPointF;
+begin
+  Result := FModel.EngineSize;
 end;
 
 procedure TWorldManager.SetOnBeginPaint(const Value: TEvent<TAnonImage>);

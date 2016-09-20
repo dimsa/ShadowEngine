@@ -6,13 +6,16 @@ uses
   System.Classes;
 
 type
+  TPropertyType = (ptUndefined, ptObject, ptInt, ptDouble, ptString);
+
   TSoProperty = class(TObject)
   private
     FObject: TObject;
+    FInt: Integer;
+    FDouble: Double;
+    FString: string;
     FOnChange: TNotifyEvent;
-    function GetDouble: Double;
-    function GetInt: Integer;
-    function GetString: string;
+    FPropertyType: TPropertyType;
     procedure SetDouble(const Value: Double);
     procedure SetInt(const Value: Integer);
     procedure SetObject(const Value: TObject);
@@ -21,9 +24,10 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   public
     property Value: TObject read FObject write SetObject;
-    property AsInt: Integer read GetInt write SetInt;
-    property AsDouble: Double read GetDouble write SetDouble;
-    property AsString: string read GetString write SetString;
+    property AsInt: Integer read FInt write SetInt;
+    property AsDouble: Double read FDouble write SetDouble;
+    property AsString: string read FString write SetString;
+    property PropertyType: TPropertyType read FPropertyType;
     constructor Create; overload;
     constructor Create(AObject: TObject); overload;
     constructor Create(AString: string); overload;
@@ -38,11 +42,12 @@ implementation
 constructor TSoProperty.Create(AObject: TObject);
 begin
   FObject := AObject;
+  FPropertyType := ptObject;
 end;
 
 constructor TSoProperty.Create;
 begin
-
+  FPropertyType := ptUndefined;
 end;
 
 constructor TSoProperty.Create(AString: string);
@@ -55,7 +60,7 @@ begin
   SetInt(AInteger);
 end;
 
-function TSoProperty.GetDouble: Double;
+{function TSoProperty.GetDouble: Double;
 begin
   Result := PDouble(FObject)^;
 end;
@@ -68,11 +73,12 @@ end;
 function TSoProperty.GetString: string;
 begin
   Result := PChar(FObject)^;
-end;
+end;   }
 
 procedure TSoProperty.SetDouble(const Value: Double);
 begin
-  FObject := @Value;
+  FDouble := Value;
+  FPropertyType := ptDouble;
 
   if Assigned(FOnChange) then
     FOnChange(Self);
@@ -80,7 +86,8 @@ end;
 
 procedure TSoProperty.SetInt(const Value: Integer);
 begin
-  FObject := @Value;
+  FInt := Value;
+  FPropertyType := ptInt;
 
   if Assigned(FOnChange) then
     FOnChange(Self);
@@ -89,6 +96,7 @@ end;
 procedure TSoProperty.SetObject(const Value: TObject);
 begin
   FObject := Value;
+  FPropertyType := ptObject;
 
   if Assigned(FOnChange) then
     FOnChange(Self);
@@ -96,7 +104,8 @@ end;
 
 procedure TSoProperty.SetString(const Value: string);
 begin
-  FObject := @Value;
+  FString := Value;
+  FPropertyType := ptString;
 
   if Assigned(FOnChange) then
     FOnChange(Self);

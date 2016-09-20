@@ -61,6 +61,7 @@ begin
     X := X + FDx;
     Y := Y + FDy;
     Rotate := Rotate + FDa;
+//    vObj.Properties['Lifes'].AsInt := vObj.Properties['Lifes'].AsInt + 1;
   end;
 end;
 

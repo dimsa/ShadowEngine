@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Types,
-  uUnitManager, uModel, uSoObject;
+  uEngine2DClasses, uUnitManager, uWorldManager, uModel, uSoObject;
 
 type
   TGameUnitFriend = class(TGameUnit);
@@ -12,25 +12,32 @@ type
   TUnitCreator = class
   private
     FUnitManager: TUnitManager;
-    FManage: TManageDelegate;
-    FManageNew: TManageNewDelegate;
+    FWorldManager: TWorldManager;
+
+
+  // Delegates
+    ManageByName: TManageByNameDelegate;
+    ManageNew: TManageNewDelegate;
+    Manage: TManageDelegate;
+    procedure OnResize(ASender: TObject; AImage: TAnonImage);
   public
     function NewShip: TShip;
     function NewSpaceDebris(const ASize: integer): TBigAsteroid;
     function NewSpaceDust: TLtlAsteroid;
-
-    constructor Create(const AUnitManager: TUnitManager);
+    constructor Create(const AUnitManager: TUnitManager; const AWorldManager: TWorldManager);
   end;
 
 implementation
 
 { TUnitCreator }
 
-constructor TUnitCreator.Create(const AUnitManager: TUnitManager);
+constructor TUnitCreator.Create(const AUnitManager: TUnitManager; const AWorldManager: TWorldManager);
 begin
   FUnitManager := AUnitManager;
-  FManage := FUnitManager.Manage;
-  FManageNew := FUnitManager.ManageNew;
+  FWorldManager :=  AWorldManager;
+  Manage := FUnitManager.Manage;
+  ManageNew := FUnitManager.ManageNew;
+  ManageByName := FUnitManager.Manage;
 end;
 
 function TUnitCreator.NewShip: TShip;
@@ -39,13 +46,15 @@ var
 begin
   // vName is the name of template
   vName := 'Ship';
-  with FManageNew('Ship') do begin
+  with ManageNew('Ship') do begin
     Result := TShip.Create(ActiveContainer);
-    AddRendition(vName);
-    AddColliderObj(vName);
+//    AddRendition(vName);
+//    AddColliderObj(vName);
     AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
+    AddProperty('Lifes', 3);
+    AddProperty('WorldWidth', FWorldManager.Size.X);
+    AddProperty('WorldHeight', FWorldManager.Size.Y);
   end;
-
 
 end;
 
@@ -55,7 +64,7 @@ var
 begin
   // vName is the name of template
   vName := 'Asteroid';
-  with FManageNew do begin
+  with ManageNew do begin
     Result := TBigAsteroid.Create(ActiveContainer);
     ActiveContainer.Scale := ASize * 0.25;
     AddRendition(vName);
@@ -74,11 +83,20 @@ begin
   else
     vName := 'LittleAsteroid' + IntToStr(Random(3));
 
-  with FManageNew do begin
+  with ManageNew do begin
     Result := TLtlAsteroid.Create(ActiveContainer);
     AddRendition(vName);
     AddColliderObj(vName);
     AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
+  end;
+end;
+
+procedure TUnitCreator.OnResize(ASender: TObject; AImage: TAnonImage);
+begin
+  with ManageByName('Ship') do
+  begin
+    AddProperty('WorldWidth', FWorldManager.Size.X);
+    AddProperty('WorldHeight', FWorldManager.Size.Y);
   end;
 end;
 

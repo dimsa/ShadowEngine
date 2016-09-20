@@ -4,6 +4,7 @@ interface
 
 uses
   System.SyncObjs, FMX.Objects, FMX.Graphics, System.UITypes, System.Classes,
+  uCommonClasses,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
   uEngine2DManager, uEngine2DStatus, uSoObject,
   uWorldManager, uUnitManager, uTemplateManager, uWorldStatus;
@@ -22,9 +23,10 @@ type
     FImage: TImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка\
     FWidth, FHeight: Single; // Размер поля имеджа и движка
 //    FDebug: Boolean; // There are some troubles to debug multithread app, so it for it // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
-    FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
-    FInBeginPaintBehavior: TProcedure; // Method is called before Paint
-    FInEndPaintBehavior: TProcedure; // Method is called after Paint
+//    FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
+//    FInBeginPaintBehavior: TProcedure; // Method is called before Paint
+//    FInEndPaintBehavior: TProcedure; // Method is called after Paint
+    FOnResize: TEventList<TAnonImage>;
     FUnitManager: TUnitManager; // Controller for creating units form template and etc
     FWorldManager: TWorldManager; // Controller to create different lowlevel world render.
     FTemplateManager: TTemplateManager; // Controller to Load Templates if their loaders are ready
@@ -74,6 +76,7 @@ begin
   FImage := AImage;
 
   FOptions := TEngine2DOptions.Create;
+  FOnResize := TEventList<TAnonImage>.Create;
 
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
@@ -81,7 +84,7 @@ begin
 
   FModel := TSoModel.Create(TAnonImage(FImage), FCritical, IsHor);
   FUnitManager := TUnitManager.Create(FModel);
-  FWorldManager := TWorldManager.Create(FModel);
+  FWorldManager := TWorldManager.Create(FModel, FOnResize);
   FTemplateManager := TTemplateManager.Create(FModel);
   FWorldStatus := TWorldStatus.Create(FModel, @FWidth, @FHeight);
 
@@ -95,6 +98,7 @@ begin
   FEngineThread.Free;
   FCritical.Free;
   FOptions.Free;
+  FOnResize.Free;
 
   inherited;
 end;
@@ -130,6 +134,8 @@ procedure TSoEngine.OnImageResize(ASender: TObject);
 begin
   FWidth := TImage(ASender).Width;
   FHeight := TImage(ASender).Height;
+
+  FOnResize.RaiseEvent(Self, FImage);
 end;
 
 procedure TSoEngine.Resume;
