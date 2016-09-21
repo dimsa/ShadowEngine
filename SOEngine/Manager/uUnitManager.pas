@@ -10,6 +10,7 @@ uses
 
 type
   TSoModelFriend = class(TSoModel);
+  TSoObjectFriend = class(TSoObject);
 
   TUnitManager = class
   private
@@ -45,9 +46,6 @@ type
     function AddProperty(const AName: string; const AValue: Integer): TSoProperties; overload;
     function AddProperty(const AName: string; const AValue: string): TSoProperties; overload;
     function AddProperty(const AName: string; const AValue: TObject): TSoProperties; overload;
-//    function AddProperty(const AName: string; const AValue: Pointer): TSoProperties; overload;
-
-//    function AddProperty(const AObject: TSoProperties): TSoProperties; overload;
 
     function AddContainer(const AName: string = ''): TSoObject;
     function Manage(const AContainer: TSoObject): TUnitManager; overload;
@@ -164,8 +162,8 @@ var
   vProp: TSoProperty;
 begin
   vProp := TSoProperty.Create(AValue);
-  FActiveContainer.Properties[AName] := vProp;
-  Result := FActiveContainer.Properties;
+  TSoObjectFriend(FActiveContainer).FProperties[AName] := vProp;
+  Result := TSoObjectFriend(FActiveContainer).FProperties;
 end;
 
 function TUnitManager.AddProperty(const AName, AValue: string): TSoProperties;

@@ -61,8 +61,23 @@ begin
     X := X + FDx;
     Y := Y + FDy;
     Rotate := Rotate + FDa;
-//    vObj.Properties['Lifes'].AsInt := vObj.Properties['Lifes'].AsInt + 1;
+
+ {  if X - vObj['Width'].AsDouble * 0.5 < 0 then
+     X := vObj['WorldWidth'].AsDouble + vObj['Width'].AsDouble * 0.5;
+
+   if Y - vObj['Height'].AsDouble * 0.5 < 0 then
+     Y := vObj['WorldHeight'].AsDouble + vObj['Height'].AsDouble * 0.5;
+
+   if X + vObj['Width'].AsDouble * 0.5 > vObj['WorldWidth'].AsDouble then
+     X := - vObj['Width'].AsDouble * 0.5;
+
+   if Y + vObj['Height'].AsDouble * 0.5 > vObj['WorldHeight'].AsDouble then
+     Y := - vObj['Height'].AsDouble * 0.5;  }
   end;
+
+
+
+
 end;
 
 end.

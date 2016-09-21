@@ -3,15 +3,14 @@ unit uSoObject;
 interface
 
 uses
-  uGeometryClasses, System.Types, System.Classes, uCommonClasses, uSoProperties;
+  uGeometryClasses, System.Types, System.Classes, uCommonClasses, uSoProperties, uSoProperty;
 
 type
   TSoObject = class
   private
- {   FOnExecute: TNotifyEvent<TSoContainer>;
-    FExecutable: Boolean;   }
-    //procedure SetExecutable(const Value: Boolean);
-    FContainer: TObject; // Pointer to TSoContainer
+    FContainer: TObject;
+    function GetProperty(APropertyName: string): TSoProperty;
+    procedure SetProperty(APropertyName: string; const Value: TSoProperty);
   protected
     FPosition: TPosition;
     FProperties: TSoProperties;
@@ -39,7 +38,8 @@ type
     property ScaleX: Single read FPosition.ScaleX write SetScaleX;  // Масштаб спрайта во время отрисовки
     property ScaleY: Single read FPosition.ScaleY write SetScaleY;  // Масштаб спрайта во время отрисовки
     property Scale: Single write SetScale;  // Масштаб спрайта во время отрисовки
-    property Properties: TSoProperties read FProperties;
+//    property Properties: TSoProperties read FProperties;
+    property Properties[APropertyName: string]: TSoProperty read GetProperty; default;// write SetProperty; default;
     property Container: TObject read FContainer;
     procedure AddDestroyHandler(const AHandler: TNotifyEvent);
     procedure RemoveDestroyHandler(const AHandler: TNotifyEvent);
@@ -76,6 +76,11 @@ begin
   Result := FPosition.XY;
 end;
 
+function TSoObject.GetProperty(APropertyName: string): TSoProperty;
+begin
+  Result := FProperties[APropertyName];
+end;
+
 function TSoObject.GetScalePoint: TPointF;
 begin
   Result := FPosition.Scale;
@@ -100,6 +105,12 @@ end;
 procedure TSoObject.SetPosition(const Value: TPosition);
 begin
   FPosition := Value;
+end;
+
+procedure TSoObject.SetProperty(APropertyName: string;
+  const Value: TSoProperty);
+begin
+  FProperties[APropertyName] := Value;
 end;
 
 procedure TSoObject.SetRotate(const Value: Single);

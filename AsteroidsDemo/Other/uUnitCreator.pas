@@ -13,8 +13,6 @@ type
   private
     FUnitManager: TUnitManager;
     FWorldManager: TWorldManager;
-
-
   // Delegates
     ManageByName: TManageByNameDelegate;
     ManageNew: TManageNewDelegate;
