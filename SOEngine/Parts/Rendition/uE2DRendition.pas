@@ -10,6 +10,8 @@ uses
   uSoObject, uEngine2DClasses, uSoBasePart, uSoContainerTypes;
 
 type
+  TSoObjectFriend = class(TSoObject);
+
   TEngine2DRendition = class abstract(TSoBasePart)
   strict private
     FBringToBack, FSendToFront: TNotifyEvent;
@@ -22,6 +24,8 @@ type
     procedure SetJustify(const Value: TObjectJustify); virtual;
     function GetHeight: Single; virtual; abstract;
     function GetWidth: Single; virtual; abstract;
+    procedure OnSubjectDestroy(ASender: TObject); override;
+    procedure OnChangeScale(ASender: TObject);
   public
     property Justify: TObjectJustify read FJustify write SetJustify;
     property Opacity: Single read FOpacity write SetOpacity;
@@ -50,6 +54,12 @@ constructor TEngine2DRendition.Create(const ASubject: TSoObject; const AImage: T
 begin
   inherited Create(ASubject);
   FImage := AImage;
+  FSubject.AddChangeScaleHandler(OnChangeScale);
+
+  with TSoObjectFriend(ASubject) do begin
+    FProperties.Add('Width').AsDouble := Width;
+    FProperties.Add('Height').AsDouble := Height;;
+  end;
 end;
 
 destructor TEngine2DRendition.Destroy;
@@ -57,10 +67,24 @@ begin
   if Assigned(FOnDestroy) then
     FOnDestroy(Self);
 
+  FSubject.RemoveChangeScaleHandler(OnChangeScale);
+
   FImage := nil;
   FBringToBack := nil;
   FSendToFront := nil;
   inherited;
+end;
+
+procedure TEngine2DRendition.OnChangeScale(ASender: TObject);
+begin
+
+end;
+
+procedure TEngine2DRendition.OnSubjectDestroy(ASender: TObject);
+begin
+  inherited;
+  TSoObjectFriend(FSubject).FProperties.Remove('Width');//.AsDouble := Width;
+  TSoObjectFriend(FSubject).FProperties.Remove('Height');//.AsDouble := Height;
 end;
 
 procedure TEngine2DRendition.SendToFront;

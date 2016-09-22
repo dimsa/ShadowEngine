@@ -3,7 +3,7 @@ unit uSoProperty;
 interface
 
 uses
-  System.Classes;
+  System.Classes, uCommonClasses;
 
 type
   TPropertyType = (ptUndefined, ptObject, ptInt, ptDouble, ptString);
@@ -14,14 +14,13 @@ type
     FInt: Integer;
     FDouble: Double;
     FString: string;
-    FOnChange: TNotifyEvent;
+    FOnChangeHandlers: TNotifyEventList;
     FPropertyType: TPropertyType;
     procedure SetDouble(const Value: Double);
     procedure SetInt(const Value: Integer);
     procedure SetObject(const Value: TObject);
     procedure SetString(const Value: string);
-  protected
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    procedure RaiseOnChange;
   public
     property Value: TObject read FObject write SetObject;
     property AsInt: Integer read FInt write SetInt;
@@ -33,6 +32,8 @@ type
     constructor Create(AString: string); overload;
     constructor Create(AInteger: Integer); overload;
     constructor Create(ADouble: Double); overload;
+    procedure AddOnChangeHandler(AHandler: TNotifyEvent);
+    procedure RemOnChangeHandler(AHandler: TNotifyEvent);
   end;
 
 implementation
@@ -41,47 +42,35 @@ implementation
 
 constructor TSoProperty.Create(AObject: TObject);
 begin
+  FOnChangeHandlers := TNotifyEventList.Create;
   FObject := AObject;
   FPropertyType := ptObject;
 end;
 
 constructor TSoProperty.Create;
 begin
+  FOnChangeHandlers := TNotifyEventList.Create;
   FPropertyType := ptUndefined;
 end;
 
 constructor TSoProperty.Create(AString: string);
 begin
+  FOnChangeHandlers := TNotifyEventList.Create;
   SetString(AString);
 end;
 
 constructor TSoProperty.Create(AInteger: Integer);
 begin
+  FOnChangeHandlers := TNotifyEventList.Create;
   SetInt(AInteger);
 end;
-
-{function TSoProperty.GetDouble: Double;
-begin
-  Result := PDouble(FObject)^;
-end;
-
-function TSoProperty.GetInt: Integer;
-begin
-  Result := PInteger(FObject)^;
-end;
-
-function TSoProperty.GetString: string;
-begin
-  Result := PChar(FObject)^;
-end;   }
 
 procedure TSoProperty.SetDouble(const Value: Double);
 begin
   FDouble := Value;
   FPropertyType := ptDouble;
 
-  if Assigned(FOnChange) then
-    FOnChange(Self);
+  RaiseOnChange;
 end;
 
 procedure TSoProperty.SetInt(const Value: Integer);
@@ -89,8 +78,7 @@ begin
   FInt := Value;
   FPropertyType := ptInt;
 
-  if Assigned(FOnChange) then
-    FOnChange(Self);
+  RaiseOnChange;
 end;
 
 procedure TSoProperty.SetObject(const Value: TObject);
@@ -98,8 +86,7 @@ begin
   FObject := Value;
   FPropertyType := ptObject;
 
-  if Assigned(FOnChange) then
-    FOnChange(Self);
+  RaiseOnChange;;
 end;
 
 procedure TSoProperty.SetString(const Value: string);
@@ -107,13 +94,30 @@ begin
   FString := Value;
   FPropertyType := ptString;
 
-  if Assigned(FOnChange) then
-    FOnChange(Self);
+  RaiseOnChange;
+end;
+
+procedure TSoProperty.AddOnChangeHandler(AHandler: TNotifyEvent);
+begin
+  FOnChangeHandlers.Add(AHandler);
 end;
 
 constructor TSoProperty.Create(ADouble: Double);
 begin
   SetDouble(ADouble);
+end;
+
+procedure TSoProperty.RaiseOnChange;
+begin
+  FOnChangeHandlers.RaiseEvent(Self);
+
+//  if Assigned(FOnChange) then
+//    FOnChange(Self);
+end;
+
+procedure TSoProperty.RemOnChangeHandler(AHandler: TNotifyEvent);
+begin
+  FOnChangeHandlers.Remove(AHandler);
 end;
 
 end.

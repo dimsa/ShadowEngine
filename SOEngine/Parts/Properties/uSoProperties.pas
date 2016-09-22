@@ -18,7 +18,9 @@ type
     procedure SetProperty(AName: string; const Value: TSoProperty);
     procedure OnPropertyChanged(ASender: TObject); // On one property changed
   public
-    property Data[AName: string]: TSoProperty read GetProperty write SetProperty; default;
+    property Data[AName: string]: TSoProperty read GetProperty;{ write SetProperty;} default;
+    function Add(const AName: string): TSoProperty;
+    function Remove(const AName: string): TSoProperty;
     procedure AddOnChangeHandler(const AHandler: TEvent<string>);
     procedure RemOnChangeHandler(const AHandler: TEvent<string>);
     constructor Create;
@@ -28,6 +30,12 @@ type
 implementation
 
 { TSoProperties }
+
+function TSoProperties.Add(const AName: string): TSoProperty;
+begin
+  Result := TSoProperty.Create;
+  FDict.Add(AName, Result);
+end;
 
 procedure TSoProperties.AddOnChangeHandler(const AHandler: TEvent<string>);
 begin
@@ -70,6 +78,12 @@ begin
   FPropertyChanged.Remove(AHandler);
 end;
 
+function TSoProperties.Remove(const AName: string): TSoProperty;
+begin
+  Result := FDict[AName];
+  FDict.Remove(AName);
+end;
+
 procedure TSoProperties.SetProperty(AName: string; const Value: TSoProperty);
 begin
   if not FDict.ContainsKey(AName) then
@@ -82,7 +96,7 @@ begin
     FDict[AName] := Value;
   end;
 
-  TSoPropertyFriend(Value).OnChange := OnPropertyChanged;
+  TSoPropertyFriend(Value).AddOnChangeHandler(OnPropertyChanged);
 end;
 
 end.

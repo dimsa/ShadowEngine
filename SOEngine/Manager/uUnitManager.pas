@@ -162,7 +162,7 @@ var
   vProp: TSoProperty;
 begin
   vProp := TSoProperty.Create(AValue);
-  TSoObjectFriend(FActiveContainer).FProperties[AName] := vProp;
+  TSoObjectFriend(FActiveContainer).FProperties.Add(AName).Value := vProp;
   Result := TSoObjectFriend(FActiveContainer).FProperties;
 end;
 
