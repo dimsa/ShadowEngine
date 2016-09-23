@@ -7,7 +7,7 @@ uses
 
 type
   TProcedure = procedure of Object;
-  TBooleanFunction = function: Boolean of object;
+  //TBooleanFunction = function: Boolean of object;
 
   function Random64: Int64;
   procedure NormalizeAngle(var AAngle: Single);

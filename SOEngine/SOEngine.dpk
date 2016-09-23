@@ -103,6 +103,13 @@ contains
   uSoContainerTypes in 'Parts\ContainerKeeper\uSoContainerTypes.pas',
   uSoProperties in 'Parts\Properties\uSoProperties.pas',
   uSoProperty in 'Parts\Properties\uSoProperty.pas',
-  uSoPropertyKeeper in 'Parts\Properties\uSoPropertyKeeper.pas';
+  uSoPropertyKeeper in 'Parts\Properties\uSoPropertyKeeper.pas',
+  uSoFormatterDirective in 'Parts\Formatters\uSoFormatterDirective.pas',
+  uSoConstantGroup in 'SoExpressionParser\uSoConstantGroup.pas',
+  uSoExpressionParser in 'SoExpressionParser\uSoExpressionParser.pas',
+  uSoFastFields in 'SoExpressionParser\uSoFastFields.pas',
+  uSoFunctionGroup in 'SoExpressionParser\uSoFunctionGroup.pas',
+  uSoOperandGroup in 'SoExpressionParser\uSoOperandGroup.pas',
+  uSoParserValue in 'SoExpressionParser\uSoParserValue.pas';
 
 end.

@@ -19,6 +19,9 @@ type
   public
     procedure Add(const AItem: T; const AName: string = ''); virtual;
     property OnAdd: TEvent<TOnAddContainerEventArgs> read FOnAdd write FOnAdd;
+    function Contains(const AName: string): Boolean; overload;
+    function Contains(const AItem: T): Boolean; overload;
+    function NameOf(const AItem: T): string;
     function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): T; virtual; abstract;
     constructor Create(const ACritical: TCriticalSection); virtual;
     destructor Destroy; override;
@@ -33,6 +36,16 @@ begin
   FCritical.Leave;
   FList.Add(AName, AItem);
   FCritical.Leave;
+end;
+
+function TSoOperator<T>.Contains(const AName: string): Boolean;
+begin
+  Result := FList.IsHere(AName);
+end;
+
+function TSoOperator<T>.Contains(const AItem: T): Boolean;
+begin
+  Result := FList.IsHere(AItem);
 end;
 
 constructor TSoOperator<T>.Create(const ACritical: TCriticalSection);
@@ -58,6 +71,11 @@ begin
   FList.Free;
   FCritical.Leave;
   inherited;
+end;
+
+function TSoOperator<T>.NameOf(const AItem: T): string;
+begin
+  Result := FList.NameIfHere(AItem);
 end;
 
 procedure TSoOperator<T>.OnItemDestroy(ASender: T);
