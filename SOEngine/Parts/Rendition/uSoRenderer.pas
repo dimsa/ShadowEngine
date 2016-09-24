@@ -5,6 +5,7 @@ interface
 
 uses
   System.SyncObjs, System.Classes, System.SysUtils, {$I 'Utils\DelphiCompatability.inc'}
+  System.JSON,
   FMX.Graphics, System.UITypes, System.Types,
   uEasyDevice,
   uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart;
@@ -27,6 +28,7 @@ type
     property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint;
     property OnEndPaint: TEvent<TAnonImage> write SetOnEndPaint;
     property Background: TBitmap write SetBackground;
+    procedure AddTemplateFromJson(const AImage: TAnonImage; const AJson: TJSONObject);
     procedure LoadTemplateFromSeJson(const AFilename: string);
     constructor Create(const ACritical: TCriticalSection; const AImage: TAnonImage);
     procedure Execute; // Render On Tick
@@ -50,6 +52,11 @@ function TSoRenderer.AddFromTemplate(const ASubject: TSoObject;
 begin
   Result := TEngine2DRendition.Create(ASubject, FImage);
   Add(Result, AName);
+end;
+
+procedure TSoRenderer.AddTemplateFromJson(const AImage: TAnonImage; const AJson: TJSONObject);
+begin
+
 end;
 
 constructor TSoRenderer.Create(const ACritical: TCriticalSection;

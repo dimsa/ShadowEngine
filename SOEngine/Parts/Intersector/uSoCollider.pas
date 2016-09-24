@@ -3,7 +3,7 @@ unit uSoCollider;
 interface
 
 uses
-  System.SysUtils, System.SyncObjs,
+  System.SysUtils, System.SyncObjs, System.JSON,
   uSoColliderObject, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart;
 
 type
@@ -15,6 +15,7 @@ type
     function Contains(const AX, AY: Single): TArray<TSoObject>;
     procedure Add(const AItem: TSoColliderObj; const AName: string = ''); override;
     procedure LoadTemplateFromSeJson(const AFilename: string);
+    procedure AddTemplateFromJson(const AJson: TJsonObject);
   end;
 
 implementation
@@ -26,6 +27,11 @@ var
   vName: string;
 begin
   {$I .\Template\uItemAdd.inc}
+end;
+
+procedure TSoCollider.AddTemplateFromJson(const AJson: TJsonObject);
+begin
+
 end;
 
 function TSoCollider.Contains(const AX, AY: Single): TArray<TSoObject>;
