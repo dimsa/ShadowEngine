@@ -110,6 +110,7 @@ contains
   uSoFastFields in 'SoExpressionParser\uSoFastFields.pas',
   uSoFunctionGroup in 'SoExpressionParser\uSoFunctionGroup.pas',
   uSoOperandGroup in 'SoExpressionParser\uSoOperandGroup.pas',
-  uSoParserValue in 'SoExpressionParser\uSoParserValue.pas';
+  uSoParserValue in 'SoExpressionParser\uSoParserValue.pas',
+  uSoRenditionTemplate in 'Parts\Rendition\uSoRenditionTemplate.pas';
 
 end.
