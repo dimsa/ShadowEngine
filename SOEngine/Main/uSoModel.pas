@@ -3,8 +3,8 @@ unit uSoModel;
 interface
 
 uses
-  System.SyncObjs, System.Classes, System.Types,
-  System.UITypes, uEngine2DClasses,
+  System.SyncObjs, uEngine2DClasses, System.SysUtils,
+  uSoTypes,
   uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper, uSoContainerKeeper,
   uSoPropertyKeeper;
@@ -137,7 +137,7 @@ end;
 
 function TSoModel.GetEngineSize: TPointF;
 begin
-  Result := PointF(FImage.Width, FImage.Height);
+  Result := TPointF.Create(FImage.Width, FImage.Height);
 end;
 
 end.

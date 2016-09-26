@@ -3,8 +3,8 @@ unit uTemplateManager;
 interface
 
 uses
-  System.Classes, System.JSON, System.Types, System.SysUtils,
-  uSoModel, uEngine2DClasses;
+  System.JSON, System.SysUtils,
+  uSoTypes, uSoModel, uEngine2DClasses;
 
 type
   TSoModelFriend = class(TSoModel);

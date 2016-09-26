@@ -4,18 +4,15 @@ unit uSoRenderer;
 interface
 
 uses
-  System.SyncObjs, System.Classes, System.SysUtils, {$I 'Utils\DelphiCompatability.inc'}
-  System.JSON, System.Generics.Collections,
-  FMX.Graphics, System.UITypes, System.Types,
-  uEasyDevice,
-  uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart,
-  uSoRenditionTemplate;
+  System.SyncObjs, System.SysUtils, System.JSON, {$I 'Utils\DelphiCompatability.inc'}
+  uSoTypes, uEasyDevice, uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoObject,
+  uSoContainerTypes, uSoBasePart, uSoRenditionTemplate;
 
 type
 
   TSoRenderer = class(TSoOperator<TEngine2DRendition>)
   private
-    FTemplates: TDictionary<string, TSoRenditionTemplate>;
+    FTemplates: TDict<string, TSoRenditionTemplate>;
     FImage: TAnonImage;
     FBackground: TBitmap; // Background of Engine that paints on every tick. Not sure if it should be here // Бэкграунд. Всегда рисуется в Repaint на весь fImage
     FOnPaintBackground, FOnBeginPaint, FOnEndPaint: TEvent<TAnonImage>;

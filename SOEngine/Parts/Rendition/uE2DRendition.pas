@@ -6,8 +6,7 @@ unit uE2DRendition;
 interface
 
 uses
-  System.Classes, FMX.Objects,
-  uSoObject, uEngine2DClasses, uSoBasePart, uSoContainerTypes;
+  uSoTypes, uSoObject, uEngine2DClasses, uSoBasePart, uSoContainerTypes;
 
 type
   TSoObjectFriend = class(TSoObject);

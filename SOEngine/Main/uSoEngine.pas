@@ -3,8 +3,8 @@ unit uSoEngine;
 interface
 
 uses
-  System.SyncObjs, FMX.Objects, FMX.Graphics, System.UITypes, System.Classes,
-  uCommonClasses,
+  System.SyncObjs,
+  uSoTypes, uCommonClasses,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
   uEngine2DManager, uEngine2DStatus, uSoObject,
   uWorldManager, uUnitManager, uTemplateManager, uWorldStatus;
@@ -20,7 +20,7 @@ type
     FOptions: TEngine2DOptions; // All Engine options. If you add some feature to manage engine, it shoulb be here// Настройки движка
     FStatus: TEngine2DStatus; // All Engine status you can get from herem like width-height,speed and etc.
     FIsMouseDowned: Boolean; // True if Mouse is Downed  // Хранит состояние нажатости мыши
-    FImage: TImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка\
+    FImage: TAnonImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка\
     FWidth, FHeight: Single; // Размер поля имеджа и движка
 //    FDebug: Boolean; // There are some troubles to debug multithread app, so it for it // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
 //    FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
@@ -33,14 +33,14 @@ type
     FWorldStatus: TWorldStatus;
     procedure OnImageResize(ASender: TObject);
     function IsHor: Boolean;
-    procedure SetImage(const Value: TImage);
+    procedure SetImage(const Value: TAnonImage);
     function GetFps: Single;
   protected
     property EngineThread: TEngineThread read FEngineThread;
     procedure WorkProcedure; virtual; // The main Paint procedure.
   public
     // Main properties of Engine. Ключевые свойства движка
-    property Image: TImage read FImage write SetImage;
+    property Image: TAnonImage read FImage write SetImage;
 
     //property Container: TSoContainer read GetContainer; // SoEngine as SoContainer
     property Width: Single read FWidth;
@@ -132,8 +132,8 @@ end;  }
 
 procedure TSoEngine.OnImageResize(ASender: TObject);
 begin
-  FWidth := TImage(ASender).Width;
-  FHeight := TImage(ASender).Height;
+  FWidth := TAnonImage(ASender).Width;
+  FHeight := TAnonImage(ASender).Height;
 
   FOnResize.RaiseEvent(Self, FImage);
 end;
@@ -143,7 +143,7 @@ begin
   FEngineThread.Suspended := False;
 end;
 
-procedure TSoEngine.SetImage(const Value: TImage);
+procedure TSoEngine.SetImage(const Value: TAnonImage);
 begin
   if Assigned(FImage) then
   begin

@@ -111,6 +111,7 @@ contains
   uSoFunctionGroup in 'SoExpressionParser\uSoFunctionGroup.pas',
   uSoOperandGroup in 'SoExpressionParser\uSoOperandGroup.pas',
   uSoParserValue in 'SoExpressionParser\uSoParserValue.pas',
-  uSoRenditionTemplate in 'Parts\Rendition\uSoRenditionTemplate.pas';
+  uSoRenditionTemplate in 'Parts\Rendition\uSoRenditionTemplate.pas',
+  uSoTypes in 'Common\uSoTypes.pas';
 
 end.

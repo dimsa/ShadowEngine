@@ -3,7 +3,7 @@ unit uSoRenditionTemplate;
 interface
 
 uses
-  System.Generics.Collections,
+  uSoTypes,
   uE2DRendition, System.JSON;
 
 type
@@ -14,7 +14,6 @@ type
 
   TSoSpriteTemplate = class(TSoRenditionTemplate)
   private
-    FJson: TJSONObject;
     FResourceList: TList<Integer>;
   public
     function Instantiate: TEngine2DRendition; override;
@@ -23,7 +22,9 @@ type
 
   TSoShapeTemplate = class(TSoRenditionTemplate)
   private
-    FJson: TJSONObject;
+    FFigureRect: TRectF;
+    FPen: TStrokeBrush;
+    FBrush: TBrush;
   public
     function Instantiate: TEngine2DRendition; override;
     constructor Create(const AJson: TJSONObject);
@@ -31,7 +32,13 @@ type
 
   TSoTextTemplate = class(TSoRenditionTemplate)
   private
-    FJson: TJSONObject;
+    FText: string; // Text to Out
+    FFont: TFont; // Text Font
+    FColor: TColor; // Цвет текста
+    FFillTextFlags: TFillTextFlags; // Properties of text
+    FVerAlign, FHorAlign: TTextAlign; // Horizontal and Vertical Align of text
+    FWordWrap: Boolean;
+    FTextRect: TRectF;
   public
     function Instantiate: TEngine2DRendition; override;
     constructor Create(const AJson: TJSONObject);

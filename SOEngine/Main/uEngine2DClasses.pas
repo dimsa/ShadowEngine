@@ -12,8 +12,6 @@ type
   TIntArray = array of Integer;
   PIntArray = ^TIntArray;
 
-  TAnonImage = TImage;
-
   TEvent<T> = procedure(ASender: TObject; E: T) of object;
 
   TObjectJustify = (

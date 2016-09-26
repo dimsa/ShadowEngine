@@ -3,7 +3,7 @@ unit uWorldManager;
 interface
 
 uses
-  uClasses, uEngine2DClasses, uSoModel, uCommonClasses, System.Types;
+  uSoTypes, uClasses, uEngine2DClasses, uSoModel, uCommonClasses;
 
 type
   TSoModelFriend = class(TSoModel);

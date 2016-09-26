@@ -7,7 +7,7 @@ uses
   System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
   System.Math.Vectors,
-  uSoEngine, uGame, uEngine2DClasses;
+  uSoEngine, uGame;
 
 type
   TAsteroidsVsYou = class(TForm)
@@ -17,7 +17,7 @@ type
   private
     FEngine: TSoEngine;
     FGame: TGame;
-    procedure OnEndPaintDefault(ASender: TObject; AImage: TAnonImage);
+    procedure OnEndPaintDefault(ASender: TObject; AImage: TImage);
     { Private declarations }
   public
     { Public declarations }
@@ -40,7 +40,7 @@ begin
 end;
 
 procedure TAsteroidsVsYou.OnEndPaintDefault(ASender: TObject;
-  AImage: TAnonImage);
+  AImage: TImage);
 begin
 {$IFDEF RELEASE}
   Exit;

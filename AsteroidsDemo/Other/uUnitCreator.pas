@@ -3,7 +3,7 @@ unit uUnitCreator;
 interface
 
 uses
-  System.SysUtils, System.Types,
+  System.SysUtils, System.Types, FMX.Objects,
   uEngine2DClasses, uUnitManager, uWorldManager, uModel, uSoObject;
 
 type
@@ -17,7 +17,7 @@ type
     ManageByName: TManageByNameDelegate;
     ManageNew: TManageNewDelegate;
     Manage: TManageDelegate;
-    procedure OnResize(ASender: TObject; AImage: TAnonImage);
+    procedure OnResize(ASender: TObject; AImage: TImage);
   public
     function NewShip: TShip;
     function NewSpaceDebris(const ASize: integer): TBigAsteroid;
@@ -89,7 +89,7 @@ begin
   end;
 end;
 
-procedure TUnitCreator.OnResize(ASender: TObject; AImage: TAnonImage);
+procedure TUnitCreator.OnResize(ASender: TObject; AImage: TImage);
 begin
   with ManageByName('Ship') do
   begin

@@ -3,7 +3,7 @@ unit uMapPainter;
 interface
 
 uses
-  FMX.Graphics, System.Math.Vectors, System.Types,
+  FMX.Graphics, System.Math.Vectors, System.Types, FMX.Objects,
   uWorldManager, uEngine2DClasses;
 
 type
@@ -12,7 +12,7 @@ type
     FWorldManager: TWorldManager;
     FBackground: TBitmap;
     FParalX, FParalY: Single;
-    procedure ParallaxBackgroundBehavior(ASender: TObject; AImage: TAnonImage);
+    procedure ParallaxBackgroundBehavior(ASender: TObject; AImage: TImage);
   public
     constructor Create(const AWorldManager: TWorldManager; const ABackgroundPath: string);
   end;
@@ -28,7 +28,7 @@ begin
   FWorldManager.OnPaintBackground := ParallaxBackgroundBehavior;
 end;
 
-procedure TMapPainter.ParallaxBackgroundBehavior(ASender: TObject; AImage: TAnonImage);
+procedure TMapPainter.ParallaxBackgroundBehavior(ASender: TObject; AImage: TImage);
 var
   vProporX, vProporY: Double;
   m: TMatrix;
