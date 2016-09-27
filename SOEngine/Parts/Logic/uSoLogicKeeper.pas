@@ -4,8 +4,8 @@ unit uSoLogicKeeper;
 interface
 
 uses
-  System.SysUtils, System.SyncObjs,
-  uSoLogic, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart;
+  System.SysUtils,
+  uSoTypes, uSoLogic, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart;
 
 type
   TSoLogicFriend = class(TSoLogic);

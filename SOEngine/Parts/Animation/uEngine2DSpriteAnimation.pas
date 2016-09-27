@@ -3,7 +3,7 @@ unit uEngine2DSpriteAnimation;
 interface
 
 uses
-  FMX.Dialogs, FMX.Graphics, Sysutils,
+  FMX.Dialogs, FMX.Graphics, System.SysUtils,
   uNamedList, uEngine2DClasses, uEngine2DAnimation, uEngine2DSprite, uEngine2DObject;
 
 type

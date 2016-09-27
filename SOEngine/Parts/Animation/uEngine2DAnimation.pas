@@ -3,7 +3,7 @@ unit uEngine2DAnimation;
 interface
 
 uses
-  FMX.Graphics, System.Classes,
+  uSoTypes,
   uNamedList, uEngine2DClasses, uClasses, uGeometryClasses, uEngine2DStatus;
 
 type

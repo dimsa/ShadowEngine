@@ -3,8 +3,7 @@ unit uSoContainerKeeper;
 interface
 
 uses
-  System.Generics.Collections,
-  uSoObject, uSoBasePart, uSoContainer, uSoContainerTypes;
+  uSoTypes, uSoObject, uSoBasePart, uSoContainer, uSoContainerTypes;
 
 type
   TSoContainerFriend = class(TSoContainer);
@@ -13,7 +12,7 @@ type
 
   TSoContainerKeeper = class
   private
-    FContainers: TDictionary<TSoObject, TSoContainer>;
+    FContainers: TDict<TSoObject, TSoContainer>;
     function GetContainer(Index: TSoObject): TSoContainer;
     procedure OnObjectDestroy(ASender: TObject);
   public
@@ -30,7 +29,7 @@ implementation
 
 constructor TSoContainerKeeper.Create;
 begin
-  FContainers := TDictionary<TSoObject, TSoContainer>.Create;
+  FContainers := TDict<TSoObject, TSoContainer>.Create;
 end;
 
 destructor TSoContainerKeeper.Destroy;

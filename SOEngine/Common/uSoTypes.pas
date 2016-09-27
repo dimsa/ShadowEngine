@@ -4,7 +4,7 @@ interface
 
 uses
   FMX.Types, System.Types, System.UITypes, FMX.Graphics, System.Generics.Collections, FMX.Objects,
-  System.Classes;
+  System.Classes, System.SyncObjs;
 
 type
 
@@ -15,6 +15,7 @@ type
 
   TFont =  FMX.Graphics.TFont;
   TColor = System.UITypes.TAlphaColor;
+  TFillTextFlag = FMX.Graphics.TFillTextFlag;
   TFillTextFlags = FMX.Graphics.TFillTextFlags;
   TTextAlign = FMX.Types.TTextAlign;
   TStrokeBrush = FMX.Graphics.TStrokeBrush;
@@ -32,6 +33,9 @@ type
   TMouseButton = System.UITypes.TMouseButton;
   TStringList = System.Classes.TStringList;
 
+  TCriticalSection = System.SyncObjs.TCriticalSection;
+  TAlphaColorRec = System.UITypes.TAlphaColorRec;
+  TFontStyle = System.UITypes.TFontStyle;
 implementation
 
 end.

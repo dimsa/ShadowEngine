@@ -13,9 +13,9 @@ You can write me on skype: dimsa87
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, FMX.Types, FMX.Controls,
-  FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Platform, FMX.Objects, Math, System.SyncObjs, {$I 'Utils\DelphiCompatability.inc'}
-  uClasses, uEngine2DThread, uEngine2DObject, uEngine2DSprite, uEngine2DText, uEngine2DClasses,
+  System.SysUtils, FMX.Controls,
+  FMX.Forms, FMX.Dialogs, FMX.Platform, FMX.Objects, Math,  {$I 'Utils\DelphiCompatability.inc'}
+  uSoTypes, uClasses, uEngine2DThread, uEngine2DObject, uEngine2DSprite, uEngine2DText, uEngine2DClasses,
   uEngine2DManager, uEngine2DStatus, uEasyDevice, uEngine2DModel, uEngine2DAnimation, uFastFields,
   uEngine2DOptions;
 
@@ -113,7 +113,7 @@ end;
 procedure TEngine2d.BackGroundDefaultBehavior;
 begin
   with Self.Image do
-    Bitmap.Canvas.DrawBitmap(FBackGround, RectF(0, 0, FBackGround.width, FBackGround.height), RectF(0, 0, bitmap.width, bitmap.height), 1, true);
+    Bitmap.Canvas.DrawBitmap(FBackGround, TRectF.Create(0, 0, FBackGround.width, FBackGround.height), TRectF.Create(0, 0, bitmap.width, bitmap.height), 1, true);
 end;
 
 procedure TEngine2d.Click(const ACount: Integer);
@@ -277,7 +277,7 @@ begin
     Bitmap.Canvas.Font.Family := 'arial';
         {$IFDEF CONDITIONALEXPRESSIONS}
          {$IF CompilerVersion >= 19.0}
-    bitmap.Canvas.FillText(RectF(15, 15, 165, 125), 'FPS=' + floattostr(FEngineThread.fps), false, 1, [], TTextAlign.Leading);
+    bitmap.Canvas.FillText(TRectF.Create(15, 15, 165, 125), 'FPS=' + floattostr(FEngineThread.fps), false, 1, [], TTextAlign.Leading);
 
         {  bitmap.Canvas.FillText(
           RectF(15, 85, 165, 125),
@@ -376,7 +376,7 @@ begin
         vArr := (GetValue('Position').ToString).Split([';']);
         vArr1 := vArr[0].Split([',']);
         vArr2 := vArr[1].Split([',']);
-        vPos := Rect(vArr1[0].ToInteger, vArr1[1].ToInteger, vArr2[0].ToInteger, vArr2[1].ToInteger);
+        vPos := TRect.Create(vArr1[0].ToInteger, vArr1[1].ToInteger, vArr2[0].ToInteger, vArr2[1].ToInteger);
 
         vFigures := GetValue('Figures') as TJSONArray;
         if vFigures <> nil then

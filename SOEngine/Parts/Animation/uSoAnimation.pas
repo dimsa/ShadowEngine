@@ -3,7 +3,7 @@ unit uSoAnimation;
 interface
 
 uses
-  uSoObject, System.Classes,
+  uSoObject, uSoTypes,
   uEngine2DStatus, uEngine2DClasses, uSoBasePart;
 
 type

@@ -218,6 +218,7 @@
         <DCCReference Include="SoExpressionParser\uSoParserValue.pas"/>
         <DCCReference Include="Parts\Rendition\uSoRenditionTemplate.pas"/>
         <DCCReference Include="Common\uSoTypes.pas"/>
+        <DCCReference Include="Common\uJsonUtils.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>

@@ -3,8 +3,8 @@ unit uSoRenditionTemplate;
 interface
 
 uses
-  uSoTypes,
-  uE2DRendition, System.JSON;
+  System.JSON, uJsonUtils, FMX.Graphics, System.UITypes, System.UIConsts,
+  uSoTypes, uE2DRendition;
 
 type
   TSoRenditionTemplate = class
@@ -49,8 +49,32 @@ implementation
 { TSoTextTemplate }
 
 constructor TSoTextTemplate.Create(const AJson: TJSONObject);
+var
+  vVal: TJSONValue;
 begin
+  if AJson.TryGetValue('Text', vVal) then
+    FText:= vVal.Value;
 
+  if AJson.TryGetValue('Font', vVal) then
+    FFont := JsonToFont(TJSONObject(vVal));
+
+  if AJson.TryGetValue('Color', vVal) then
+    FColor := StringToColor(vVal.Value);
+
+  if AJson.TryGetValue('FillTextFlags', vVal) then
+    FFillTextFlags := JsonToFillTextFlags(TJSONObject(vVal));
+
+  if AJson.TryGetValue('VerAlign', vVal) then
+    FVerAlign := JsonToTextAlign(TJSONObject(vVal));
+
+  if AJson.TryGetValue('HorAlign', vVal) then
+    FHorAlign := JsonToTextAlign(TJSONObject(vVal));
+
+  if AJson.TryGetValue('WordWrap', vVal) then
+    FWordWrap := JsonToBoolean(TJSONObject(vVal));
+
+//  if AJson.TryGetValue('Color', vVal) then
+//    TColor.
 end;
 
 function TSoTextTemplate.Instantiate: TEngine2DRendition;

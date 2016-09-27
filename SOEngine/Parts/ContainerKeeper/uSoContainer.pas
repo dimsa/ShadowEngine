@@ -3,13 +3,13 @@ unit uSoContainer;
 interface
 
 uses
-  System.Generics.Collections, uSoBasePart, uSoContainerTypes,
+  uSoTypes, uSoBasePart, uSoContainerTypes,
   uSoAnimation, uSoColliderObject, uSoKeyHandler, uSoMouseHandler, uE2DRendition, uSoLogic;
 
 type
   TSoBasePartClass = class of TSoBasePart;
 
-  TPartDict = TDictionary<TSoBasePartClass, TList<TSoBasePart>>;
+  TPartDict = TDict<TSoBasePartClass, TList<TSoBasePart>>;
 
   TSoContainer = class
   private

@@ -3,9 +3,8 @@ unit uEngine2DClasses;
 interface
 
 uses
-  FMX.Graphics, System.SyncObjs, System.SysUtils, System.Types, FMX.Objects,
-  FMX.Types, uGeometryClasses, uClasses,
-  System.Generics.Collections, uNamedList, System.Generics.Defaults;
+  System.SysUtils, System.Generics.Defaults,
+  uSoTypes, uGeometryClasses, uClasses, uNamedList;
 
 type
   TReturnSingleFunction = function: Single of object;
@@ -91,15 +90,12 @@ type
 implementation
 
 function ClearPosition: TPosition;
-var
-  vRes: TPosition;
 begin
-  vRes.X := 0;
-  vRes.Y := 0;
-  vRes.Rotate := 0;
-  vRes.ScaleX := 1;
-  vRes.ScaleY := 1;
-  Result := vRes;
+  Result.X := 0;
+  Result.Y := 0;
+  Result.Rotate := 0;
+  Result.ScaleX := 1;
+  Result.ScaleY := 1;
 end;
 
 

@@ -112,6 +112,7 @@ contains
   uSoOperandGroup in 'SoExpressionParser\uSoOperandGroup.pas',
   uSoParserValue in 'SoExpressionParser\uSoParserValue.pas',
   uSoRenditionTemplate in 'Parts\Rendition\uSoRenditionTemplate.pas',
-  uSoTypes in 'Common\uSoTypes.pas';
+  uSoTypes in 'Common\uSoTypes.pas',
+  uJsonUtils in 'Common\uJsonUtils.pas';
 
 end.

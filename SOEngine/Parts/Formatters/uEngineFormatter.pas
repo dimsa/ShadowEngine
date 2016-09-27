@@ -3,8 +3,8 @@ unit uEngineFormatter;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.RegularExpressions, System.Generics.Collections,
-  uGeometryClasses, uSpriteList,
+  System.SysUtils,  System.RegularExpressions,
+  uSoTypes, uGeometryClasses, uSpriteList,
   uExpressionParser, uNamedList, uEngine2DClasses, uTextProc, uEngine2DObject,
   uEngine2DUnclickableObject, uFastFields, uConstantGroup, uParserValue, uClasses;
 
