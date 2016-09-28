@@ -4,13 +4,14 @@ interface
 
 uses
   System.JSON, System.SysUtils,
-  uSoTypes;
+  uSoTypes, uEngine2DClasses;
 
   function JsonToFont(AJson: TJsonObject): TFont;
   function JsonToFillTextFlags(AJson: TJsonObject): TFillTextFlags;
   function JsonToTextAlign(AJson: TJsonObject): TTextAlign;
   function JsonToBoolean(AJson: TJsonObject): Bool;
   function JsonToRectF(AJson: TJsonObject): TRectF;
+  function JsonToJustify(AJson: TJsonObject): TObjectJustify;
 
 implementation
 
@@ -81,7 +82,12 @@ begin
   vArr := (AJson.Value).Split([';']);
   vArr1 := vArr[0].Split([',']);
   vArr2 := vArr[1].Split([',']);
-  Result := TRect.Create(vArr1[0].ToSingle, vArr1[1].ToSingle, vArr2[0].ToSingle, vArr2[1].ToSingle);
+  Result := TRectF.Create(vArr1[0].ToSingle, vArr1[1].ToSingle, vArr2[0].ToSingle, vArr2[1].ToSingle);
+end;
+
+function JsonToJustify(AJson: TJsonObject): TObjectJustify;
+begin
+
 end;
 
 end.

@@ -3,7 +3,7 @@ unit uE2DSprite;
 interface
 
 uses
-  FMX.Objects, System.Types,
+  FMX.Objects, System.Types, uSoTypes,
   uE2DRendition, uE2DResourceList, uSoObject, uEngine2DClasses;
 
 type
@@ -19,7 +19,7 @@ type
   public
     property CurRes: Integer read FCurRes write SetCurRes;
     procedure Repaint; override;
-    constructor Create(const ASubject: TSoObject; const AImage: TImage; const AResourceList: TEngine2DResourceList);
+    constructor Create(const ASubject: TSoObject; const AImage: TImage; const AResourceList: TEngine2DResourceList); overload;
     destructor Destroy; override;
   end;
 

@@ -11,8 +11,6 @@ type
   TIntArray = array of Integer;
   PIntArray = ^TIntArray;
 
-  TEvent<T> = procedure(ASender: TObject; E: T) of object;
-
   TObjectJustify = (
     TopLeft, TopCenter, TopRight,
     CenterLeft, Center, CenterRight,

@@ -4,7 +4,7 @@ interface
 
 uses
   System.Generics.Collections,
-  uEngine2DClasses, uEngine2DObject, uEngine2DObjectShape;
+  uEngine2DClasses, uEngine2DObject, uEngine2DObjectShape, uCommonClasses;
 
 type
 

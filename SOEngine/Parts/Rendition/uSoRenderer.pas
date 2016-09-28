@@ -5,7 +5,7 @@ interface
 
 uses
   System.SyncObjs, System.SysUtils, System.JSON, {$I 'Utils\DelphiCompatability.inc'}
-  uSoTypes, uEasyDevice, uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoObject,
+  uCommonClasses, uSoTypes, uEasyDevice, uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoObject,
   uSoContainerTypes, uSoBasePart, uSoRenditionTemplate;
 
 type
@@ -13,6 +13,7 @@ type
   TSoRenderer = class(TSoOperator<TEngine2DRendition>)
   private
     FTemplates: TDict<string, TSoRenditionTemplate>;
+    FResources: TDict<string, TBitmap>;
     FImage: TAnonImage;
     FBackground: TBitmap; // Background of Engine that paints on every tick. Not sure if it should be here // Бэкграунд. Всегда рисуется в Repaint на весь fImage
     FOnPaintBackground, FOnBeginPaint, FOnEndPaint: TEvent<TAnonImage>;
