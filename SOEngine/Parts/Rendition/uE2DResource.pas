@@ -8,7 +8,7 @@ uses
   FMX.Graphics, System.Types;
 
 type
-  TEngine2DResource = class
+  TSoSpriteResource = class
   strict private
     FPicture: TBitmap;
     FWidth: Single;
@@ -30,7 +30,7 @@ implementation
 
 { TEngine2DResource }
 
-constructor TEngine2DResource.Create(const APicture: TBitmap);
+constructor TSoSpriteResource.Create(const APicture: TBitmap);
 begin
   FPicture := APicture;
 

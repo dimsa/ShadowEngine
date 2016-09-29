@@ -7,7 +7,7 @@ uses
   uEngine2DClasses, uE2DResource;
 
 type
-  TEngine2DResourceList = class(TEngine2DNamedList<TEngine2DResource>)
+  TEngine2DResourceList = class(TEngine2DNamedList<TSoSpriteResource>)
   strict private
     FInputBmp: TBitmap; // Service Bitmap for temporary storage // Служебный битмап для временного хранения
     procedure RenewBitmap;
@@ -30,7 +30,7 @@ uses
 function TEngine2DResourceList.AddFromRes(const x, y, w, h: Integer; const AName: string): Integer;
 var
   vBmp: TBitmap;
-  vSprRes: TEngine2DResource;
+  vSprRes: TSoSpriteResource;
   vN: Integer;
 begin
   FCriticalSection.Enter;
@@ -45,7 +45,7 @@ begin
     RectF(0, 0, w, h), 1, False);
   vBmp.Canvas.EndScene;
 
-  vSprRes := TEngine2DResource.Create(vBmp);
+  vSprRes := TSoSpriteResource.Create(vBmp);
   vN := Self.Add(AName, vSprRes);
 
   Result := vN;
@@ -83,9 +83,9 @@ end;
 
 function TEngine2DResourceList.AddResource(const ABitmap: TBitmap): Integer;
 var
-  vTmp: TEngine2DResource;
+  vTmp: TSoSpriteResource;
 begin
-  vTmp := TEngine2DResource.Create(ABitmap);
+  vTmp := TSoSpriteResource.Create(ABitmap);
   Result := Self.Add(vTmp);
 end;
 
