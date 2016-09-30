@@ -6,7 +6,7 @@ unit uFastFields;
 interface
 
 uses
-  System.Generics.Collections, System.SysUtils, uClasses,
+  System.Generics.Collections, System.SysUtils, uClasses, uCommonClasses,
   uParserValue, uEngine2DUnclickableObject, uNamedList;
 
 type
@@ -23,13 +23,13 @@ type
 
   TFastFields = class(TNamedList<TFastField>)
   private
-    FIsHor: TBooleanFunction;
+    FIsHor: TDelegate<Boolean>;
   public
     function IsHor: Boolean;
     procedure ClearForSubject(const AObject: tEngine2DUnclickableObject);
     procedure ClearBroken; // Удаляет все сломанные фастфильды
     destructor Destroy; override;
-    constructor Create(AIsHor: TBooleanFunction); reintroduce;
+    constructor Create(AIsHor: TDelegate<Boolean>); reintroduce;
   end;
 
   TFastEngineField = class(TFastField)
@@ -188,7 +188,7 @@ begin
       end;
 end;
 
-constructor TFastFields.Create(AIsHor: TBooleanFunction);
+constructor TFastFields.Create(AIsHor: TDelegate<Boolean>);
 begin
   inherited Create;
   FIsHor := AIsHor;

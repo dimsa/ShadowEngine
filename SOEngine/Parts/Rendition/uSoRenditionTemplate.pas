@@ -12,6 +12,8 @@ type
   protected
     FOpacity: Single;
     FObjectJustify: TObjectJustify;
+    FMargin: TPointF;
+    FFlip: Boolean;
   public
     function Instantiate(const ASubject: TSoObject; const AImage: TAnonImage): TEngine2DRendition; virtual; abstract;
     constructor Create(const AJson: TJSONObject); virtual;
@@ -80,7 +82,7 @@ begin
     FHorAlign := JsonToTextAlign(TJSONObject(vVal));
 
   if AJson.TryGetValue('WordWrap', vVal) then
-    FWordWrap := JsonToBoolean(TJSONObject(vVal));
+    FWordWrap := JsonToBool(vVal);
 
   if AJson.TryGetValue('TextRect', vVal) then
     FTextRect := JsonToRectF(TJSONObject(vVal));
@@ -176,10 +178,24 @@ var
   vVal: TJSONValue;
 begin
   if AJson.TryGetValue('Opacity', vVal) then
-    FOpacity := StrToFloat(vVal.ToString);
+    FOpacity := StrToFloat(vVal.ToString)
+  else
+    FOpacity := 1;
 
   if AJson.TryGetValue('Justify', vVal) then
-    FObjectJustify := JsonToJustify(TJSONObject(vVal));
+    FObjectJustify := JsonToJustify(TJSONObject(vVal))
+  else
+    FObjectJustify := Center;
+
+  if AJson.TryGetValue('Flip', vVal) then
+    FFlip := JsonToBool(vVal)
+  else
+    FFlip := False;
+
+  if AJson.TryGetValue('Margin', vVal) then
+    FMargin := JsonToPointF(vVal)
+  else
+    FMargin := TPointF.Zero;
 end;
 
 end.

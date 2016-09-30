@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils,  System.RegularExpressions,
-  uSoTypes, uGeometryClasses, uSpriteList,
+  uSoTypes, uGeometryClasses, uSpriteList, uCommonClasses,
   uExpressionParser, uNamedList, uEngine2DClasses, uTextProc, uEngine2DObject,
   uEngine2DUnclickableObject, uFastFields, uConstantGroup, uParserValue, uClasses;
 
@@ -92,10 +92,10 @@ type
 
   TIfHorCondition = class(TConditionalDirective)
   strict private
-    FIsHor: TBooleanFunction;
+    FIsHor: TDelegate<Boolean>;
   public
     function IsSatisfy: Boolean; override;
-    constructor Create(const ADirective: TFormatterDirective; AIsHor: TBooleanFunction);
+    constructor Create(const ADirective: TFormatterDirective; AIsHor: TDelegate<Boolean>);
 
   end;
 
@@ -419,7 +419,7 @@ end;
 { TIfHorCondition }
 
 constructor TIfHorCondition.Create(const ADirective: TFormatterDirective;
-  AIsHor: TBooleanFunction);
+  AIsHor: TDelegate<Boolean>);
 begin
   FIsHor := AIsHor;
   inherited Create(ADirective);

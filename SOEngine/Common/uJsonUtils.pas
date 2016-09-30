@@ -9,9 +9,11 @@ uses
   function JsonToFont(AJson: TJsonObject): TFont;
   function JsonToFillTextFlags(AJson: TJsonObject): TFillTextFlags;
   function JsonToTextAlign(AJson: TJsonObject): TTextAlign;
-  function JsonToBoolean(AJson: TJsonObject): Bool;
+  function JsonToBool(AJson: TJsonValue): Bool;
+  function JsonToPointF(AJson: TJsonValue): TPointF;
   function JsonToRectF(AJson: TJsonValue): TRectF;
   function JsonToJustify(AJson: TJsonObject): TObjectJustify;
+
 
 implementation
 
@@ -46,6 +48,14 @@ begin
   end;
 end;
 
+function JsonToPointF(AJson: TJsonValue): TPointF;
+var
+  vArr: TArray<string>;
+begin
+  vArr := (AJson.Value).Split([',']);
+  Result := TPointF.Create(StrToFloat(vArr[0]), StrToFloat(vArr[1]));
+end;
+
 function JsonToFillTextFlags(AJson: TJsonObject): TFillTextFlags;
 var
   i: Integer;
@@ -67,7 +77,7 @@ begin
     Exit(TTextAlign.Trailing);
 end;
 
-function JsonToBoolean(AJson: TJsonObject): Bool;
+function JsonToBool(AJson: TJsonValue): Bool;
 begin
   if (LowerCase(AJson.Value) = 'true') or (LowerCase(AJson.Value) = '1') then
     Result := True

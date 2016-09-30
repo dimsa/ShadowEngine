@@ -56,10 +56,10 @@ begin
     FResourceList[FCurRes].Picture,
     FResourceList[FCurRes].Rect,
     RectF(
-      FSubject.X + FResourceList[FCurRes].WHalf * FSubject.ScaleX * CJustifyPoints[Justify].Left,
-      FSubject.Y + FResourceList[FCurRes].HHalf * FSubject.ScaleY * CJustifyPoints[Justify].Top,
-      FSubject.X + FResourceList[FCurRes].WHalf * FSubject.ScaleX * CJustifyPoints[Justify].Right,
-      FSubject.Y + FResourceList[FCurRes].HHalf * FSubject.ScaleY * CJustifyPoints[Justify].Bottom),
+      FSubject.X + FResourceList[FCurRes].WHalf * FSubject.ScaleX * CJustifyPoints[Justify].Left + FMargin.X,
+      FSubject.Y + FResourceList[FCurRes].HHalf * FSubject.ScaleY * CJustifyPoints[Justify].Top + FMargin.Y,
+      FSubject.X + FResourceList[FCurRes].WHalf * FSubject.ScaleX * CJustifyPoints[Justify].Right + FMargin.X,
+      FSubject.Y + FResourceList[FCurRes].HHalf * FSubject.ScaleY * CJustifyPoints[Justify].Bottom + FMargin.Y),
     1,
     True);
 end;

@@ -20,6 +20,8 @@ type
     FImage: TAnonImage;
     FOpacity: Single;
     FJustify: TObjectJustify;
+    FMargin: TPointF;
+    FFlip: Boolean;
     procedure SetJustify(const Value: TObjectJustify); virtual;
     function GetHeight: Single; virtual; abstract;
     function GetWidth: Single; virtual; abstract;
@@ -54,6 +56,8 @@ begin
   inherited Create(ASubject);
   FImage := AImage;
   FSubject.AddChangeScaleHandler(OnChangeScale);
+
+  FMargin := TPointF.Zero;
 
   with TSoObjectFriend(ASubject) do begin
     FProperties.Add('Width').AsDouble := Width;

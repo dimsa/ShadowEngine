@@ -3,7 +3,7 @@ unit uEngine2DModel;
 interface
 
 uses
-  System.Generics.Collections, System.SyncObjs,
+  System.Generics.Collections, System.SyncObjs, uCommonClasses,
   uEngine2DClasses, uSpriteList, uFastFields, uEngine2DAnimationList,
   uFormatterList, uEngine2DResources, uEngine2DObject, uEngine2DIntersector, uClasses;
 
@@ -18,7 +18,7 @@ private
   FResources: TEngine2DResources;
   FFormatters: TFormatterList;
   FAnimationList: TEngine2DAnimationList;
-  FIsHor: TBooleanFunction;
+  FIsHor: TDelegate<Boolean>;
   FIntersector: TEngine2DIntersector; // Object tha test for colliding
   procedure setObject(AIndex: integer; ASprite: tEngine2DObject);
   function getObject(AIndex: integer): tEngine2DObject;
@@ -32,7 +32,7 @@ public
   property FastFields: tFastFields read FFastFields; // Быстрый вызов для экспрешенсов
   property Objects[index: integer]: tEngine2DObject read getObject write setObject;
   procedure ClearSprites; // Очищает массив спрайтов, т.е. является подготовкой к полной перерисовке
-  constructor Create(const ACritical: TCriticalSection; const AIsHor: TBooleanFunction);
+  constructor Create(const ACritical: TCriticalSection; const AIsHor: TDelegate<Boolean>);
   destructor Destroy; override;
 end;
 
@@ -50,7 +50,7 @@ begin
   setLength(FObjectOrder, 0);
 end;
 
-constructor TEngine2DModel.Create(const ACritical: TCriticalSection; const AIsHor: TBooleanFunction);
+constructor TEngine2DModel.Create(const ACritical: TCriticalSection; const AIsHor: TDelegate<Boolean>);
 begin
   FCritical := ACritical;
   FObjectOrder := TIntArray.Create(0);
