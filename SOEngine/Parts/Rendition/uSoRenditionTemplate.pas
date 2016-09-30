@@ -16,7 +16,7 @@ type
     FFlip: Boolean;
   public
     function Instantiate(const ASubject: TSoObject; const AImage: TAnonImage): TEngine2DRendition; virtual; abstract;
-    constructor Create(const AJson: TJSONObject); virtual;
+    constructor Create(const AJson: TJSONValue); virtual;
   end;
 
   TSoSpriteTemplate = class(TSoRenditionTemplate)
@@ -25,7 +25,7 @@ type
     FResourceList: TList<TBitmap>;
   public
     function Instantiate(const ASubject: TSoObject; const AImage: TAnonImage): TEngine2DRendition; override;
-    constructor Create(const AJson: TJSONObject; const AResources: TDict<string, TBitmap>);
+    constructor Create(const AJson: TJSONValue; const AResources: TDict<string, TBitmap>);
   end;
 
   TSoShapeTemplate = class(TSoRenditionTemplate)
@@ -36,7 +36,7 @@ type
     FBrush: TBrush;
   public
     function Instantiate(const ASubject: TSoObject; const AImage: TAnonImage): TEngine2DRendition; override;
-    constructor Create(const AJson: TJSONObject); override;
+    constructor Create(const AJson: TJSONValue); override;
   end;
 
   TSoTextTemplate = class(TSoRenditionTemplate)
@@ -50,14 +50,14 @@ type
     FTextRect: TRectF;
   public
     function Instantiate(const ASubject: TSoObject; const AImage: TAnonImage): TEngine2DRendition; override;
-    constructor Create(const AJson: TJSONObject); override;
+    constructor Create(const AJson: TJSONValue); override;
   end;
 
 implementation
 
 { TSoTextTemplate }
 
-constructor TSoTextTemplate.Create(const AJson: TJSONObject);
+constructor TSoTextTemplate.Create(const AJson: TJSONValue);
 var
   vVal: TJSONValue;
 begin
@@ -107,7 +107,7 @@ end;
 
 { TSoShapeTemplate }
 
-constructor TSoShapeTemplate.Create(const AJson: TJSONObject);
+constructor TSoShapeTemplate.Create(const AJson: TJSONValue);
 var
   vVal: TJSONValue;
 begin
@@ -142,11 +142,12 @@ end;
 
 { TSoSpriteTemplate }
 
-constructor TSoSpriteTemplate.Create(const AJson: TJSONObject; const AResources: TDict<string, TBitmap>);
+constructor TSoSpriteTemplate.Create(const AJson: TJSONValue; const AResources: TDict<string, TBitmap>);
 var
   vVal: TJSONValue;
   i: Integer;
   vArr: TJSONArray;
+  vS: string;
 begin
   inherited Create(AJson);
 
@@ -156,7 +157,10 @@ begin
   begin
     vArr := TJSONArray(vVal);
     for i := 0 to vArr.Count - 1 do
+    begin
+      vS := vArr.Items[i].Value;
       FResourceList.Add(AResources[vArr.Items[i].Value]);
+    end;
   end;
 end;
 
@@ -173,7 +177,7 @@ end;
 
 { TSoRenditionTemplate }
 
-constructor TSoRenditionTemplate.Create(const AJson: TJSONObject);
+constructor TSoRenditionTemplate.Create(const AJson: TJSONValue);
 var
   vVal: TJSONValue;
 begin

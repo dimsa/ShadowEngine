@@ -13,9 +13,20 @@ uses
   function JsonToPointF(AJson: TJsonValue): TPointF;
   function JsonToRectF(AJson: TJsonValue): TRectF;
   function JsonToJustify(AJson: TJsonObject): TObjectJustify;
-
-
+  function JsonToRenditionType(AJson: TJsonValue): TRenditionType;
 implementation
+
+function JsonToRenditionType(AJson: TJsonValue): TRenditionType;
+begin
+  if AJson.Value.ToLower = 'sprite' then
+    Exit(TRenditionType.rtSprite);
+  if AJson.Value.ToLower = 'text' then
+    Exit(TRenditionType.rtText);
+  if AJson.Value.ToLower = 'shape' then
+    Exit(TRenditionType.rtShape);
+
+   raise Exception.Create('Unsupported SeJson Rendition Type');
+end;
 
 function JsonToFont(AJson: TJsonObject): TFont;
 var

@@ -66,7 +66,7 @@ begin
     FModel.Collider.AddTemplateFromJson(TJSONObject(vColliders.Items[i]));
 
   for i := 0 to vTemplates.Count - 1 do
-    FModel.Renderer.AddTemplateFromJson(TJSONObject(vColliders.Items[i]));
+    FModel.Renderer.AddTemplateFromJson(TJSONObject(vTemplates.Items[i]));
 
   vImg.Free;
 end;

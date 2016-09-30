@@ -1,148 +1,148 @@
 {
 	"ImageFile": "Res.png",
 	"Resources": [{
-		"Name": "ship",
+		"Name": "Ship",
 		"Body": {
 			"Position": "0,0;240,340"
 		}
 	}, {
-		"Name": "fire1",
+		"Name": "Fire1",
 		"Body": {
 			"Position": "240,0;310,145"
 		}
 	}, {
-		"Name": "fire2",
+		"Name": "Fire2",
 		"Body": {
 			"Position": "310,0;380,145"
 		}
 	}, {
-		"Name": "fire3",
+		"Name": "Fire3",
 		"Body": {
 			"Position": "380,0;450,145"
 		}
 	}, {
-		"Name": "asteroid",
+		"Name": "Asteroid",
 		"Body": {
 			"Position": "240,145;380,260"
 		}
 	}, {
-		"Name": "littleasteroid1",
+		"Name": "Littleasteroid1",
 		"Body": {
 			"Position": "380,145;415,180"
 		}
 	}, {
-		"Name": "littleasteroid2",
+		"Name": "Littleasteroid2",
 		"Body": {
 			"Position": "415,145;450,180"
 		}
 	}, {
-		"Name": "littleasteroid3",
+		"Name": "Littleasteroid3",
 		"Body": {
 			"Position": "380,180;415,215"
 		}
 	}, {
-		"Name": "star",
+		"Name": "Star",
 		"Body": {
 			"Position": "415,180;450,215"
 		}
 	}, {
-		"Name": "lifeicon",
+		"Name": "Lifeicon",
 		"Body": {
 			"Position": "380,215;415,260"
 		}
 	}, {
-		"Name": "collision1",
+		"Name": "Collision1",
 		"Body": {
 			"Position": "240,260;280,340"
 		}
 	}, {
-		"Name": "collision2",
+		"Name": "Collision2",
 		"Body": {
 			"Position": "280,260;320,340"
 		}
 	}, {
-		"Name": "collision3",
+		"Name": "Collision3",
 		"Body": {
 			"Position": "320,260;360,340"
 		}
 	}, {
-		"Name": "collision4",
+		"Name": "Collision4",
 		"Body": {
 			"Position": "360,260;400,340"
 		}
 	}, {
-		"Name": "shiplight2",
+		"Name": "ShipLight2",
 		"Body": {
 			"Position": "200,340;400,390"
 		}
 	}, {
-		"Name": "shiplight1",
+		"Name": "ShipLight1",
 		"Body": {
 			"Position": "0,340;200,390"
 		}
 	}, {
-		"Name": "shiplight3",
+		"Name": "ShipLight3",
 		"Body": {
 			"Position": "0,390;200,440"
 		}
 	}, {
-		"Name": "button",
+		"Name": "Button",
 		"Body": {
 			"Position": "200,390;450,440"
 		}
 	}, {
-		"Name": "gamelogo",
+		"Name": "Gamelogo",
 		"Body": {
 			"Position": "0,440;300,650"
 		}
 	}, {
-		"Name": "ltlbutenabled",
+		"Name": "Ltlbutenabled",
 		"Body": {
 			"Position": "300,440;375,490"
 		}
 	}, {
-		"Name": "ltlbutdisabled",
+		"Name": "Ltlbutdisabled",
 		"Body": {
 			"Position": "375,440;450,490"
 		}
 	}, {
-		"Name": "arrow",
+		"Name": "Arrow",
 		"Body": {
 			"Position": "300,490;375,540"
 		}
 	}, {
-		"Name": "asteroidcomix",
+		"Name": "Asteroidcomix",
 		"Body": {
 			"Position": "300,540;410,650"
 		}
 	}, {
-		"Name": "captain1",
+		"Name": "Captain1",
 		"Body": {
 			"Position": "0,650;150,830"
 		}
 	}, {
-		"Name": "captain2",
+		"Name": "Captain2",
 		"Body": {
 			"Position": "150,650;300,830"
 		}
 	}, {
-		"Name": "captain3",
+		"Name": "Captain3",
 		"Body": {
 			"Position": "300,650;450,830"
 		}
 	}, {
-		"Name": "shipcomix",
+		"Name": "Shipcomix",
 		"Body": {
 			"Position": "0,830;270,960"
 		}
 	}, {
-		"Name": "planetcomix",
+		"Name": "Planetcomix",
 		"Body": {
 			"Position": "270,830;450,990"
 		}
 	}],
 	"Colliders": [{
-		"Name": "ship",
+		"Name": "Ship",
 		"Body": [{
 			"Type": "Circle",
 			"Center": "-1,52",
@@ -164,44 +164,57 @@
 			"Friction": "0"
 		}]
 	}, {
-		"Name": "asteroid",
+		"Name": "Asteroid",
 		"Body": [{
 			"Type": "Circle",
 			"Center": "0,0",
 			"Radius": "50"
 		}]
 	}],
-	"Templates": [
-	{	
+	"Templates": [{
 		"Name": "Ship",
-		"Opacity": 1,
-		"Justify": "Center",
-		"Resources": ["Ship"]
-	}, {	
+		"Type": "Sprite",
+		"Body": {
+			"Opacity": 1,
+			"Justify": "Center",
+			"Resources": ["Ship"]
+		}
+	}, {
 		"Name": "FireRight",
-		"Opacity": 1,
-		"Margin": "0,100",
-		"Justify": "TopCenter",
-		"Resources": ["Fire1", "Fire2", "Fire3"],
-		"Prefix": "FireRight"
-	}, {	
+		"Type": "Sprite",
+		"Body": {
+			"Opacity": 1,
+			"Margin": "0,100",
+			"Justify": "TopCenter",
+			"Resources": ["Fire1", "Fire2", "Fire3"],
+			"Prefix": "FireRight"
+		}
+	}, {
 		"Name": "FireLeft",
-		"Opacity": 1,
-		"Flip": 1,
-		"Margin": "0,100",
-		"Justify": "TopCenter",
-		"Resources": ["Fire1", "Fire2", "Fire3"],
-		"Prefix": "FireLeft"
-	}, {	
+		"Type": "Sprite",
+		"Body": {
+			"Opacity": 1,
+			"Flip": 1,
+			"Margin": "0,100",
+			"Justify": "TopCenter",
+			"Resources": ["Fire1", "Fire2", "Fire3"],
+			"Prefix": "FireLeft"
+		}
+	}, {
 		"Name": "ShipLight",
-		"Opacity": 1,
-		"Margin": "0,50",
-		"Justify": "TopCenter",
-		"Resources": ["ShipLight1", "ShipLight2", "ShipLight3"],
-		"Prefix": "ShipLight"
-	}, {	
+		"Type": "Sprite",
+		"Body": {
+			"Opacity": 1,
+			"Margin": "0,50",
+			"Justify": "TopCenter",
+			"Resources": ["ShipLight1", "ShipLight2", "ShipLight3"],
+			"Prefix": "ShipLight"
+		}
+	}, {
 		"Name": "Collision",
-		"Resources": ["Collision1", "Collision2", "Collision3", "Collision4"]
-	}
-	]
+		"Type": "Sprite",
+		"Body": {
+			"Resources": ["Collision1", "Collision2", "Collision3", "Collision4"]
+		}
+	}]
 }

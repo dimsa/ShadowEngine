@@ -9,7 +9,6 @@ uses
   uSoContainerTypes, uSoBasePart, uSoRenditionTemplate, uJsonUtils;
 
 type
-
   TSoRenderer = class(TSoOperator<TEngine2DRendition>)
   private
     FTemplates: TDict<string, TSoRenditionTemplate>;
@@ -79,15 +78,22 @@ end;
 
 procedure TSoRenderer.AddTemplateFromJson(const AJson: TJSONObject);
 var
-  vRend: TEngine2DRendition;
   vVal: TJSONValue;
+  vTemplate: TSoRenditionTemplate;
+  vType: TRenditionType;
 begin
+  if AJson.TryGetValue('Type', vVal) then
+    vType := JsonToRenditionType(vVal);
 
-{  if AJson.TryGetValue('Position', vVal)  AJson.GetValue.TryGetValue('Position') then
-  begin
-    FTemplates.Add(Aj);
-    vRend := TEngine2DRendition.Create(AJson);
-  end;      }
+  if AJson.TryGetValue('Body', vVal) then
+    case vType of
+      rtSprite: vTemplate := TSoSpriteTemplate.Create(vVal, FResources);
+      rtText: vTemplate := TSoTextTemplate.Create(vVal);
+      rtShape: vTemplate := TSoShapeTemplate.Create(vVal);
+    end;
+
+  if AJson.TryGetValue('Name', vVal) then
+    FTemplates.Add(vVal.Value, vTemplate);
 end;
 
 constructor TSoRenderer.Create(const ACritical: TCriticalSection;
@@ -97,6 +103,7 @@ begin
   FImage := AImage;
   FImage.OnResize := OnImageResize;
   FResources := TDict<string, TBitmap>.Create;
+  FTemplates := TDict<string, TSoRenditionTemplate>.Create;
   OnImageResize(FImage);
   FBackGround := TBitmap.Create;
 end;
@@ -104,9 +111,14 @@ end;
 destructor TSoRenderer.Destroy;
 var
   vBmp: TBitmap;
+  vItem: TSoRenditionTemplate;
 begin
   for vBmp in FResources.Values do
     vBmp.Free;
+
+  for vItem in FTemplates.Values do
+    vItem.Free;
+  FTemplates.Free;
 
   FResources.Free;
   inherited;

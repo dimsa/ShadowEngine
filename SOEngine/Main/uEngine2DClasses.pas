@@ -20,6 +20,8 @@ type
     HorAlign, VerAlign: TTextAlign;
   end;
 
+  TRenditionType = (rtSprite, rtText, rtShape);
+
 const
   pi180 = 0.0174532925;
 {  CJustifyPoints: array[TObjectJustify] of TPoint = (
