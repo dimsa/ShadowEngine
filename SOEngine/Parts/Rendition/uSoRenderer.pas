@@ -6,7 +6,7 @@ interface
 uses
   System.SyncObjs, System.SysUtils, System.JSON, {$I 'Utils\DelphiCompatability.inc'}
   uCommonClasses, uSoTypes, uEasyDevice, uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoObject,
-  uSoContainerTypes, uSoBasePart, uSoRenditionTemplate;
+  uSoContainerTypes, uSoBasePart, uSoRenditionTemplate, uJsonUtils;
 
 type
 
@@ -28,9 +28,11 @@ type
     property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint;
     property OnEndPaint: TEvent<TAnonImage> write SetOnEndPaint;
     property Background: TBitmap write SetBackground;
-    procedure AddTemplateFromJson(const AImage: TAnonImage; const AJson: TJSONObject);
+    procedure AddTemplateFromJson(const AJson: TJSONObject);
+    procedure AddResourceFromJson(const ABitmap: TBitmap; const AJson: TJSONObject);
     procedure LoadTemplateFromSeJson(const AFilename: string);
     constructor Create(const ACritical: TCriticalSection; const AImage: TAnonImage);
+    destructor Destroy; override;
     procedure Execute; // Render On Tick
     procedure Add(const AItem: TEngine2DRendition; const AName: string = ''); override;
     function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TEngine2DRendition; override;
@@ -54,7 +56,28 @@ begin
   Add(Result, AName);
 end;
 
-procedure TSoRenderer.AddTemplateFromJson(const AImage: TAnonImage; const AJson: TJSONObject);
+procedure TSoRenderer.AddResourceFromJson(const ABitmap: TBitmap; const AJson: TJSONObject);
+var
+  vBmp: tBitmap;
+  vRect: TRect;
+  vVal: TJSONValue;
+begin
+  vRect := JsonToRectF((TJSONObject(AJson.GetValue('Body')).GetValue('Position'))).Round;
+  vBmp := tBitmap.Create;
+  vBmp.Width := vRect.Width;
+  vBmp.Height := vRect.Height;
+  vBmp.Canvas.BeginScene();
+  vBmp.Clear(1);
+  vBmp.Canvas.DrawBitmap(
+    ABitmap,
+    TRectF.Create(vRect.Left, vRect.Top, vRect.Left + vRect.Width, vRect.Top + vRect.Height),
+    TRectF.Create(0, 0, vRect.Width, vRect.Height), 1, False);
+  vBmp.Canvas.EndScene;
+  if AJson.TryGetValue('Name', vVal) then
+    FResources.Add(vVal.Value, vBmp);
+end;
+
+procedure TSoRenderer.AddTemplateFromJson(const AJson: TJSONObject);
 var
   vRend: TEngine2DRendition;
   vVal: TJSONValue;
@@ -73,8 +96,20 @@ begin
   inherited Create(ACritical);
   FImage := AImage;
   FImage.OnResize := OnImageResize;
+  FResources := TDict<string, TBitmap>.Create;
   OnImageResize(FImage);
   FBackGround := TBitmap.Create;
+end;
+
+destructor TSoRenderer.Destroy;
+var
+  vBmp: TBitmap;
+begin
+  for vBmp in FResources.Values do
+    vBmp.Free;
+
+  FResources.Free;
+  inherited;
 end;
 
 procedure TSoRenderer.Execute;

@@ -3,7 +3,7 @@ unit uTemplateManager;
 interface
 
 uses
-  System.JSON, System.SysUtils,
+  System.JSON, System.SysUtils, System.StrUtils,
   uSoTypes, uSoModel, uEngine2DClasses;
 
 type
@@ -35,10 +35,12 @@ end;
 procedure TTemplateManager.LoadSeJson(const AFileName: string);
 var
   vJSON: TJSONObject;
-  vColliders, vResources: TJSONArray;
+  vColliders, vResources, vTemplates: TJSONArray;
   vFile: TStringList;
   i: Integer;
   vImg: TAnonImage;
+  s: string;
+  vNum: Int;
 begin
   vFile := TStringList.Create;
   vFile.LoadFromFile(AFileName);
@@ -46,20 +48,25 @@ begin
   vFile.Free;
 
   vImg := TAnonImage.Create(nil);
-  vImg.Bitmap.LoadFromFile(vJSON.GetValue('ImageFile').ToString);
+  s := AFileName;
+
+  // There is no good function that returns dir of AFileName or I can nor find it. So it's Analog.
+  vNum := PosEx('/', ReverseString(AFileName));
+  Delete(s, Length(s) - vNum + 1, vNum );
+  vImg.Bitmap.LoadFromFile(s + '/' + vJSON.GetValue('ImageFile').Value);
 
   vResources := vJSON.GetValue('Resources') as TJSONArray;
   vColliders := vJSON.GetValue('Colliders') as TJSONArray;
+  vTemplates := vJSON.GetValue('Templates') as TJSONArray;
 
   for i := 0 to vResources.Count - 1 do
-  begin
-    FModel.Renderer.AddTemplateFromJson(vImg, TJSONObject(vResources.Items[i]));
-  end;
+    FModel.Renderer.AddResourceFromJson(vImg.Bitmap, TJSONObject(vResources.Items[i]));
 
   for i := 0 to vColliders.Count - 1 do
-  begin
     FModel.Collider.AddTemplateFromJson(TJSONObject(vColliders.Items[i]));
-  end;
+
+  for i := 0 to vTemplates.Count - 1 do
+    FModel.Renderer.AddTemplateFromJson(TJSONObject(vColliders.Items[i]));
 
   vImg.Free;
 end;

@@ -286,13 +286,13 @@ begin
     if FResources[i].IsHasShapes then
        vObjArr.Add(FResources[i].AsJsonCollider);
 
-  vJson.AddPair('Coliders', vObjArr);
+  vJson.AddPair('Colliders', vObjArr);
 
   vObjArr := nil;
   vObjArr := TJSONArray.Create;
   for i := 0 to FObjects.Count - 1 do
     vObjArr.Add(FObjects[i].AsJson);
-  vJson.AddPair('Objects', vObjArr);
+  vJson.AddPair('Templates', vObjArr);
 
   vObjArr := nil;
 

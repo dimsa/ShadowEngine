@@ -10,7 +10,7 @@ uses
   function JsonToFillTextFlags(AJson: TJsonObject): TFillTextFlags;
   function JsonToTextAlign(AJson: TJsonObject): TTextAlign;
   function JsonToBoolean(AJson: TJsonObject): Bool;
-  function JsonToRectF(AJson: TJsonObject): TRectF;
+  function JsonToRectF(AJson: TJsonValue): TRectF;
   function JsonToJustify(AJson: TJsonObject): TObjectJustify;
 
 implementation
@@ -75,7 +75,7 @@ begin
     Result := False;
 end;
 
-function JsonToRectF(AJson: TJsonObject): TRectF;
+function JsonToRectF(AJson: TJSONValue): TRectF;
 var
   vArr, vArr1, vArr2: TArray<string>;
 begin
