@@ -3,7 +3,7 @@ unit uUnitManager;
 interface
 
 uses
-  uCommonClasses,
+  uCommonClasses, uSoTypes,
   uSoModel, uSoObject,
   uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoFormatter, uSoAnimation,
   uSoLogic, uSoProperties, uSoProperty;
@@ -41,11 +41,11 @@ type
     function AddNewLogic(const AName: string = ''): TSoLogic; overload;
     function AddNewLogic(const AHandler: TNotifyEvent<TSoObject>; const AName: string = ''): TSoLogic; overload;
 
-    function AddProperty(const ATemplateName: string): TSoProperties; overload;
-    function AddProperty(const AName: string; const AValue: Double): TSoProperties; overload;
-    function AddProperty(const AName: string; const AValue: Integer): TSoProperties; overload;
-    function AddProperty(const AName: string; const AValue: string): TSoProperties; overload;
-    function AddProperty(const AName: string; const AValue: TObject): TSoProperties; overload;
+    function AddProperty(const ATemplateName: string): TSoProperty; overload;
+    function AddProperty(const AName: string; const AValue: Double): TSoProperty; overload;
+    function AddProperty(const AName: string; const AValue: Integer): TSoProperty; overload;
+    function AddProperty(const AName: string; const AValue: string): TSoProperty; overload;
+    function AddProperty(const AName: string; const AValue: TObject): TSoProperty; overload;
 
     function AddContainer(const AName: string = ''): TSoObject;
     function Manage(const AContainer: TSoObject): TUnitManager; overload;
@@ -142,44 +142,34 @@ begin
   Result.OnExecute := AHandler;
 end;
 
-function TUnitManager.AddProperty(const AName: string; const AValue: Double): TSoProperties;
+function TUnitManager.AddProperty(const AName: string; const AValue: Double): TSoProperty;
 begin
-  Result := AddProperty(AName, @AValue)
+  Result := TSoObjectFriend(FActiveContainer).FProperties.Add(AName);
+  Result.AsDouble := AValue;
 end;
 
-function TUnitManager.AddProperty(const ATemplateName: string): TSoProperties;
+function TUnitManager.AddProperty(const ATemplateName: string): TSoProperty;
 begin
-
+  raise Exception.Create('Add property from template not Implemented');
 end;
 
-function TUnitManager.AddProperty(const AName: string; const AValue: Integer): TSoProperties;
+function TUnitManager.AddProperty(const AName: string; const AValue: Integer): TSoProperty;
 begin
-  Result := AddProperty(AName, @AValue)
+  Result := TSoObjectFriend(FActiveContainer).FProperties.Add(AName);
+  Result.AsInt := AValue;
 end;
 
-function TUnitManager.AddProperty(const AName: string; const AValue: TObject): TSoProperties;
-var
-  vProp: TSoProperty;
+function TUnitManager.AddProperty(const AName: string; const AValue: TObject): TSoProperty;
 begin
-  vProp := TSoProperty.Create(AValue);
-  TSoObjectFriend(FActiveContainer).FProperties.Add(AName).Value := vProp;
-  Result := TSoObjectFriend(FActiveContainer).FProperties;
+  Result := TSoObjectFriend(FActiveContainer).FProperties.Add(AName);
+  Result.Value := AValue;
 end;
 
-function TUnitManager.AddProperty(const AName, AValue: string): TSoProperties;
+function TUnitManager.AddProperty(const AName, AValue: string): TSoProperty;
 begin
-  Result := AddProperty(AName, @AValue)
+  Result := TSoObjectFriend(FActiveContainer).FProperties.Add(AName);
+  Result.AsString := AValue;
 end;
-
-{function TUnitManager.AddProperty(const ATemplateName: string): TSoProperties;
-begin
-  Result := FModel.PropertyKeeper.AddFromTemplate(FActiveContainer, ATemplateName);
-end;
-
-function TUnitManager.AddProperty(const AObject: TSoProperties): TSoProperties;
-begin
-  FModel.PropertyKeeper.Add(AObject);
-end;}
 
 function TUnitManager.AddMouseHandler(const ATemplateName: string): TSoMouseHandler;
 begin

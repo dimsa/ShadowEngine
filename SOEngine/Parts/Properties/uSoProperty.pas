@@ -104,6 +104,7 @@ end;
 
 constructor TSoProperty.Create(ADouble: Double);
 begin
+  FOnChangeHandlers := TNotifyEventList.Create;
   SetDouble(ADouble);
 end;
 

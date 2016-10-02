@@ -7,6 +7,7 @@ uses
   uSoTypes, uNamedList, uE2DRendition, uE2DResource, uSoObject, uEngine2DClasses;
 
 type
+  TSoObjectFriend = class(TSoObject);
   // Instead of old TEngine2DSprite it containts not all sprites, but only the sprites it can use.
   TSoSprite = class(TEngine2DRendition)
   private
@@ -15,6 +16,8 @@ type
     function GetResName: string;
     procedure SetResIndex(const Value: Integer);
     procedure SetResName(const Value: string);
+    procedure OnWidthChanged(ASender: TObject);
+    procedure OnHeightChanged(ASender: TObject);
   protected
     function GetHeight: Single; override;
     function GetWidth: Single; override;
@@ -28,13 +31,27 @@ type
 
 implementation
 
+uses
+  uSoProperty;
+
 { TEngine2DSPrite }
 
 constructor TSoSprite.Create(const ASubject: TSoObject; const AImage: TAnonImage;
   const AResourceList: TNamedList<TSoSpriteResource>);
+var
+  vProp: TSoProperty;
 begin
   inherited Create(ASubject, AImage);
   FResourceList := AResourceList;
+
+  with TSoObjectFriend(ASubject) do begin
+    vProp := FProperties.Add('Width');
+    vProp.AsDouble := Width;
+    vProp.AddOnChangeHandler(OnWidthChanged);
+    vProp := FProperties.Add('Height');
+    vProp.AsDouble := Height;
+    vProp.AddOnChangeHandler(OnHeightChanged);
+  end;
 end;
 
 destructor TSoSprite.Destroy;
@@ -56,6 +73,22 @@ end;
 function TSoSprite.GetWidth: Single;
 begin
   Result := FResourceList[FResIndex].Width;
+end;
+
+procedure TSoSprite.OnHeightChanged(ASender: TObject);
+begin
+  if Height <> 0 then
+    FSubject.Scale := TSoProperty(ASender).AsDouble / Height
+  else
+    FSubject.Scale := 0;
+end;
+
+procedure TSoSprite.OnWidthChanged(ASender: TObject);
+begin
+  if Width <> 0 then
+    FSubject.Scale := TSoProperty(ASender).AsDouble / Width
+  else
+    FSubject.Scale := 0;
 end;
 
 procedure TSoSprite.Repaint;

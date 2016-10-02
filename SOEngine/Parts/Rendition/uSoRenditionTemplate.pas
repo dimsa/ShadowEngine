@@ -4,8 +4,8 @@ interface
 
 uses
   System.JSON, uJsonUtils, FMX.Graphics, System.UITypes, System.UIConsts, System.SysUtils,
-  uGeometryClasses, uSoTypes, uE2DRendition, uE2DShape, uE2DSprite, uE2DText, uSoObject,
-  uEngine2DClasses;
+  uGeometryClasses, uSoTypes, uE2DRendition, uE2DShape, uSoSprite, uE2DText, uSoObject,
+  uEngine2DClasses, uNamedList, uE2DResource;
 
 type
   TSoRenditionTemplate = class
@@ -13,7 +13,6 @@ type
     FOpacity: Single;
     FObjectJustify: TObjectJustify;
     FMargin: TPointF;
-    FFlip: Boolean;
   public
     function Instantiate(const ASubject: TSoObject; const AImage: TAnonImage): TEngine2DRendition; virtual; abstract;
     constructor Create(const AJson: TJSONValue); virtual;
@@ -22,7 +21,7 @@ type
   TSoSpriteTemplate = class(TSoRenditionTemplate)
   private
     FResources: TDict<string, TBitmap>;
-    FResourceList: TList<TBitmap>;
+    FResourceList:  TNamedList<TSoSpriteResource>;
   public
     function Instantiate(const ASubject: TSoObject; const AImage: TAnonImage): TEngine2DRendition; override;
     constructor Create(const AJson: TJSONValue; const AResources: TDict<string, TBitmap>);
@@ -152,27 +151,26 @@ begin
   inherited Create(AJson);
 
   FResources := AResources;
-  FResourceList := TList<TBitmap>.Create;
+  FResourceList := TNamedList<TSoSpriteResource>.Create;
   if AJson.TryGetValue('Resources', vVal) then
   begin
     vArr := TJSONArray(vVal);
     for i := 0 to vArr.Count - 1 do
     begin
       vS := vArr.Items[i].Value;
-      FResourceList.Add(AResources[vArr.Items[i].Value]);
+      FResourceList.Add(TSoSpriteResource.Create(AResources[vArr.Items[i].Value]));
     end;
   end;
 end;
 
 function TSoSpriteTemplate.Instantiate(const ASubject: TSoObject; const AImage: TAnonImage): TEngine2DRendition;
 begin
-{ TODO : Create new TSoSprite }
-  raise Exception.Create('Instantiate of TSoSpriteTemplate not Implemented');
-{  Result := TEngine2DSprite.Create(ASubject, AImage, FResourceList);
-  with TEngine2DSprite(Result) do begin
+  Result := TSoSprite.Create(ASubject, AImage, FResourceList);
+  with Result do begin
+    Margin := TPointF.Create(FMargin.X, FMargin.Y);
     Opacity := FOpacity;
     Justify := FObjectJustify;
-  end;   }
+  end;
 end;
 
 { TSoRenditionTemplate }
@@ -191,10 +189,10 @@ begin
   else
     FObjectJustify := Center;
 
-  if AJson.TryGetValue('Flip', vVal) then
+{  if AJson.TryGetValue('Flip', vVal) then
     FFlip := JsonToBool(vVal)
   else
-    FFlip := False;
+    FFlip := False;}
 
   if AJson.TryGetValue('Margin', vVal) then
     FMargin := JsonToPointF(vVal)

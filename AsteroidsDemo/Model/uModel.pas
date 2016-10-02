@@ -62,17 +62,17 @@ begin
     Y := Y + FDy;
     Rotate := Rotate + FDa;
 
-{   if X - vObj['Width'].AsDouble * 0.5 < 0 then
+   if X < - vObj['Width'].AsDouble * 0.5 then
      X := vObj['WorldWidth'].AsDouble + vObj['Width'].AsDouble * 0.5;
 
-   if Y - vObj['Height'].AsDouble * 0.5 < 0 then
+   if Y  < - vObj['Height'].AsDouble * 0.5 then
      Y := vObj['WorldHeight'].AsDouble + vObj['Height'].AsDouble * 0.5;
 
-   if X + vObj['Width'].AsDouble * 0.5 > vObj['WorldWidth'].AsDouble then
+   if X > vObj['WorldWidth'].AsDouble + vObj['Width'].AsDouble * 0.5  then
      X := - vObj['Width'].AsDouble * 0.5;
 
-   if Y + vObj['Height'].AsDouble * 0.5 > vObj['WorldHeight'].AsDouble then
-     Y := - vObj['Height'].AsDouble * 0.5;   }
+   if Y > vObj['WorldHeight'].AsDouble + vObj['Height'].AsDouble * 0.5 then
+     Y := - vObj['Height'].AsDouble * 0.5;
   end;
 
 

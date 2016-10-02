@@ -9,17 +9,20 @@
 		"Name": "Fire1",
 		"Body": {
 			"Position": "240,0;310,145"
-		}
+		},
+		"Mirror-x": "Fire1Mirror"
 	}, {
 		"Name": "Fire2",
 		"Body": {
 			"Position": "310,0;380,145"
-		}
+		},
+		"Mirror-x": "Fire2Mirror"
 	}, {
 		"Name": "Fire3",
 		"Body": {
 			"Position": "380,0;450,145"
-		}
+		},
+		"Mirror-x": "Fire3Mirror"
 	}, {
 		"Name": "Asteroid",
 		"Body": {
@@ -194,10 +197,9 @@
 		"Type": "Sprite",
 		"Body": {
 			"Opacity": 1,
-			"Flip": 1,
 			"Margin": "0,100",
 			"Justify": "TopCenter",
-			"Resources": ["Fire1", "Fire2", "Fire3"],
+			"Resources": ["Fire1Mirror", "Fire2Mirror", "Fire3Mirror"],
 			"Prefix": "FireLeft"
 		}
 	}, {

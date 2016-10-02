@@ -4,7 +4,7 @@ interface
 
 uses
   FMX.Types, System.Types, System.UITypes, FMX.Graphics, System.Generics.Collections, FMX.Objects,
-  System.Classes, System.SyncObjs;
+  System.Classes, System.SyncObjs, System.SysUtils;
 
 type
 
@@ -36,6 +36,7 @@ type
   TCriticalSection = System.SyncObjs.TCriticalSection;
   TAlphaColorRec = System.UITypes.TAlphaColorRec;
   TFontStyle = System.UITypes.TFontStyle;
+  Exception = System.SysUtils.Exception;
 implementation
 
 end.

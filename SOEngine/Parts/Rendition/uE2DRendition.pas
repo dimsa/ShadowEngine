@@ -16,6 +16,8 @@ type
     FBringToBack, FSendToFront: TNotifyEvent;
     FOnDestroy: TNotifyEvent;
     procedure SetOpacity(const Value: Single);
+  private
+    procedure SetMargin(const Value: TPointF);
   protected
     FImage: TAnonImage;
     FOpacity: Single;
@@ -30,6 +32,7 @@ type
   public
     property Justify: TObjectJustify read FJustify write SetJustify;
     property Opacity: Single read FOpacity write SetOpacity;
+    property Margin: TPointF read FMargin write SetMargin;
     property OnBringToBack: TNotifyEvent read FBringToBack write FBringToBack;
     property OnSendToFront: TNotifyEvent read FSendToFront write FSendToFront;
     property Width: Single read GetWidth;
@@ -58,11 +61,6 @@ begin
   FSubject.AddChangeScaleHandler(OnChangeScale);
 
   FMargin := TPointF.Zero;
-
-  with TSoObjectFriend(ASubject) do begin
-    FProperties.Add('Width').AsDouble := Width;
-    FProperties.Add('Height').AsDouble := Height;;
-  end;
 end;
 
 destructor TEngine2DRendition.Destroy;
@@ -98,6 +96,11 @@ end;
 procedure TEngine2DRendition.SetJustify(const Value: TObjectJustify);
 begin
   FJustify := Value;
+end;
+
+procedure TEngine2DRendition.SetMargin(const Value: TPointF);
+begin
+  FMargin := Value;
 end;
 
 procedure TEngine2DRendition.SetOpacity(const Value: Single);

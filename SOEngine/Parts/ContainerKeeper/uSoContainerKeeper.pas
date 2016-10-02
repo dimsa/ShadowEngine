@@ -59,7 +59,8 @@ begin
     FContainers.Add(AEventArgs.Subject, vContainer);
     TSoObjectFriend(AEventArgs.Subject).SetContainer(vContainer);
     AEventArgs.Subject.AddDestroyHandler(OnObjectDestroy);
-  end;
+  end else
+    vContainer := FContainers[AEventArgs.Subject];
 
   TSoContainerFriend(vContainer).Add(AEventArgs.BasePart);
 end;

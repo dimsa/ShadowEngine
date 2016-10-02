@@ -22,6 +22,7 @@ type
     procedure SetOnBeginPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnEndPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnPaintBackground(const Value: TEvent<TAnonImage>);
+    function CutBitmapFrom(const ABitmap: TBitmap; ARect: TRect): TBitmap;
   public
     property OnPaintBackground: TEvent<TAnonImage> write SetOnPaintBackground;
     property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint;
@@ -51,8 +52,21 @@ end;
 function TSoRenderer.AddFromTemplate(const ASubject: TSoObject;
   const ATemplateName: string; const AName: string = ''): TEngine2DRendition;
 begin
-  Result := TEngine2DRendition.Create(ASubject, FImage);
+  Result := FTemplates[ATemplateName].Instantiate(ASubject, FImage);// TEngine2DRendition.Create(ASubject, FImage);
   Add(Result, AName);
+end;
+
+function TSoRenderer.CutBitmapFrom(const ABitmap: TBitmap; ARect: TRect): TBitmap;
+begin
+  Result := tBitmap.Create;
+  with Result do begin
+    Width := ARect.Width;
+    Height := ARect.Height;
+    Canvas.BeginScene;
+    Clear(1);
+    Canvas.DrawBitmap(ABitmap, TRectF.Create(ARect.Left, ARect.Top, ARect.Left + ARect.Width, ARect.Top + ARect.Height), TRectF.Create(0, 0, ARect.Width, ARect.Height), 1, False);
+    Canvas.EndScene;
+  end;
 end;
 
 procedure TSoRenderer.AddResourceFromJson(const ABitmap: TBitmap; const AJson: TJSONObject);
@@ -62,18 +76,19 @@ var
   vVal: TJSONValue;
 begin
   vRect := JsonToRectF((TJSONObject(AJson.GetValue('Body')).GetValue('Position'))).Round;
-  vBmp := tBitmap.Create;
-  vBmp.Width := vRect.Width;
-  vBmp.Height := vRect.Height;
-  vBmp.Canvas.BeginScene();
-  vBmp.Clear(1);
-  vBmp.Canvas.DrawBitmap(
-    ABitmap,
-    TRectF.Create(vRect.Left, vRect.Top, vRect.Left + vRect.Width, vRect.Top + vRect.Height),
-    TRectF.Create(0, 0, vRect.Width, vRect.Height), 1, False);
-  vBmp.Canvas.EndScene;
+  vBmp := CutBitmapFrom(ABitmap, vRect);
   if AJson.TryGetValue('Name', vVal) then
     FResources.Add(vVal.Value, vBmp);
+
+  // Parameter of Mirror porperty is name of mirrored sprite
+  if AJson.TryGetValue('Mirror-x', vVal) then
+    FResources.Add(vVal.Value, CutBitmapFrom(ABitmap, TRect.Create(vRect.Right, vRect.Top, vRect.Left, vRect.Bottom)));
+
+  if AJson.TryGetValue('Mirror-y', vVal) then
+    FResources.Add(vVal.Value, CutBitmapFrom(ABitmap, TRect.Create(vRect.Left, vRect.Bottom, vRect.Right, vRect.Top)));
+
+  if AJson.TryGetValue('Mirror-xy', vVal) then
+    FResources.Add(vVal.Value, CutBitmapFrom(ABitmap, TRect.Create(vRect.Right, vRect.Bottom, vRect.Left, vRect.Top)));
 end;
 
 procedure TSoRenderer.AddTemplateFromJson(const AJson: TJSONObject);
@@ -91,6 +106,7 @@ begin
       rtText: vTemplate := TSoTextTemplate.Create(vVal);
       rtShape: vTemplate := TSoShapeTemplate.Create(vVal);
     end;
+
 
   if AJson.TryGetValue('Name', vVal) then
     FTemplates.Add(vVal.Value, vTemplate);

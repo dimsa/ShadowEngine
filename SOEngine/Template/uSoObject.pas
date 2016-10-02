@@ -68,6 +68,11 @@ begin
   FOnDestroyHandlers := TNotifyEventList.Create;
   FChangeScaleHandlers := TNotifyEventList.Create;
   FProperties := TSoProperties.Create;
+  FPosition.X := 0;
+  FPosition.Y := 0;
+  FPosition.Rotate := 0;
+  FPosition.ScaleX := 1;
+  FPosition.ScaleY := 1;
 end;
 
 destructor TSoObject.Destroy;
