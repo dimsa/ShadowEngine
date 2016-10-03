@@ -4,7 +4,7 @@ interface
 
 uses
   System.SyncObjs, uEngine2DClasses, System.SysUtils,
-  uSoTypes,
+  uSoTypes, uCommonClasses,
   uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper, uSoContainerKeeper,
   uSoPropertyKeeper;

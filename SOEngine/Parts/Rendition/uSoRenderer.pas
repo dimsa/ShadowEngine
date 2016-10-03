@@ -17,7 +17,7 @@ type
     FBackground: TBitmap; // Background of Engine that paints on every tick. Not sure if it should be here // Бэкграунд. Всегда рисуется в Repaint на весь fImage
     FOnPaintBackground, FOnBeginPaint, FOnEndPaint: TEvent<TAnonImage>;
    procedure OnItemDestroy(ASender: TObject);
-    procedure OnImageResize(ASender: TObject);
+
     procedure SetBackground(const Value: TBitmap);
     procedure SetOnBeginPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnEndPaint(const Value: TEvent<TAnonImage>);
@@ -117,10 +117,8 @@ constructor TSoRenderer.Create(const ACritical: TCriticalSection;
 begin
   inherited Create(ACritical);
   FImage := AImage;
-  FImage.OnResize := OnImageResize;
   FResources := TDict<string, TBitmap>.Create;
   FTemplates := TDict<string, TSoRenditionTemplate>.Create;
-  OnImageResize(FImage);
   FBackGround := TBitmap.Create;
 end;
 
@@ -191,12 +189,6 @@ end;
 procedure TSoRenderer.LoadTemplateFromSeJson(const AFilename: string);
 begin
 
-end;
-
-procedure TSoRenderer.OnImageResize(ASender: TObject);
-begin
-  FImage.Bitmap.Width := Round(FImage.Width * getScreenScale);
-  FImage.Bitmap.Height := ROund(FImage.Height * getScreenScale);
 end;
 
 procedure TSoRenderer.OnItemDestroy(ASender: TObject);

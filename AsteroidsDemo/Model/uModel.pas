@@ -3,7 +3,7 @@ unit uModel;
 interface
 
 uses
-  uSoObject;
+  uSoObject, uSoTypes;
 
 type
   TGameUnit = class
@@ -11,6 +11,7 @@ type
     FContainer: TSoObject;
     procedure OnLogicTick(ASender: TSoObject); virtual; abstract;
   public
+    procedure SetWorldSize(const ASize: TPointF);
     constructor Create(const AContainer: TSoObject); virtual;
   end;
 
@@ -42,6 +43,12 @@ begin
   FContainer := AContainer;
 end;
 
+procedure TGameUnit.SetWorldSize(const ASize: TPointF);
+begin
+  FContainer['WorldWidth'].AsDouble := ASize.X;
+  FContainer['WorldHeight'].AsDouble := ASize.Y;
+end;
+
 { TMovingUnit }
 
 constructor TMovingUnit.Create(const AContainer: TSoObject);
@@ -63,15 +70,15 @@ begin
     Rotate := Rotate + FDa;
 
    if X < - vObj['Width'].AsDouble * 0.5 then
-     X := vObj['WorldWidth'].AsDouble + vObj['Width'].AsDouble * 0.5;
+     X := vObj['WorldWidth'].AsDouble + vObj['Width'].AsDouble;
 
    if Y  < - vObj['Height'].AsDouble * 0.5 then
-     Y := vObj['WorldHeight'].AsDouble + vObj['Height'].AsDouble * 0.5;
+     Y := vObj['WorldHeight'].AsDouble + vObj['Height'].AsDouble;
 
-   if X > vObj['WorldWidth'].AsDouble + vObj['Width'].AsDouble * 0.5  then
+   if X > vObj['WorldWidth'].AsDouble + vObj['Width'].AsDouble  then
      X := - vObj['Width'].AsDouble * 0.5;
 
-   if Y > vObj['WorldHeight'].AsDouble + vObj['Height'].AsDouble * 0.5 then
+   if Y > vObj['WorldHeight'].AsDouble + vObj['Height'].AsDouble then
      Y := - vObj['Height'].AsDouble * 0.5;
   end;
 

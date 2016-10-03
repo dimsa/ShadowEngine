@@ -4,7 +4,7 @@ interface
 
 uses
   System.SyncObjs,
-  uSoTypes, uCommonClasses,
+  uSoTypes, uCommonClasses, uEasyDevice,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
   uEngine2DManager, uEngine2DStatus, uSoObject,
   uWorldManager, uUnitManager, uTemplateManager, uWorldStatus;
@@ -88,6 +88,8 @@ begin
   FTemplateManager := TTemplateManager.Create(FModel);
   FWorldStatus := TWorldStatus.Create(FModel, @FWidth, @FHeight);
 
+  FImage.OnResize := OnImageResize;
+
   FOptions.Up([EAnimateForever, EUseCollider]);
   FOptions.Down([EClickOnlyTop]);
 end;
@@ -135,6 +137,9 @@ begin
   FWidth := TAnonImage(ASender).Width;
   FHeight := TAnonImage(ASender).Height;
 
+  FImage.Bitmap.Width := Round(FImage.Width * getScreenScale);
+  FImage.Bitmap.Height := ROund(FImage.Height * getScreenScale);
+
   FOnResize.RaiseEvent(Self, FImage);
 end;
 
@@ -161,6 +166,7 @@ end;
 
 procedure TSoEngine.Start;
 begin
+  OnImageResize(FImage);
   FEngineThread.Start;
 end;
 

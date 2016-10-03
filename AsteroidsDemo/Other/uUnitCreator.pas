@@ -17,7 +17,6 @@ type
     ManageByName: TManageByNameDelegate;
     ManageNew: TManageNewDelegate;
     Manage: TManageDelegate;
-    procedure OnResize(ASender: TObject; AImage: TImage);
   public
     function NewShip: TShip;
     function NewSpaceDebris(const ASize: integer): TBigAsteroid;
@@ -47,6 +46,7 @@ begin
   with ManageNew('Ship') do begin
     Result := TShip.Create(ActiveContainer);
     AddRendition(vName);
+//    AddRendition('FireLeft');
 //    AddColliderObj(vName);
     AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
     AddProperty('Lifes', 3);
@@ -86,15 +86,6 @@ begin
     AddRendition(vName);
     AddColliderObj(vName);
     AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
-  end;
-end;
-
-procedure TUnitCreator.OnResize(ASender: TObject; AImage: TImage);
-begin
-  with ManageByName('Ship') do
-  begin
-    AddProperty('WorldWidth', FWorldManager.Size.X);
-    AddProperty('WorldHeight', FWorldManager.Size.Y);
   end;
 end;
 
