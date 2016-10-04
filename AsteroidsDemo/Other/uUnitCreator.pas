@@ -45,8 +45,11 @@ begin
   vName := 'Ship';
   with ManageNew('Ship') do begin
     Result := TShip.Create(ActiveContainer);
+
+    AddRendition('FireLeft');
+    AddRendition('FireRight');
     AddRendition(vName);
-//    AddRendition('FireLeft');
+
 //    AddColliderObj(vName);
     AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
     AddProperty('Lifes', 3);

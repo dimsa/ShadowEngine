@@ -19,7 +19,9 @@ type
     procedure OnPropertyChanged(ASender: TObject); // On one property changed
   public
     property Data[AName: string]: TSoProperty read GetProperty;{ write SetProperty;} default;
-    function Add(const AName: string): TSoProperty;
+    function HasProperty(const AName: string): Boolean;
+    function Add(const AName: string): TSoProperty; overload;
+    function Add(const AName: string; const AProperty: TSoProperty): TSoProperty; overload;
     function Remove(const AName: string): TSoProperty;
     procedure AddOnChangeHandler(const AHandler: TEvent<string>);
     procedure RemOnChangeHandler(const AHandler: TEvent<string>);
@@ -35,6 +37,11 @@ function TSoProperties.Add(const AName: string): TSoProperty;
 begin
   Result := TSoProperty.Create;
   FDict.Add(AName, Result);
+end;
+
+function TSoProperties.Add(const AName: string; const AProperty: TSoProperty): TSoProperty;
+begin
+  FDict.Add(AName, AProperty);
 end;
 
 procedure TSoProperties.AddOnChangeHandler(const AHandler: TEvent<string>);
@@ -66,6 +73,11 @@ end;
 function TSoProperties.GetProperty(AName: string): TSoProperty;
 begin
   Result := FDict[AName];
+end;
+
+function TSoProperties.HasProperty(const AName: string): Boolean;
+begin
+  Result := FDict.ContainsKey(AName);
 end;
 
 procedure TSoProperties.OnPropertyChanged(ASender: TObject);

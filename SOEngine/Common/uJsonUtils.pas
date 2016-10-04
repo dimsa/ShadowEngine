@@ -12,7 +12,7 @@ uses
   function JsonToBool(AJson: TJsonValue): Bool;
   function JsonToPointF(AJson: TJsonValue): TPointF;
   function JsonToRectF(AJson: TJsonValue): TRectF;
-  function JsonToJustify(AJson: TJsonObject): TObjectJustify;
+  function JsonToJustify(AJson: TJsonValue): TObjectJustify;
   function JsonToRenditionType(AJson: TJsonValue): TRenditionType;
 implementation
 
@@ -106,8 +106,32 @@ begin
   Result := TRectF.Create(vArr1[0].ToSingle, vArr1[1].ToSingle, vArr2[0].ToSingle, vArr2[1].ToSingle);
 end;
 
-function JsonToJustify(AJson: TJsonObject): TObjectJustify;
+function JsonToJustify(AJson: TJsonValue): TObjectJustify;
+var
+  vS: string;
 begin
+  vS := LowerCase(AJson.Value);
+  if vS = 'center'  then
+    Exit(TObjectJustify.Center);
+  if vS = 'topcenter'  then
+    Exit(TObjectJustify.TopCenter);
+  if vS = 'bottomcenter'  then
+    Exit(TObjectJustify.BottomCenter);
+
+  if vS = 'topleft'  then
+    Exit(TObjectJustify.TopLeft);
+  if vS = 'topright'  then
+    Exit(TObjectJustify.TopRight);
+
+  if vS = 'centerleft'  then
+    Exit(TObjectJustify.CenterLeft);
+  if vS = 'centerright'  then
+    Exit(TObjectJustify.CenterRight);
+
+  if vS = 'bottomleft'  then
+    Exit(TObjectJustify.BottomLeft);
+  if vS = 'bottomright'  then
+    Exit(TObjectJustify.BottomRight);
 
 end;
 

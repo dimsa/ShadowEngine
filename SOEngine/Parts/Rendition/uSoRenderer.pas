@@ -22,7 +22,7 @@ type
     procedure SetOnBeginPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnEndPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnPaintBackground(const Value: TEvent<TAnonImage>);
-    function CutBitmapFrom(const ABitmap: TBitmap; ARect: TRect): TBitmap;
+    function CutBitmapFrom(const ABitmap: TBitmap; const ARect: TRect; AFlipX: Boolean = False; AFlipY: Boolean = False): TBitmap;
   public
     property OnPaintBackground: TEvent<TAnonImage> write SetOnPaintBackground;
     property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint;
@@ -56,15 +56,26 @@ begin
   Add(Result, AName);
 end;
 
-function TSoRenderer.CutBitmapFrom(const ABitmap: TBitmap; ARect: TRect): TBitmap;
+function TSoRenderer.CutBitmapFrom(const ABitmap: TBitmap; const ARect: TRect; AFlipX: Boolean; AFlipY: Boolean): TBitmap;
+var
+  m: TMatrix;
 begin
   Result := tBitmap.Create;
   with Result do begin
-    Width := ARect.Width;
-    Height := ARect.Height;
+    Width := Abs(ARect.Width);
+    Height := Abs(ARect.Height);
     Canvas.BeginScene;
     Clear(1);
-    Canvas.DrawBitmap(ABitmap, TRectF.Create(ARect.Left, ARect.Top, ARect.Left + ARect.Width, ARect.Top + ARect.Height), TRectF.Create(0, 0, ARect.Width, ARect.Height), 1, False);
+    Canvas.SetMatrix(
+      TMatrix.CreateScaling(-2 * Ord(AFlipX) + 1, (-2 * Ord(AFlipY) + 1)) *
+      TMatrix.CreateTranslation(Width * Ord(AFlipX), Height * Ord(AFlipY)));
+
+
+    Canvas.DrawBitmap(
+      ABitmap,
+      TRectF.Create(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom),
+      TRectF.Create(0, 0, Abs(ARect.Width), Abs(ARect.Height)), 1, True);
+
     Canvas.EndScene;
   end;
 end;
@@ -80,15 +91,15 @@ begin
   if AJson.TryGetValue('Name', vVal) then
     FResources.Add(vVal.Value, vBmp);
 
-  // Parameter of Mirror porperty is name of mirrored sprite
+  // Parameter of Mirror property is name the of mirrored sprite
   if AJson.TryGetValue('Mirror-x', vVal) then
-    FResources.Add(vVal.Value, CutBitmapFrom(ABitmap, TRect.Create(vRect.Right, vRect.Top, vRect.Left, vRect.Bottom)));
+    FResources.Add(vVal.Value, CutBitmapFrom(ABitmap, vRect, True));
 
   if AJson.TryGetValue('Mirror-y', vVal) then
-    FResources.Add(vVal.Value, CutBitmapFrom(ABitmap, TRect.Create(vRect.Left, vRect.Bottom, vRect.Right, vRect.Top)));
+    FResources.Add(vVal.Value, CutBitmapFrom(ABitmap, vRect, False, True));
 
   if AJson.TryGetValue('Mirror-xy', vVal) then
-    FResources.Add(vVal.Value, CutBitmapFrom(ABitmap, TRect.Create(vRect.Right, vRect.Bottom, vRect.Left, vRect.Top)));
+    FResources.Add(vVal.Value, CutBitmapFrom(ABitmap, vRect, True, True));
 end;
 
 procedure TSoRenderer.AddTemplateFromJson(const AJson: TJSONObject);

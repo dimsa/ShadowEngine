@@ -25,7 +25,7 @@ type
     property ResIndex: Integer read FResIndex write SetResIndex;
     property ResName: string read GetResName write SetResName;
     procedure Repaint; override;
-    constructor Create(const ASubject: TSoObject; const AImage: TAnonImage; const AResourceList: TNamedList<TSoSpriteResource>); overload;
+    constructor Create(const ASubject: TSoObject; const AImage: TAnonImage; const AResourceList: TNamedList<TSoSpriteResource>; const APrefix: string = ''); overload;
     destructor Destroy; override;
   end;
 
@@ -37,7 +37,7 @@ uses
 { TEngine2DSPrite }
 
 constructor TSoSprite.Create(const ASubject: TSoObject; const AImage: TAnonImage;
-  const AResourceList: TNamedList<TSoSpriteResource>);
+  const AResourceList: TNamedList<TSoSpriteResource>; const APrefix: string = '');
 var
   vProp: TSoProperty;
 begin
@@ -45,12 +45,24 @@ begin
   FResourceList := AResourceList;
 
   with TSoObjectFriend(ASubject) do begin
-    vProp := FProperties.Add('Width');
-    vProp.AsDouble := Width;
-    vProp.AddOnChangeHandler(OnWidthChanged);
-    vProp := FProperties.Add('Height');
-    vProp.AsDouble := Height;
-    vProp.AddOnChangeHandler(OnHeightChanged);
+    if not FProperties.HasProperty('Width') then
+    begin
+      vProp := FProperties.Add('Width');
+      vProp.AsDouble := Width;
+      if APrefix <> '' then
+        FProperties.Add(APrefix + 'Width', vProp);
+
+      vProp.AddOnChangeHandler(OnWidthChanged);
+    end;
+    if not FProperties.HasProperty('Height') then
+    begin
+      vProp := FProperties.Add('Height');
+      vProp.AsDouble := Height;
+      if APrefix <> '' then
+        FProperties.Add(APrefix + 'Height', vProp);
+
+      vProp.AddOnChangeHandler(OnHeightChanged);
+    end;
   end;
 end;
 
@@ -97,10 +109,10 @@ begin
     FResourceList[FResIndex].Picture,
     FResourceList[FResIndex].Rect,
     RectF(
-      FSubject.X + FResourceList[FResIndex].WHalf * FSubject.ScaleX * CJustifyPoints[Justify].Left,
-      FSubject.Y + FResourceList[FResIndex].HHalf * FSubject.ScaleY * CJustifyPoints[Justify].Top,
-      FSubject.X + FResourceList[FResIndex].WHalf * FSubject.ScaleX * CJustifyPoints[Justify].Right,
-      FSubject.Y + FResourceList[FResIndex].HHalf * FSubject.ScaleY * CJustifyPoints[Justify].Bottom),
+      FSubject.X + FResourceList[FResIndex].WHalf * FSubject.ScaleX * CJustifyPoints[Justify].Left + FMargin.X,
+      FSubject.Y + FResourceList[FResIndex].HHalf * FSubject.ScaleY * CJustifyPoints[Justify].Top + FMargin.Y,
+      FSubject.X + FResourceList[FResIndex].WHalf * FSubject.ScaleX * CJustifyPoints[Justify].Right + FMargin.X,
+      FSubject.Y + FResourceList[FResIndex].HHalf * FSubject.ScaleY * CJustifyPoints[Justify].Bottom + FMargin.Y),
     1,
     True);
 end;
