@@ -64,23 +64,7 @@ var
    vObj: TSoObject;
 begin
   vObj := TSoObject(ASender);
-  with vObj do begin
-    X := X + FDx;
-    Y := Y + FDy;
-    Rotate := Rotate + FDa;
-
-   if X < - vObj['Width'].AsDouble * 0.5 then
-     X := vObj['WorldWidth'].AsDouble + vObj['Width'].AsDouble;
-
-   if Y  < - vObj['Height'].AsDouble * 0.5 then
-     Y := vObj['WorldHeight'].AsDouble + vObj['Height'].AsDouble;
-
-   if X > vObj['WorldWidth'].AsDouble + vObj['Width'].AsDouble  then
-     X := - vObj['Width'].AsDouble * 0.5;
-
-   if Y > vObj['WorldHeight'].AsDouble + vObj['Height'].AsDouble then
-     Y := - vObj['Height'].AsDouble * 0.5;
-  end;
+  
 
 
 

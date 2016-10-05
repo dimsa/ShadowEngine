@@ -26,6 +26,9 @@ type
 
 implementation
 
+uses
+  uLogicAssets;
+
 { TUnitCreator }
 
 constructor TUnitCreator.Create(const AUnitManager: TUnitManager; const AWorldManager: TWorldManager);
@@ -49,12 +52,15 @@ begin
     AddRendition('FireLeft');
     AddRendition('FireRight');
     AddRendition(vName);
-
+    AddProperty('Dx', 1.0);
+    AddProperty('Dy', 1.0);
+    AddProperty('Da', 2.0);
 //    AddColliderObj(vName);
-    AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
+  //  AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
     AddProperty('Lifes', 3);
     AddProperty('WorldWidth', FWorldManager.Size.X);
     AddProperty('WorldHeight', FWorldManager.Size.Y);
+    AddNewLogic(MovingThroughSides, 'MovingThroughSides');
   end;
 
 end;
@@ -70,7 +76,12 @@ begin
     ActiveContainer.Scale := ASize * 0.25;
     AddRendition(vName);
     AddColliderObj(vName);
-    AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
+    AddProperty('Dx', 1);
+    AddProperty('Dy', 1);
+    AddProperty('Da', 2);
+    AddProperty('WorldWidth', FWorldManager.Size.X);
+    AddProperty('WorldHeight', FWorldManager.Size.Y);
+   // AddNewLogic( {TGameUnitFriend(Result).OnLogicTick});
   end;
 end;
 
@@ -88,7 +99,9 @@ begin
     Result := TLtlAsteroid.Create(ActiveContainer);
     AddRendition(vName);
     AddColliderObj(vName);
-    AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
+//    AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
+    AddProperty('WorldWidth', FWorldManager.Size.X);
+    AddProperty('WorldHeight', FWorldManager.Size.Y);
   end;
 end;
 

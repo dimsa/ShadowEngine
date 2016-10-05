@@ -6,7 +6,7 @@ unit uE2DRendition;
 interface
 
 uses
-  uSoTypes, uSoObject, uEngine2DClasses, uSoBasePart, uSoContainerTypes;
+  uSoTypes, uSoObject, uEngine2DClasses, uSoBasePart, uSoContainerTypes, uGeometryClasses;
 
 type
   TSoObjectFriend = class(TSoObject);
@@ -29,6 +29,7 @@ type
     function GetWidth: Single; virtual; abstract;
     procedure OnSubjectDestroy(ASender: TObject); override;
     procedure OnChangeScale(ASender: TObject);
+    procedure OnChangePosition(ASender: TObject; APosition: TPosition);
   public
     property Justify: TObjectJustify read FJustify write SetJustify;
     property Opacity: Single read FOpacity write SetOpacity;
@@ -58,7 +59,8 @@ constructor TEngine2DRendition.Create(const ASubject: TSoObject; const AImage: T
 begin
   inherited Create(ASubject);
   FImage := AImage;
-  FSubject.AddChangeScaleHandler(OnChangeScale);
+  FSubject.AddChangePositionHandler(OnChangePosition);
+//  .AddChangeScaleHandler(OnChangeScale);
 
   FMargin := TPointF.Zero;
 end;
@@ -68,12 +70,18 @@ begin
   if Assigned(FOnDestroy) then
     FOnDestroy(Self);
 
-  FSubject.RemoveChangeScaleHandler(OnChangeScale);
+  FSubject.RemoveChangePositionHandler(OnChangePosition);
+//  .RemoveChangeScaleHandler(OnChangeScale);
 
   FImage := nil;
   FBringToBack := nil;
   FSendToFront := nil;
   inherited;
+end;
+
+procedure TEngine2DRendition.OnChangePosition(ASender: TObject; APosition: TPosition);
+begin
+
 end;
 
 procedure TEngine2DRendition.OnChangeScale(ASender: TObject);

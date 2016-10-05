@@ -40,6 +40,7 @@ type
     function AddLogic(const AObject: TSoLogic; const AName: string = ''): TSoLogic; overload;
     function AddNewLogic(const AName: string = ''): TSoLogic; overload;
     function AddNewLogic(const AHandler: TNotifyEvent<TSoObject>; const AName: string = ''): TSoLogic; overload;
+//    function AddNewLogic(const AHandler: TNotifyEventStatic<TSoObject>; const AName: string = ''): TSoLogic; overload;
 
     function AddProperty(const ATemplateName: string): TSoProperty; overload;
     function AddProperty(const AName: string; const AValue: Double): TSoProperty; overload;
@@ -136,12 +137,6 @@ begin
   Result := AObject;
 end;
 
-function TUnitManager.AddNewLogic(const AHandler: TNotifyEvent<TSoObject>; const AName: string): TSoLogic;
-begin
-  Result := AddNewLogic(AName);
-  Result.OnExecute := AHandler;
-end;
-
 function TUnitManager.AddProperty(const AName: string; const AValue: Double): TSoProperty;
 begin
   Result := TSoObjectFriend(FActiveContainer).FProperties.Add(AName);
@@ -213,6 +208,19 @@ begin
   Result := TSoLogic.Create(FActiveContainer);
   FModel.LogicKeeper.Add(Result, AName);
 end;
+
+function TUnitManager.AddNewLogic(const AHandler: TNotifyEvent<TSoObject>; const AName: string): TSoLogic;
+begin
+  Result := AddNewLogic(AName);
+  Result.OnExecute := AHandler;
+end;
+
+{function TUnitManager.AddNewLogic(const AHandler: TNotifyEventStatic<TSoObject>;
+  const AName: string): TSoLogic;
+begin
+  Result := AddNewLogic(AName);
+  Result.OnExecute := AHandler;
+end; }
 
 {function TUnitManager.AddProperty(const AName: string; const AValue: Pointer): TSoProperties;
 begin

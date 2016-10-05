@@ -31,10 +31,12 @@ type
     FWorldManager: TWorldManager; // Controller to create different lowlevel world render.
     FTemplateManager: TTemplateManager; // Controller to Load Templates if their loaders are ready
     FWorldStatus: TWorldStatus;
+    FEngineObject: TSoObject; // it's object of engine
     procedure OnImageResize(ASender: TObject);
     function IsHor: Boolean;
     procedure SetImage(const Value: TAnonImage);
     function GetFps: Single;
+    procedure InitEngineObject;
   protected
     property EngineThread: TEngineThread read FEngineThread;
     procedure WorkProcedure; virtual; // The main Paint procedure.
@@ -45,6 +47,7 @@ type
     //property Container: TSoContainer read GetContainer; // SoEngine as SoContainer
     property Width: Single read FWidth;
     property Height: Single read FHeight;
+    property EngineObject: TSoObject read FEngineObject;
 
     property Options: TEngine2dOptions read FOptions;
 
@@ -83,8 +86,9 @@ begin
   FEngineThread.WorkProcedure := WorkProcedure;
 
   FModel := TSoModel.Create(TAnonImage(FImage), FCritical, IsHor);
+  InitEngineObject;
   FUnitManager := TUnitManager.Create(FModel);
-  FWorldManager := TWorldManager.Create(FModel, FOnResize);
+  FWorldManager := TWorldManager.Create(FModel, FOnResize, FEngineObject);
   FTemplateManager := TTemplateManager.Create(FModel);
   FWorldStatus := TWorldStatus.Create(FModel, @FWidth, @FHeight);
 
@@ -115,6 +119,13 @@ begin
   Image := AImage;
 end;   }
 
+procedure TSoEngine.InitEngineObject;
+begin
+  FEngineObject := TSoObject.Create;
+  FEngineObject.AddProperty('Width').AsDouble := FWidth;
+  FEngineObject.AddProperty('Height').AsDouble := FHeight;
+end;
+
 function TSoEngine.IsHor: Boolean;
 begin
   Result := FWidth > FHeight;
@@ -137,8 +148,11 @@ begin
   FWidth := TAnonImage(ASender).Width;
   FHeight := TAnonImage(ASender).Height;
 
+  FEngineObject['Width'].AsDouble := FWidth;
+  FEngineObject['Height'].AsDouble := FHeight;
+
   FImage.Bitmap.Width := Round(FImage.Width * getScreenScale);
-  FImage.Bitmap.Height := ROund(FImage.Height * getScreenScale);
+  FImage.Bitmap.Height := Round(FImage.Height * getScreenScale);
 
   FOnResize.RaiseEvent(Self, FImage);
 end;

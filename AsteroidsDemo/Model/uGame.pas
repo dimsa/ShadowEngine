@@ -79,9 +79,9 @@ begin
   FShip := FUnitCreator.NewShip;
 
 {  for i := 0 to 3 do
-    FAsteroids.Add(FUnitCreator.NewSpaceDebris(Random(3)));
+    FAsteroids.Add(FUnitCreator.NewSpaceDebris(Random(3)));   }
 
-  for i := 0 to 19 do
+{  for i:= 0 to 19 do
     FDecorations.Add(FUnitCreator.NewSpaceDust);  }
 end;
 

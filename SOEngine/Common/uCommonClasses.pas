@@ -8,7 +8,8 @@ uses
 type
   TDelegate<T> = function: T of object;
   TEvent<T> = procedure(ASender: TObject; AEventArgs: T) of object;
-  TNotifyEvent<T> = procedure(ASender: T) of object;
+  TNotifyEvent<T> = procedure(ASender: T);// of object;
+ // TNotifyEventStatic<T> = procedure(ASender: T);
 
   // In fact it is THandlerList
   TEventList<T> = class

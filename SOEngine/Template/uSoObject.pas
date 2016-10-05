@@ -10,11 +10,14 @@ type
   private
     FContainer: TObject;
     function GetProperty(APropertyName: string): TSoProperty;
+    //procedure AddChangeScaleHandler(const AHandler: TNotifyEvent);
+  //  procedure RemoveChangeScaleHandler(const AHandler: TNotifyEvent);
 //    procedure SetProperty(APropertyName: string; const Value: TSoProperty);
   protected
     FPosition: TPosition;
     FProperties: TSoProperties;
-    FOnDestroyHandlers, FChangeScaleHandlers: TNotifyEventList;
+    FOnDestroyHandlers{, FChangeScaleHandlers}: TNotifyEventList;
+    FOnChangePositionHandlers: TEventList<TPosition>;
     function GetCenter: TPointF;
     function GetScalePoint: TPointF;
     procedure SetCenter(const Value: TPointF);
@@ -41,8 +44,12 @@ type
 //    property Properties: TSoProperties read FProperties;
     property Properties[APropertyName: string]: TSoProperty read GetProperty; default;// write SetProperty; default;
     property Container: TObject read FContainer;
+{    procedure RemoveChangeScaleHandler(const AHandler: TNotifyEvent);
     procedure AddChangeScaleHandler(const AHandler: TNotifyEvent);
-    procedure RemoveChangeScaleHandler(const AHandler: TNotifyEvent);
+    procedure AddChangeRotateHandler(const AHandler: TNotifyEvent);    }
+    procedure RemoveChangePositionHandler(const AHandler: TEvent<TPosition>);
+    procedure AddChangePositionHandler(const AHandler: TEvent<TPosition>);
+    function AddProperty(const AName: string): TSoProperty;
     procedure AddDestroyHandler(const AHandler: TNotifyEvent);
     procedure RemoveDestroyHandler(const AHandler: TNotifyEvent);
     constructor Create;
@@ -53,20 +60,31 @@ implementation
 
 { TBaseUnitContainer }
 
-procedure TSoObject.AddChangeScaleHandler(const AHandler: TNotifyEvent);
+procedure TSoObject.AddChangePositionHandler(const AHandler: TEvent<TPosition>);
+begin
+  FOnChangePositionHandlers.Add(AHandler);
+end;
+
+{procedure TSoObject.AddChangeScaleHandler(const AHandler: TNotifyEvent);
 begin
   FChangeScaleHandlers.Add(AHandler);
-end;
+end;   }
 
 procedure TSoObject.AddDestroyHandler(const AHandler: TNotifyEvent);
 begin
   FOnDestroyHandlers.Add(AHandler);
 end;
 
+function TSoObject.AddProperty(const AName: string): TSoProperty;
+begin
+  Result := FProperties.Add(AName);
+end;
+
 constructor TSoObject.Create;
 begin
   FOnDestroyHandlers := TNotifyEventList.Create;
-  FChangeScaleHandlers := TNotifyEventList.Create;
+  //FChangeScaleHandlers := TNotifyEventList.Create;
+  FOnChangePositionHandlers := TEventList<TPosition>.Create;
   FProperties := TSoProperties.Create;
   FPosition.X := 0;
   FPosition.Y := 0;
@@ -79,7 +97,7 @@ destructor TSoObject.Destroy;
 begin
   FOnDestroyHandlers.RaiseEvent(Self);
   FOnDestroyHandlers.Free;
-  FChangeScaleHandlers.Free;
+  FOnChangePositionHandlers.Free;
   FProperties.Free;
 
   inherited;
@@ -100,10 +118,15 @@ begin
   Result := FPosition.Scale;
 end;
 
-procedure TSoObject.RemoveChangeScaleHandler(const AHandler: TNotifyEvent);
+procedure TSoObject.RemoveChangePositionHandler(const AHandler: TEvent<TPosition>);
+begin
+  FOnChangePositionHandlers.Remove(AHandler);
+end;
+
+{procedure TSoObject.RemoveChangeScaleHandler(const AHandler: TNotifyEvent);
 begin
   FChangeScaleHandlers.Remove(AHandler);
-end;
+end;}
 
 procedure TSoObject.RemoveDestroyHandler(const AHandler: TNotifyEvent);
 begin
@@ -114,6 +137,8 @@ procedure TSoObject.SetCenter(const Value: TPointF);
 begin
   FPosition.X := Value.X;
   FPosition.Y := Value.Y;
+
+  FOnChangePositionHandlers.RaiseEvent(Self, FPosition);
 end;
 
 procedure TSoObject.SetContainer(const AContainer: TObject);
@@ -125,7 +150,8 @@ procedure TSoObject.SetPosition(const Value: TPosition);
 begin
   FPosition := Value;
 
-  FChangeScaleHandlers.RaiseEvent(Self);
+  FOnChangePositionHandlers.RaiseEvent(Self, FPosition);
+  //FChangeScaleHandlers.RaiseEvent(Self);
 end;
 
 {procedure TSoObject.SetProperty(APropertyName: string;
@@ -137,6 +163,8 @@ end;}
 procedure TSoObject.SetRotate(const Value: Single);
 begin
   FPosition.Rotate := Value;
+
+  FOnChangePositionHandlers.RaiseEvent(Self, FPosition);
 end;
 
 procedure TSoObject.SetScale(const Value: Single);
@@ -153,36 +181,47 @@ begin
 
   FPosition.scaleX := Value;
   FPosition.scaleY := vSoot * Value;
-  FChangeScaleHandlers.RaiseEvent(Self);
+  FOnChangePositionHandlers.RaiseEvent(Self, FPosition);
+//  FChangeScaleHandlers.RaiseEvent(Self);
 end;
 
 procedure TSoObject.SetScalePoint(const Value: TPointF);
 begin
   FPosition.ScaleX := Value.X;
   FPosition.ScaleY := Value.Y;
-  FChangeScaleHandlers.RaiseEvent(Self);
+
+  FOnChangePositionHandlers.RaiseEvent(Self, FPosition);
+  //FChangeScaleHandlers.RaiseEvent(Self);
 end;
 
 procedure TSoObject.SetScaleX(const Value: Single);
 begin
   FPosition.ScaleX := Value;
-  FChangeScaleHandlers.RaiseEvent(Self);
+
+  FOnChangePositionHandlers.RaiseEvent(Self, FPosition);
+//  FChangeScaleHandlers.RaiseEvent(Self);
 end;
 
 procedure TSoObject.SetScaleY(const Value: Single);
 begin
   FPosition.ScaleY := Value;
-  FChangeScaleHandlers.RaiseEvent(Self);
+
+  FOnChangePositionHandlers.RaiseEvent(Self, FPosition);
+//  FChangeScaleHandlers.RaiseEvent(Self);
 end;
 
 procedure TSoObject.SetX(const Value: Single);
 begin
   FPosition.X := Value;
+
+  FOnChangePositionHandlers.RaiseEvent(Self, FPosition);
 end;
 
 procedure TSoObject.SetY(const Value: Single);
 begin
   FPosition.Y := Value;
+
+  FOnChangePositionHandlers.RaiseEvent(Self, FPosition);
 end;
 
 end.

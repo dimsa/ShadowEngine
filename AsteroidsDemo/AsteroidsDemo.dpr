@@ -8,7 +8,8 @@ uses
   uGame in 'Model\uGame.pas',
   uMapPainter in 'Other\uMapPainter.pas',
   uUnitCreator in 'Other\uUnitCreator.pas',
-  uUtils in 'Common\uUtils.pas';
+  uUtils in 'Common\uUtils.pas',
+  uLogicAssets in 'Other\uLogicAssets.pas';
 
 {$R *.res}
 
