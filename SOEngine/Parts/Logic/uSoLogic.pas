@@ -6,34 +6,55 @@ uses
   uCommonClasses, uSoBasePart, uSoObject;
 
 type
-  TSoLogic = class(TSoBasePart)
+  TSoLogic = class abstract(TSoBasePart)
+  protected
+    procedure Execute; virtual; abstract;
+  end;
+
+  TSoObjectLogic = class(TSoLogic)
   private
     FOnExecute: TNotifyEvent<TSoObject>;
-    procedure EmptyHandler(ASender: TSoObject);
-    procedure SetOnExecute(const Value: TNotifyEvent<TSoObject>);
-  protected
-    procedure Execute; virtual;
   public
-    property OnExecute: TNotifyEvent<TSoObject> read FOnExecute write SetOnExecute;
+    procedure Execute; override;
+    constructor Create(const ASubject: TSoObject; AOnExecute: TNotifyEvent<TSoObject>);
+  end;
+
+  TSoStaticLogic = class(TSoLogic)
+  private
+    FOnExecute: TStaticNotifyEvent<TSoObject>;
+  public
+    procedure Execute; override;
+    constructor Create(const ASubject: TSoObject; AOnExecute: TStaticNotifyEvent<TSoObject>);
   end;
 
 implementation
 
-{ TSoLogic }
+{ TSoObjectLogic }
 
-procedure TSoLogic.EmptyHandler(ASender: TSoObject);
+constructor TSoObjectLogic.Create(const ASubject: TSoObject;
+  AOnExecute: TNotifyEvent<TSoObject>);
 begin
-
+  inherited Create(ASubject);
+  FOnExecute := AOnExecute;
 end;
 
-procedure TSoLogic.Execute;
+procedure TSoObjectLogic.Execute;
 begin
   FOnExecute(FSubject);
 end;
 
-procedure TSoLogic.SetOnExecute(const Value: TNotifyEvent<TSoObject>);
+{ TSoStaticLogic }
+
+constructor TSoStaticLogic.Create(const ASubject: TSoObject;
+  AOnExecute: TStaticNotifyEvent<TSoObject>);
 begin
-  FOnExecute := Value;
+  inherited Create(ASubject);
+  FOnExecute := AOnExecute;
+end;
+
+procedure TSoStaticLogic.Execute;
+begin
+  FOnExecute(FSubject);
 end;
 
 end.
