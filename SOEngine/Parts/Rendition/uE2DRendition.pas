@@ -60,7 +60,6 @@ begin
   inherited Create(ASubject);
   FImage := AImage;
   FSubject.AddChangePositionHandler(OnChangePosition);
-//  .AddChangeScaleHandler(OnChangeScale);
 
   FMargin := TPointF.Zero;
 end;

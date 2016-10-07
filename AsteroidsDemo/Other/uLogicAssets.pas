@@ -10,23 +10,27 @@ procedure MovingThroughSides(ASoObject: TSoObject);
 implementation
 
 procedure MovingThroughSides(ASoObject: TSoObject);
+var
+  vWorld: TSoObject;
 begin
+  vWorld := TSoObject(ASoObject['World'].Value);
+
   with ASoObject do begin
     X := X + ASoObject['Dx'].AsDouble;
     Y := Y + ASoObject['Dy'].AsDouble;
     Rotate := Rotate + ASoObject['Da'].AsDouble;
 
-   if X < - ASoObject['Width'].AsDouble * 0.5 then
-     X := ASoObject['WorldWidth'].AsDouble + ASoObject['Width'].AsDouble;
+   if X < - Width then
+     X := vWorld.Width + Width;
 
-   if Y  < - ASoObject['Height'].AsDouble * 0.5 then
-     Y := ASoObject['WorldHeight'].AsDouble + ASoObject['Height'].AsDouble;
+   if Y  < - Height then
+     Y := vWorld.Height + Height;
 
-   if X > ASoObject['WorldWidth'].AsDouble + ASoObject['Width'].AsDouble  then
-     X := - ASoObject['Width'].AsDouble * 0.5;
+   if X > vWorld.Width + Width  then
+     X := - Width;
 
-   if Y > ASoObject['WorldHeight'].AsDouble + ASoObject['Height'].AsDouble then
-     Y := - ASoObject['Height'].AsDouble * 0.5;
+   if Y > vWorld.Height + Height then
+     Y := - Height;
   end;
 end;
 

@@ -48,16 +48,17 @@ begin
     if not FProperties.HasProperty('Width') then
     begin
       vProp := FProperties.Add('Width');
-      vProp.AsDouble := Width;
+      vProp.AsDouble := Self.Width;
       if APrefix <> '' then
         FProperties.Add(APrefix + 'Width', vProp);
 
       vProp.AddOnChangeHandler(OnWidthChanged);
     end;
+
     if not FProperties.HasProperty('Height') then
     begin
       vProp := FProperties.Add('Height');
-      vProp.AsDouble := Height;
+      vProp.AsDouble := Self.Height;
       if APrefix <> '' then
         FProperties.Add(APrefix + 'Height', vProp);
 

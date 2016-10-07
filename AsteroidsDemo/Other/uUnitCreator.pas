@@ -55,9 +55,9 @@ begin
     AddProperty('Dx', 1.0);
     AddProperty('Dy', 1.0);
     AddProperty('Da', 2.0);
-//    AddColliderObj(vName);
-  //  AddNewLogic(TGameUnitFriend(Result).OnLogicTick);
+
     AddProperty('Lifes', 3);
+    AddProperty('World', FWorldManager.EngineObject);
     AddProperty('WorldWidth', FWorldManager.Size.X);
     AddProperty('WorldHeight', FWorldManager.Size.Y);
     AddNewLogic(MovingThroughSides, 'MovingThroughSides');
