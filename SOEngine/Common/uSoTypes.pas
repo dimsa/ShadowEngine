@@ -37,6 +37,42 @@ type
   TAlphaColorRec = System.UITypes.TAlphaColorRec;
   TFontStyle = System.UITypes.TFontStyle;
   Exception = System.SysUtils.Exception;
+
+  TSizeObject = class
+  private
+    FSize: TPointF;
+    procedure SetHeight(const Value: Single);
+    procedure SetSize(const Value: TPointF);
+    procedure SetWidth(const Value: Single);
+  public
+    property Width: Single read FSize.X write SetWidth;
+    property Height: Single read FSize.Y write SetHeight;
+    property Value: TPointF read FSize write SetSize;
+    function IsHor: Boolean;
+  end;
+
 implementation
+
+{ TSize }
+
+function TSizeObject.IsHor: Boolean;
+begin
+  Result := FSize.X > FSize.Y;
+end;
+
+procedure TSizeObject.SetHeight(const Value: Single);
+begin
+  FSize.Y := Value;
+end;
+
+procedure TSizeObject.SetSize(const Value: TPointF);
+begin
+  FSize := Value;
+end;
+
+procedure TSizeObject.SetWidth(const Value: Single);
+begin
+  FSize.X := Value;
+end;
 
 end.

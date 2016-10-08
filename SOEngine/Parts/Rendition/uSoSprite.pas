@@ -3,7 +3,7 @@ unit uSoSprite;
 interface
 
 uses
-  System.Types,
+  System.Types, uGeometryClasses,
   uSoTypes, uNamedList, uE2DRendition, uE2DResource, uSoObject, uEngine2DClasses,
   uSoObjectDefaultProperties;
 
@@ -19,7 +19,6 @@ type
     procedure SetResName(const Value: string);
     procedure OnWidthChanged(ASender: TObject);
     procedure OnHeightChanged(ASender: TObject);
-    procedure RecalculateSize;
   protected
     function GetHeight: Single; override;
     function GetWidth: Single; override;
@@ -28,7 +27,7 @@ type
     property ResName: string read GetResName write SetResName;
     procedure Repaint; override;
     constructor Create(const ASubject: TSoObject; const AImage: TAnonImage;
-  const AResourceList: TNamedList<TSoSpriteResource>; const APrefix: string = ''); overload;
+       const AResourceList: TNamedList<TSoSpriteResource>; const APrefix: string = ''); overload;
     destructor Destroy; override;
   end;
 
@@ -47,8 +46,23 @@ begin
   inherited Create(ASubject, AImage);
   FResourceList := AResourceList;
 
+  FSize := TSizeObject.Create;
+  RecalculateSize;
+
   with TSoObjectFriend(ASubject) do begin
-    if not FProperties.HasProperty(SummaryWidth) then
+    if not FProperties.HasProperty(SummarySize) then
+    begin
+      vProp := FProperties.Add(SummarySize);
+      vProp.Obj := FSize;
+
+      if APrefix <> '' then
+        FProperties.Add(APrefix + 'Width', vProp);
+
+      vProp.AddOnChangeHandler(OnWidthChanged);
+    end;
+
+
+{    if not FProperties.HasProperty(SummaryWidth) then
     begin
       vProp := FProperties.Add(SummaryWidth);
       vProp.AsDouble := Self.Width;
@@ -66,7 +80,7 @@ begin
         FProperties.Add(APrefix + 'Height', vProp);
 
       vProp.AddOnChangeHandler(OnHeightChanged);
-    end;
+    end;                                        }
   end;
 end;
 
@@ -94,7 +108,7 @@ end;
 procedure TSoSprite.OnHeightChanged(ASender: TObject);
 begin
   if Height <> 0 then
-    FSubject.Scale := TSoProperty(ASender).AsDouble / Height
+    FSubject.Scale := TSoProperty(ASender).Val<TSizeObject>.Height / Height
   else
     FSubject.Scale := 0;
 end;
@@ -102,14 +116,9 @@ end;
 procedure TSoSprite.OnWidthChanged(ASender: TObject);
 begin
   if Width <> 0 then
-    FSubject.Scale := TSoProperty(ASender).AsDouble / Width
+    FSubject.Scale := TSoProperty(ASender).Val<TSizeObject>.Width / Width
   else
     FSubject.Scale := 0;
-end;
-
-procedure TSoSprite.RecalculateSize;
-begin
-
 end;
 
 procedure TSoSprite.Repaint;

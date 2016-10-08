@@ -4,7 +4,7 @@ interface
 
 uses
   System.Generics.Collections, System.SysUtils, uClasses,
-  uSoParserValue, uNamedList, uSoObject;
+  uSoParserValue, uNamedList, uSoObject, uSoObjectDefaultProperties, uSoTypes;
 
 type
 
@@ -210,24 +210,27 @@ end;
 
 function TFastWidth.GetValue: Double;
 begin
-  Result := fObject['Width'].AsDouble * fObject.ScaleX;
+  Result := TSizeObject(fObject[SummarySize].Obj).Width * fObject.ScaleX;
+//  Result := fObject['Width'].AsDouble * fObject.ScaleX;
 end;
 
 procedure TFastWidth.SetValue(const Value: Double);
 begin
-  fObject.Scale := Value / (fObject['Width'].AsDouble * fObject.ScaleX);
+  fObject.Scale := Value / (TSizeObject(fObject[SummarySize].Obj).Width * fObject.ScaleX);
+//  fObject.Scale := Value / (fObject['Width'].AsDouble * fObject.ScaleX);
 end;
 
 { TFastHeight }
 
 function TFastHeight.GetValue: Double;
 begin
-  Result := FObject['Height'].AsDouble * fObject.ScaleY;
+  Result := TSizeObject(fObject[SummarySize].Obj).Height * fObject.ScaleY;
+//  Result := FObject['Height'].AsDouble * fObject.ScaleY;
 end;
 
 procedure TFastHeight.SetValue(const Value: Double);
 begin
-  fObject.Scale := Value / (FObject['Height'].AsDouble * fObject.ScaleX);
+  fObject.Scale := Value / (TSizeObject(fObject[SummarySize].Obj).Height * fObject.ScaleX);
 //  fObject.h := Value;
 end;
 
@@ -357,48 +360,48 @@ end;
 
 function TFastLeftBorder.GetValue: Double;
 begin
-  Result := fObject.x - fObject['Width'].AsDouble * fObject.ScaleX * 0.5;
+  Result := fObject.x - TSizeObject(FObject[SummarySize].Obj).Width * fObject.ScaleX * 0.5;
 end;
 
 procedure TFastLeftBorder.SetValue(const Value: Double);
 begin
-  fObject.x := Value + FObject['Width'].AsDouble * fObject.ScaleX * 0.5;
+  fObject.x := Value + TSizeObject(FObject[SummarySize].Obj).Width * fObject.ScaleX * 0.5;
 end;
 
 { TFastRightBorder }
 
 function TFastRightBorder.GetValue: Double;
 begin
-  Result := fObject.x + FObject['Width'].AsDouble * fObject.ScaleX * 0.5;
+  Result := fObject.x + TSizeObject(FObject[SummarySize].Obj).Width * fObject.ScaleX * 0.5;
 end;
 
 procedure TFastRightBorder.SetValue(const Value: Double);
 begin
-  fObject.x := Value - FObject['Width'].AsDouble * fObject.ScaleX * 0.5;
+  fObject.x := Value - TSizeObject(FObject[SummarySize].Obj).Width * fObject.ScaleX * 0.5;
 end;
 
 { TFastTopBorder }
 
 function TFastTopBorder.GetValue: Double;
 begin
-  Result := fObject.y - FObject['Width'].AsDouble * fObject.ScaleY * 0.5;
+  Result := fObject.y - TSizeObject(FObject[SummarySize].Obj).Height * fObject.ScaleY * 0.5;
 end;
 
 procedure TFastTopBorder.SetValue(const Value: Double);
 begin
-  fObject.y  := Value + FObject['Width'].AsDouble * fObject.ScaleY * 0.5;
+  fObject.y  := Value + TSizeObject(FObject[SummarySize].Obj).Height * fObject.ScaleY * 0.5;
 end;
 
 { TFastBottomBorder }
 
 function TFastBottomBorder.GetValue: Double;
 begin
-  Result := fObject.y + FObject['Width'].AsDouble * fObject.ScaleY * 0.5;
+  Result := fObject.y + TSizeObject(FObject[SummarySize].Obj).Height * fObject.ScaleY * 0.5;
 end;
 
 procedure TFastBottomBorder.SetValue(const Value: Double);
 begin
-  fObject.y  := Value - FObject['Width'].AsDouble * fObject.ScaleY * 0.5;
+  fObject.y  := Value - TSizeObject(FObject[SummarySize].Obj).Height * fObject.ScaleY * 0.5;
 end;
 
 end.

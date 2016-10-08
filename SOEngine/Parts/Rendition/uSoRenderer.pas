@@ -15,6 +15,7 @@ type
   private
     FTemplates: TDict<string, TSoRenditionTemplate>;
     FResources: TDict<string, TBitmap>;
+    FRenditionsBySubject: TDict<TSoObject, TList<TEngine2DRendition>>;
     FImage: TAnonImage;
     FBackground: TBitmap; // Background of Engine that paints on every tick. Not sure if it should be here // Бэкграунд. Всегда рисуется в Repaint на весь fImage
     FOnPaintBackground, FOnBeginPaint, FOnEndPaint: TEvent<TAnonImage>;
@@ -44,7 +45,7 @@ type
 implementation
 
 uses
-  uSoContainer, System.Math;
+  uSoContainer, System.Math, uSoSprite;
 
 { TSoRenderer }
 
@@ -52,8 +53,13 @@ procedure TSoRenderer.Add(const AItem: TEngine2DRendition; const AName: string);
 var
   vName: string;
 begin
-  TSoRenditionFriend(AItem).OnRequestAllRenditions := OnAllRenditionRequest;
+  if not FRenditionsBySubject.ContainsKey(AItem.Subject) then
+    FRenditionsBySubject.Add(AItem.Subject, TList<TEngine2DRendition>.Create);
+
+  FRenditionsBySubject[AItem.Subject].Add(AItem);
+
   {$I .\Template\uItemAdd.inc}
+  TSoRenditionFriend(AItem).OnRequestAllRenditions := OnAllRenditionRequest;
 end;
 
 function TSoRenderer.AddFromTemplate(const ASubject: TSoObject;
@@ -76,7 +82,6 @@ begin
     Canvas.SetMatrix(
       TMatrix.CreateScaling(-2 * Ord(AFlipX) + 1, (-2 * Ord(AFlipY) + 1)) *
       TMatrix.CreateTranslation(Width * Ord(AFlipX), Height * Ord(AFlipY)));
-
 
     Canvas.DrawBitmap(
       ABitmap,
@@ -130,20 +135,19 @@ begin
     FTemplates.Add(vVal.Value, vTemplate);
 end;
 
-function TSoRenderer.OnAllRenditionRequest(ASender: TSoObject): TRectF;
+{function TSoRenderer.OnAllRenditionRequest(ASender: TSoObject): TRectF;
 var
   i: Integer;
   vXLeft, vYTop, vXRight, vYBottom: Single;
   vRend: TEngine2DRendition;
+  cont: TSoContainer;                                                                                                ,,
 begin
   Result := TRectF.Empty;//TList<TEngine2DRendition>.Create;
 
-   for  i:= 0 to TSoContainer(TSoObject(ASender).Container).Items[TEngine2DRendition].Count - 1 do
+  cont := TSoContainer(TSoObject(ASender).Container);
+   for  i := 0 to cont.Items[TEngine2DRendition].Count - 1 do
  // for i in TSoContainer(ASender.Container).Items[TEngine2DRendition].Items do
   begin
-  {  Result.Add(
-      TEngine2DRendition(TSoContainer(TSoObject(ASender).Container).Items[TEngine2DRendition].Items[i])
-    );            }
     vRend := TEngine2DRendition(TSoContainer(ASender.Container).Items[TEngine2DRendition].Items[i]);
     Result.Left := Min(Result.Left, Abs((vRend.Width / 2)  * CJustifyPoints[vRend.Justify].Left) + vRend.Margin.X);
     Result.Right := Max(Result.Right, Abs((vRend.Width / 2)  * CJustifyPoints[vRend.Justify].Right) + vRend.Margin.X);
@@ -151,7 +155,27 @@ begin
     Result.Bottom := Max(Result.Bottom, Abs((vRend.Height / 2)  * CJustifyPoints[vRend.Justify].Bottom) + vRend.Margin.Y);
   end;
 
+end;   }
 
+function TSoRenderer.OnAllRenditionRequest(ASender: TSoObject): TRectF;
+var
+  i: Integer;
+  vXLeft, vYTop, vXRight, vYBottom: Single;
+  vRend: TEngine2DRendition;
+  vList: TList<TEngine2DRendition>;
+begin
+  Result := TRectF.Empty;
+
+//  cont := TSoContainer(TSoObject(ASender).Container);
+  vList := FRenditionsBySubject[TSoObject(ASender)];
+  for  i := 0 to vList.Count - 1 do
+  begin
+    vRend := vList[i];// TEngine2DRendition(TSoContainer(ASender.Container).Items[TEngine2DRendition].Items[i]);
+    Result.Left := Min(Result.Left, Abs((vRend.Width / 2)  * CJustifyPoints[vRend.Justify].Left) + vRend.Margin.X);
+    Result.Right := Max(Result.Right, Abs((vRend.Width / 2)  * CJustifyPoints[vRend.Justify].Right) + vRend.Margin.X);
+    Result.Top := Min(Result.Top, Abs((vRend.Height / 2)  * CJustifyPoints[vRend.Justify].Top) + vRend.Margin.Y);
+    Result.Bottom := Max(Result.Bottom, Abs((vRend.Height / 2)  * CJustifyPoints[vRend.Justify].Bottom) + vRend.Margin.Y);
+  end;
 
 end;
 
@@ -163,21 +187,28 @@ begin
   FResources := TDict<string, TBitmap>.Create;
   FTemplates := TDict<string, TSoRenditionTemplate>.Create;
   FBackGround := TBitmap.Create;
+  FRenditionsBySubject := TDict<TSoObject, TList<TEngine2DRendition>>.Create;
 end;
 
 destructor TSoRenderer.Destroy;
 var
   vBmp: TBitmap;
   vItem: TSoRenditionTemplate;
+  vIObj: TSoObject;
 begin
   for vBmp in FResources.Values do
     vBmp.Free;
 
   for vItem in FTemplates.Values do
     vItem.Free;
-  FTemplates.Free;
 
+  for vIObj in FRenditionsBySubject.Keys do
+    FRenditionsBySubject[vIObj].Free;
+  FRenditionsBySubject.Free;
+
+  FTemplates.Free;
   FResources.Free;
+
   inherited;
 end;
 

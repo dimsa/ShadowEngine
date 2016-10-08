@@ -15,23 +15,27 @@ type
   strict private
     FBringToBack, FSendToFront: TNotifyEvent;
     FOnDestroy: TNotifyEvent;
+    FOnRequestAllRenditions: TParameteredDelegate<TSoObject, TRectF>;
     procedure SetOpacity(const Value: Single);
     procedure SetMargin(const Value: TPointF);
   private
-    FOnRequestAllRenditions: TParameteredDelegate<TSoObject, TRectF>;
+    procedure SetOnRequestAllRendtions(
+      const Value: TParameteredDelegate<TSoObject, TRectF>);
   protected
     FImage: TAnonImage;
     FOpacity: Single;
     FJustify: TObjectJustify;
     FMargin: TPointF;
     FFlip: Boolean;
+    FSize: TSizeObject;
+    procedure RecalculateSize;
     procedure SetJustify(const Value: TObjectJustify); virtual;
     function GetHeight: Single; virtual; abstract;
     function GetWidth: Single; virtual; abstract;
     procedure OnSubjectDestroy(ASender: TObject); override;
     procedure OnChangeScale(ASender: TObject);
     procedure OnChangePosition(ASender: TObject; APosition: TPosition);
-    property OnRequestAllRenditions: TParameteredDelegate<TSoObject,TRectF> read FOnRequestAllRenditions write FOnRequestAllRenditions;
+    property OnRequestAllRenditions: TParameteredDelegate<TSoObject,TRectF> read FOnRequestAllRenditions write SetOnRequestAllRendtions;
   public
     property Justify: TObjectJustify read FJustify write SetJustify;
     property Opacity: Single read FOpacity write SetOpacity;
@@ -97,6 +101,18 @@ begin
   TSoObjectFriend(FSubject).FProperties.Remove('Height');//.AsDouble := Height;
 end;
 
+procedure TEngine2DRendition.RecalculateSize;
+var
+  vRect: TRectF;
+begin
+  if Assigned(OnRequestAllRenditions) then
+  begin
+    vRect := OnRequestAllRenditions(FSubject);
+    FSize.Width := vRect.Width;
+    FSize.Height := vRect.Height;
+  end;
+end;
+
 procedure TEngine2DRendition.SendToFront;
 begin
   FSendToFront(Self);
@@ -110,6 +126,13 @@ end;
 procedure TEngine2DRendition.SetMargin(const Value: TPointF);
 begin
   FMargin := Value;
+end;
+
+procedure TEngine2DRendition.SetOnRequestAllRendtions(
+  const Value: TParameteredDelegate<TSoObject, TRectF>);
+begin
+  FOnRequestAllRenditions := Value;
+  RecalculateSize;
 end;
 
 procedure TEngine2DRendition.SetOpacity(const Value: Single);

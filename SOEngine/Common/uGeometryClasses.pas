@@ -20,7 +20,6 @@ type
 //
   end;
 
-
   {
   CJustifyPoints: array[TObjectJustify] of TRect = (
     (Left: -2; Top: -2; Right: 0; Bottom: 0), (Left: -1; Top: -2; Right: 1; Bottom: 0), (Left: 0; Top: -2; Right: 2; Bottom: 0),

@@ -3,7 +3,8 @@ unit uSoFormatterDirective;
 interface
 
 uses
-  uSoExpressionParser, uNamedList, uCommonClasses, uSoObject;
+  uSoExpressionParser, uNamedList, uCommonClasses, uSoObject, uSoTypes,
+  uSoObjectDefaultProperties;
 
 type
   // It's storage of Expressions for fast formatting in Engine
@@ -114,46 +115,46 @@ end;
 
 procedure TWidthDir.Format;
 begin
-  FObject.Scale := Self.Value / (FObject['Width'].AsDouble) ;
+  FObject.Scale := Self.Value / (TSizeObject(FObject[SummarySize].Obj).Width) ;
 end;
 
 { THeightDir }
 
 procedure THeightDir.Format;
 begin
-  FObject.Scale := Self.Value / (FObject['Height'].AsDouble);
+  FObject.Scale := Self.Value / (TSizeObject(FObject[SummarySize].Obj).Height);
 end;
 
 { TMaxWidthDir }
 
 procedure TMaxWidthDir.Format;
 begin
-  if FObject['Width'].AsDouble * FObject.ScaleX > Value then
-    FObject.Scale := Value / FObject['Width'].AsDouble;
+  if TSizeObject(FObject[SummarySize].Obj).Width * FObject.ScaleX > Value then
+    FObject.Scale := Value / TSizeObject(FObject[SummarySize].Obj).Width;
 end;
 
 { TMaxHeightDir }
 
 procedure TMaxHeightDir.Format;
 begin
-  if FObject['Height'].AsDouble * FObject.ScaleY  > Value then
-    FObject.Scale := Value / FObject['Height'].AsDouble;
+  if TSizeObject(FObject[SummarySize].Obj).Height * FObject.ScaleY  > Value then
+    FObject.Scale := Value / TSizeObject(FObject[SummarySize].Obj).Height;
 end;
 
 { TMinWidthDir }
 
 procedure TMinWidthDir.Format;
 begin
-  if FObject['Width'].AsDouble * FObject.ScaleX  < Value then
-    FObject.Scale := Value / FObject['Width'].AsDouble;
+  if TSizeObject(FObject[SummarySize].Obj).Width * FObject.ScaleX  < Value then
+    FObject.Scale := Value / TSizeObject(FObject[SummarySize].Obj).Width;
 end;
 
 { TMinHeightDir }
 
 procedure TMinHeightDir.Format;
 begin
-  if FObject['Height'].AsDouble * FObject.ScaleY  < Value then
-    FObject.Scale := Value / FObject['Height'].AsDouble;
+  if TSizeObject(FObject[SummarySize].Obj).Height * FObject.ScaleY  < Value then
+    FObject.Scale := Value / TSizeObject(FObject[SummarySize].Obj).Height;
 end;
 
 { TRotateDir }

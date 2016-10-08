@@ -115,6 +115,7 @@ contains
   uSoTypes in 'Common\uSoTypes.pas',
   uJsonUtils in 'Common\uJsonUtils.pas',
   uSoSprite in 'Parts\Rendition\uSoSprite.pas',
-  uSoObjectDefaultProperties in 'Common\uSoObjectDefaultProperties.pas';
+  uSoObjectDefaultProperties in 'Common\uSoObjectDefaultProperties.pas',
+  uSoManager in 'Manager\uSoManager.pas';
 
 end.

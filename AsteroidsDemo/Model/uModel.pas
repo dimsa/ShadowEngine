@@ -3,71 +3,163 @@ unit uModel;
 interface
 
 uses
-  uSoObject, uSoTypes;
+  uSoObject, uSoTypes, uLogicAssets, uUnitManager, System.SysUtils;
 
 type
   TGameUnit = class
   protected
     FContainer: TSoObject;
-    procedure OnLogicTick(ASender: TSoObject); virtual; abstract;
+    FManager: TUnitManager;
+    procedure Init; virtual; abstract;
   public
-    procedure SetWorldSize(const ASize: TPointF);
-    constructor Create(const AContainer: TSoObject); virtual;
+    constructor Create(const AManager: TUnitManager); virtual;
   end;
 
   TMovingUnit = class(TGameUnit)
   protected
-    FDx, FDy, FDa: Single;
-    procedure OnLogicTick(ASender: TSoObject); override;
+    FAcceleration: TAcceleration;
   public
-    constructor Create(const AContainer: TSoObject); override;
+    constructor Create(const AManager: TUnitManager); override;
   end;
 
   TLtlAsteroid = class(TMovingUnit)
+  protected
+    procedure Init; override;
   end;
 
   TBigAsteroid = class(TMovingUnit)
+  protected
+    procedure Init; override;
+  end;
 
+  TShipFire = class(TGameUnit)
+  private
+    FPower: Single;
+    procedure SetPower(const Value: Single);
+  protected
+    procedure Init; override;
+  public
+    property Power: Single read FPower write SetPower;
+  end;
+
+  TLeftFire = class(TShipFire)
+  protected
+    procedure Init; override;
+  end;
+
+  TRightFire = class(TShipFire)
+  protected
+    procedure Init; override;
   end;
 
   TShip = class(TMovingUnit)
-
+  private
+    FLeftFire, FRightFire: TShipFire;
+  protected
+    procedure Init; override;
   end;
 
 implementation
 
 { TGameUnit }
 
-constructor TGameUnit.Create(const AContainer: TSoObject);
+constructor TGameUnit.Create(const AManager: TUnitManager);
 begin
-  FContainer := AContainer;
-end;
-
-procedure TGameUnit.SetWorldSize(const ASize: TPointF);
-begin
-  FContainer['WorldWidth'].AsDouble := ASize.X;
-  FContainer['WorldHeight'].AsDouble := ASize.Y;
+  FManager := AManager;
+  Init;
 end;
 
 { TMovingUnit }
 
-constructor TMovingUnit.Create(const AContainer: TSoObject);
+constructor TMovingUnit.Create(const AManager: TUnitManager);
 begin
-  inherited;
-  FDx := 1;
-  FDy := 1;
-  FDa := pi / 90;
+  FManager := AManager;
+  FAcceleration := TAcceleration.Create;
+  Init;
 end;
 
-procedure TMovingUnit.OnLogicTick(ASender: TSoObject);
+{ TShip }
+
+procedure TShip.Init;
 var
-   vObj: TSoObject;
+  vTemplateName: string;
 begin
-  vObj := TSoObject(ASender);
-  
+  vTemplateName := 'Ship';
+  with FManager.New(vTemplateName) do begin
+    AddRendition(vTemplateName);
+   // AddColliderObj(vTemplateName);
+    AddProperty('Acceleration', FAcceleration);
+    AddProperty('World', FManager.ObjectByName('World'));
+    AddNewLogic(MovingThroughSides, 'MovingThroughSides');
+  end;
+end;
 
+{ TBigAsteroid }
 
+procedure TBigAsteroid.Init;
+var
+  vTemplateName: string;
+begin
+  inherited;
+  vTemplateName := 'Asteroid';
+  with FManager.New do begin
+    AddRendition(vTemplateName);
+    AddColliderObj(vTemplateName);
+    AddProperty('Acceleration', FAcceleration);
+    AddProperty('World', FManager.ObjectByName('World'));
+    AddNewLogic(MovingThroughSides, 'MovingThroughSides');
+  end;
+end;
 
+procedure TShipFire.Init;
+begin
+  with FManager.New do begin
+    AddRendition('FireLeft');
+    AddRendition('FireRight');
+    AddProperty('Ship', FManager.ObjectByName('Ship'));
+  end;
+end;
+
+procedure TShipFire.SetPower(const Value: Single);
+begin
+  FPower := Value;
+  FContainer.Scale := FPower;
+end;
+
+{ TLtlAsteroid }
+
+procedure TLtlAsteroid.Init;
+var
+  vTemplateName: string;
+begin
+  inherited;
+  if Random(2) = 0 then
+    vTemplateName := 'Star'
+  else
+    vTemplateName := 'LittleAsteroid' + IntToStr(Random(3));
+
+ with FManager.New do begin
+    AddRendition(vTemplateName);
+    AddColliderObj(vTemplateName);
+    AddProperty('Acceleration', FAcceleration);
+    AddProperty('World', FManager.ObjectByName('World'));
+    AddNewLogic(MovingThroughSides, 'MovingThroughSides');
+  end;
+end;
+
+{ TLeftFire }
+
+procedure TLeftFire.Init;
+begin
+  inherited;
+
+end;
+
+{ TRightFire }
+
+procedure TRightFire.Init;
+begin
+  inherited;
 
 end;
 

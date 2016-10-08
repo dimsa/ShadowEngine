@@ -6,12 +6,11 @@ uses
   System.SyncObjs,
   uSoTypes, uCommonClasses, uEasyDevice,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
-  uEngine2DManager, uEngine2DStatus, uSoObject,
-  uWorldManager, uUnitManager, uTemplateManager, uWorldStatus,
+  uEngine2DManager, uEngine2DStatus, uSoObject, uSoManager, uWorldStatus,
   uSoObjectDefaultProperties;
 
 type
-  TManageDelegate = function(const AContainer: TSoObject): TUnitManager;
+//  TManageDelegate = function(const AContainer: TSoObject): TUnitManager;
 
   TSoEngine = class
   strict private
@@ -22,15 +21,18 @@ type
     FStatus: TEngine2DStatus; // All Engine status you can get from herem like width-height,speed and etc.
     FIsMouseDowned: Boolean; // True if Mouse is Downed  // Хранит состояние нажатости мыши
     FImage: TAnonImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка\
-    FWidth, FHeight: Single; // Размер поля имеджа и движка
+    //FWidth, FHeight: Single; // Размер поля имеджа и движка
 //    FDebug: Boolean; // There are some troubles to debug multithread app, so it for it // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
 //    FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
 //    FInBeginPaintBehavior: TProcedure; // Method is called before Paint
 //    FInEndPaintBehavior: TProcedure; // Method is called after Paint
+    FSize: TSizeObject;
     FOnResize: TEventList<TAnonImage>;
-    FUnitManager: TUnitManager; // Controller for creating units form template and etc
-    FWorldManager: TWorldManager; // Controller to create different lowlevel world render.
-    FTemplateManager: TTemplateManager; // Controller to Load Templates if their loaders are ready
+    FManager: TSoManager;
+//    FUnitManager: TUnitManager; // Controller for creating units form template and etc
+//    FWorldManager: TWorldManager; // Controller to create different lowlevel world render.
+//    FSimpleManager: TSoSimpleManager;
+//    FTemplateManager: TTemplateManager; // Controller to Load Templates if their loaders are ready
     FWorldStatus: TWorldStatus;
     FEngineObject: TSoObject; // it's object of engine
     procedure OnImageResize(ASender: TObject);
@@ -46,9 +48,9 @@ type
     property Image: TAnonImage read FImage write SetImage;
 
     //property Container: TSoContainer read GetContainer; // SoEngine as SoContainer
-    property Width: Single read FWidth;
-    property Height: Single read FHeight;
-    property EngineObject: TSoObject read FEngineObject;
+//    property Width: Single read FWidth;
+//    property Height: Single read FHeight;
+  //  property EngineObject: TSoObject read FEngineObject;
 
     property Options: TEngine2dOptions read FOptions;
 
@@ -60,9 +62,10 @@ type
     destructor Destroy; override;
 
     // You should use Managers to Work with Engine
-    property WorldManager: TWorldManager read FWorldManager;
+    property Manager: TSoManager read FManager;
+{    property WorldManager: TWorldManager read FWorldManager;
     property UnitManager: TUnitManager read FUnitManager;
-    property TemplateManager: TTemplateManager read FTemplateManager;
+    property TemplateManager: TTemplateManager read FTemplateManager;  }
     property WorldStatus: TWorldStatus read FWorldStatus;
     property Status: TEngine2DStatus read FStatus;
     property Fps: Single read GetFps;
@@ -78,20 +81,28 @@ implementation
 constructor TSoEngine.Create(const AImage: TAnonImage);
 begin
   FImage := AImage;
+  FSize := TSizeObject.Create;
 
   FOptions := TEngine2DOptions.Create;
   FOnResize := TEventList<TAnonImage>.Create;
+
 
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
 
   FModel := TSoModel.Create(TAnonImage(FImage), FCritical, IsHor);
-  InitEngineObject;
-  FUnitManager := TUnitManager.Create(FModel);
+
+  FManager := TSoManager.Create(FModel, FOnResize);
+  {FUnitManager := TUnitManager.Create(FModel);
+  //FSimpleManager := TSoSimpleManager.Create(FUnitManager);
   FWorldManager := TWorldManager.Create(FModel, FOnResize, FEngineObject);
-  FTemplateManager := TTemplateManager.Create(FModel);
-  FWorldStatus := TWorldStatus.Create(FModel, @FWidth, @FHeight);
+  FTemplateManager := TTemplateManager.Create(FModel);}
+
+  InitEngineObject;
+
+
+  FWorldStatus := TWorldStatus.Create(FModel, FSize);
 
   FImage.OnResize := OnImageResize;
 
@@ -106,6 +117,7 @@ begin
   FCritical.Free;
   FOptions.Free;
   FOnResize.Free;
+  FManager.Free;
 
   inherited;
 end;
@@ -122,14 +134,17 @@ end;   }
 
 procedure TSoEngine.InitEngineObject;
 begin
-  FEngineObject := TSoObject.Create;
-  FEngineObject.AddProperty(SummaryWidth).AsDouble := FWidth;
-  FEngineObject.AddProperty(SummaryHeight).AsDouble := FHeight;
+  with FManager.UnitManager.New('World') do begin
+    FEngineObject := ActiveContainer;
+    FEngineObject.AddProperty(SummarySize).Obj := FSize;
+  end;
+{  FEngineObject.AddProperty(SummaryWidth).AsDouble := FWidth;
+  FEngineObject.AddProperty(SummaryHeight).AsDouble := FHeight; }
 end;
 
 function TSoEngine.IsHor: Boolean;
 begin
-  Result := FWidth > FHeight;
+  Result := FSize.IsHor;
 end;
 
 {rocedure TSoEngine.OnMouseDown(Sender: TObject; Button: TMouseButton;
@@ -146,11 +161,12 @@ end;  }
 
 procedure TSoEngine.OnImageResize(ASender: TObject);
 begin
-  FWidth := TAnonImage(ASender).Width;
-  FHeight := TAnonImage(ASender).Height;
+  FSize.Width := TAnonImage(ASender).Width;
+  FSize.Height := TAnonImage(ASender).Height;
 
-  FEngineObject[SummaryWidth].AsDouble := FWidth;
-  FEngineObject[SummaryHeight].AsDouble := FHeight;
+  FEngineObject[SummarySize].RaiseOnChange;
+{  FEngineObject[SummaryWidth]. := FWidth;
+  FEngineObject[SummaryHeight].AsDouble := FHeight; }
 
   FImage.Bitmap.Width := Round(FImage.Width * getScreenScale);
   FImage.Bitmap.Height := Round(FImage.Height * getScreenScale);

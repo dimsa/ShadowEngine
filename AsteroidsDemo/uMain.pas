@@ -33,8 +33,9 @@ implementation
 procedure TAsteroidsVsYou.FormCreate(Sender: TObject);
 begin
   FEngine := TSoEngine.Create(MainImg);
-  FEngine.WorldManager.OnEndPaint := OnEndPaintDefault;
-  FGame := TGame.Create(FEngine.TemplateManager, FEngine.WorldManager, FEngine.UnitManager);
+  FEngine.Manager.WorldManager.OnEndPaint := OnEndPaintDefault;
+
+  FGame := TGame.Create(FEngine.Manager);
 
   FEngine.Start;
 end;

@@ -44,6 +44,7 @@ type
     // Common
     property EngineSize: TPointF read GetEngineSize;
   public
+    function ObjectByName(const AObjectName: string): TSoObject;
     procedure ExecuteOnTick;
     procedure ExecuteKeyUp(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
     procedure ExecuteKeyDown(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
@@ -138,6 +139,11 @@ end;
 function TSoModel.GetEngineSize: TPointF;
 begin
   Result := TPointF.Create(FImage.Width, FImage.Height);
+end;
+
+function TSoModel.ObjectByName(const AObjectName: string): TSoObject;
+begin
+  Result := FObjectKeeper.Items[AObjectName];
 end;
 
 end.

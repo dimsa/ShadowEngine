@@ -4,7 +4,7 @@ interface
 
 uses
   uGeometryClasses, System.Types, System.Classes, uCommonClasses, uSoProperties, uSoProperty,
-  uSoObjectDefaultProperties;
+  uSoObjectDefaultProperties, uSoTypes;
 
 type
   TSoObject = class
@@ -106,7 +106,7 @@ end;
 
 function TSoObject.GetHeight: Single;
 begin
-  Result := FProperties[SummaryHeight].AsDouble;
+  Result := FProperties[SummarySize].Val<TSizeObject>.Height;
 end;
 
 function TSoObject.GetProperty(APropertyName: string): TSoProperty;
@@ -121,7 +121,8 @@ end;
 
 function TSoObject.GetWidth: Single;
 begin
-  Result := FProperties[SummaryWidth].AsDouble;
+  Result := FProperties[SummarySize].Val<TSizeObject>.Width;
+//  Result := FProperties[SummaryWidth].AsDouble;
 end;
 
 procedure TSoObject.RemoveChangePositionHandler(const AHandler: TEvent<TPosition>);

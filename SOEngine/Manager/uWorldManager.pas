@@ -19,25 +19,25 @@ type
     procedure SetOnEndPaint(const Value: TEvent<TAnonImage>);
     function GetSize: TPointF;
   public
-    constructor Create(const AModel: TSoModel; const AOnResize: TEventList<TAnonImage>; const AEngineObject: TSoObject);
-    property Size: TPointF read GetSize;
-    property EngineObject: TSoObject read FEngineObject;
+    constructor Create(const AModel: TSoModel; const AOnResize: TEventList<TAnonImage>{; const AEngineObject: TSoObject});
+ //   property Size: TPointF read GetSize;
+//    property EngineObject: TSoObject read FEngineObject;
     property OnPaintBackground: TEvent<TAnonImage> write SetOnPaintBackground;
     property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint;
     property OnEndPaint: TEvent<TAnonImage> write SetOnEndPaint;
     property OnResize: TEventList<TAnonImage> read FOnResize;
-    property EngineSize: TPointF read FEngineSize;
+//    property EngineSize: TPointF read FEngineSize;
   end;
 
 implementation
 
 { TWorldManager }
 
-constructor TWorldManager.Create(const AModel: TSoModel; const AOnResize: TEventList<TAnonImage>; const AEngineObject: TSoObject);
+constructor TWorldManager.Create(const AModel: TSoModel; const AOnResize: TEventList<TAnonImage>{; const AEngineObject: TSoObject});
 begin
   FModel := TSoModelFriend(AModel);
   FOnResize := AOnResize;
-  FEngineObject := AEngineObject;
+ { FEngineObject := AEngineObject; }
 end;
 
 function TWorldManager.GetSize: TPointF;

@@ -16,7 +16,7 @@ type
     FPropertyChanged: TEventList<string>;
     function GetProperty(AName: string): TSoProperty;
     procedure SetProperty(AName: string; const Value: TSoProperty);
-    procedure OnPropertyChanged(ASender: TObject); // On one property changed
+    procedure OnPropertyChanged(ASender: TObject);// On one property changed
   public
     property Data[AName: string]: TSoProperty read GetProperty;{ write SetProperty;} default;
     function HasProperty(const AName: string): Boolean;

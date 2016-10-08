@@ -4,7 +4,7 @@ interface
 
 uses
   uClasses, uSoTypes, uEngine2DClasses, uWorldManager, uUnitManager, uMapPainter, uUnitCreator, uTemplateManager,
-  uUtils, uModel;
+  uUtils, uModel, uSoManager;
 
 type
   TGame = class
@@ -14,14 +14,15 @@ type
     FDecorations: TList<TLtlAsteroid>;
     FMapPainter: TMapPainter; // Some object to draw parallax or map or etc
     FUnitCreator: TUnitCreator;
-    FWorldManager: TWorldManager;
-    FUnitManager: TUnitManager;
-    FTemplateManager: TTemplateManager;
+    FManager: TSoManager;
+ //   FWorldManager: TWorldManager;
+ //   FUnitManager: TUnitManager;
+ //   FTemplateManager: TTemplateManager;
+//    FSimpleManager: TSoSimpleManager;
     procedure StartGame;
     procedure OnResize(ASender: TObject; AImage: TAnonImage);
   public
-    constructor Create(const ATemplateManager: TTemplateManager; const AWorldManager: TWorldManager;
-      const AUnitManager: TUnitManager);
+    constructor Create(const AManager: TSoManager);
     destructor Destroy; override;
   end;
 
@@ -29,24 +30,28 @@ implementation
 
 { TGame }
 
-constructor TGame.Create(const ATemplateManager: TTemplateManager; const AWorldManager: TWorldManager;
-  const AUnitManager: TUnitManager);
+constructor TGame.Create(const AManager: TSoManager);
 begin
-  FWorldManager := AWorldManager;
+  FManager := AManager;
+  {FWorldManager := AWorldManager;
   FUnitManager :=  AUnitManager;
-  FTemplateManager := ATemplateManager;
+//  FSimpleManager := ASimpleManager;
+  FTemplateManager := ATemplateManager; }
   //Prepairing of background
-  FMapPainter := TMapPainter.Create(FWorldManager, ResourcePath('Back.jpg'));
-  FUnitCreator := TUnitCreator.Create(FUnitManager, FWorldManager);
 
-  FTemplateManager.LoadSeJson(ResourcePath('Asteroids.sejson'));
-  FTemplateManager.LoadSeCss( ResourcePath('Formatters.secss'));
+  with FManager do begin
+    FMapPainter := TMapPainter.Create(WorldManager, ResourcePath('Back.jpg'));
+    FUnitCreator := TUnitCreator.Create(UnitManager);
 
-  FAsteroids := TList<TBigAsteroid>.Create;
-  FDecorations := TList<TLtlAsteroid>.Create;
+    TemplateManager.LoadSeJson(ResourcePath('Asteroids.sejson'));
+    TemplateManager.LoadSeCss( ResourcePath('Formatters.secss'));
 
-  FWorldManager.OnResize.Add(OnResize);
-  StartGame;
+    FAsteroids := TList<TBigAsteroid>.Create;
+    FDecorations := TList<TLtlAsteroid>.Create;
+
+    WorldManager.OnResize.Add(OnResize);
+    StartGame;
+  end;
 
 end;
 
@@ -63,13 +68,13 @@ var
   vPoint: TPointF;
 begin
   vPoint := TPointF.Create(AImage.Width, AImage.Height);
-  FShip.SetWorldSize(vPoint);
+{  FShip.SetWorldSize(vPoint);
 
   for i := 0 to FAsteroids.Count - 1 do
     FAsteroids[i].SetWorldSize(vPoint);
 
   for i := 0 to FDecorations.Count - 1 do
-    FDecorations[i].SetWorldSize(vPoint);
+    FDecorations[i].SetWorldSize(vPoint);  }
 end;
 
 procedure TGame.StartGame;
