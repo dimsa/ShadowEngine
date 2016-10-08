@@ -4,7 +4,8 @@ interface
 
 uses
   System.Types,
-  uSoTypes, uNamedList, uE2DRendition, uE2DResource, uSoObject, uEngine2DClasses;
+  uSoTypes, uNamedList, uE2DRendition, uE2DResource, uSoObject, uEngine2DClasses,
+  uSoObjectDefaultProperties;
 
 type
   TSoObjectFriend = class(TSoObject);
@@ -18,6 +19,7 @@ type
     procedure SetResName(const Value: string);
     procedure OnWidthChanged(ASender: TObject);
     procedure OnHeightChanged(ASender: TObject);
+    procedure RecalculateSize;
   protected
     function GetHeight: Single; override;
     function GetWidth: Single; override;
@@ -25,7 +27,8 @@ type
     property ResIndex: Integer read FResIndex write SetResIndex;
     property ResName: string read GetResName write SetResName;
     procedure Repaint; override;
-    constructor Create(const ASubject: TSoObject; const AImage: TAnonImage; const AResourceList: TNamedList<TSoSpriteResource>; const APrefix: string = ''); overload;
+    constructor Create(const ASubject: TSoObject; const AImage: TAnonImage;
+  const AResourceList: TNamedList<TSoSpriteResource>; const APrefix: string = ''); overload;
     destructor Destroy; override;
   end;
 
@@ -45,9 +48,9 @@ begin
   FResourceList := AResourceList;
 
   with TSoObjectFriend(ASubject) do begin
-    if not FProperties.HasProperty('Width') then
+    if not FProperties.HasProperty(SummaryWidth) then
     begin
-      vProp := FProperties.Add('Width');
+      vProp := FProperties.Add(SummaryWidth);
       vProp.AsDouble := Self.Width;
       if APrefix <> '' then
         FProperties.Add(APrefix + 'Width', vProp);
@@ -55,9 +58,9 @@ begin
       vProp.AddOnChangeHandler(OnWidthChanged);
     end;
 
-    if not FProperties.HasProperty('Height') then
+    if not FProperties.HasProperty(SummaryHeight) then
     begin
-      vProp := FProperties.Add('Height');
+      vProp := FProperties.Add(SummaryHeight);
       vProp.AsDouble := Self.Height;
       if APrefix <> '' then
         FProperties.Add(APrefix + 'Height', vProp);
@@ -104,6 +107,11 @@ begin
     FSubject.Scale := 0;
 end;
 
+procedure TSoSprite.RecalculateSize;
+begin
+
+end;
+
 procedure TSoSprite.Repaint;
 begin
   FImage.Bitmap.Canvas.DrawBitmap(
@@ -121,6 +129,8 @@ end;
 procedure TSoSprite.SetResIndex(const Value: Integer);
 begin
   FResIndex := Value mod FResourceList.Count;
+
+
 end;
 
 procedure TSoSprite.SetResName(const Value: string);

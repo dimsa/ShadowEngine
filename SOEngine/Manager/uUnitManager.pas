@@ -157,7 +157,7 @@ end;
 function TUnitManager.AddProperty(const AName: string; const AValue: TObject): TSoProperty;
 begin
   Result := TSoObjectFriend(FActiveContainer).FProperties.Add(AName);
-  Result.Value := AValue;
+  Result.Obj := AValue;
 end;
 
 function TUnitManager.AddProperty(const AName, AValue: string): TSoProperty;

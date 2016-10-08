@@ -220,6 +220,7 @@
         <DCCReference Include="Common\uSoTypes.pas"/>
         <DCCReference Include="Common\uJsonUtils.pas"/>
         <DCCReference Include="Parts\Rendition\uSoSprite.pas"/>
+        <DCCReference Include="Common\uSoObjectDefaultProperties.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>

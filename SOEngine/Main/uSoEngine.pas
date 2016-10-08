@@ -7,7 +7,8 @@ uses
   uSoTypes, uCommonClasses, uEasyDevice,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
   uEngine2DManager, uEngine2DStatus, uSoObject,
-  uWorldManager, uUnitManager, uTemplateManager, uWorldStatus;
+  uWorldManager, uUnitManager, uTemplateManager, uWorldStatus,
+  uSoObjectDefaultProperties;
 
 type
   TManageDelegate = function(const AContainer: TSoObject): TUnitManager;
@@ -122,8 +123,8 @@ end;   }
 procedure TSoEngine.InitEngineObject;
 begin
   FEngineObject := TSoObject.Create;
-  FEngineObject.AddProperty('Width').AsDouble := FWidth;
-  FEngineObject.AddProperty('Height').AsDouble := FHeight;
+  FEngineObject.AddProperty(SummaryWidth).AsDouble := FWidth;
+  FEngineObject.AddProperty(SummaryHeight).AsDouble := FHeight;
 end;
 
 function TSoEngine.IsHor: Boolean;
@@ -148,8 +149,8 @@ begin
   FWidth := TAnonImage(ASender).Width;
   FHeight := TAnonImage(ASender).Height;
 
-  FEngineObject['Width'].AsDouble := FWidth;
-  FEngineObject['Height'].AsDouble := FHeight;
+  FEngineObject[SummaryWidth].AsDouble := FWidth;
+  FEngineObject[SummaryHeight].AsDouble := FHeight;
 
   FImage.Bitmap.Width := Round(FImage.Width * getScreenScale);
   FImage.Bitmap.Height := Round(FImage.Height * getScreenScale);

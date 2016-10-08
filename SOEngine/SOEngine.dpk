@@ -114,6 +114,7 @@ contains
   uSoRenditionTemplate in 'Parts\Rendition\uSoRenditionTemplate.pas',
   uSoTypes in 'Common\uSoTypes.pas',
   uJsonUtils in 'Common\uJsonUtils.pas',
-  uSoSprite in 'Parts\Rendition\uSoSprite.pas';
+  uSoSprite in 'Parts\Rendition\uSoSprite.pas',
+  uSoObjectDefaultProperties in 'Common\uSoObjectDefaultProperties.pas';
 
 end.

@@ -49,9 +49,4 @@ begin
    Int64Rec(result).Words[3] := Random(Word.MaxValue);
 end;
 
-
-
 end.
-
-
-

@@ -13,7 +13,7 @@ procedure MovingThroughSides(ASoObject: TSoObject);
 var
   vWorld: TSoObject;
 begin
-  vWorld := TSoObject(ASoObject['World'].Value);
+  vWorld := ASoObject['World'].Val<TSoObject>;
 
   with ASoObject do begin
     X := X + ASoObject['Dx'].AsDouble;

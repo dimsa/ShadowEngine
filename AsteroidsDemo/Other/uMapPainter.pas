@@ -31,7 +31,6 @@ end;
 procedure TMapPainter.ParallaxBackgroundBehavior(ASender: TObject; AImage: TImage);
 var
   vProporX, vProporY: Double;
-  m: TMatrix;
 begin
   with AImage do
   begin

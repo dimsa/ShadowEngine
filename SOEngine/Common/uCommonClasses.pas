@@ -7,6 +7,7 @@ uses
 
 type
   TDelegate<T> = function: T of object;
+  TParameteredDelegate<T1, T2> = function(ASender: T1): T2 of object;
   TEvent<T> = procedure(ASender: TObject; AEventArgs: T) of object;
   TNotifyEvent<T> = procedure(ASender: T) of object;
   TStaticNotifyEvent<T> = procedure(ASender: T);

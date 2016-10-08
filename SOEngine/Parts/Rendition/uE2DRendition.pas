@@ -6,7 +6,7 @@ unit uE2DRendition;
 interface
 
 uses
-  uSoTypes, uSoObject, uEngine2DClasses, uSoBasePart, uSoContainerTypes, uGeometryClasses;
+  uCommonClasses, uSoTypes, uSoObject, uEngine2DClasses, uSoBasePart, uSoContainerTypes, uGeometryClasses;
 
 type
   TSoObjectFriend = class(TSoObject);
@@ -16,8 +16,9 @@ type
     FBringToBack, FSendToFront: TNotifyEvent;
     FOnDestroy: TNotifyEvent;
     procedure SetOpacity(const Value: Single);
-  private
     procedure SetMargin(const Value: TPointF);
+  private
+    FOnRequestAllRenditions: TParameteredDelegate<TSoObject, TRectF>;
   protected
     FImage: TAnonImage;
     FOpacity: Single;
@@ -30,6 +31,7 @@ type
     procedure OnSubjectDestroy(ASender: TObject); override;
     procedure OnChangeScale(ASender: TObject);
     procedure OnChangePosition(ASender: TObject; APosition: TPosition);
+    property OnRequestAllRenditions: TParameteredDelegate<TSoObject,TRectF> read FOnRequestAllRenditions write FOnRequestAllRenditions;
   public
     property Justify: TObjectJustify read FJustify write SetJustify;
     property Opacity: Single read FOpacity write SetOpacity;

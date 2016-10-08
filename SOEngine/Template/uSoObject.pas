@@ -3,7 +3,8 @@ unit uSoObject;
 interface
 
 uses
-  uGeometryClasses, System.Types, System.Classes, uCommonClasses, uSoProperties, uSoProperty;
+  uGeometryClasses, System.Types, System.Classes, uCommonClasses, uSoProperties, uSoProperty,
+  uSoObjectDefaultProperties;
 
 type
   TSoObject = class
@@ -105,7 +106,7 @@ end;
 
 function TSoObject.GetHeight: Single;
 begin
-  Result := FProperties['Height'].AsDouble;
+  Result := FProperties[SummaryHeight].AsDouble;
 end;
 
 function TSoObject.GetProperty(APropertyName: string): TSoProperty;
@@ -120,7 +121,7 @@ end;
 
 function TSoObject.GetWidth: Single;
 begin
-  Result := FProperties['Width'].AsDouble;
+  Result := FProperties[SummaryWidth].AsDouble;
 end;
 
 procedure TSoObject.RemoveChangePositionHandler(const AHandler: TEvent<TPosition>);

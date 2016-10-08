@@ -8,7 +8,7 @@ uses
 type
   TPropertyType = (ptUndefined, ptObject, ptInt, ptDouble, ptString);
 
-  TSoProperty = class(TObject)
+  TSoProperty  = class
   private
     FObject: TObject;
     FInt: Integer;
@@ -16,13 +16,15 @@ type
     FString: string;
     FOnChangeHandlers: TNotifyEventList;
     FPropertyType: TPropertyType;
+    FProp: TObject;
     procedure SetDouble(const Value: Double);
     procedure SetInt(const Value: Integer);
     procedure SetObject(const Value: TObject);
     procedure SetString(const Value: string);
     procedure RaiseOnChange;
   public
-    property Value: TObject read FObject write SetObject;
+    function Val<T: class>: T; overload;
+    property Obj: TObject read FObject write SetObject;
     property AsInt: Integer read FInt write SetInt;
     property AsDouble: Double read FDouble write SetDouble;
     property AsString: string read FString write SetString;
@@ -86,7 +88,7 @@ begin
   FObject := Value;
   FPropertyType := ptObject;
 
-  RaiseOnChange;;
+  RaiseOnChange;
 end;
 
 procedure TSoProperty.SetString(const Value: string);
@@ -95,6 +97,11 @@ begin
   FPropertyType := ptString;
 
   RaiseOnChange;
+end;
+
+function TSoProperty.Val<T>: T;
+begin
+  Result := T(FObject);
 end;
 
 procedure TSoProperty.AddOnChangeHandler(AHandler: TNotifyEvent);
@@ -111,9 +118,6 @@ end;
 procedure TSoProperty.RaiseOnChange;
 begin
   FOnChangeHandlers.RaiseEvent(Self);
-
-//  if Assigned(FOnChange) then
-//    FOnChange(Self);
 end;
 
 procedure TSoProperty.RemOnChangeHandler(AHandler: TNotifyEvent);

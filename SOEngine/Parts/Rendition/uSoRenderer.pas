@@ -9,6 +9,8 @@ uses
   uSoContainerTypes, uSoBasePart, uSoRenditionTemplate, uJsonUtils;
 
 type
+  TSoRenditionFriend = class(TEngine2DRendition);
+
   TSoRenderer = class(TSoOperator<TEngine2DRendition>)
   private
     FTemplates: TDict<string, TSoRenditionTemplate>;
@@ -16,13 +18,14 @@ type
     FImage: TAnonImage;
     FBackground: TBitmap; // Background of Engine that paints on every tick. Not sure if it should be here // Бэкграунд. Всегда рисуется в Repaint на весь fImage
     FOnPaintBackground, FOnBeginPaint, FOnEndPaint: TEvent<TAnonImage>;
-   procedure OnItemDestroy(ASender: TObject);
+    procedure OnItemDestroy(ASender: TObject);
 
     procedure SetBackground(const Value: TBitmap);
     procedure SetOnBeginPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnEndPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnPaintBackground(const Value: TEvent<TAnonImage>);
     function CutBitmapFrom(const ABitmap: TBitmap; const ARect: TRect; AFlipX: Boolean = False; AFlipY: Boolean = False): TBitmap;
+    function OnAllRenditionRequest(ASender: TSoObject): TRectF;// TList<TEngine2DRendition>;
   public
     property OnPaintBackground: TEvent<TAnonImage> write SetOnPaintBackground;
     property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint;
@@ -40,12 +43,16 @@ type
 
 implementation
 
+uses
+  uSoContainer, System.Math;
+
 { TSoRenderer }
 
 procedure TSoRenderer.Add(const AItem: TEngine2DRendition; const AName: string);
 var
   vName: string;
 begin
+  TSoRenditionFriend(AItem).OnRequestAllRenditions := OnAllRenditionRequest;
   {$I .\Template\uItemAdd.inc}
 end;
 
@@ -121,6 +128,31 @@ begin
 
   if AJson.TryGetValue('Name', vVal) then
     FTemplates.Add(vVal.Value, vTemplate);
+end;
+
+function TSoRenderer.OnAllRenditionRequest(ASender: TSoObject): TRectF;
+var
+  i: Integer;
+  vXLeft, vYTop, vXRight, vYBottom: Single;
+  vRend: TEngine2DRendition;
+begin
+  Result := TRectF.Empty;//TList<TEngine2DRendition>.Create;
+
+   for  i:= 0 to TSoContainer(TSoObject(ASender).Container).Items[TEngine2DRendition].Count - 1 do
+ // for i in TSoContainer(ASender.Container).Items[TEngine2DRendition].Items do
+  begin
+  {  Result.Add(
+      TEngine2DRendition(TSoContainer(TSoObject(ASender).Container).Items[TEngine2DRendition].Items[i])
+    );            }
+    vRend := TEngine2DRendition(TSoContainer(ASender.Container).Items[TEngine2DRendition].Items[i]);
+    Result.Left := Min(Result.Left, Abs((vRend.Width / 2)  * CJustifyPoints[vRend.Justify].Left) + vRend.Margin.X);
+    Result.Right := Max(Result.Right, Abs((vRend.Width / 2)  * CJustifyPoints[vRend.Justify].Right) + vRend.Margin.X);
+    Result.Top := Min(Result.Top, Abs((vRend.Height / 2)  * CJustifyPoints[vRend.Justify].Top) + vRend.Margin.Y);
+    Result.Bottom := Max(Result.Bottom, Abs((vRend.Height / 2)  * CJustifyPoints[vRend.Justify].Bottom) + vRend.Margin.Y);
+  end;
+
+
+
 end;
 
 constructor TSoRenderer.Create(const ACritical: TCriticalSection;
