@@ -33,6 +33,8 @@ type
   TMouseButton = System.UITypes.TMouseButton;
   TStringList = System.Classes.TStringList;
 
+  TMouseEvent = FMX.Types.TMouseEvent;
+
   TCriticalSection = System.SyncObjs.TCriticalSection;
   TAlphaColorRec = System.UITypes.TAlphaColorRec;
   TFontStyle = System.UITypes.TFontStyle;

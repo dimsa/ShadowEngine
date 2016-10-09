@@ -222,6 +222,7 @@
         <DCCReference Include="Parts\Rendition\uSoSprite.pas"/>
         <DCCReference Include="Common\uSoObjectDefaultProperties.pas"/>
         <DCCReference Include="Manager\uSoManager.pas"/>
+        <DCCReference Include="Parts\InputProcessor\uSoMouseHandleCheckers.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>

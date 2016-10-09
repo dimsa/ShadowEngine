@@ -35,6 +35,7 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write SetOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write SetOnMouseLeave;
     property OnClick: TNotifyEvent read FOnClick write SetOnClick;
+    function CanExecute: Boolean; virtual;
     constructor Create(const ASubject: TSoObject); override;
     destructor Destroy; override;
   end;
@@ -42,6 +43,11 @@ type
 implementation
 
 { TEngine2DKeyboardProcessor }
+
+function TSoMouseHandler.CanExecute: Boolean;
+begin
+
+end;
 
 constructor TSoMouseHandler.Create(const ASubject: TSoObject);
 begin

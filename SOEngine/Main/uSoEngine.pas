@@ -40,6 +40,7 @@ type
     procedure SetImage(const Value: TAnonImage);
     function GetFps: Single;
     procedure InitEngineObject;
+    procedure SubscribeImageEvent;
   protected
     property EngineThread: TEngineThread read FEngineThread;
     procedure WorkProcedure; virtual; // The main Paint procedure.
@@ -87,11 +88,14 @@ begin
   FOnResize := TEventList<TAnonImage>.Create;
 
 
+
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
 
   FModel := TSoModel.Create(TAnonImage(FImage), FCritical, IsHor);
+
+  SubscribeImageEvent;
 
   FManager := TSoManager.Create(FModel, FOnResize);
   {FUnitManager := TUnitManager.Create(FModel);
@@ -103,8 +107,6 @@ begin
 
 
   FWorldStatus := TWorldStatus.Create(FModel, FSize);
-
-  FImage.OnResize := OnImageResize;
 
   FOptions.Up([EAnimateForever, EUseCollider]);
   FOptions.Down([EClickOnlyTop]);
@@ -181,7 +183,26 @@ end;
 
 procedure TSoEngine.SetImage(const Value: TAnonImage);
 begin
-  if Assigned(FImage) then
+  FImage := Value;
+  SubscribeImageEvent;
+end;
+
+procedure TSoEngine.Start;
+begin
+  OnImageResize(FImage);
+  FEngineThread.Start;
+end;
+
+procedure TSoEngine.SubscribeImageEvent;
+begin
+  with FImage do begin
+    OnResize := OnImageResize;
+    OnMouseDown := FModel.ExecuteMouseDown;;
+    OnMouseUp := FModel.ExecuteMouseUp;
+    OnMouseMove := FModel.ExecuteMouseMove;
+  end;
+
+ {   if Assigned(FImage) then
   begin
     FImage.OnResize := nil;
     FImage.OnMouseDown := nil;
@@ -192,13 +213,7 @@ begin
 
   FImage.OnResize := OnImageResize;
   FImage.OnMouseDown := FModel.ExecuteMouseDown;
-  FImage.OnMouseUp := FModel.ExecuteMouseUp;
-end;
-
-procedure TSoEngine.Start;
-begin
-  OnImageResize(FImage);
-  FEngineThread.Start;
+  FImage.OnMouseUp := FModel.ExecuteMouseUp;}
 end;
 
 procedure TSoEngine.Suspend;

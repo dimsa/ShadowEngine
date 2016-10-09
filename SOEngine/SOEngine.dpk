@@ -116,6 +116,7 @@ contains
   uJsonUtils in 'Common\uJsonUtils.pas',
   uSoSprite in 'Parts\Rendition\uSoSprite.pas',
   uSoObjectDefaultProperties in 'Common\uSoObjectDefaultProperties.pas',
-  uSoManager in 'Manager\uSoManager.pas';
+  uSoManager in 'Manager\uSoManager.pas',
+  uSoMouseHandleCheckers in 'Parts\InputProcessor\uSoMouseHandleCheckers.pas';
 
 end.

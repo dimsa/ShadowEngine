@@ -50,7 +50,7 @@ type
     procedure ExecuteKeyDown(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
     procedure ExecuteMouseDown(ASender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure ExecuteMouseUp(ASender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-    procedure ExecuteMouseMove(X, Y: Single);
+    procedure ExecuteMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
     constructor Create(const AImage: TAnonImage; const ACritical: TCriticalSection; const AIsHor: TBooleanFunction);
     destructor Destroy; override;
   end;
@@ -117,7 +117,7 @@ begin
   FMouseProcessor.ExecuteMouseDown(Button, Shift, X, Y);
 end;
 
-procedure TSoModel.ExecuteMouseMove(X, Y: Single);
+procedure TSoModel.ExecuteMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
 begin
   FMouseProcessor.ExecuteMouseMove(X, Y);
 end;

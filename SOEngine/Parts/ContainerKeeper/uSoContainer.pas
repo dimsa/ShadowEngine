@@ -35,6 +35,7 @@ begin
   if not FParts.ContainsKey(TSoBasePartClass(APart.ClassType)) then
   begin
     vClass := TSoBasePartClass(APart.ClassType);
+
     FParts.Add(TSoBasePartClass(APart.ClassType), TList<TSoBasePart>.Create);
   end;
 

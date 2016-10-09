@@ -14,6 +14,8 @@ type
     FEngineSize: TPointF;
     FOnResize: TEventList<TAnonImage>;
     FEngineObject: TSoObject;
+    FOnMouseDown: TMouseEvent;
+    FOnMouseUp: TMouseEvent;
     procedure SetOnPaintBackground(const Value: TEvent<TAnonImage>);
     procedure SetOnBeginPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnEndPaint(const Value: TEvent<TAnonImage>);
@@ -26,6 +28,8 @@ type
     property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint;
     property OnEndPaint: TEvent<TAnonImage> write SetOnEndPaint;
     property OnResize: TEventList<TAnonImage> read FOnResize;
+    property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
+    property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
 //    property EngineSize: TPointF read FEngineSize;
   end;
 

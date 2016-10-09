@@ -21,6 +21,7 @@ type
 //    FSimpleManager: TSoSimpleManager;
     procedure StartGame;
     procedure OnResize(ASender: TObject; AImage: TAnonImage);
+    procedure OnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   public
     constructor Create(const AManager: TSoManager);
     destructor Destroy; override;
@@ -33,11 +34,6 @@ implementation
 constructor TGame.Create(const AManager: TSoManager);
 begin
   FManager := AManager;
-  {FWorldManager := AWorldManager;
-  FUnitManager :=  AUnitManager;
-//  FSimpleManager := ASimpleManager;
-  FTemplateManager := ATemplateManager; }
-  //Prepairing of background
 
   with FManager do begin
     FMapPainter := TMapPainter.Create(WorldManager, ResourcePath('Back.jpg'));
@@ -50,6 +46,8 @@ begin
     FDecorations := TList<TLtlAsteroid>.Create;
 
     WorldManager.OnResize.Add(OnResize);
+    WorldManager.OnMouseDown := OnMouseDown;
+
     StartGame;
   end;
 
@@ -60,6 +58,12 @@ begin
   FDecorations.Free;
   FAsteroids.Free;
   inherited;
+end;
+
+procedure TGame.OnMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+begin
+
 end;
 
 procedure TGame.OnResize(ASender: TObject; AImage: TAnonImage);
