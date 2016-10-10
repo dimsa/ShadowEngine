@@ -7,6 +7,7 @@ const
   SummaryWidth = 'SummaryWidth';
   SummaryHeight = 'SummaryHeight';
   SummarySize = 'SummarySize';
+  RenditionRect = 'RenditionRect';
 
 // Base units
   World = 'World';

@@ -46,20 +46,20 @@ begin
   inherited Create(ASubject, AImage);
   FResourceList := AResourceList;
 
-  FSize := TSizeObject.Create;
+//  FSize := TSizeObject.Create;
   RecalculateSize;
-
   with TSoObjectFriend(ASubject) do begin
-    if not FProperties.HasProperty(SummarySize) then
+    if not FProperties.HasProperty(RenditionRect) then
     begin
-      vProp := FProperties.Add(SummarySize);
-      vProp.Obj := FSize;
+      vProp := FProperties.Add(RenditionRect);
+      vProp.Obj := FRect;
 
       if APrefix <> '' then
         FProperties.Add(APrefix + 'Width', vProp);
 
       vProp.AddOnChangeHandler(OnWidthChanged);
     end;
+
 
 
 {    if not FProperties.HasProperty(SummaryWidth) then
@@ -138,13 +138,13 @@ end;
 procedure TSoSprite.SetResIndex(const Value: Integer);
 begin
   FResIndex := Value mod FResourceList.Count;
-
-
+  RecalculateSize;
 end;
 
 procedure TSoSprite.SetResName(const Value: string);
 begin
   FResIndex := FResourceList.IndexOf(Value);
+  RecalculateSize;
 end;
 
 end.

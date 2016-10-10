@@ -27,7 +27,7 @@ type
     FJustify: TObjectJustify;
     FMargin: TPointF;
     FFlip: Boolean;
-    FSize: TSizeObject;
+    FRect: TRectObject;
     procedure RecalculateSize;
     procedure SetJustify(const Value: TObjectJustify); virtual;
     function GetHeight: Single; virtual; abstract;
@@ -44,6 +44,7 @@ type
     property OnSendToFront: TNotifyEvent read FSendToFront write FSendToFront;
     property Width: Single read GetWidth;
     property Height: Single read GetHeight;
+    property Rect: TRectObject read FRect;
     procedure BringToBack; // Ставит спрайт первым в списке отрисовки. Т.е. Переносит назад
     procedure SendToFront; // Ставит спрайт последним в списке отрисовки. Т.е. Переносит вперед
     procedure Repaint; virtual; abstract; // Процедура отрисовки объекта, переписывается спрайтом или текстом и т.д.
@@ -66,6 +67,7 @@ begin
   inherited Create(ASubject);
   FImage := AImage;
   FSubject.AddChangePositionHandler(OnChangePosition);
+  FRect := TRectObject.Create;
 
   FMargin := TPointF.Zero;
 end;
@@ -78,6 +80,7 @@ begin
   FSubject.RemoveChangePositionHandler(OnChangePosition);
 //  .RemoveChangeScaleHandler(OnChangeScale);
 
+  FRect.Free;
   FImage := nil;
   FBringToBack := nil;
   FSendToFront := nil;
@@ -107,9 +110,9 @@ var
 begin
   if Assigned(OnRequestAllRenditions) then
   begin
-    vRect := OnRequestAllRenditions(FSubject);
-    FSize.Width := vRect.Width;
-    FSize.Height := vRect.Height;
+    FRect.Rect := OnRequestAllRenditions(FSubject);
+    //FSize.Width := vRect.Width;
+//    FSize.Height := vRect.Height;
   end;
 end;
 
@@ -121,11 +124,13 @@ end;
 procedure TEngine2DRendition.SetJustify(const Value: TObjectJustify);
 begin
   FJustify := Value;
+  RecalculateSize;
 end;
 
 procedure TEngine2DRendition.SetMargin(const Value: TPointF);
 begin
   FMargin := Value;
+  RecalculateSize;
 end;
 
 procedure TEngine2DRendition.SetOnRequestAllRendtions(

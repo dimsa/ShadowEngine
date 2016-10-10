@@ -13,7 +13,7 @@ TWorldStatus = class
 private
   FWidth, FHeight: Single;
 //  PWidth, PHeight: PInteger;
-  FSize: TSizeObject;
+  FRect: TRectObject;
   FModel: TSoModelFriend;
 {    function GetHeight: Integer;
     function GetWidth: Integer;}
@@ -22,7 +22,7 @@ public
   property Width: Single read FWidth;
   property Height: Single read FHeight;
 
-  constructor Create(const AModel: TSoModel; const ASize: TSizeObject);
+  constructor Create(const AModel: TSoModel; const ARect: TRectObject);
 end;
 
 
@@ -30,11 +30,11 @@ implementation
 
 { TWorldStatus }
 
-constructor TWorldStatus.Create(const AModel: TSoModel; const ASize: TSizeObject);
+constructor TWorldStatus.Create(const AModel: TSoModel; const ARect: TRectObject);
 begin
   FModel := TSoModelFriend(AModel);
 
-  FSize := ASize;
+  FRect := ARect;
   {PWidth := AWidth;
   PHeight := AHeight;}
 
@@ -53,8 +53,8 @@ end;   }
 
 procedure TWorldStatus.Resize;
 begin
-  FWidth := FSize.Width;// PWidth^;
-  FHeight := FSize.Height;// PHeight^;
+  FWidth := FRect.Width;// PWidth^;
+  FHeight := FRect.Height;// PHeight^;
 end;
 
 end.

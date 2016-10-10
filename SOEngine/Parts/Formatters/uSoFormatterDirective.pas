@@ -115,46 +115,46 @@ end;
 
 procedure TWidthDir.Format;
 begin
-  FObject.Scale := Self.Value / (TSizeObject(FObject[SummarySize].Obj).Width) ;
+  FObject.Scale := Self.Value / (TSizeObject(FObject[RenditionRect].Obj).Width) ;
 end;
 
 { THeightDir }
 
 procedure THeightDir.Format;
 begin
-  FObject.Scale := Self.Value / (TSizeObject(FObject[SummarySize].Obj).Height);
+  FObject.Scale := Self.Value / (TSizeObject(FObject[RenditionRect].Obj).Height);
 end;
 
 { TMaxWidthDir }
 
 procedure TMaxWidthDir.Format;
 begin
-  if TSizeObject(FObject[SummarySize].Obj).Width * FObject.ScaleX > Value then
-    FObject.Scale := Value / TSizeObject(FObject[SummarySize].Obj).Width;
+  if TSizeObject(FObject[RenditionRect].Obj).Width * FObject.ScaleX > Value then
+    FObject.Scale := Value / TSizeObject(FObject[RenditionRect].Obj).Width;
 end;
 
 { TMaxHeightDir }
 
 procedure TMaxHeightDir.Format;
 begin
-  if TSizeObject(FObject[SummarySize].Obj).Height * FObject.ScaleY  > Value then
-    FObject.Scale := Value / TSizeObject(FObject[SummarySize].Obj).Height;
+  if TSizeObject(FObject[RenditionRect].Obj).Height * FObject.ScaleY  > Value then
+    FObject.Scale := Value / TSizeObject(FObject[RenditionRect].Obj).Height;
 end;
 
 { TMinWidthDir }
 
 procedure TMinWidthDir.Format;
 begin
-  if TSizeObject(FObject[SummarySize].Obj).Width * FObject.ScaleX  < Value then
-    FObject.Scale := Value / TSizeObject(FObject[SummarySize].Obj).Width;
+  if TSizeObject(FObject[RenditionRect].Obj).Width * FObject.ScaleX  < Value then
+    FObject.Scale := Value / TSizeObject(FObject[RenditionRect].Obj).Width;
 end;
 
 { TMinHeightDir }
 
 procedure TMinHeightDir.Format;
 begin
-  if TSizeObject(FObject[SummarySize].Obj).Height * FObject.ScaleY  < Value then
-    FObject.Scale := Value / TSizeObject(FObject[SummarySize].Obj).Height;
+  if TSizeObject(FObject[RenditionRect].Obj).Height * FObject.ScaleY  < Value then
+    FObject.Scale := Value / TSizeObject(FObject[RenditionRect].Obj).Height;
 end;
 
 { TRotateDir }

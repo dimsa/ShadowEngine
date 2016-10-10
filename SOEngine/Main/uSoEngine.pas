@@ -26,7 +26,7 @@ type
 //    FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
 //    FInBeginPaintBehavior: TProcedure; // Method is called before Paint
 //    FInEndPaintBehavior: TProcedure; // Method is called after Paint
-    FSize: TSizeObject;
+    FRect: TRectObject;
     FOnResize: TEventList<TAnonImage>;
     FManager: TSoManager;
 //    FUnitManager: TUnitManager; // Controller for creating units form template and etc
@@ -82,7 +82,7 @@ implementation
 constructor TSoEngine.Create(const AImage: TAnonImage);
 begin
   FImage := AImage;
-  FSize := TSizeObject.Create;
+  FRect:= TRectObject.Create;
 
   FOptions := TEngine2DOptions.Create;
   FOnResize := TEventList<TAnonImage>.Create;
@@ -106,7 +106,7 @@ begin
   InitEngineObject;
 
 
-  FWorldStatus := TWorldStatus.Create(FModel, FSize);
+  FWorldStatus := TWorldStatus.Create(FModel, FRect);
 
   FOptions.Up([EAnimateForever, EUseCollider]);
   FOptions.Down([EClickOnlyTop]);
@@ -138,7 +138,7 @@ procedure TSoEngine.InitEngineObject;
 begin
   with FManager.UnitManager.New('World') do begin
     FEngineObject := ActiveContainer;
-    FEngineObject.AddProperty(SummarySize).Obj := FSize;
+    FEngineObject.AddProperty(RenditionRect).Obj := FRect;
   end;
 {  FEngineObject.AddProperty(SummaryWidth).AsDouble := FWidth;
   FEngineObject.AddProperty(SummaryHeight).AsDouble := FHeight; }
@@ -146,7 +146,7 @@ end;
 
 function TSoEngine.IsHor: Boolean;
 begin
-  Result := FSize.IsHor;
+  Result := FRect.IsHor;
 end;
 
 {rocedure TSoEngine.OnMouseDown(Sender: TObject; Button: TMouseButton;
@@ -163,10 +163,10 @@ end;  }
 
 procedure TSoEngine.OnImageResize(ASender: TObject);
 begin
-  FSize.Width := TAnonImage(ASender).Width;
-  FSize.Height := TAnonImage(ASender).Height;
+  FRect.Width := TAnonImage(ASender).Width;
+  FRect.Height := TAnonImage(ASender).Height;
 
-  FEngineObject[SummarySize].RaiseOnChange;
+  FEngineObject[RenditionRect].RaiseOnChange;
 {  FEngineObject[SummaryWidth]. := FWidth;
   FEngineObject[SummaryHeight].AsDouble := FHeight; }
 

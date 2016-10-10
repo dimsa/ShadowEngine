@@ -53,6 +53,26 @@ type
     function IsHor: Boolean;
   end;
 
+  TRectObject = class
+  private
+    FRect: TRectF;
+    procedure SetTopLeft(const Value: TPointF);
+    procedure SetBottomRight(const Value: TPointF);
+    procedure SetRect(const Value: TRectF);
+    procedure SetHeight(const Value: Single);
+    procedure SetWidth(const Value: Single);
+    function GetHeight: Single;
+    function GetWidth: Single;
+  public
+    property TopLeft: TPointF read FRect.TopLeft write SetTopLeft;
+    property BottomRight: TPointF read FRect.BottomRight write SetBottomRight;
+    property Width: Single read GetWidth write SetWidth;
+    property Height: Single read GetHeight write SetHeight;
+    property Rect: TRectF read FRect write SetRect;
+    function IsHor: Boolean;
+    constructor Create;
+  end;
+
 implementation
 
 { TSize }
@@ -75,6 +95,54 @@ end;
 procedure TSizeObject.SetWidth(const Value: Single);
 begin
   FSize.X := Value;
+end;
+
+{ TRectObject }
+
+constructor TRectObject.Create;
+begin
+  FRect := TRectF.Empty;
+end;
+
+function TRectObject.GetHeight: Single;
+begin
+  Result := FRect.Height;
+end;
+
+function TRectObject.GetWidth: Single;
+begin
+  Result := FRect.Width;
+end;
+
+function TRectObject.IsHor: Boolean;
+begin
+  Result := FRect.Width >= FRect.Height;
+  
+end;
+
+procedure TRectObject.SetBottomRight(const Value: TPointF);
+begin
+  FRect.BottomRight := Value;
+end;
+
+procedure TRectObject.SetHeight(const Value: Single);
+begin
+  FRect.Height := Value;
+end;
+
+procedure TRectObject.SetRect(const Value: TRectF);
+begin
+  FRect := Value;
+end;
+
+procedure TRectObject.SetTopLeft(const Value: TPointF);
+begin
+  FRect.TopLeft := Value;
+end;
+
+procedure TRectObject.SetWidth(const Value: Single);
+begin
+  FRect.Width := Value;
 end;
 
 end.

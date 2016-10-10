@@ -216,7 +216,7 @@ end;
 
 procedure TFastWidth.SetValue(const Value: Double);
 begin
-  fObject.Scale := Value / (TSizeObject(fObject[SummarySize].Obj).Width * fObject.ScaleX);
+  fObject.Scale := Value / (TSizeObject(fObject[RenditionRect].Obj).Width * fObject.ScaleX);
 //  fObject.Scale := Value / (fObject['Width'].AsDouble * fObject.ScaleX);
 end;
 
@@ -224,13 +224,13 @@ end;
 
 function TFastHeight.GetValue: Double;
 begin
-  Result := TSizeObject(fObject[SummarySize].Obj).Height * fObject.ScaleY;
+  Result := TSizeObject(fObject[RenditionRect].Obj).Height * fObject.ScaleY;
 //  Result := FObject['Height'].AsDouble * fObject.ScaleY;
 end;
 
 procedure TFastHeight.SetValue(const Value: Double);
 begin
-  fObject.Scale := Value / (TSizeObject(fObject[SummarySize].Obj).Height * fObject.ScaleX);
+  fObject.Scale := Value / (TSizeObject(fObject[RenditionRect].Obj).Height * fObject.ScaleX);
 //  fObject.h := Value;
 end;
 
@@ -360,48 +360,48 @@ end;
 
 function TFastLeftBorder.GetValue: Double;
 begin
-  Result := fObject.x - TSizeObject(FObject[SummarySize].Obj).Width * fObject.ScaleX * 0.5;
+  Result := fObject.x - TSizeObject(FObject[RenditionRect].Obj).Width * fObject.ScaleX * 0.5;
 end;
 
 procedure TFastLeftBorder.SetValue(const Value: Double);
 begin
-  fObject.x := Value + TSizeObject(FObject[SummarySize].Obj).Width * fObject.ScaleX * 0.5;
+  fObject.x := Value + TSizeObject(FObject[RenditionRect].Obj).Width * fObject.ScaleX * 0.5;
 end;
 
 { TFastRightBorder }
 
 function TFastRightBorder.GetValue: Double;
 begin
-  Result := fObject.x + TSizeObject(FObject[SummarySize].Obj).Width * fObject.ScaleX * 0.5;
+  Result := fObject.x + TSizeObject(FObject[RenditionRect].Obj).Width * fObject.ScaleX * 0.5;
 end;
 
 procedure TFastRightBorder.SetValue(const Value: Double);
 begin
-  fObject.x := Value - TSizeObject(FObject[SummarySize].Obj).Width * fObject.ScaleX * 0.5;
+  fObject.x := Value - TSizeObject(FObject[RenditionRect].Obj).Width * fObject.ScaleX * 0.5;
 end;
 
 { TFastTopBorder }
 
 function TFastTopBorder.GetValue: Double;
 begin
-  Result := fObject.y - TSizeObject(FObject[SummarySize].Obj).Height * fObject.ScaleY * 0.5;
+  Result := fObject.y - TSizeObject(FObject[RenditionRect].Obj).Height * fObject.ScaleY * 0.5;
 end;
 
 procedure TFastTopBorder.SetValue(const Value: Double);
 begin
-  fObject.y  := Value + TSizeObject(FObject[SummarySize].Obj).Height * fObject.ScaleY * 0.5;
+  fObject.y  := Value + TSizeObject(FObject[RenditionRect].Obj).Height * fObject.ScaleY * 0.5;
 end;
 
 { TFastBottomBorder }
 
 function TFastBottomBorder.GetValue: Double;
 begin
-  Result := fObject.y + TSizeObject(FObject[SummarySize].Obj).Height * fObject.ScaleY * 0.5;
+  Result := fObject.y + TSizeObject(FObject[RenditionRect].Obj).Height * fObject.ScaleY * 0.5;
 end;
 
 procedure TFastBottomBorder.SetValue(const Value: Double);
 begin
-  fObject.y  := Value - TSizeObject(FObject[SummarySize].Obj).Height * fObject.ScaleY * 0.5;
+  fObject.y  := Value - TSizeObject(FObject[RenditionRect].Obj).Height * fObject.ScaleY * 0.5;
 end;
 
 end.

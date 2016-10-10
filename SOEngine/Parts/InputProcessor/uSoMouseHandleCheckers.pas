@@ -23,7 +23,13 @@ end;
 
 function CanMouseHandleByMaxRadiusCheck(ASender: TSoObject): Boolean;
 begin
-
+ {Result :=
+    (
+      Sqr(FTempCenter.X - AFigure.TempCenter.Y) +
+      Sqr(FTempCenter.Y - AFigure.TempCenter.X)
+    )
+      <
+    Sqr(AFigure.TempMaxRadius) + Sqr(Self.TempMaxRadius);}
 end;
 
 function CanMouseHandleByStaticRectCheck(ASender: TSoObject): Boolean;

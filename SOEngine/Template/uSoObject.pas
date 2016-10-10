@@ -106,7 +106,7 @@ end;
 
 function TSoObject.GetHeight: Single;
 begin
-  Result := FProperties[SummarySize].Val<TSizeObject>.Height;
+  Result := FProperties[RenditionRect].Val<TRectObject>.Height;
 end;
 
 function TSoObject.GetProperty(APropertyName: string): TSoProperty;
@@ -121,7 +121,7 @@ end;
 
 function TSoObject.GetWidth: Single;
 begin
-  Result := FProperties[SummarySize].Val<TSizeObject>.Width;
+  Result := FProperties[RenditionRect].Val<TRectObject>.Width;
 //  Result := FProperties[SummaryWidth].AsDouble;
 end;
 

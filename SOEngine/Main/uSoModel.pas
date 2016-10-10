@@ -23,7 +23,6 @@ type
     // Keepers
     FObjectKeeper: TSoObjectKeeper;
     FLogicKeper: TSoLogicKeeper;
-//    FPropertyKeeper: TSoPropertyKeeper;
     // Processors
     FKeyProcessor: TSoKeyProcessor;
     FMouseProcessor: TSoMouseProcessor;
@@ -97,7 +96,6 @@ begin
     FAnimator.Free;
     FKeyProcessor.Free;
     FMouseProcessor.Free;
-//    FPropertyKeeper.Free;
   inherited;
 end;
 

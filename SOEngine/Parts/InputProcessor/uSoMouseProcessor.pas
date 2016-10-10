@@ -93,7 +93,6 @@ end;
 
 procedure TSoMouseProcessor.ExecuteMouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
-
 var
   i: Integer;
 begin
