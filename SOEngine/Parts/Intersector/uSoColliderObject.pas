@@ -3,7 +3,7 @@ unit uSoColliderObject;
 interface
 
 uses
-  uCommonClasses, uSoBasePart, uSoObject;
+  uCommonClasses, uSoTypes, uSoBasePart, uSoObject;
 
 type
   TSoColliderObj = class(TSoBasePart)
@@ -13,7 +13,8 @@ type
     procedure SetOnExecute(const Value: TNotifyEvent<TSoObject>);
   public
     property OnCollide: TEvent<TSoObject> read FOnCollide write FOnCollide;
-    function IsContainsPoint(const AX, AY: Single): Boolean;
+    function IsContainsPoint(const AX, AY: Single): Boolean; overload;
+    function IsContainsPoint(const APoint: TPointF): Boolean; overload;
     constructor Create(const ASubject: TSoObject); override;
   end;
 
@@ -28,6 +29,11 @@ begin
 end;
 
 procedure TSoColliderObj.EmptyHandler(ASender: TObject; AE: TSoObject);
+begin
+
+end;
+
+function TSoColliderObj.IsContainsPoint(const APoint: TPointF): Boolean;
 begin
 
 end;

@@ -4,7 +4,7 @@ interface
 
 uses
   FMX.Types, System.Types, System.UITypes, FMX.Graphics, System.Generics.Collections, FMX.Objects,
-  System.Classes, System.SyncObjs, System.SysUtils;
+  System.Classes, System.SyncObjs, System.SysUtils, System.Math;
 
 type
 
@@ -53,9 +53,14 @@ type
     function IsHor: Boolean;
   end;
 
+  TAdvancedRect = record helper for TRectF
+    function Multiply(APoint: TPointF) : TRectF;
+  end;
+
   TRectObject = class
   private
     FRect: TRectF;
+    FMaxSqrRadius: Single;
     procedure SetTopLeft(const Value: TPointF);
     procedure SetBottomRight(const Value: TPointF);
     procedure SetRect(const Value: TRectF);
@@ -63,12 +68,14 @@ type
     procedure SetWidth(const Value: Single);
     function GetHeight: Single;
     function GetWidth: Single;
+    procedure CalculateMaxSqrRadius;
   public
     property TopLeft: TPointF read FRect.TopLeft write SetTopLeft;
     property BottomRight: TPointF read FRect.BottomRight write SetBottomRight;
     property Width: Single read GetWidth write SetWidth;
     property Height: Single read GetHeight write SetHeight;
     property Rect: TRectF read FRect write SetRect;
+    property SqrMaxRadius: single read FMaxSqrRadius;
     function IsHor: Boolean;
     constructor Create;
   end;
@@ -99,6 +106,11 @@ end;
 
 { TRectObject }
 
+procedure TRectObject.CalculateMaxSqrRadius;
+begin
+  FMaxSqrRadius := Max(Sqr(FRect.Left) + Sqr(FRect.Top), (Sqr(FRect.Right) + Sqr(FRect.Bottom)));
+end;
+
 constructor TRectObject.Create;
 begin
   FRect := TRectF.Empty;
@@ -123,26 +135,43 @@ end;
 procedure TRectObject.SetBottomRight(const Value: TPointF);
 begin
   FRect.BottomRight := Value;
+  CalculateMaxSqrRadius;
 end;
 
 procedure TRectObject.SetHeight(const Value: Single);
 begin
   FRect.Height := Value;
+  CalculateMaxSqrRadius;
 end;
 
 procedure TRectObject.SetRect(const Value: TRectF);
 begin
   FRect := Value;
+  CalculateMaxSqrRadius;
 end;
 
 procedure TRectObject.SetTopLeft(const Value: TPointF);
 begin
   FRect.TopLeft := Value;
+  CalculateMaxSqrRadius;
 end;
 
 procedure TRectObject.SetWidth(const Value: Single);
 begin
   FRect.Width := Value;
+  CalculateMaxSqrRadius;
 end;
+
+{ TAdvancedRect }
+
+function TAdvancedRect.Multiply(APoint: TPointF) : TRectF;
+begin
+  Result := TRectF.Create(Self.TopLeft * APoint, Self.BottomRight * APoint);
+end;
+
+{class operator TAdvancedRect.Multiply(ARect: TRectF; APoint: TPointF): TRectF;
+begin
+  Result := RectF(ARect.TopLeft * APoint, ARect.BottomRight * APoint);
+end; }
 
 end.

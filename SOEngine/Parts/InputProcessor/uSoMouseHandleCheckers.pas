@@ -3,38 +3,32 @@ unit uSoMouseHandleCheckers;
 interface
 
 uses
-  uSoObject;
+  uSoObject, uSoObjectDefaultProperties, uSoTypes, uSoColliderObject;
 
 
 type
-  TCanMouseHandleCheck = function(ASender: TSoObject): Boolean;
 
+TCanMouseHandleCheck = function(ASender: TSoObject; const APoint: TPointF): Boolean;
 
-function CanMouseHandleByColliderCheck(ASender: TSoObject): Boolean;
-function CanMouseHandleByMaxRadiusCheck(ASender: TSoObject): Boolean;
-function CanMouseHandleByStaticRectCheck(ASender: TSoObject): Boolean;
+function CanMouseHandleByColliderCheck(ASender: TSoObject; const APoint: TPointF): Boolean;
+function CanMouseHandleBySqrMaxRadiusCheck(ASender: TSoObject; const APoint: TPointF): Boolean;
+function CanMouseHandleByStaticRectCheck(ASender: TSoObject; const APoint: TPointF): Boolean;
 
 implementation
 
-function CanMouseHandleByColliderCheck(ASender: TSoObject): Boolean;
+function CanMouseHandleByColliderCheck(ASender: TSoObject; const APoint: TPointF): Boolean;
 begin
-
+  Result := ASender[Collider].Val<TSoColliderObj>.IsContainsPoint(APoint)
 end;
 
-function CanMouseHandleByMaxRadiusCheck(ASender: TSoObject): Boolean;
+function CanMouseHandleBySqrMaxRadiusCheck(ASender: TSoObject; const APoint: TPointF): Boolean;
 begin
- {Result :=
-    (
-      Sqr(FTempCenter.X - AFigure.TempCenter.Y) +
-      Sqr(FTempCenter.Y - AFigure.TempCenter.X)
-    )
-      <
-    Sqr(AFigure.TempMaxRadius) + Sqr(Self.TempMaxRadius);}
+  Result := (Sqr(APoint.X) + Sqr(APoint.Y)) < ASender[RenditionRect].Val<TRectObject>.SqrMaxRadius;
 end;
 
-function CanMouseHandleByStaticRectCheck(ASender: TSoObject): Boolean;
+function CanMouseHandleByStaticRectCheck(ASender: TSoObject; const APoint: TPointF): Boolean;
 begin
-
+  Result := ASender[RenditionRect].Val<TRectObject>.Rect.Multiply(ASender.ScalePoint).Contains(APoint);
 end;
 
 end.
