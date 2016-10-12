@@ -3,7 +3,8 @@ unit uModel;
 interface
 
 uses
-  uSoObject, uSoTypes, uLogicAssets, uUnitManager, System.SysUtils;
+  uSoObject, uSoTypes, uLogicAssets, uUnitManager, System.SysUtils, uSoObjectDefaultProperties,
+  FMX.Dialogs;
 
 type
   TGameUnit = class
@@ -55,6 +56,7 @@ type
   TShip = class(TMovingUnit)
   private
     FLeftFire, FRightFire: TShipFire;
+    procedure OnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   protected
     procedure Init; override;
   end;
@@ -91,7 +93,15 @@ begin
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));
     AddNewLogic(MovingThroughSides, 'MovingThroughSides');
+    AddMouseHandler(ByStaticRect).OnMouseDown := OnMouseDown;
+    ActiveContainer.Scale := 1;
   end;
+end;
+
+procedure TShip.OnMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+begin
+  ShowMessage('Click');
 end;
 
 { TBigAsteroid }

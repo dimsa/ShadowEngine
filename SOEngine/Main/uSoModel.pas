@@ -71,7 +71,7 @@ begin
   FFormattor := TSoFormattor.Create(FCritical);
   FAnimator := TSoAnimator.Create(FCritical);
   FKeyProcessor := TSoKeyProcessor.Create(FCritical);
-  FMouseProcessor := TSoMouseProcessor.Create(FCritical, FCollider);
+  FMouseProcessor := TSoMouseProcessor.Create(FCritical);
 //  FPropertyKeeper := TSoPropertyKeeper.Create(FCritical);
 
   // Container Keeper changes on adding of unitpart

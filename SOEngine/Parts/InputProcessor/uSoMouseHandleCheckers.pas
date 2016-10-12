@@ -8,7 +8,7 @@ uses
 
 type
 
-TCanMouseHandleCheck = function(ASender: TSoObject; const APoint: TPointF): Boolean;
+TCheckMouseHandleBehavior = function(ASender: TSoObject; const APoint: TPointF): Boolean;
 
 function CanMouseHandleByColliderCheck(ASender: TSoObject; const APoint: TPointF): Boolean;
 function CanMouseHandleBySqrMaxRadiusCheck(ASender: TSoObject; const APoint: TPointF): Boolean;
@@ -23,7 +23,7 @@ end;
 
 function CanMouseHandleBySqrMaxRadiusCheck(ASender: TSoObject; const APoint: TPointF): Boolean;
 begin
-  Result := (Sqr(APoint.X) + Sqr(APoint.Y)) < ASender[RenditionRect].Val<TRectObject>.SqrMaxRadius;
+  Result := (Sqr(APoint.X) + Sqr(APoint.Y)) < ASender[RenditionRect].Val<TRectObject>.SqrMaxRadius * ASender.ScaleX;
 end;
 
 function CanMouseHandleByStaticRectCheck(ASender: TSoObject; const APoint: TPointF): Boolean;

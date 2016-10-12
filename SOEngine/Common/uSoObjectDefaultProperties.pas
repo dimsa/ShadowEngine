@@ -13,6 +13,12 @@ const
 // Base units
   World = 'World';
 
+// MouseHandlerTemplates
+  ByCollider = 'ByCollider';
+  ByStaticRect = 'ByStaticRect';
+  ByMaxRadius = 'ByMaxRadius';
+
+
 implementation
 
 end.

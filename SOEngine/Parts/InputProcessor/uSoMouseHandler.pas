@@ -3,8 +3,7 @@ unit uSoMouseHandler;
 interface
 
 uses
-  System.Classes, FMX.Types, System.UITypes,
-  uSoObject, uSoBasePart;
+  uSoTypes, uSoObject, uSoBasePart, uSoMouseHandleCheckers;
 
 type
   TSoMouseHandler = class(TSoBasePart)
@@ -15,6 +14,7 @@ type
     FOnMouseUp: TMouseEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnClick: TNotifyEvent;
+    FCheckMouseHandleBehavior: TCheckMouseHandleBehavior;
     procedure SetEnabled(const Value: Boolean);
     procedure SetOnClick(const Value: TNotifyEvent);
     procedure SetOnMouseDown(const Value: TMouseEvent);
@@ -35,8 +35,8 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write SetOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write SetOnMouseLeave;
     property OnClick: TNotifyEvent read FOnClick write SetOnClick;
-    function CanExecute: Boolean; virtual;
-    constructor Create(const ASubject: TSoObject); override;
+    function CanExecute(const X, Y: Single): Boolean; virtual;
+    constructor Create(const ASubject: TSoObject; ACheckMouseHandleBehavior: TCheckMouseHandleBehavior);
     destructor Destroy; override;
   end;
 
@@ -44,12 +44,12 @@ implementation
 
 { TEngine2DKeyboardProcessor }
 
-function TSoMouseHandler.CanExecute: Boolean;
+function TSoMouseHandler.CanExecute(const X, Y: Single): Boolean;
 begin
-
+  Result := FCheckMouseHandleBehavior(FSubject, TPointF.Create(X, Y));
 end;
 
-constructor TSoMouseHandler.Create(const ASubject: TSoObject);
+constructor TSoMouseHandler.Create(const ASubject: TSoObject; ACheckMouseHandleBehavior: TCheckMouseHandleBehavior);
 begin
   inherited Create(ASubject);
   FOnMouseLeave := EmptyNotifyEvent;
@@ -57,6 +57,7 @@ begin
   FOnClick := EmptyNotifyEvent;
   FOnMouseDown := EmptyMouseEvent;
   FOnMouseUp := EmptyMouseEvent;
+  FCheckMouseHandleBehavior := ACheckMouseHandleBehavior;
 end;
 
 destructor TSoMouseHandler.Destroy;

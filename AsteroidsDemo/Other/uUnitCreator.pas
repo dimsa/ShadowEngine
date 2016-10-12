@@ -42,6 +42,7 @@ begin
 {  vName := 'Ship';
   with ManageNew('Ship') do begin}
     Result := TShip.Create(FUnitManager);
+
 end;
 
 function TUnitCreator.NewSpaceDebris(const ASize: integer): TBigAsteroid;
