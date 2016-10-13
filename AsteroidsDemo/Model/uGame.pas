@@ -20,8 +20,8 @@ type
  //   FTemplateManager: TTemplateManager;
 //    FSimpleManager: TSoSimpleManager;
     procedure StartGame;
-    procedure OnResize(ASender: TObject; AImage: TAnonImage);
-    procedure OnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure OnResize(ASender: TObject);
+    procedure OnMouseDown(Sender: TObject; AEventArgs: TMouseEventArgs);
   public
     constructor Create(const AManager: TSoManager);
     destructor Destroy; override;
@@ -46,7 +46,7 @@ begin
     FDecorations := TList<TLtlAsteroid>.Create;
 
     WorldManager.OnResize.Add(OnResize);
-    WorldManager.OnMouseDown := OnMouseDown;
+    WorldManager.OnMouseDown.Add(OnMouseDown);
 
     StartGame;
   end;
@@ -60,18 +60,17 @@ begin
   inherited;
 end;
 
-procedure TGame.OnMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
+procedure TGame.OnMouseDown(Sender: TObject; AEventArgs: TMouseEventArgs);
 begin
 
 end;
 
-procedure TGame.OnResize(ASender: TObject; AImage: TAnonImage);
+procedure TGame.OnResize(ASender: TObject);
 var
   i: Integer;
   vPoint: TPointF;
 begin
-  vPoint := TPointF.Create(AImage.Width, AImage.Height);
+  vPoint := TPointF.Create(TAnonImage(ASender).Width, TAnonImage(ASender).Height);
 {  FShip.SetWorldSize(vPoint);
 
   for i := 0 to FAsteroids.Count - 1 do

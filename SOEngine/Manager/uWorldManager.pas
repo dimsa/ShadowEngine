@@ -3,7 +3,7 @@ unit uWorldManager;
 interface
 
 uses
-  uSoTypes, uClasses, uEngine2DClasses, uSoModel, uCommonClasses, uSoObject;
+  uSoTypes, uClasses, uEngine2DClasses, uSoModel, uCommonClasses, uSoObject, uSoEngineEvents;
 
 type
   TSoModelFriend = class(TSoModel);
@@ -12,36 +12,36 @@ type
   private
     FModel: TSoModelFriend;
     FEngineSize: TPointF;
-    FOnResize: TEventList<TAnonImage>;
+    FOnResize: TNotifyEventList;
+    FOnMouseDown, FOnMouseUp: TEventList<TMouseEventArgs>;
     FEngineObject: TSoObject;
-    FOnMouseDown: TMouseEvent;
-    FOnMouseUp: TMouseEvent;
+    FOnMouseMove: TEventList<TMouseMoveEventArgs>;
     procedure SetOnPaintBackground(const Value: TEvent<TAnonImage>);
     procedure SetOnBeginPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnEndPaint(const Value: TEvent<TAnonImage>);
     function GetSize: TPointF;
   public
-    constructor Create(const AModel: TSoModel; const AOnResize: TEventList<TAnonImage>{; const AEngineObject: TSoObject});
- //   property Size: TPointF read GetSize;
-//    property EngineObject: TSoObject read FEngineObject;
-    property OnPaintBackground: TEvent<TAnonImage> write SetOnPaintBackground;
-    property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint;
-    property OnEndPaint: TEvent<TAnonImage> write SetOnEndPaint;
-    property OnResize: TEventList<TAnonImage> read FOnResize;
-    property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
-    property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
-//    property EngineSize: TPointF read FEngineSize;
+    constructor Create(const AModel: TSoModel; const AEvents: TSoEngineEvents);
+    property OnPaintBackground: TEvent<TAnonImage> write SetOnPaintBackground; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
+    property OnBeginPaint: TEvent<TAnonImage> write SetOnBeginPaint; // Method is called before Paint
+    property OnEndPaint: TEvent<TAnonImage> write SetOnEndPaint; // Method is called after Paint
+    property OnResize: TNotifyEventList read FOnResize;
+    property OnMouseDown: TEventList<TMouseEventArgs> read FOnMouseDown;
+    property OnMouseUp: TEventList<TMouseEventArgs> read FOnMouseUp;
+    property OnMouseMove: TEventList<TMouseMoveEventArgs> read FOnMouseMove;
   end;
 
 implementation
 
 { TWorldManager }
 
-constructor TWorldManager.Create(const AModel: TSoModel; const AOnResize: TEventList<TAnonImage>{; const AEngineObject: TSoObject});
+constructor TWorldManager.Create(const AModel: TSoModel; const AEvents: TSoEngineEvents);
 begin
   FModel := TSoModelFriend(AModel);
-  FOnResize := AOnResize;
- { FEngineObject := AEngineObject; }
+  FOnResize := AEvents.OnResize;
+  FOnMouseDown := AEvents.OnMouseDown;
+  FOnMouseUp:= AEvents.OnMouseUp;
+  FOnMouseMove := AEvents.OnMouseMove;
 end;
 
 function TWorldManager.GetSize: TPointF;

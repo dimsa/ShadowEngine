@@ -18,9 +18,9 @@ type
     procedure OnItemDestroy(ASender: TObject);
     procedure PrepareTemplates;
   public
-    procedure ExecuteMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single); // Process mouse on tick
-    procedure ExecuteMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single); // Process mouse on tick
-    procedure ExecuteMouseMove(X, Y: Single); // Process mouse position on tick
+    procedure ExecuteMouseUp(Args: TMouseEventArgs); // Process mouse on tick
+    procedure ExecuteMouseDown(Args: TMouseEventArgs); // Process mouse on tick
+    procedure ExecuteMouseMove(Args: TMouseMoveEventArgs); // Process mouse position on tick
     procedure Add(const AItem: TSoMouseHandler; const AName: string = ''); override;
     function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoMouseHandler; override;
     constructor Create(const ACritical: TCriticalSection);
@@ -70,20 +70,19 @@ begin
   inherited;
 end;
 
-procedure TSoMouseProcessor.ExecuteMouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
+procedure TSoMouseProcessor.ExecuteMouseDown(Args: TMouseEventArgs);
 var
   i: Integer;
 begin
   for i := 0 to FMouseOver.Count - 1 do
   begin
   //  if TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).CanExecute(X, Y) then
-      TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseDown(Button, Shift, X, Y);
+      TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseDown(Args);
   end;
   FMouseDowned := FMouseOver;
 end;
 
-procedure TSoMouseProcessor.ExecuteMouseMove(X, Y: Single);
+procedure TSoMouseProcessor.ExecuteMouseMove(Args: TMouseMoveEventArgs);
 var
   i, j: Integer;
   vWas: Boolean;
@@ -93,7 +92,7 @@ begin
   FMouseOver.Clear;
   for i := 0 to FList.Count - 1 do
   begin
-    if FList[i].CanExecute(X - FList[i].Subject.X ,Y - FList[i].Subject.Y) then
+    if FList[i].CanExecute(Args.X - FList[i].Subject.X ,Args.Y - FList[i].Subject.Y) then
       FMouseOver.Add(FList[i].Subject)
   end;
 
@@ -122,13 +121,12 @@ begin
     FOldMouseOver.Add(FMouseOver[i]);
 end;
 
-procedure TSoMouseProcessor.ExecuteMouseUp(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
+procedure TSoMouseProcessor.ExecuteMouseUp(Args: TMouseEventArgs);
 var
   i: Integer;
 begin
   for i := 0 to FMouseOver.Count - 1 do
-    TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseDown(Button, Shift, X, Y);
+    TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseDown(Args);
   FMouseUpped := FMouseOver;
 end;
 

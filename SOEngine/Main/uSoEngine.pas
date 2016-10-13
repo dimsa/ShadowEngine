@@ -7,7 +7,7 @@ uses
   uSoTypes, uCommonClasses, uEasyDevice,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
   uEngine2DManager, uEngine2DStatus, uSoObject, uSoManager, uWorldStatus,
-  uSoObjectDefaultProperties;
+  uSoObjectDefaultProperties, uSoEngineEvents;
 
 type
 //  TManageDelegate = function(const AContainer: TSoObject): TUnitManager;
@@ -23,16 +23,9 @@ type
     FImage: TAnonImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка\
     //FWidth, FHeight: Single; // Размер поля имеджа и движка
 //    FDebug: Boolean; // There are some troubles to debug multithread app, so it for it // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
-//    FBackgroundBehavior: TProcedure; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
-//    FInBeginPaintBehavior: TProcedure; // Method is called before Paint
-//    FInEndPaintBehavior: TProcedure; // Method is called after Paint
+    FEvents: TSoEngineEvents;
     FRect: TRectObject;
-    FOnResize: TEventList<TAnonImage>;
-    FManager: TSoManager;
-//    FUnitManager: TUnitManager; // Controller for creating units form template and etc
-//    FWorldManager: TWorldManager; // Controller to create different lowlevel world render.
-//    FSimpleManager: TSoSimpleManager;
-//    FTemplateManager: TTemplateManager; // Controller to Load Templates if their loaders are ready
+    FManager: TSoManager; // Contains all managers
     FWorldStatus: TWorldStatus;
     FEngineObject: TSoObject; // it's object of engine
     procedure OnImageResize(ASender: TObject);
@@ -47,12 +40,6 @@ type
   public
     // Main properties of Engine. Ключевые свойства движка
     property Image: TAnonImage read FImage write SetImage;
-
-    //property Container: TSoContainer read GetContainer; // SoEngine as SoContainer
-//    property Width: Single read FWidth;
-//    property Height: Single read FHeight;
-  //  property EngineObject: TSoObject read FEngineObject;
-
     property Options: TEngine2dOptions read FOptions;
 
     procedure Start; virtual; // Start Engine. Need to run only once Включает движок
@@ -85,10 +72,8 @@ begin
   FRect:= TRectObject.Create;
 
   FOptions := TEngine2DOptions.Create;
-  FOnResize := TEventList<TAnonImage>.Create;
 
-
-
+  FEvents:= TSoEngineEvents.Create(AImage);
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
@@ -97,15 +82,8 @@ begin
 
   SubscribeImageEvent;
 
-  FManager := TSoManager.Create(FModel, FOnResize);
-  {FUnitManager := TUnitManager.Create(FModel);
-  //FSimpleManager := TSoSimpleManager.Create(FUnitManager);
-  FWorldManager := TWorldManager.Create(FModel, FOnResize, FEngineObject);
-  FTemplateManager := TTemplateManager.Create(FModel);}
-
+  FManager := TSoManager.Create(FModel, FEvents);
   InitEngineObject;
-
-
   FWorldStatus := TWorldStatus.Create(FModel, FRect);
 
   FOptions.Up([EAnimateForever, EUseCollider]);
@@ -118,7 +96,7 @@ begin
   FEngineThread.Free;
   FCritical.Free;
   FOptions.Free;
-  FOnResize.Free;
+  FEvents.Free;
   FManager.Free;
 
   inherited;
@@ -167,13 +145,9 @@ begin
   FRect.Height := TAnonImage(ASender).Height;
 
   FEngineObject[RenditionRect].RaiseOnChange;
-{  FEngineObject[SummaryWidth]. := FWidth;
-  FEngineObject[SummaryHeight].AsDouble := FHeight; }
 
   FImage.Bitmap.Width := Round(FImage.Width * getScreenScale);
   FImage.Bitmap.Height := Round(FImage.Height * getScreenScale);
-
-  FOnResize.RaiseEvent(Self, FImage);
 end;
 
 procedure TSoEngine.Resume;
@@ -195,25 +169,12 @@ end;
 
 procedure TSoEngine.SubscribeImageEvent;
 begin
-  with FImage do begin
-    OnResize := OnImageResize;
-    OnMouseDown := FModel.ExecuteMouseDown;;
-    OnMouseUp := FModel.ExecuteMouseUp;
-    OnMouseMove := FModel.ExecuteMouseMove;
+  with FEvents do begin
+    OnResize.Add(OnImageResize);
+    OnMouseDown.Add(FModel.ExecuteMouseDown);
+    OnMouseUp.Add(FModel.ExecuteMouseUp);
+    OnMouseMove.Add(FModel.ExecuteMouseMove);
   end;
-
- {   if Assigned(FImage) then
-  begin
-    FImage.OnResize := nil;
-    FImage.OnMouseDown := nil;
-    FImage.OnMouseUp := nil;
-  end;
-
-  FImage := Value;
-
-  FImage.OnResize := OnImageResize;
-  FImage.OnMouseDown := FModel.ExecuteMouseDown;
-  FImage.OnMouseUp := FModel.ExecuteMouseUp;}
 end;
 
 procedure TSoEngine.Suspend;

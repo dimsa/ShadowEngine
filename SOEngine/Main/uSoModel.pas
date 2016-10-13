@@ -47,9 +47,9 @@ type
     procedure ExecuteOnTick;
     procedure ExecuteKeyUp(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
     procedure ExecuteKeyDown(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
-    procedure ExecuteMouseDown(ASender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-    procedure ExecuteMouseUp(ASender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-    procedure ExecuteMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
+    procedure ExecuteMouseDown(ASender: TObject; AEventArgs: TMouseEventArgs);
+    procedure ExecuteMouseUp(ASender: TObject; AEventArgs: TMouseEventArgs);
+    procedure ExecuteMouseMove(Sender: TObject; AEventArgs: TMouseMoveEventArgs);
     constructor Create(const AImage: TAnonImage; const ACritical: TCriticalSection; const AIsHor: TBooleanFunction);
     destructor Destroy; override;
   end;
@@ -87,15 +87,15 @@ end;
 
 destructor TSoModel.Destroy;
 begin
-    FContainerKeeper.Free;
-    FObjectKeeper.Free;
-    FLogicKeper.Free;
-    FRenderer.Free;
-    FCollider.Free;
-    FFormattor.Free;
-    FAnimator.Free;
-    FKeyProcessor.Free;
-    FMouseProcessor.Free;
+  FContainerKeeper.Free;
+  FObjectKeeper.Free;
+  FLogicKeper.Free;
+  FRenderer.Free;
+  FCollider.Free;
+  FFormattor.Free;
+  FAnimator.Free;
+  FKeyProcessor.Free;
+  FMouseProcessor.Free;
   inherited;
 end;
 
@@ -109,21 +109,19 @@ begin
   FKeyProcessor.ExecuteKeyUp(Key, KeyChar, Shift);
 end;
 
-procedure TSoModel.ExecuteMouseDown(ASender: TObject; Button: TMouseButton; Shift: TShiftState; X,
-  Y: Single);
+procedure TSoModel.ExecuteMouseDown(ASender: TObject; AEventArgs: TMouseEventArgs);
 begin
-  FMouseProcessor.ExecuteMouseDown(Button, Shift, X, Y);
+  FMouseProcessor.ExecuteMouseDown(AEventArgs);
 end;
 
-procedure TSoModel.ExecuteMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
+procedure TSoModel.ExecuteMouseMove(Sender: TObject; AEventArgs: TMouseMoveEventArgs);
 begin
-  FMouseProcessor.ExecuteMouseMove(X, Y);
+  FMouseProcessor.ExecuteMouseMove(AEventArgs);
 end;
 
-procedure TSoModel.ExecuteMouseUp(ASender: TObject; Button: TMouseButton; Shift: TShiftState; X,
-  Y: Single);
+procedure TSoModel.ExecuteMouseUp(ASender: TObject; AEventArgs: TMouseEventArgs);
 begin
-  FMouseProcessor.ExecuteMouseUp(Button, Shift, X, Y);
+  FMouseProcessor.ExecuteMouseUp(AEventArgs);
 end;
 
 procedure TSoModel.ExecuteOnTick;

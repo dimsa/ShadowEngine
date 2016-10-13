@@ -80,6 +80,43 @@ type
     constructor Create;
   end;
 
+
+  TMouseMoveEventArgs = record
+    Shift: TShiftState;
+    X: Single;
+    Y: Single;
+    constructor Create(const AShift: TShiftState; const AX, AY: Single);
+  end;
+
+  TMouseEventArgs = record
+    Button: TMouseButton;
+    Shift: TShiftState;
+    X: Single;
+    Y: Single;
+    constructor Create(const AButton: TMouseButton; const AShift: TShiftState; const AX, AY: Single);
+  end;
+
+{  TMouseMoveEventArgs = class
+  protected
+    FShift: TShiftState;
+    FX, FY: Single;
+  public
+    property Shift: TShiftState read FShift;
+    property X: Single read FX;
+    property Y: Single read FY;
+    constructor Create(const AShift: TShiftState; const AX, AY: Single);
+  end;
+
+  TMouseEventArgs = class(TMouseMoveEventArgs)
+  protected
+    FButton: TMouseButton;
+  public
+    property Button: TMouseButton read FButton;
+    constructor Create(const AButton: TMouseButton; const AShift: TShiftState; const AX, AY: Single);
+  end;  }
+
+
+
 implementation
 
 { TSize }
@@ -169,9 +206,23 @@ begin
   Result := TRectF.Create(Self.TopLeft * APoint, Self.BottomRight * APoint);
 end;
 
-{class operator TAdvancedRect.Multiply(ARect: TRectF; APoint: TPointF): TRectF;
+{ TMouseEventArgs }
+
+constructor TMouseEventArgs.Create(const AButton: TMouseButton; const AShift: TShiftState; const AX, AY: Single);
 begin
-  Result := RectF(ARect.TopLeft * APoint, ARect.BottomRight * APoint);
-end; }
+  Button := AButton;
+  Shift := AShift;
+  X := AX;
+  Y := AY;
+end;
+
+{ TMouseMoveEventArgs }
+
+constructor TMouseMoveEventArgs.Create(const AShift: TShiftState; const AX, AY: Single);
+begin
+  Shift := AShift;
+  X := AX;
+  Y := AY;
+end;
 
 end.

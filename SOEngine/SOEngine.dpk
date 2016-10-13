@@ -117,6 +117,7 @@ contains
   uSoSprite in 'Parts\Rendition\uSoSprite.pas',
   uSoObjectDefaultProperties in 'Common\uSoObjectDefaultProperties.pas',
   uSoManager in 'Manager\uSoManager.pas',
-  uSoMouseHandleCheckers in 'Parts\InputProcessor\uSoMouseHandleCheckers.pas';
+  uSoMouseHandleCheckers in 'Parts\InputProcessor\uSoMouseHandleCheckers.pas',
+  uSoEngineEvents in 'Main\uSoEngineEvents.pas';
 
 end.
