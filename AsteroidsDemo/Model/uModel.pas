@@ -4,7 +4,7 @@ interface
 
 uses
   uSoObject, uSoTypes, uLogicAssets, uUnitManager, System.SysUtils, uSoObjectDefaultProperties,
-  FMX.Dialogs;
+  FMX.Dialogs, uGeometryClasses;
 
 type
   TGameUnit = class
@@ -56,9 +56,12 @@ type
   TShip = class(TMovingUnit)
   private
     FLeftFire, FRightFire: TShipFire;
+    FDest: TList<TPointF>;
     procedure OnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   protected
     procedure Init; override;
+  public
+    procedure AddDestination(const APosition: TPointF);
   end;
 
 implementation
@@ -82,17 +85,24 @@ end;
 
 { TShip }
 
+procedure TShip.AddDestination(const APosition: TPointF);
+begin
+  FDest.Add(APosition);
+end;
+
 procedure TShip.Init;
 var
   vTemplateName: string;
 begin
+  FDest := TList<TPointF>.Create;
   vTemplateName := 'Ship';
   with FManager.New(vTemplateName) do begin
     AddRendition(vTemplateName);
    // AddColliderObj(vTemplateName);
     AddProperty('Acceleration', FAcceleration);
+    AddProperty('Destinations', FDest);
     AddProperty('World', FManager.ObjectByName('World'));
-    AddNewLogic(MovingThroughSides, 'MovingThroughSides');
+    AddNewLogic(MovingToDestination, 'MovingThroughSides');
     AddMouseHandler(ByStaticRect).OnMouseDown := OnMouseDown;
     ActiveContainer.Scale := 1;
   end;
@@ -117,7 +127,7 @@ begin
     AddColliderObj(vTemplateName);
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));
-    AddNewLogic(MovingThroughSides, 'MovingThroughSides');
+    AddNewLogic(MovingByAcceleration);
   end;
 end;
 
@@ -153,7 +163,7 @@ begin
     AddColliderObj(vTemplateName);
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));
-    AddNewLogic(MovingThroughSides, 'MovingThroughSides');
+    AddNewLogic(MovingByAcceleration);
   end;
 end;
 

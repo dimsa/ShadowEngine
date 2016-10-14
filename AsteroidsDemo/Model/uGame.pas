@@ -62,7 +62,7 @@ end;
 
 procedure TGame.OnMouseDown(Sender: TObject; AEventArgs: TMouseEventArgs);
 begin
-
+  FShip.AddDestination(TPointF.Create(AEventArgs.X, AEventArgs.Y));
 end;
 
 procedure TGame.OnResize(ASender: TObject);

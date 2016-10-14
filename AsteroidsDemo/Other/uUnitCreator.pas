@@ -3,7 +3,7 @@ unit uUnitCreator;
 interface
 
 uses
-  System.SysUtils, System.Types, FMX.Objects,
+  uSoTypes, uGeometryClasses,
   uEngine2DClasses, uUnitManager, uWorldManager, uModel, uSoObject;
 
 type
@@ -13,7 +13,6 @@ type
   private
 //    FSimpleManager: TSoSimpleManager;
     FUnitManager: TUnitManager;
- //   FWorldManager: TWorldManager;
   public
     function NewShip: TShip;
     function NewSpaceDebris(const ASize: integer): TBigAsteroid;
@@ -30,7 +29,6 @@ uses
 
 constructor TUnitCreator.Create(const AUnitManager: TUnitManager);
 begin
-//  FSimpleManager := ASimpleManager;
   FUnitManager := AUnitManager;
 //  FWorldManager :=  AWorldManager;
 end;
@@ -41,7 +39,7 @@ begin
   // vName is the name of template
 {  vName := 'Ship';
   with ManageNew('Ship') do begin}
-    Result := TShip.Create(FUnitManager);
+  Result := TShip.Create(FUnitManager);
 
 end;
 
