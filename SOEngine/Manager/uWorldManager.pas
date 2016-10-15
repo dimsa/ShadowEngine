@@ -11,15 +11,12 @@ type
   TWorldManager = class
   private
     FModel: TSoModelFriend;
-    FEngineSize: TPointF;
     FOnResize: TNotifyEventList;
     FOnMouseDown, FOnMouseUp: TEventList<TMouseEventArgs>;
-    FEngineObject: TSoObject;
     FOnMouseMove: TEventList<TMouseMoveEventArgs>;
     procedure SetOnPaintBackground(const Value: TEvent<TAnonImage>);
     procedure SetOnBeginPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnEndPaint(const Value: TEvent<TAnonImage>);
-    function GetSize: TPointF;
   public
     constructor Create(const AModel: TSoModel; const AEvents: TSoEngineEvents);
     property OnPaintBackground: TEvent<TAnonImage> write SetOnPaintBackground; // Procedure to Paint Background. It can be default or Parallax(like in Asteroids example) or any type you want
@@ -42,11 +39,6 @@ begin
   FOnMouseDown := AEvents.OnMouseDown;
   FOnMouseUp:= AEvents.OnMouseUp;
   FOnMouseMove := AEvents.OnMouseMove;
-end;
-
-function TWorldManager.GetSize: TPointF;
-begin
-  Result := FModel.EngineSize;
 end;
 
 procedure TWorldManager.SetOnBeginPaint(const Value: TEvent<TAnonImage>);

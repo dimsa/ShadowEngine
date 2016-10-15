@@ -30,17 +30,23 @@ type
 
   TBigAsteroid = class(TMovingUnit)
   protected
+
     procedure Init; override;
   end;
 
   TShipFire = class(TGameUnit)
   private
     FPower: Single;
+    FContainer: TSoObject;
+    procedure FollowTheShip(ASender: TObject; APosition: TPosition);
+    function GetPosition: TPointF;
+    procedure SetPosition(const Value: TPointF);
     procedure SetPower(const Value: Single);
   protected
+    FShip: TSoObject;
     procedure Init; override;
   public
-    property Power: Single read FPower write SetPower;
+    constructor Create(const AManager: TUnitManager; AShip: TSoObject);
   end;
 
   TLeftFire = class(TShipFire)
@@ -80,6 +86,9 @@ constructor TMovingUnit.Create(const AManager: TUnitManager);
 begin
   FManager := AManager;
   FAcceleration := TAcceleration.Create;
+  FAcceleration.Dx := 4;
+  FAcceleration.Dy := 4;
+  FAcceleration.Da := 4;
   Init;
 end;
 
@@ -96,7 +105,9 @@ var
 begin
   FDest := TList<TPointF>.Create;
   vTemplateName := 'Ship';
+
   with FManager.New(vTemplateName) do begin
+    FContainer := ActiveContainer;
     AddRendition(vTemplateName);
    // AddColliderObj(vTemplateName);
     AddProperty('Acceleration', FAcceleration);
@@ -104,8 +115,10 @@ begin
     AddProperty('World', FManager.ObjectByName('World'));
     AddNewLogic(MovingToDestination, 'MovingThroughSides');
     AddMouseHandler(ByStaticRect).OnMouseDown := OnMouseDown;
-    ActiveContainer.Scale := 1;
   end;
+
+  FLeftFire := TLeftFire.Create(FManager, FContainer);
+  FRightFire := TRightFire.Create(FManager, FContainer);
 end;
 
 procedure TShip.OnMouseDown(Sender: TObject; Button: TMouseButton;
@@ -123,21 +136,44 @@ begin
   inherited;
   vTemplateName := 'Asteroid';
   with FManager.New do begin
+    FContainer := ActiveContainer;
     AddRendition(vTemplateName);
-    AddColliderObj(vTemplateName);
+  //  AddColliderObj(vTemplateName);
     AddProperty('Acceleration', FAcceleration);
+    FAcceleration.Dx := Random(3) + Random  - 2;
+    FAcceleration.Dy := Random(3) + Random  - 2;
+    ActiveContainer.X := Random(Round(FManager.ObjectByName('World').Width));
+    ActiveContainer.Y := Random(Round(FManager.ObjectByName('World').Height));
     AddProperty('World', FManager.ObjectByName('World'));
     AddNewLogic(MovingByAcceleration);
   end;
 end;
 
+constructor TShipFire.Create(const AManager: TUnitManager; AShip: TSoObject);
+begin
+  inherited Create(AManager);
+  AShip.AddChangePositionHandler(FollowTheShip);
+end;
+
+procedure TShipFire.FollowTheShip(ASender: TObject; APosition: TPosition);
+begin
+  FContainer.Center := APosition.XY;
+  FContainer.Rotate := APosition.Rotate;
+end;
+
+function TShipFire.GetPosition: TPointF;
+begin
+  Result := FContainer.Center;
+end;
+
 procedure TShipFire.Init;
 begin
-  with FManager.New do begin
-    AddRendition('FireLeft');
-    AddRendition('FireRight');
-    AddProperty('Ship', FManager.ObjectByName('Ship'));
-  end;
+  FPower := 0.4;
+end;
+
+procedure TShipFire.SetPosition(const Value: TPointF);
+begin
+  FContainer.Center := Value;
 end;
 
 procedure TShipFire.SetPower(const Value: Single);
@@ -159,6 +195,7 @@ begin
     vTemplateName := 'LittleAsteroid' + IntToStr(Random(3));
 
  with FManager.New do begin
+    FContainer := ActiveContainer;
     AddRendition(vTemplateName);
     AddColliderObj(vTemplateName);
     AddProperty('Acceleration', FAcceleration);
@@ -173,6 +210,10 @@ procedure TLeftFire.Init;
 begin
   inherited;
 
+  with FManager.New do begin
+    FContainer := ActiveContainer;
+    AddRendition('FireLeft');
+  end;
 end;
 
 { TRightFire }
@@ -181,6 +222,10 @@ procedure TRightFire.Init;
 begin
   inherited;
 
+  with FManager.New do begin
+    FContainer := ActiveContainer;
+    AddRendition('FireRight');
+  end;
 end;
 
 end.

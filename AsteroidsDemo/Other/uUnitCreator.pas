@@ -30,17 +30,11 @@ uses
 constructor TUnitCreator.Create(const AUnitManager: TUnitManager);
 begin
   FUnitManager := AUnitManager;
-//  FWorldManager :=  AWorldManager;
 end;
 
 function TUnitCreator.NewShip: TShip;
 begin
-
-  // vName is the name of template
-{  vName := 'Ship';
-  with ManageNew('Ship') do begin}
   Result := TShip.Create(FUnitManager);
-
 end;
 
 function TUnitCreator.NewSpaceDebris(const ASize: integer): TBigAsteroid;

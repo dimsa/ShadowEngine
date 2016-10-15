@@ -3,7 +3,7 @@ unit uLogicAssets;
 interface
 
 uses
-  uSoObject, uSoTypes, uGeometryClasses, System.Math;
+  uSoObject, uSoTypes, uGeometryClasses, System.Math, uIntersectorMethods;
 
 type
   TAcceleration = class
@@ -28,13 +28,12 @@ procedure MovingToDestination(ASoObject: TSoObject);
 
 implementation
 
-procedure MovingThroughSides(ASoObject, AWorld: TSoObject; const AAcceleration: TAcceleration);
+uses
+  uModel;
+
+procedure MovingThroughSides(ASoObject, AWorld: TSoObject);
 begin
   with ASoObject do begin
-    X := X + AAcceleration.Dx;
-    Y := Y + AAcceleration.Dy;
-    Rotate := Rotate + AAcceleration.Da;
-
    if X < - Width then
      X := AWorld.Width + Width;
 
@@ -50,8 +49,16 @@ begin
 end;
 
 procedure MovingByAcceleration(ASoObject: TSoObject);
+var
+  vAcceleration: TAcceleration;
 begin
-  MovingThroughSides(ASoObject, ASoObject['World'].Val<TSoObject>, ASoObject['Acceleration'].Val<TAcceleration>);
+  with ASoObject do begin
+    vAcceleration := ASoObject['Acceleration'].Val<TAcceleration>;
+    X := X + vAcceleration.Dx;
+    Y := Y + vAcceleration.Dy;
+    Rotate := Rotate + vAcceleration.Da;
+  end;
+  MovingThroughSides(ASoObject, ASoObject['World'].Val<TSoObject>);
 end;
 
 function MakeTurnToDestination(const AShip: TSoObject; const ADir, ATurnRate: Single): TFireKoef;
@@ -85,15 +92,22 @@ begin
     vAcceleration := ASoObject['Acceleration'].Val<TAcceleration>;
     vDest := ASoObject['Destinations'].Val<TList<TPointF>>;
 
+    X := X - (vAcceleration.DX * Cos((Rotate + 90) * pi180));
+    Y := Y - (vAcceleration.DY * Sin((Rotate + 90) * pi180));
+
     if vDest.Count > 0 then
     begin
-      vAngle := ArcTan2(vDest.Last.Y - ASoObject.Y, vDest.Last.X - ASoObject.x) / pi180;
+
+      vAngle := ArcTan2(vDest.First.Y - ASoObject.Y, vDest.First.X - ASoObject.x) / pi180;
       vDir := (vAngle - ASoObject.Rotate);
+
+      if Distance(vDest.First, Center) <= vAcceleration.DX * 2 then
+        vDest.Delete(0);
 
       MakeTurnToDestination(ASoObject, vDir, vAcceleration.Da);
     end;
 
-    MovingThroughSides(ASoObject, ASoObject['World'].Val<TSoObject>, vAcceleration);
+    MovingThroughSides(ASoObject, ASoObject['World'].Val<TSoObject>);
   end;
 end;
 

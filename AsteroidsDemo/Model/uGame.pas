@@ -15,10 +15,6 @@ type
     FMapPainter: TMapPainter; // Some object to draw parallax or map or etc
     FUnitCreator: TUnitCreator;
     FManager: TSoManager;
- //   FWorldManager: TWorldManager;
- //   FUnitManager: TUnitManager;
- //   FTemplateManager: TTemplateManager;
-//    FSimpleManager: TSoSimpleManager;
     procedure StartGame;
     procedure OnResize(ASender: TObject);
     procedure OnMouseDown(Sender: TObject; AEventArgs: TMouseEventArgs);
@@ -86,8 +82,8 @@ var
 begin
   FShip := FUnitCreator.NewShip;
 
-{  for i := 0 to 3 do
-    FAsteroids.Add(FUnitCreator.NewSpaceDebris(Random(3)));   }
+  for i := 0 to 3 do
+    FAsteroids.Add(FUnitCreator.NewSpaceDebris(Random(3)));
 
 {  for i:= 0 to 19 do
     FDecorations.Add(FUnitCreator.NewSpaceDust);  }

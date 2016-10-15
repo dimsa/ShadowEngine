@@ -183,6 +183,15 @@
 			"Resources": ["Ship"]
 		}
 	}, {
+		"Name": "Asteroid",
+		"Type": "Sprite",
+		"Body": {
+			"Opacity": 1,
+			"Justify": "Center",
+			"Resources": ["Asteroid"]
+		}
+	},
+{
 		"Name": "FireRight",
 		"Type": "Sprite",
 		"Body": {
