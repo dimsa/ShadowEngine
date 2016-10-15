@@ -40,6 +40,8 @@ type
     function Insert(const AIndex: Integer; const AName: String; const AValue: T): Integer; reintroduce; overload; virtual;
     function Insert(const AIndex: Integer; AValue: T): Integer; reintroduce; overload; virtual;
 
+    procedure Move(CurIndex, NewIndex: Integer); virtual;
+
     function AddIfNo(const AName: String; Const AValue: T): Integer; overload; virtual;
     function AddIfNo(AValue: T): Integer; overload; virtual;
 
@@ -53,6 +55,7 @@ type
     function IsHere(const AName: String): Boolean; overload;
     function IsHere(const AObject: T): Boolean; overload;
     function IndexOf(const AName: String): Integer; overload;
+    function IndexOf(const AObject: T): Integer; overload;
     function IndexOfItem(const Value: T; Direction: TDirection): Integer; overload;
 
     procedure AddName(const AIndex: Integer; AName: String); overload;
@@ -272,6 +275,11 @@ begin
     );
 end;
 
+function TNamedList<T>.IndexOf(const AObject: T): Integer;
+begin
+  Result := FList.IndexOf(AObject);
+end;
+
 function TNamedList<T>.IndexOfItem(const Value: T;
   Direction: TDirection): Integer;
 begin
@@ -324,6 +332,12 @@ begin
       Exit(True);
 
   Result := False;
+end;
+
+procedure TNamedList<T>.Move(CurIndex, NewIndex: Integer);
+begin
+  FList.Move(CurIndex, NewIndex);
+  FLink.Move(CurIndex, NewIndex);
 end;
 
 function TNamedList<T>.IsHere(const AName: String): Boolean;

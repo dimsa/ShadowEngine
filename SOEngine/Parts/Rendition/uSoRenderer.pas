@@ -6,7 +6,7 @@ interface
 uses
   System.SyncObjs, System.SysUtils, System.JSON, {$I 'Utils\DelphiCompatability.inc'}
   uCommonClasses, uSoTypes, uEasyDevice, uEngine2DClasses, uE2DRendition, uSoBaseOperator, uSoObject,
-  uSoContainerTypes, uSoBasePart, uSoRenditionTemplate, uJsonUtils;
+  uSoContainerTypes, uSoBasePart, uSoRenditionTemplate, uJsonUtils, uSoObjectDefaultProperties;
 
 type
   TSoRenditionFriend = class(TEngine2DRendition);
@@ -21,6 +21,8 @@ type
     FOnPaintBackground, FOnBeginPaint, FOnEndPaint: TEvent<TAnonImage>;
     procedure OnItemDestroy(ASender: TObject);
 
+    procedure BringToBack(ASender: TObject);
+    procedure SendToFront(ASender: TObject);
     procedure SetBackground(const Value: TBitmap);
     procedure SetOnBeginPaint(const Value: TEvent<TAnonImage>);
     procedure SetOnEndPaint(const Value: TEvent<TAnonImage>);
@@ -45,18 +47,31 @@ type
 implementation
 
 uses
-  uSoContainer, System.Math, uSoSprite;
+  uSoContainer, System.Math, uSoProperty;
 
 { TSoRenderer }
 
 procedure TSoRenderer.Add(const AItem: TEngine2DRendition; const AName: string);
 var
   vName: string;
+  vProp: TSoProperty;
 begin
   if not FRenditionsBySubject.ContainsKey(AItem.Subject) then
     FRenditionsBySubject.Add(AItem.Subject, TList<TEngine2DRendition>.Create);
 
   FRenditionsBySubject[AItem.Subject].Add(AItem);
+
+  if not AItem.Subject.HasProperty(Rendition) then
+  begin
+    vProp := AItem.Subject.AddProperty(Rendition);
+    vProp.Obj := AItem;
+  end;
+
+  TSoRenditionFriend(AItem).OnBringToBack := BringToBack;
+  TSoRenditionFriend(AItem).OnSendToFront := SendToFront;
+
+  vProp := AItem.Subject.AddProperty(Rendition + IntToStr(FRenditionsBySubject[AItem.Subject].Count));
+  vProp.Obj := AItem;
 
   {$I .\Template\uItemAdd.inc}
   TSoRenditionFriend(AItem).OnRequestAllRenditions := OnAllRenditionRequest;
@@ -133,6 +148,11 @@ begin
 
   if AJson.TryGetValue('Name', vVal) then
     FTemplates.Add(vVal.Value, vTemplate);
+end;
+
+procedure TSoRenderer.BringToBack(ASender: TObject);
+begin
+  FList.Move(FList.IndexOf(TEngine2DRendition(ASender)), 0);
 end;
 
 {function TSoRenderer.OnAllRenditionRequest(ASender: TSoObject): TRectF;
@@ -270,6 +290,11 @@ begin
   FCritical.Enter;
   FList.Delete(TEngine2DRendition(ASender));
   FCritical.Leave;
+end;
+
+procedure TSoRenderer.SendToFront(ASender: TObject);
+begin
+  FList.Move(FList.IndexOf(TEngine2DRendition(ASender)), FList.Count - 1);
 end;
 
 procedure TSoRenderer.SetBackground(const Value: TBitmap);

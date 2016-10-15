@@ -43,7 +43,6 @@ type
     procedure SetPosition(const Value: TPointF);
     procedure SetPower(const Value: Single);
   protected
-    FShip: TSoObject;
     procedure Init; override;
   public
     constructor Create(const AManager: TUnitManager; AShip: TSoObject);
@@ -71,6 +70,9 @@ type
   end;
 
 implementation
+
+uses
+  uSoSprite;
 
 { TGameUnit }
 
@@ -159,6 +161,8 @@ procedure TShipFire.FollowTheShip(ASender: TObject; APosition: TPosition);
 begin
   FContainer.Center := APosition.XY;
   FContainer.Rotate := APosition.Rotate;
+
+  FContainer[Rendition].Val<TSoSprite>.NextFrame;
 end;
 
 function TShipFire.GetPosition: TPointF;
@@ -213,6 +217,7 @@ begin
   with FManager.New do begin
     FContainer := ActiveContainer;
     AddRendition('FireLeft');
+    FContainer[Rendition].Val<TSoSprite>.BringToBack;
   end;
 end;
 
@@ -225,6 +230,7 @@ begin
   with FManager.New do begin
     FContainer := ActiveContainer;
     AddRendition('FireRight');
+    FContainer[Rendition].Val<TSoSprite>.BringToBack;
   end;
 end;
 

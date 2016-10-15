@@ -36,12 +36,12 @@ type
     procedure OnChangeScale(ASender: TObject);
     procedure OnChangePosition(ASender: TObject; APosition: TPosition);
     property OnRequestAllRenditions: TParameteredDelegate<TSoObject,TRectF> read FOnRequestAllRenditions write SetOnRequestAllRendtions;
+    property OnBringToBack: TNotifyEvent read FBringToBack write FBringToBack;
+    property OnSendToFront: TNotifyEvent read FSendToFront write FSendToFront;
   public
     property Justify: TObjectJustify read FJustify write SetJustify;
     property Opacity: Single read FOpacity write SetOpacity;
     property Margin: TPointF read FMargin write SetMargin;
-    property OnBringToBack: TNotifyEvent read FBringToBack write FBringToBack;
-    property OnSendToFront: TNotifyEvent read FSendToFront write FSendToFront;
     property Width: Single read GetWidth;
     property Height: Single read GetHeight;
     property Rect: TRectObject read FRect;
@@ -100,8 +100,8 @@ end;
 procedure TEngine2DRendition.OnSubjectDestroy(ASender: TObject);
 begin
   inherited;
-  TSoObjectFriend(FSubject).FProperties.Remove('Width');//.AsDouble := Width;
-  TSoObjectFriend(FSubject).FProperties.Remove('Height');//.AsDouble := Height;
+//  TSoObjectFriend(FSubject).FProperties.Remove('Width');//.AsDouble := Width;
+//  TSoObjectFriend(FSubject).FProperties.Remove('Height');//.AsDouble := Height;
 end;
 
 procedure TEngine2DRendition.RecalculateSize;

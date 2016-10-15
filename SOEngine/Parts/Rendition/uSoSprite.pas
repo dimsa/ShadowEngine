@@ -26,6 +26,8 @@ type
     property ResIndex: Integer read FResIndex write SetResIndex;
     property ResName: string read GetResName write SetResName;
     procedure Repaint; override;
+    procedure NextFrame;
+    procedure PrevFrame;
     constructor Create(const ASubject: TSoObject; const AImage: TAnonImage;
        const AResourceList: TNamedList<TSoSpriteResource>; const APrefix: string = ''); overload;
     destructor Destroy; override;
@@ -105,6 +107,11 @@ begin
   Result := FResourceList[FResIndex].Width;
 end;
 
+procedure TSoSprite.NextFrame;
+begin
+  ResIndex := FResIndex + 1;
+end;
+
 procedure TSoSprite.OnHeightChanged(ASender: TObject);
 begin
   if Height <> 0 then
@@ -119,6 +126,11 @@ begin
     FSubject.Scale := TSoProperty(ASender).Val<TSizeObject>.Width / Width
   else
     FSubject.Scale := 0;
+end;
+
+procedure TSoSprite.PrevFrame;
+begin
+  ResIndex := FResIndex - 1;
 end;
 
 procedure TSoSprite.Repaint;
@@ -137,7 +149,7 @@ end;
 
 procedure TSoSprite.SetResIndex(const Value: Integer);
 begin
-  FResIndex := Value mod FResourceList.Count;
+  FResIndex := Abs(Value mod FResourceList.Count);
   RecalculateSize;
 end;
 

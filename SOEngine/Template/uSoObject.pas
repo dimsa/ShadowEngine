@@ -47,8 +47,9 @@ type
     property Width: Single read GetWidth;
     property Height: Single read GetHeight;
 
-    property Properties[APropertyName: string]: TSoProperty read GetProperty; default;// write SetProperty; default;
     property Container: TObject read FContainer;
+    property Properties[APropertyName: string]: TSoProperty read GetProperty; default;// write SetProperty; default;
+    function HasProperty(const APropertyName: string): Boolean;
     procedure RemoveChangePositionHandler(const AHandler: TEvent<TPosition>);
     procedure AddChangePositionHandler(const AHandler: TEvent<TPosition>);
     function AddProperty(const AName: string): TSoProperty;
@@ -123,6 +124,11 @@ function TSoObject.GetWidth: Single;
 begin
   Result := FProperties[RenditionRect].Val<TRectObject>.Width;
 //  Result := FProperties[SummaryWidth].AsDouble;
+end;
+
+function TSoObject.HasProperty(const APropertyName: string): Boolean;
+begin
+  Result := FProperties.HasProperty(APropertyName);
 end;
 
 procedure TSoObject.RemoveChangePositionHandler(const AHandler: TEvent<TPosition>);

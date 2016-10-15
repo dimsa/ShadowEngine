@@ -9,6 +9,7 @@ const
   SummarySize = 'SummarySize';
   RenditionRect = 'RenditionRect';
   Collider = 'Collider';
+  Rendition = 'Rendition';
 
 // Base units
   World = 'World';
