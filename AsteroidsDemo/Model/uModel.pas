@@ -38,11 +38,12 @@ type
   private
     FPower: Single;
     FContainer: TSoObject;
-    procedure FollowTheShip(ASender: TObject; APosition: TPosition);
+  //  procedure FollowTheShip(ASender: TObject; APosition: TPosition);
     function GetPosition: TPointF;
     procedure SetPosition(const Value: TPointF);
     procedure SetPower(const Value: Single);
   protected
+    FShip: TSoObject;
     procedure Init; override;
   public
     constructor Create(const AManager: TUnitManager; AShip: TSoObject);
@@ -98,7 +99,10 @@ end;
 
 procedure TShip.AddDestination(const APosition: TPointF);
 begin
-  FDest.Add(APosition);
+  if FDest.Count <= 0 then
+    FDest.Add(APosition)
+  else
+    FDest[0] := APosition;
 end;
 
 procedure TShip.Init;
@@ -153,17 +157,19 @@ end;
 
 constructor TShipFire.Create(const AManager: TUnitManager; AShip: TSoObject);
 begin
+  FShip := AShip;
   inherited Create(AManager);
-  AShip.AddChangePositionHandler(FollowTheShip);
+
+//  AShip.AddChangePositionHandler(FollowTheShip);
 end;
 
-procedure TShipFire.FollowTheShip(ASender: TObject; APosition: TPosition);
+{procedure TShipFire.FollowTheShip(ASender: TObject; APosition: TPosition);
 begin
   FContainer.Center := APosition.XY;
   FContainer.Rotate := APosition.Rotate;
 
   FContainer[Rendition].Val<TSoSprite>.NextFrame;
-end;
+end;  }
 
 function TShipFire.GetPosition: TPointF;
 begin
@@ -217,6 +223,8 @@ begin
   with FManager.New do begin
     FContainer := ActiveContainer;
     AddRendition('FireLeft');
+    AddNewLogic(FollowTheShip);
+    AddProperty('Ship', FShip);
     FContainer[Rendition].Val<TSoSprite>.BringToBack;
   end;
 end;
@@ -230,6 +238,8 @@ begin
   with FManager.New do begin
     FContainer := ActiveContainer;
     AddRendition('FireRight');
+    AddNewLogic(FollowTheShip);
+    AddProperty('Ship', FShip);
     FContainer[Rendition].Val<TSoSprite>.BringToBack;
   end;
 end;

@@ -36,7 +36,6 @@ begin
     AAngle := AAngle - 360;
     NormalizeAngle(AAngle);
   end;
-
 end;
 
 function Random64: Int64;

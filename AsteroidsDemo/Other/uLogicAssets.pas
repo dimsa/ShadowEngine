@@ -3,7 +3,7 @@ unit uLogicAssets;
 interface
 
 uses
-  uSoObject, uSoTypes, uGeometryClasses, System.Math, uIntersectorMethods;
+  uSoObject, uSoTypes, uGeometryClasses, System.Math, uIntersectorMethods, uSoObjectDefaultProperties;
 
 type
   TAcceleration = class
@@ -25,11 +25,24 @@ type
 
 procedure MovingByAcceleration(ASoObject: TSoObject);
 procedure MovingToDestination(ASoObject: TSoObject);
+procedure FollowTheShip(ASoObject: TSoObject);
 
 implementation
 
 uses
-  uModel;
+  uModel, uSoSprite;
+
+procedure FollowTheShip(ASoObject: TSoObject);
+var
+  vShip: TSoObject;
+begin
+  vShip := ASoObject['Ship'].Val<TSoObject>;
+  ASoObject.Center := vShip.Position.XY;
+  ASoObject.Rotate := vShip.Position.Rotate;
+
+  ASoObject[Rendition].Val<TSoSprite>.NextFrame;
+  ASoObject[Rendition].Val<TSoSprite>.Opacity := 0.6 + Random(40) / 100;
+end;
 
 procedure MovingThroughSides(ASoObject, AWorld: TSoObject);
 begin
@@ -62,15 +75,18 @@ begin
 end;
 
 function MakeTurnToDestination(const AShip: TSoObject; const ADir, ATurnRate: Single): TFireKoef;
+var
+  vTurnRate: Single;
 begin
-    if (ADir < -90) or (ADir > 90) then
+    vTurnRate := Min(Abs(ADir), ATurnRate);
+    if (ADir < 0)  then
     begin
-      AShip.Rotate := AShip.Rotate - ATurnRate;
+      AShip.Rotate := NormalizeAngle(AShip.Rotate - vTurnRate);
       Result.Left := 1;
       Result.Right := 0.4;
     end
     else begin
-      AShip.Rotate := AShip.Rotate + ATurnRate;
+      AShip.Rotate := NormalizeAngle(AShip.Rotate + vTurnRate);
       Result.Left := 0.4;
       Result.Right := 1;
     end;
@@ -98,13 +114,13 @@ begin
     if vDest.Count > 0 then
     begin
 
-      vAngle := ArcTan2(vDest.First.Y - ASoObject.Y, vDest.First.X - ASoObject.x) / pi180;
-      vDir := (vAngle - ASoObject.Rotate);
+      vAngle := ArcTan2(vDest.First.Y - ASoObject.Y, vDest.First.X - ASoObject.X) / pi180;
+      vDir := NormalizeAngle((vAngle + 90) - (Rotate));
 
-      if Distance(vDest.First, Center) <= vAcceleration.DX * 2 then
-        vDest.Delete(0);
-
-      MakeTurnToDestination(ASoObject, vDir, vAcceleration.Da);
+      if Distance(vDest.Last, Center) <= Abs(vAcceleration.DX * 2) then
+        vDest.Delete(0)
+      else
+        MakeTurnToDestination(ASoObject, vDir, vAcceleration.Da);
     end;
 
     MovingThroughSides(ASoObject, ASoObject['World'].Val<TSoObject>);

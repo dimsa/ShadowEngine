@@ -47,6 +47,8 @@ type
     pi180 = 0.017453292519943295769236907684886; // (1/180) * pi
     Zero = 0.0;
 
+  function NormalizeAngle(AAngle: Single): Single;
+
 implementation
 
 { TPosition }
@@ -102,5 +104,22 @@ begin
   ScaleX := 1;
   ScaleY := 1;
 end;  }
+
+function NormalizeAngle(AAngle: Single): Single;
+begin
+  if AAngle < - 180 then
+  begin
+    AAngle := AAngle + 360;
+    Exit(NormalizeAngle(AAngle));
+  end;
+
+  if AAngle > 180 then
+  begin
+    AAngle := AAngle - 360;
+    Exit(NormalizeAngle(AAngle));
+  end;
+
+  Result := AAngle;
+end;
 
 end.
