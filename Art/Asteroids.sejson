@@ -149,7 +149,9 @@
 		"Body": [{
 			"Type": "Circle",
 			"Center": "-1,52",
-			"Radius": "113"
+			"Radius": "113",
+			"Density": "0",
+			"Friction": "0"
 		}, {
 			"Type": "Poly",
 			"Points": ["-92,-102", "-111,29", "-63,-35", "-64,-66"],
@@ -171,7 +173,9 @@
 		"Body": [{
 			"Type": "Circle",
 			"Center": "0,0",
-			"Radius": "50"
+			"Radius": "50",
+			"Density": "0",
+			"Friction": "0"
 		}]
 	}],
 	"Templates": [{
