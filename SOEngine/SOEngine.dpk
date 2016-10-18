@@ -118,6 +118,14 @@ contains
   uSoObjectDefaultProperties in 'Common\uSoObjectDefaultProperties.pas',
   uSoManager in 'Manager\uSoManager.pas',
   uSoMouseHandleCheckers in 'Parts\InputProcessor\uSoMouseHandleCheckers.pas',
-  uSoEngineEvents in 'Main\uSoEngineEvents.pas';
+  uSoEngineEvents in 'Main\uSoEngineEvents.pas',
+  UPhysics2D in 'Parts\Intersector\Box2D\UPhysics2D.pas',
+  UPhysics2DControllers in 'Parts\Intersector\Box2D\UPhysics2DControllers.pas',
+  UPhysics2DHelper in 'Parts\Intersector\Box2D\UPhysics2DHelper.pas',
+  UPhysics2DPolygonTool in 'Parts\Intersector\Box2D\UPhysics2DPolygonTool.pas',
+  UPhysics2DTypes in 'Parts\Intersector\Box2D\UPhysics2DTypes.pas',
+  uXCadencer in 'Parts\Intersector\Box2D\uXCadencer.pas',
+  uSoBox2DListener in 'Parts\Intersector\SoBox2D\uSoBox2DListener.pas',
+  uSoColliderTypes in 'Parts\Intersector\uSoColliderTypes.pas';
 
 end.

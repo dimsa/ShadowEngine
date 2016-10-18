@@ -4,12 +4,16 @@ interface
 
 uses
   System.SysUtils, System.SyncObjs, System.JSON,
-  uSoColliderObject, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart;
+  uSoColliderObject, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart,
+  UPhysics2D, uSoBox2DListener, UPhysics2DTypes;
 
 type
   TSoCollider = class(TSoOperator<TSoColliderObj>)
   private
+    FWorld: Tb2World;
+    FContactListener: TSoBox2DListener;
     procedure OnItemDestroy(ASender: TObject);
+    procedure InitilizeBox2D;
   public
     procedure Execute; // Test for collide on tick
     function Contains(const AX, AY: Single): TArray<TSoObject>;
@@ -56,6 +60,16 @@ procedure TSoCollider.Execute;
 begin
   inherited;
   { TODO : Add method for colliding }
+end;
+
+procedure TSoCollider.InitilizeBox2D;
+begin
+   if Assigned(FWorld) then
+      FWorld.Free; // box2D只需销毁world即可，其中的物体也会被销毁
+
+   FContactListener := TSoBox2DListener.Create(nil);
+   FWorld := Tb2World.Create(b2Vec2_Zero);
+   FWorld.SetContactListener(FContactListener);
 end;
 
 procedure TSoCollider.LoadTemplateFromSeJson(const AFilename: string);

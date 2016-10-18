@@ -6,7 +6,7 @@
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">iOSSimulator</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>17</TargetedPlatforms>
         <AppType>Package</AppType>
         <Platform>iOSSimulator</Platform>
@@ -224,6 +224,14 @@
         <DCCReference Include="Manager\uSoManager.pas"/>
         <DCCReference Include="Parts\InputProcessor\uSoMouseHandleCheckers.pas"/>
         <DCCReference Include="Main\uSoEngineEvents.pas"/>
+        <DCCReference Include="Parts\Intersector\Box2D\UPhysics2D.pas"/>
+        <DCCReference Include="Parts\Intersector\Box2D\UPhysics2DControllers.pas"/>
+        <DCCReference Include="Parts\Intersector\Box2D\UPhysics2DHelper.pas"/>
+        <DCCReference Include="Parts\Intersector\Box2D\UPhysics2DPolygonTool.pas"/>
+        <DCCReference Include="Parts\Intersector\Box2D\UPhysics2DTypes.pas"/>
+        <DCCReference Include="Parts\Intersector\Box2D\uXCadencer.pas"/>
+        <DCCReference Include="Parts\Intersector\SoBox2D\uSoBox2DListener.pas"/>
+        <DCCReference Include="Parts\Intersector\uSoColliderTypes.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>
@@ -290,7 +298,16 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="ProjectOSXResource">
                     <Platform Name="OSX32">
                         <RemoteDir>Contents\Resources</RemoteDir>
@@ -602,16 +619,7 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
