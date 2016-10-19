@@ -126,6 +126,7 @@ contains
   UPhysics2DTypes in 'Parts\Intersector\Box2D\UPhysics2DTypes.pas',
   uXCadencer in 'Parts\Intersector\Box2D\uXCadencer.pas',
   uSoBox2DListener in 'Parts\Intersector\SoBox2D\uSoBox2DListener.pas',
-  uSoColliderTypes in 'Parts\Intersector\uSoColliderTypes.pas';
+  uSoColliderTypes in 'Parts\Intersector\uSoColliderTypes.pas',
+  uSoColliderTemplate in 'Parts\Intersector\uSoColliderTemplate.pas';
 
 end.

@@ -14,6 +14,7 @@ type
     FTemp: TPolygon; // Темповые координаты. Задаются через Temp методы
     FTempMaxRadius: Single;
     FTempCenter: TPointF;
+    FFriction, FDensity: Single;
     procedure RecalcMaxRadius;
     function GetCircle: uGeometryClasses.TCircle;
     function GetPoly: TPolygon; // Вызывается в SetData

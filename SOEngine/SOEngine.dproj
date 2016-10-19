@@ -232,6 +232,7 @@
         <DCCReference Include="Parts\Intersector\Box2D\uXCadencer.pas"/>
         <DCCReference Include="Parts\Intersector\SoBox2D\uSoBox2DListener.pas"/>
         <DCCReference Include="Parts\Intersector\uSoColliderTypes.pas"/>
+        <DCCReference Include="Parts\Intersector\uSoColliderTemplate.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>

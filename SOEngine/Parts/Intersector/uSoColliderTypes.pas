@@ -8,8 +8,8 @@ uses
 type
   TCollideEventArgs = record
     Friction: Single;
-    FRestitution: Single;
-    FTangentSpeed: Single;
+    Restitution: Single;
+    TangentSpeed: Single;
 
     ObjectA, ObjectB: TSoObject;
   end;

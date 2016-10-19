@@ -3,13 +3,15 @@ unit uSoCollider;
 interface
 
 uses
-  System.SysUtils, System.SyncObjs, System.JSON,
-  uSoColliderObject, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart,
-  UPhysics2D, uSoBox2DListener, UPhysics2DTypes;
+  UPhysics2DTypes, System.SysUtils, System.JSON,
+  uSoTypes, uSoColliderObject, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart,
+  UPhysics2D, uSoBox2DListener, uSoColliderTemplate;
 
 type
   TSoCollider = class(TSoOperator<TSoColliderObj>)
   private
+    FTemplates: TDict<string, TSoColliderTemplate>;
+    FColliderObjBySubject: TDict<TSoObject, TList<TSoColliderObj>>;
     FWorld: Tb2World;
     FContactListener: TSoBox2DListener;
     procedure OnItemDestroy(ASender: TObject);
@@ -18,8 +20,9 @@ type
     procedure Execute; // Test for collide on tick
     function Contains(const AX, AY: Single): TArray<TSoObject>;
     procedure Add(const AItem: TSoColliderObj; const AName: string = ''); override;
-    procedure LoadTemplateFromSeJson(const AFilename: string);
-    procedure AddTemplateFromJson(const AJson: TJsonObject);
+    procedure AddTemplateFromJson(const AJson: TJsonValue);
+    constructor Create(const ACritical: TCriticalSection); override;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -33,9 +36,12 @@ begin
   {$I .\Template\uItemAdd.inc}
 end;
 
-procedure TSoCollider.AddTemplateFromJson(const AJson: TJsonObject);
+procedure TSoCollider.AddTemplateFromJson(const AJson: TJsonValue);
+var
+  vBody, vName: TJSONValue;
 begin
-
+  if (AJson.TryGetValue('Name', vName)) and (AJson.TryGetValue('Body', vBody)) then
+    FTemplates.Add(vName.Value, TSoColliderTemplate.Create(vBody));
 end;
 
 function TSoCollider.Contains(const AX, AY: Single): TArray<TSoObject>;
@@ -56,6 +62,30 @@ begin
   Result := vRes;
 end;
 
+constructor TSoCollider.Create(const ACritical: TCriticalSection);
+begin
+  inherited;
+
+  FTemplates := TDict<string, TSoColliderTemplate>.Create;
+  FColliderObjBySubject := TDict<TSoObject, TList<TSoColliderObj>>.Create;
+end;
+
+destructor TSoCollider.Destroy;
+var
+  vTemp: TSoColliderTemplate;
+begin
+  for vTemp  in FTemplates.Values do
+    vTemp.Free;
+  FTemplates.Free;
+
+  FColliderObjBySubject.Free;
+
+  FWorld.Free;
+  FContactListener.Free;
+
+  inherited;
+end;
+
 procedure TSoCollider.Execute;
 begin
   inherited;
@@ -70,11 +100,6 @@ begin
    FContactListener := TSoBox2DListener.Create(nil);
    FWorld := Tb2World.Create(b2Vec2_Zero);
    FWorld.SetContactListener(FContactListener);
-end;
-
-procedure TSoCollider.LoadTemplateFromSeJson(const AFilename: string);
-begin
-
 end;
 
 procedure TSoCollider.OnItemDestroy(ASender: TObject);

@@ -4,7 +4,7 @@ interface
 
 uses
   System.JSON, System.SysUtils,
-  uSoTypes, uEngine2DClasses;
+  uSoTypes, uEngine2DClasses, uGeometryClasses;
 
   function JsonToFont(AJson: TJsonObject): TFont;
   function JsonToFillTextFlags(AJson: TJsonObject): TFillTextFlags;
@@ -14,7 +14,18 @@ uses
   function JsonToRectF(AJson: TJsonValue): TRectF;
   function JsonToJustify(AJson: TJsonValue): TObjectJustify;
   function JsonToRenditionType(AJson: TJsonValue): TRenditionType;
+  function JsonToColliderType(AJson: TJsonValue): TColliderType;
 implementation
+
+function JsonToColliderType(AJson: TJsonValue): TColliderType;
+begin
+  if AJson.Value.ToLower = 'circle' then
+    Exit(TColliderType.ctCircle);
+  if AJson.Value.ToLower = 'poly' then
+    Exit(TColliderType.ctPoly);
+
+   raise Exception.Create('Unsupported SeJson Collider Type');
+end;
 
 function JsonToRenditionType(AJson: TJsonValue): TRenditionType;
 begin

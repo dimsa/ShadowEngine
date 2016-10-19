@@ -21,6 +21,7 @@ type
   end;
 
   TRenditionType = (rtSprite, rtText, rtShape);
+  TColliderType = (ctPoly, ctCircle);
 
 const
   pi180 = 0.0174532925;
