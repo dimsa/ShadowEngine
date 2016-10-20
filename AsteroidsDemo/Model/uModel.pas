@@ -116,6 +116,7 @@ begin
     FContainer := ActiveContainer;
     AddRendition(vTemplateName);
    // AddColliderObj(vTemplateName);
+    // AddSound(vTemplateName);
     AddProperty('Acceleration', FAcceleration);
     AddProperty('Destinations', FDest);
     AddProperty('World', FManager.ObjectByName('World'));
@@ -140,36 +141,29 @@ var
   vTemplateName: string;
 begin
   inherited;
+
   vTemplateName := 'Asteroid';
   with FManager.New do begin
     FContainer := ActiveContainer;
     AddRendition(vTemplateName);
-  //  AddColliderObj(vTemplateName);
+    // AddColliderObj(vTemplateName);
+    // AddSound(vTemplateName);
     AddProperty('Acceleration', FAcceleration);
-    FAcceleration.Dx := Random(3) + Random  - 2;
-    FAcceleration.Dy := Random(3) + Random  - 2;
-    ActiveContainer.X := Random(Round(FManager.ObjectByName('World').Width));
-    ActiveContainer.Y := Random(Round(FManager.ObjectByName('World').Height));
     AddProperty('World', FManager.ObjectByName('World'));
     AddNewLogic(MovingByAcceleration);
   end;
+
+  FAcceleration.Dx := Random(3) + Random  - 2;
+  FAcceleration.Dy := Random(3) + Random  - 2;
+  FContainer.X := Random(Round(FManager.ObjectByName('World').Width));
+  FContainer.Y := Random(Round(FManager.ObjectByName('World').Height));
 end;
 
 constructor TShipFire.Create(const AManager: TUnitManager; AShip: TSoObject);
 begin
   FShip := AShip;
   inherited Create(AManager);
-
-//  AShip.AddChangePositionHandler(FollowTheShip);
 end;
-
-{procedure TShipFire.FollowTheShip(ASender: TObject; APosition: TPosition);
-begin
-  FContainer.Center := APosition.XY;
-  FContainer.Rotate := APosition.Rotate;
-
-  FContainer[Rendition].Val<TSoSprite>.NextFrame;
-end;  }
 
 function TShipFire.GetPosition: TPointF;
 begin
