@@ -8,7 +8,11 @@ uses
   uSoObjectDefaultProperties;
 
 type
+
+
   TSoSoundKeeper = class(TSoOperator<TSoSound>)
+  private type
+    TSoSoundFriend = class(TSoSound);
   private
     FTemplates: TList<string>;
     FMediaPlayer: TMediaPlayer;
@@ -30,9 +34,12 @@ procedure TSoSoundKeeper.Add(const AItem: TSoSound; const AName: string);
 var
   vName: string;
 begin
+  if FList.Count <= 0 then
+    InitMediaPlayer(AItem.FileName);
 
+  TSoSoundFriend(AItem).Load;
 
-{  FRenditionsBySubject[AItem.Subject].Add(AItem);
+  {  FRenditionsBySubject[AItem.Subject].Add(AItem);
 
   if not AItem.Subject.HasProperty(Rendition) then
   begin
@@ -55,20 +62,21 @@ begin
 
   FInited := False;
   FTemplates := TList<string>.Create;
-
-  FMediaPlayer := TMediaPlayer.Create(nil);
 end;
 
 destructor TSoSoundKeeper.Destroy;
 begin
   FTemplates.Free;
-  FMediaPlayer.Free;
+  if Assigned(FMediaPlayer) then
+    FMediaPlayer.Free;
   inherited;
 end;
 
 procedure TSoSoundKeeper.InitMediaPlayer(const AName: string);
 begin
-
+  // it's hack. Without it you can't load any TMedia, you will got Unsupported File format
+  FMediaPlayer := TMediaPlayer.Create(nil);
+  FMediaPlayer.FileName := AName;
 end;
 
 procedure TSoSoundKeeper.OnItemDestroy(ASender: TObject);

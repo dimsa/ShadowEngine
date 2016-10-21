@@ -15,11 +15,15 @@ type
     FLoaded: Boolean;
     FLoop: Boolean;
     FTimer: TTimer;
+    FFileName: string;
     procedure SetVolume(const Value: Integer);
     procedure SetLoop(const Value: Boolean);
     procedure InitPlay;
     procedure FinishPlay;
  protected
+   // Don't use it's manually. It for uSoSoundKeeper it call it after creation of TMediaPlayer
+   // Otherwise you will got error about not supported format.
+   procedure Load;
    procedure OnMediaEnded(ASender: TObject);
  public
     procedure Play; virtual;
@@ -28,6 +32,7 @@ type
     procedure Resume; virtual;
     property Volume: Integer read FVolume write SetVolume;
     property Loop: Boolean read FLoop write SetLoop;
+    property FileName: string read FFileName;
     constructor Create(const ASubject: TSoObject; const AFileName: string);
     destructor Destroy; override;
  end;
@@ -37,40 +42,21 @@ implementation
 { TSoSound }
 
 constructor TSoSound.Create(const ASubject: TSoObject; const AFileName: string);
-var
-  vTask: ITask;
 begin
   inherited Create(ASubject);
 
   FLoaded := False;
   FLoop := False;
-
-  vTask := TTask.Create (procedure ()
-  begin
-    try
-      if FMedia <> nil then
-      begin
-        FMedia.DisposeOf;
-        FMedia := nil;
-      end;
-
-      FMedia := TMediaCodecManager.CreateFromFile(AFileName);
-
-      FTimer := TTimer.Create(nil);
-      FTimer.Enabled := False;
-      FTimer.OnTimer := OnMediaEnded;
-      FLoaded := True;
-    except
-
-    end;
-  end);
-  vTask.Start;
+  FFileName := AFileName;
 end;
 
 destructor TSoSound.Destroy;
 begin
-  FTimer.Enabled := False;
-  FTimer.Free;
+  if Assigned(FTimer) then
+  begin
+    FTimer.Enabled := False;
+    FTimer.Free;
+  end;
   FMedia.Free;
   inherited;
 end;
@@ -86,12 +72,32 @@ begin
   FTimer.Enabled := True;
 end;
 
+procedure TSoSound.Load;
+var
+  vTask: ITask;
+begin
+  vTask := TTask.Create (procedure ()
+  begin
+      if FMedia <> nil then
+      begin
+        FMedia.DisposeOf;
+        FMedia := nil;
+      end;
+
+      FMedia := TMediaCodecManager.CreateFromFile(FFileName);
+
+      FTimer := TTimer.Create(nil);
+      FTimer.Enabled := False;
+      FTimer.OnTimer := OnMediaEnded;
+      FLoaded := True;
+  end);
+  vTask.Start;
+end;
+
 procedure TSoSound.OnMediaEnded(ASender: TObject);
 begin
   if FLoop then
-  begin
     Play;
-  end;
 end;
 
 procedure TSoSound.Pause;
@@ -131,7 +137,6 @@ begin
   FMedia.CurrentTime := 0;
   FinishPlay;
 end;
-
 
 procedure TSoSound.SetLoop(const Value: Boolean);
 begin

@@ -9,9 +9,9 @@ uses
   uSoContainerTypes, uSoBasePart, uSoRenditionTemplate, uJsonUtils, uSoObjectDefaultProperties;
 
 type
-  TSoRenditionFriend = class(TEngine2DRendition);
-
   TSoRenderer = class(TSoOperator<TEngine2DRendition>)
+  private type
+    TSoRenditionFriend = class(TEngine2DRendition);
   private
     FTemplates: TDict<string, TSoRenditionTemplate>;
     FResources: TDict<string, TBitmap>;

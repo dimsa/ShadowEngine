@@ -7,9 +7,9 @@ uses
   uCommonClasses, uSoProperty;
 
 type
-  TSoPropertyFriend = class(TSoProperty);
-
   TSoProperties = class
+  private type
+    TSoPropertyFriend = class(TSoProperty);
   private
     FDict: TDictionary<string, TSoProperty>;
     FKeys: TDictionary<TSoProperty, string>;
