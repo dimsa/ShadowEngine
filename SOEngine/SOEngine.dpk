@@ -129,6 +129,7 @@ contains
   UPhysics2DPolygonTool in 'Parts\Collider\Box2D\UPhysics2DPolygonTool.pas',
   UPhysics2DTypes in 'Parts\Collider\Box2D\UPhysics2DTypes.pas',
   uXCadencer in 'Parts\Collider\Box2D\uXCadencer.pas',
-  uSoBox2DListener in 'Parts\Collider\SoBox2D\uSoBox2DListener.pas';
+  uSoBox2DListener in 'Parts\Collider\SoBox2D\uSoBox2DListener.pas',
+  uSoSound in 'Parts\Sound\uSoSound.pas';
 
 end.

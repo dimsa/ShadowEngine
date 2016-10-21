@@ -10,6 +10,7 @@ const
   RenditionRect = 'RenditionRect';
   Collider = 'Collider';
   Rendition = 'Rendition';
+  Sound = 'Sound';
 
 // Base units
   World = 'World';

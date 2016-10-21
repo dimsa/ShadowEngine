@@ -235,6 +235,7 @@
         <DCCReference Include="Parts\Collider\Box2D\UPhysics2DTypes.pas"/>
         <DCCReference Include="Parts\Collider\Box2D\uXCadencer.pas"/>
         <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DListener.pas"/>
+        <DCCReference Include="Parts\Sound\uSoSound.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>

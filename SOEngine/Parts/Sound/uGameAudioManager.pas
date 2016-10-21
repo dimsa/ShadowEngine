@@ -287,6 +287,7 @@ begin
         {$ENDIF}
       {$ENDIF}
       {$IFDEF MSWINDOWS}
+          // Only one sound at a same time in Windows. Waiting for updates on FMX or you can use Bass.dll
           sndPlaySound(Pchar(wRec.SFilename), SND_ASYNC or SND_NOSTOP or SND_NODEFAULT or SND_NOWAIT);
       {$ENDIF}
     end;
