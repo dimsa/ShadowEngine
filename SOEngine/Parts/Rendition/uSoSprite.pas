@@ -10,7 +10,7 @@ uses
 type
   // Instead of old TEngine2DSprite it containts not all sprites, but only the sprites it can use.
   TSoSprite = class(TEngine2DRendition)
-  private class
+  private type
     TSoObjectFriend = class(TSoObject);
   private
     FResourceList: TNamedList<TSoSpriteResource>;
