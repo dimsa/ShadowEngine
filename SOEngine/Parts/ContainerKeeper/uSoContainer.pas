@@ -67,7 +67,7 @@ begin
   FParts[TSoBasePartClass(vBasePart.ClassType)].Remove(vBasePart);
   if FParts[TSoBasePartClass(vBasePart.ClassType)].Count <= 0 then
     FParts.Remove(TSoBasePartClass(vBasePart.ClassType));
-  vBasePart.Free;
+  //vBasePart.Free;
 end;
 
 end.

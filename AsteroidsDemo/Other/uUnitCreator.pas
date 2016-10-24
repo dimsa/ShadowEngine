@@ -35,6 +35,7 @@ end;
 function TUnitCreator.NewShip: TShip;
 begin
   Result := TShip.Create(FUnitManager);
+
 end;
 
 function TUnitCreator.NewSpaceDebris(const ASize: integer): TBigAsteroid;

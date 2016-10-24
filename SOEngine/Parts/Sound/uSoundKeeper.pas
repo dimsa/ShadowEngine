@@ -15,12 +15,9 @@ type
     TSoSoundFriend = class(TSoSound);
   private
     FTemplates: TDict<string, string>;
-    FSoundBySubject: TDict<TSoObject, TList<TSoSound>>;
     FMediaPlayer: TMediaPlayer;
     FInited: Boolean;
-    procedure OnItemDestroy(ASender: TObject);
     procedure InitMediaPlayer(const AName: string);
-    procedure AddAsProperty(const AItem: TSoSound; const AName: string);
   public
     procedure Add(const AItem: TSoSound; const AName: string = ''); override;
     procedure AddTemplate(const ATemplateName, AFileName: string);
@@ -39,32 +36,11 @@ var
 begin
   if FList.Count <= 0 then
     InitMediaPlayer(AItem.FileName);
-
   TSoSoundFriend(AItem).Load;
 
   AddAsProperty(AItem, AName);
 
   {$I .\Template\uItemAdd.inc}
-end;
-
-procedure TSoSoundKeeper.AddAsProperty(const AItem: TSoSound;
-  const AName: string);
-var
-  vProp: TSoProperty;
-begin
-  if not FSoundBySubject.ContainsKey(AItem.Subject) then
-    FSoundBySubject.Add(AItem.Subject, TList<TSoSound>.Create);
-
-  FSoundBySubject[AItem.Subject].Add(AItem);
-
-  if not AItem.Subject.HasProperty(Sound) then
-  begin
-    vProp := AItem.Subject.AddProperty(Sound);
-    vProp.Obj := AItem;
-  end;
-
-  vProp := AItem.Subject.AddProperty(Rendition + IntToStr(FSoundBySubject[AItem.Subject].Count));
-  vProp.Obj := AItem;
 end;
 
 function TSoSoundKeeper.AddFromTemplate(const ASubject: TSoObject;
@@ -84,7 +60,6 @@ begin
 
   FInited := False;
   FTemplates := TDict<string, string>.Create;
-  FSoundBySubject := TDict<TSoObject, TList<TSoSound>>.Create;
 end;
 
 destructor TSoSoundKeeper.Destroy;
@@ -95,10 +70,6 @@ begin
   if Assigned(FMediaPlayer) then
     FMediaPlayer.Free;
 
-  for vObj in FSoundBySubject.Keys do
-    FSoundBySubject[vObj].Free;
-  FSoundBySubject.Free;
-
   inherited;
 end;
 
@@ -107,14 +78,6 @@ begin
   // it's hack. Without it you can't load any TMedia, you will got Unsupported File format
   FMediaPlayer := TMediaPlayer.Create(nil);
   FMediaPlayer.FileName := AName;
-end;
-
-procedure TSoSoundKeeper.OnItemDestroy(ASender: TObject);
-begin
-  FList.Delete(TSoSound(ASender));
-  FSoundBySubject[TSoSound(ASender).Subject].Remove(TSoSound(ASender));
-  if FSoundBySubject[TSoSound(ASender).Subject].Count <= 0 then
-    FSoundBySubject.Remove(TSoSound(ASender).Subject);
 end;
 
 end.

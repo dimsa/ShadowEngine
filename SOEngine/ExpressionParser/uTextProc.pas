@@ -15,7 +15,7 @@ type
     StartPos, EndPos: Integer;
   end;
 
-  TValueStack = class(TNamedList<Double>);
+//  TValueStack = class(TNamedList<Double>);
 
   function PosFromRight(const ASubStr, AStr: string; AOffset: Integer = 0): Integer;
   function PosFromLeft(const ASubStr, AStr: string;  AOffset: Integer = 1): Integer;
