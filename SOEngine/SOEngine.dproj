@@ -6,7 +6,7 @@
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <Platform Condition="'$(Platform)'==''">iOSSimulator</Platform>
         <TargetedPlatforms>17</TargetedPlatforms>
         <AppType>Package</AppType>
         <Platform>iOSSimulator</Platform>
@@ -236,6 +236,7 @@
         <DCCReference Include="Parts\Collider\Box2D\uXCadencer.pas"/>
         <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DListener.pas"/>
         <DCCReference Include="Parts\Sound\uSoSound.pas"/>
+        <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DWrapper.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>
@@ -302,16 +303,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
                 <DeployClass Name="ProjectOSXResource">
                     <Platform Name="OSX32">
                         <RemoteDir>Contents\Resources</RemoteDir>
@@ -623,7 +615,16 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                </DeployClass>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

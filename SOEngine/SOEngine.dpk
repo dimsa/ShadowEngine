@@ -130,6 +130,7 @@ contains
   UPhysics2DTypes in 'Parts\Collider\Box2D\UPhysics2DTypes.pas',
   uXCadencer in 'Parts\Collider\Box2D\uXCadencer.pas',
   uSoBox2DListener in 'Parts\Collider\SoBox2D\uSoBox2DListener.pas',
-  uSoSound in 'Parts\Sound\uSoSound.pas';
+  uSoSound in 'Parts\Sound\uSoSound.pas',
+  uSoBox2DWrapper in 'Parts\Collider\SoBox2D\uSoBox2DWrapper.pas';
 
 end.
