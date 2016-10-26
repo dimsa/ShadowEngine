@@ -8,6 +8,7 @@ uses
   uEngine2DClasses, uIntersectorMethods, uGeometryClasses, uNewFigure;
 
 type
+  // С точки зрения Box2D это боди с несколькими Fixtures
   TObjectShape = class
   private
     FFigures: TArray<TNewFigure>;

@@ -6,15 +6,15 @@ uses
   uCommonClasses, uSoTypes, uSoBasePart, uSoObject;
 
 type
-  TSoColliderObj = class(TSoBasePart)
+  TSoColliderObj = class abstract(TSoBasePart)
   private
     FOnCollide: TEvent<TSoObject>;
     procedure EmptyHandler(ASender: TObject; AE: TSoObject);
     procedure SetOnExecute(const Value: TNotifyEvent<TSoObject>);
   public
     property OnCollide: TEvent<TSoObject> read FOnCollide write FOnCollide;
-    function IsContainsPoint(const AX, AY: Single): Boolean; overload;
-    function IsContainsPoint(const APoint: TPointF): Boolean; overload;
+    function IsContainsPoint(const AX, AY: Single): Boolean; overload; virtual; abstract;
+    function IsContainsPoint(const APoint: TPointF): Boolean; overload; virtual; abstract;
     constructor Create(const ASubject: TSoObject); override;
   end;
 
@@ -29,16 +29,6 @@ begin
 end;
 
 procedure TSoColliderObj.EmptyHandler(ASender: TObject; AE: TSoObject);
-begin
-
-end;
-
-function TSoColliderObj.IsContainsPoint(const APoint: TPointF): Boolean;
-begin
-
-end;
-
-function TSoColliderObj.IsContainsPoint(const AX, AY: Single): Boolean;
 begin
 
 end;

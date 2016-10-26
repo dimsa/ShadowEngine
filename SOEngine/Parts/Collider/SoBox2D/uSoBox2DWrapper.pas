@@ -32,7 +32,9 @@ implementation
 constructor TSoBox2DWrapper.Create(const AGravity: TPointF);
 var
   vGravVector: TVector2;
+  vTest: Tb2PolygonShape;
 begin
+
   FOnBeginContact := TEventList<TCollideEventArgs>.Create;
   FOnEndContact := TEventList<TCollideEventArgs>.Create;
 
