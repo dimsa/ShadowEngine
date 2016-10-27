@@ -238,6 +238,7 @@
         <DCCReference Include="Parts\Collider\NewShapeCollider\uEngine2DObjectShape.pas"/>
         <DCCReference Include="Parts\Collider\NewShapeCollider\uIntersectorMethods.pas"/>
         <DCCReference Include="Parts\Collider\NewShapeCollider\uNewFigure.pas"/>
+        <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DUtils.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>

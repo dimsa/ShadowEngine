@@ -129,7 +129,7 @@ type
 
       {$IFDEF OP_OVERLOAD}
       function IsValid: Boolean; {$IFDEF INLINE_AVAIL}inline;{$ENDIF}
-
+                           dd
       function Length: PhysicsFloat; {$IFDEF INLINE_AVAIL}inline;{$ENDIF}
       function SqrLength: PhysicsFloat; {$IFDEF INLINE_AVAIL}inline;{$ENDIF}
       function Normalize: PhysicsFloat; {$IFDEF INLINE_AVAIL}inline;{$ENDIF}

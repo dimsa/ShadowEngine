@@ -4,7 +4,7 @@ interface
 
 uses
   UPhysics2D, UPhysics2DTypes, uSoTypes,
-  uSoColliderObject, uSoObject;
+  uSoColliderObject, uSoObject, uSoBox2DUtils;
 
 type
   TSoBox2DColliderObj = class(TSoColliderObj)
@@ -25,7 +25,8 @@ implementation
 function TSoBox2DColliderObj.B2TransformFromSubject: Tb2Transform;
 begin
   with Result do begin
-   // p := TVector2.From();
+    p.x := FSubject.X;
+    p.y := FSubject.Y;
   end;
 end;
 
@@ -39,13 +40,12 @@ end;
 
 function TSoBox2DColliderObj.IsContainsPoint(const AX, AY: Single): Boolean;
 begin
-  //FBody.GetFixtureList.GetShape.TestPoint(B2TransformFromSubject, TVecont2.From(AX, AY));
-
+  FBody.GetFixtureList.GetShape.TestPoint(B2TransformFromSubject, Vector2FromPoint(AX, AY));
 end;
 
 function TSoBox2DColliderObj.IsContainsPoint(const APoint: TPointF): Boolean;
 begin
-
+  FBody.GetFixtureList.GetShape.TestPoint(B2TransformFromSubject, Vector2FromPoint(APoint));
 end;
 
 end.

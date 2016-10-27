@@ -132,6 +132,7 @@ contains
   uSoBox2DWrapper in 'Parts\Collider\SoBox2D\uSoBox2DWrapper.pas',
   uEngine2DObjectShape in 'Parts\Collider\NewShapeCollider\uEngine2DObjectShape.pas',
   uIntersectorMethods in 'Parts\Collider\NewShapeCollider\uIntersectorMethods.pas',
-  uNewFigure in 'Parts\Collider\NewShapeCollider\uNewFigure.pas';
+  uNewFigure in 'Parts\Collider\NewShapeCollider\uNewFigure.pas',
+  uSoBox2DUtils in 'Parts\Collider\SoBox2D\uSoBox2DUtils.pas';
 
 end.
