@@ -1,4 +1,4 @@
-unit uSoBox2DCollider;
+unit uSoBox2DColliderObj;
 
 interface
 

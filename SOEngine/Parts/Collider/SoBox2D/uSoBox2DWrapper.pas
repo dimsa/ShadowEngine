@@ -4,24 +4,24 @@ interface
 
 uses
   UPhysics2D, UPhysics2DTypes,
-  uCommonClasses, uSoTypes, uSoObject, uSoBox2DListener, uSoColliderTypes;
+  uCommonClasses, uSoTypes, uSoObject, uSoBox2DListener, uSoColliderTypes,
+  uSoColliderWrapper, uSoColliderOptions;
 
 type
-  TSoBox2DWrapper = class
+  TSoBox2DWrapper = class(TSoColliderWrapper)
   private
     FBox2DWorld: Tb2World;
     FContactListener: TSoBox2DContactListener;
     FFixtureToObjectReferenceDict: TDict<Tb2Fixture, TSoObject>;
-    FOnEndContact: TEventList<TCollideEventArgs>;
-    FOnBeginContact: TEventList<TCollideEventArgs>;
-    function EventArgsFromContact(const AContact: Tb2Contact): TCollideEventArgs;
+    FOptions: TSoColliderOptions;
+    function WorldEventArgsFromContact(const AContact: Tb2Contact): TPairCollidedEventArgs;
+    function ObjectEventArgsFromContact(const AContact: Tb2Contact): TObjectCollidedEventArgs;
     procedure OnBeginContactHandler(AContact: Tb2Contact);
     procedure OnEndContactHandler(AContact: Tb2Contact);
   public
-    property OnBeginContact: TEventList<TCollideEventArgs> read FOnBeginContact;
-    property OnEndContact: TEventList<TCollideEventArgs> read FOnEndContact;
+    procedure ProcessStep; override;
 
-    constructor Create(const AGravity: TPointF);
+    constructor Create(const AOptions: TSoColliderOptions);
     destructor Destroy; override;
   end;
 
@@ -29,20 +29,17 @@ implementation
 
 { TSoBox2DWrapper }
 
-constructor TSoBox2DWrapper.Create(const AGravity: TPointF);
+constructor TSoBox2DWrapper.Create(const AOptions: TSoColliderOptions);
 var
   vGravVector: TVector2;
   vTest: Tb2PolygonShape;
 begin
 
-  FOnBeginContact := TEventList<TCollideEventArgs>.Create;
-  FOnEndContact := TEventList<TCollideEventArgs>.Create;
-
   FFixtureToObjectReferenceDict := TDict<Tb2Fixture, TSoObject>.Create;
 
   // Initialization of Box2D
-  vGravVector.x := AGravity.X;
-  vGravVector.y := AGravity.Y;
+  vGravVector.x := AOptions.Gravity.X;
+  vGravVector.y := AOptions.Gravity.Y;
   FBox2DWorld := Tb2World.Create(vGravVector);
 
   FContactListener := TSoBox2DContactListener.Create;
@@ -56,15 +53,13 @@ begin
   FBox2DWorld.Free;
   FContactListener.Free;
 
-  FOnEndContact.Free;
-  FOnBeginContact.Free;
   FFixtureToObjectReferenceDict.Free;
 
   inherited;
 end;
 
-function TSoBox2DWrapper.EventArgsFromContact(
-  const AContact: Tb2Contact): TCollideEventArgs;
+function TSoBox2DWrapper.WorldEventArgsFromContact(
+  const AContact: Tb2Contact): TPairCollidedEventArgs;
 begin
   with Result do begin
     Friction := AContact.m_friction;
@@ -75,14 +70,32 @@ begin
   end;
 end;
 
+function TSoBox2DWrapper.ObjectEventArgsFromContact(
+  const AContact: Tb2Contact): TObjectCollidedEventArgs;
+begin
+  with Result do begin
+    Friction := AContact.m_friction;
+    Restitution := AContact.m_restitution;
+    TangentSpeed := AContact.m_tangentSpeed;
+    Opponent := FFixtureToObjectReferenceDict[AContact.m_fixtureB];
+  end;
+end;
+
 procedure TSoBox2DWrapper.OnBeginContactHandler(AContact: Tb2Contact);
 begin
-  FOnBeginContact.RaiseEvent(Self, EventArgsFromContact(AContact));
+  if FOptions.NeedToGenerateWorldEvents then
+    RaiseOnBeginContact(WorldEventArgsFromContact(AContact));
 end;
 
 procedure TSoBox2DWrapper.OnEndContactHandler(AContact: Tb2Contact);
 begin
-  FOnEndContact.RaiseEvent(Self, EventArgsFromContact(AContact));
+  if FOptions.NeedToGenerateWorldEvents then
+    RaiseOnEndContact(WorldEventArgsFromContact(AContact));
+end;
+
+procedure TSoBox2DWrapper.ProcessStep;
+begin
+  FBox2DWorld.Step(1, 1, 1);
 end;
 
 end.

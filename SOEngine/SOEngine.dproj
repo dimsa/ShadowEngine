@@ -232,13 +232,15 @@
         <DCCReference Include="Parts\Collider\SoBox2D\Box2D\UPhysics2DPolygonTool.pas"/>
         <DCCReference Include="Parts\Collider\SoBox2D\Box2D\UPhysics2DTypes.pas"/>
         <DCCReference Include="Parts\Collider\SoBox2D\Box2D\uXCadencer.pas"/>
-        <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DCollider.pas"/>
+        <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DColliderObj.pas"/>
         <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DListener.pas"/>
         <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DWrapper.pas"/>
         <DCCReference Include="Parts\Collider\NewShapeCollider\uEngine2DObjectShape.pas"/>
         <DCCReference Include="Parts\Collider\NewShapeCollider\uIntersectorMethods.pas"/>
         <DCCReference Include="Parts\Collider\NewShapeCollider\uNewFigure.pas"/>
         <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DUtils.pas"/>
+        <DCCReference Include="Parts\Collider\uSoColliderWrapper.pas"/>
+        <DCCReference Include="Parts\Collider\uSoColliderOptions.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>

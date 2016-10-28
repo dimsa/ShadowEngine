@@ -5,11 +5,12 @@ interface
 uses
   System.SysUtils, System.JSON,
   uSoTypes, uSoColliderObject, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart,
-  uSoColliderTemplate;
+  uSoColliderTemplate, uSoColliderWrapper ;
 
 type
   TSoCollider = class(TSoOperator<TSoColliderObj>)
   private
+    FWrapper: TSoColliderWrapper;
     FTemplates: TDict<string, TSoColliderTemplate>;
     FColliderObjBySubject: TDict<TSoObject, TList<TSoColliderObj>>;
     procedure OnItemDestroy(ASender: TObject);
@@ -18,7 +19,7 @@ type
     function Contains(const AX, AY: Single): TArray<TSoObject>;
     procedure Add(const AItem: TSoColliderObj; const AName: string = ''); override;
     procedure AddTemplateFromJson(const AJson: TJsonValue);
-    constructor Create(const ACritical: TCriticalSection); override;
+    constructor Create(const ACritical: TCriticalSection; const AWrapper: TSoColliderWrapper);
     destructor Destroy; override;
   end;
 
@@ -59,10 +60,11 @@ begin
   Result := vRes;
 end;
 
-constructor TSoCollider.Create(const ACritical: TCriticalSection);
+constructor TSoCollider.Create(const ACritical: TCriticalSection; const AWrapper: TSoColliderWrapper);
 begin
-  inherited;
+  inherited Create(ACritical);
 
+  FWrapper := AWrapper;
   FTemplates := TDict<string, TSoColliderTemplate>.Create;
   FColliderObjBySubject := TDict<TSoObject, TList<TSoColliderObj>>.Create;
 end;
@@ -71,7 +73,7 @@ destructor TSoCollider.Destroy;
 var
   vTemp: TSoColliderTemplate;
 begin
-  for vTemp  in FTemplates.Values do
+  for vTemp in FTemplates.Values do
     vTemp.Free;
   FTemplates.Free;
 

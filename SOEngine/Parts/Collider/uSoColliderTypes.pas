@@ -6,7 +6,7 @@ uses
   uSoObject;
 
 type
-  TCollideEventArgs = record
+  TPairCollidedEventArgs = record
     Friction: Single;
     Restitution: Single;
     TangentSpeed: Single;
@@ -16,11 +16,21 @@ type
     constructor Create(const AFriction, ARestution, ATangentSpeed: Single; const AObjectA, AObjectB: TSoObject);
   end;
 
+  TObjectCollidedEventArgs = record
+    Friction: Single;
+    Restitution: Single;
+    TangentSpeed: Single;
+
+    Opponent: TSoObject;
+
+    constructor Create(const AFriction, ARestution, ATangentSpeed: Single; const AOpponent: TSoObject);
+  end;
+
 implementation
 
 { TCollideEventArgs }
 
-constructor TCollideEventArgs.Create(const AFriction, ARestution,
+constructor TPairCollidedEventArgs.Create(const AFriction, ARestution,
   ATangentSpeed: Single; const AObjectA, AObjectB: TSoObject);
 begin
   Friction := AFriction;
@@ -28,6 +38,17 @@ begin
   TangentSpeed := ATangentSpeed;
   ObjectA := AObjectA;
   ObjectB := AObjectB;
+end;
+
+{ TObjectCollidedEventArgs }
+
+constructor TObjectCollidedEventArgs.Create(const AFriction, ARestution,
+  ATangentSpeed: Single; const AOpponent: TSoObject);
+begin
+  Friction := AFriction;
+  Restitution := ARestution;
+  TangentSpeed := ATangentSpeed;
+  Opponent := AOpponent;
 end;
 
 end.

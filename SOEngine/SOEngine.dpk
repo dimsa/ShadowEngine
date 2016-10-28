@@ -127,12 +127,14 @@ contains
   UPhysics2DPolygonTool in 'Parts\Collider\SoBox2D\Box2D\UPhysics2DPolygonTool.pas',
   UPhysics2DTypes in 'Parts\Collider\SoBox2D\Box2D\UPhysics2DTypes.pas',
   uXCadencer in 'Parts\Collider\SoBox2D\Box2D\uXCadencer.pas',
-  uSoBox2DCollider in 'Parts\Collider\SoBox2D\uSoBox2DCollider.pas',
+  uSoBox2DColliderObj in 'Parts\Collider\SoBox2D\uSoBox2DColliderObj.pas',
   uSoBox2DListener in 'Parts\Collider\SoBox2D\uSoBox2DListener.pas',
   uSoBox2DWrapper in 'Parts\Collider\SoBox2D\uSoBox2DWrapper.pas',
   uEngine2DObjectShape in 'Parts\Collider\NewShapeCollider\uEngine2DObjectShape.pas',
   uIntersectorMethods in 'Parts\Collider\NewShapeCollider\uIntersectorMethods.pas',
   uNewFigure in 'Parts\Collider\NewShapeCollider\uNewFigure.pas',
-  uSoBox2DUtils in 'Parts\Collider\SoBox2D\uSoBox2DUtils.pas';
+  uSoBox2DUtils in 'Parts\Collider\SoBox2D\uSoBox2DUtils.pas',
+  uSoColliderWrapper in 'Parts\Collider\uSoColliderWrapper.pas',
+  uSoColliderOptions in 'Parts\Collider\uSoColliderOptions.pas';
 
 end.
