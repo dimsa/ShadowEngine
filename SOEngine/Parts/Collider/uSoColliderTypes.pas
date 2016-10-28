@@ -3,7 +3,7 @@ unit uSoColliderTypes;
 interface
 
 uses
-  uSoObject;
+  uSoColliderObject;
 
 type
   TPairCollidedEventArgs = record
@@ -11,44 +11,21 @@ type
     Restitution: Single;
     TangentSpeed: Single;
 
-    ObjectA, ObjectB: TSoObject;
+    ObjectA, ObjectB: TSoColliderObj;
 
-    constructor Create(const AFriction, ARestution, ATangentSpeed: Single; const AObjectA, AObjectB: TSoObject);
-  end;
-
-  TObjectCollidedEventArgs = record
-    Friction: Single;
-    Restitution: Single;
-    TangentSpeed: Single;
-
-    Opponent: TSoObject;
-
-    constructor Create(const AFriction, ARestution, ATangentSpeed: Single; const AOpponent: TSoObject);
+    constructor Create(const AFriction, ARestution, ATangentSpeed: Single; const AObjectA, AObjectB: TSoColliderObj);
   end;
 
 implementation
 
-{ TCollideEventArgs }
-
 constructor TPairCollidedEventArgs.Create(const AFriction, ARestution,
-  ATangentSpeed: Single; const AObjectA, AObjectB: TSoObject);
+  ATangentSpeed: Single; const AObjectA, AObjectB: TSoColliderObj);
 begin
   Friction := AFriction;
   Restitution := ARestution;
   TangentSpeed := ATangentSpeed;
   ObjectA := AObjectA;
   ObjectB := AObjectB;
-end;
-
-{ TObjectCollidedEventArgs }
-
-constructor TObjectCollidedEventArgs.Create(const AFriction, ARestution,
-  ATangentSpeed: Single; const AOpponent: TSoObject);
-begin
-  Friction := AFriction;
-  Restitution := ARestution;
-  TangentSpeed := ATangentSpeed;
-  Opponent := AOpponent;
 end;
 
 end.

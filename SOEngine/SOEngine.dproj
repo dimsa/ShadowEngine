@@ -241,6 +241,7 @@
         <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DUtils.pas"/>
         <DCCReference Include="Parts\Collider\uSoColliderWrapper.pas"/>
         <DCCReference Include="Parts\Collider\uSoColliderOptions.pas"/>
+        <DCCReference Include="Parts\Collider\uSoColliderObjectTypes.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>

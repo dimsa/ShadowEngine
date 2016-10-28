@@ -135,6 +135,7 @@ contains
   uNewFigure in 'Parts\Collider\NewShapeCollider\uNewFigure.pas',
   uSoBox2DUtils in 'Parts\Collider\SoBox2D\uSoBox2DUtils.pas',
   uSoColliderWrapper in 'Parts\Collider\uSoColliderWrapper.pas',
-  uSoColliderOptions in 'Parts\Collider\uSoColliderOptions.pas';
+  uSoColliderOptions in 'Parts\Collider\uSoColliderOptions.pas',
+  uSoColliderObjectTypes in 'Parts\Collider\uSoColliderObjectTypes.pas';
 
 end.
