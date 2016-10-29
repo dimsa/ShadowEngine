@@ -5,7 +5,7 @@ interface
 uses
   UPhysics2D, UPhysics2DTypes,
   uCommonClasses, uSoTypes, uSoBox2DListener, uSoColliderTypes, uSoColliderObjectTypes,
-  uSoColliderWrapper, uSoColliderOptions, uSoColliderObject;
+  uSoColliderWrapper, uSoColliderOptions, uSoColliderObject, uColliderDefinition;
 
 type
   TSoBox2DWrapper = class(TSoColliderWrapper)
@@ -21,6 +21,7 @@ type
     procedure OnBeginContactHandler(AContact: Tb2Contact);
     procedure OnEndContactHandler(AContact: Tb2Contact);
   public
+    procedure AddColliderDefinition(const AColliderDef: TColliderDefinition); override;
     procedure ProcessStep; override;
 
     constructor Create(const AOptions: TSoColliderOptions);
@@ -31,17 +32,22 @@ implementation
 
 { TSoBox2DWrapper }
 
+procedure TSoBox2DWrapper.AddColliderDefinition(const AColliderDef: TColliderDefinition);
+begin
+  inherited;
+
+end;
+
 constructor TSoBox2DWrapper.Create(const AOptions: TSoColliderOptions);
 var
   vGravVector: TVector2;
-  vTest: Tb2PolygonShape;
 begin
-
+  FOptions := AOptions;
   FFixtureToColliderObjReferenceDict := TDict<Tb2Fixture, TSoColliderObj>.Create;
 
   // Initialization of Box2D
-  vGravVector.x := AOptions.Gravity.X;
-  vGravVector.y := AOptions.Gravity.Y;
+  vGravVector.x := FOptions.Gravity.X;
+  vGravVector.y := FOptions.Gravity.Y;
   FBox2DWorld := Tb2World.Create(vGravVector);
 
   FContactListener := TSoBox2DContactListener.Create;

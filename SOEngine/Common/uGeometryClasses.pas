@@ -3,9 +3,11 @@ unit uGeometryClasses;
 interface
 
 uses
-  System.Types;
+   {$I 'Utils\DelphiCompatability.inc'} System.Types;
 
 type
+  TFigureType = (ftEllipse, ftRect, ftCircle, ftPoly);
+
   TPosition = record // Нужен для аниманиции спрайтов
     X, Y: Single;
     Rotate: Single;
@@ -37,11 +39,11 @@ type
     Angle: Single; // Угол поворота эллипса
   end;
 
+  TPolygon = System.Math.Vectors.TPolygon;
+
   TLine = record
     A, B: TPointF;
   end;
-
-  TFigureType = (ftEllipse, ftRect);
 
   const
     pi180 = 0.017453292519943295769236907684886; // (1/180) * pi

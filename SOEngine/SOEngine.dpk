@@ -136,6 +136,9 @@ contains
   uSoBox2DUtils in 'Parts\Collider\SoBox2D\uSoBox2DUtils.pas',
   uSoColliderWrapper in 'Parts\Collider\uSoColliderWrapper.pas',
   uSoColliderOptions in 'Parts\Collider\uSoColliderOptions.pas',
-  uSoColliderObjectTypes in 'Parts\Collider\uSoColliderObjectTypes.pas';
+  uSoColliderObjectTypes in 'Parts\Collider\uSoColliderObjectTypes.pas',
+  uRawShapes in 'Common\uRawShapes.pas',
+  uRawShapesConverter in 'Common\uRawShapesConverter.pas',
+  uColliderDefinition in 'Parts\Collider\uColliderDefinition.pas';
 
 end.
