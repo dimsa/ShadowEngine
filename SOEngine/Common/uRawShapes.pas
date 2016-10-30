@@ -19,13 +19,16 @@ type
   TRawCircle = class(TRawShape)
   public
     function FigureType: TFigureType; override;
-    constructor Create(const ACircle: TCircle);
+//    constructor Create(const ACircle: TCircle); overload;
+    constructor Create(const AX, AY, AR: Single); overload;
   end;
-
   TRawPoly = class(TRawShape)
   public
+    function Count: Integer;
     function FigureType: TFigureType; override;
-    constructor Create(const APoly: TPolygon);
+    constructor Create(const APoly: TArray<TPointF>); overload;
+//    constructor Create(const APoly: TPolygon);
+  //  constructor Create(const APoly: TPolygon);
   end;
 
 implementation
@@ -50,11 +53,18 @@ end;
 
 { TRawCircle }
 
-constructor TRawCircle.Create(const ACircle: TCircle);
+{constructor TRawCircle.Create(const ACircle: TCircle);
 begin
   SetLength(FData, 2);
   FData[0] := TPointF.Create(ACircle.X, ACircle.Y);
   FData[1] := TPointF.Create(ACircle.Radius, 0);
+end; }
+
+constructor TRawCircle.Create(const AX, AY, AR: Single);
+begin
+  SetLength(FData, 2);
+  FData[0] := TPointF.Create(AX, AY);
+  FData[1] := TPointF.Create(AR, 0);
 end;
 
 function TRawCircle.FigureType: TFigureType;
@@ -64,7 +74,21 @@ end;
 
 { TRawPoly }
 
-constructor TRawPoly.Create(const APoly: TPolygon);
+{constructor TRawPoly.Create(const APoly: TPolygon);
+var
+  i: Integer;
+begin
+  SetLength(FData, Length(APoly));
+  for i := 0 to High(APoly) do
+    FData[i] := TPointF.Create(FData[i].X, FData[i].Y)
+end;  }
+
+function TRawPoly.Count: Integer;
+begin
+  Result := Length(FData);
+end;
+
+constructor TRawPoly.Create(const APoly: TArray<TPointF>);
 var
   i: Integer;
 begin
