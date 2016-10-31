@@ -4,15 +4,17 @@ interface
 
 uses
   System.JSON, uJsonUtils,
-  uSoColliderObject, uSoObject;
+  uSoTypes, uSoColliderObject, uSoObject, uRawShapesConverter, uRawShapes;
 
 type
   TSoColliderTemplate = class
   private
-
+    FShapeList: TList<TRawShape>;
   public
-    function Instantiate(const ASubject: TSoObject): TSoColliderObj;
+    property ShapeList: TList<TRawShape> read FShapeList;
+//    function Instantiate(const ASubject: TSoObject): TSoColliderObj;
     constructor Create(const AJson: TJSONValue); virtual;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -25,40 +27,33 @@ var
   vArr: TJSONArray;
   i: Integer;
 begin
-
+  FShapeList := TList<TRawShape>.Create;
   vArr := TJSONArray(AJson);
   for i := 0 to vArr.Count - 1 do
   begin
     vVal := vArr.Items[i];
 
     if vVal.TryGetValue('Type', vProp) then
-      uJsonUtils.JsonToColliderType(vProp);
-
+      FShapeList.Add(TRawShapeJsonConverter.ConvertFrom(vProp));
   end;
-
-
-
- { if AJson.TryGetValue('Opacity', vVal) then
-    FOpacity := StrToFloat(vVal.ToString)
-  else
-    FOpacity := 1;
-
-  if AJson.TryGetValue('Justify', vVal) then
-    FObjectJustify := JsonToJustify(TJSONObject(vVal))
-  else
-    FObjectJustify := Center;
-
-  if AJson.TryGetValue('Margin', vVal) then
-    FMargin := JsonToPointF(vVal)
-  else
-    FMargin := TPointF.Zero;      }
 end;
 
-function TSoColliderTemplate.Instantiate(
+destructor TSoColliderTemplate.Destroy;
+var
+  i: Integer;
+begin
+  for i := 0 to FShapeList.Count - 1 do
+    FShapeList[i].Free;
+
+  FShapeList.Free;
+  inherited;
+end;
+
+{function TSoColliderTemplate.Instantiate(
   const ASubject: TSoObject): TSoColliderObj;
 begin
   Result := TSoColliderObj.Create(ASubject);
 
-end;
+end; }
 
 end.

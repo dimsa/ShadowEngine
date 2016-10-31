@@ -4,7 +4,7 @@ interface
 
 uses
   System.Types, System.SysUtils,
-  uRawShapes, System.JSON, UPhysics2D, uNewFigure, uGeometryClasses;
+  uRawShapes, System.JSON, UPhysics2D, uNewFigure, uGeometryClasses, uJsonUtils;
 
 type
   TRawShapeConverter<T> = class abstract
@@ -43,7 +43,32 @@ implementation
 
 class function TRawShapeJsonConverter.ConvertFrom(
   const AObject: TJsonValue): TRawShape;
+var
+  vProp: TJSONValue;
+  vType: TFigureType;
+  vCenter: TPointF;
+  vRadius: Single;
+   vPoints: TArray<TPointF>;
 begin
+  if AObject.TryGetValue('Type', vProp) then
+  begin
+    vType := JsonToShapeType(vProp);
+
+    case vType of
+      ftCircle: begin
+        if AObject.TryGetValue('Center', vProp) then
+          vCenter := JsonToPointF(vProp);
+        if AObject.TryGetValue('Radius', vProp) then
+          vRadius := JsonToSingle(vProp);
+      end;
+      ftPoly: begin
+        if AObject.TryGetValue('Points', vProp) then
+          vPoints := JsonToPointFArray(vProp);
+      end;
+      else raise Exception.Create('Converting of this shape type from Json to RawShape not implemented yet ');
+    end;
+  end;
+
 
 end;
 

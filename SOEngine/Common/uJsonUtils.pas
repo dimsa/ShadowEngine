@@ -15,7 +15,45 @@ uses
   function JsonToJustify(AJson: TJsonValue): TObjectJustify;
   function JsonToRenditionType(AJson: TJsonValue): TRenditionType;
   function JsonToColliderType(AJson: TJsonValue): TColliderType;
+  function JsonToShapeType(AJson: TJsonValue): TFigureType;
+  function JsonToSingle(AJson: TJsonValue): Single;
+  function JsonToPointFArray(AJson: TJsonValue): TArray<TPointF>;
 implementation
+
+function JsonToShapeType(AJson: TJsonValue): TFigureType;
+begin
+  if AJson.Value.ToLower = 'circle' then
+    Exit(TFigureType.ftCircle);
+  if AJson.Value.ToLower = 'poly' then
+    Exit(TFigureType.ftPoly);
+
+   raise Exception.Create('Unsupported Figure Type');
+end;
+
+function JsonToPointFArray(AJson: TJsonValue): TArray<TPointF>;
+var
+  vArr: TJSONArray;
+  i: Integer;
+begin
+  vArr := TJSONArray(AJson);
+
+  SetLength(Result, vArr.Count);
+
+  for i := 0 to vArr.Count - 1 do
+    Result[i] := JsonToPointF(vArr.Items[i]);
+
+
+
+end;
+
+function JsonToSingle(AJson: TJsonValue): Single;
+var
+  s: string;
+  vErr: Integer;
+begin
+  Result := 0;
+  Val(AJson.ToString, Result, vErr);
+end;
 
 function JsonToColliderType(AJson: TJsonValue): TColliderType;
 begin
