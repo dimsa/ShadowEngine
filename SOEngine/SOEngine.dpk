@@ -137,8 +137,11 @@ contains
   uSoColliderWrapper in 'Parts\Collider\uSoColliderWrapper.pas',
   uSoColliderOptions in 'Parts\Collider\uSoColliderOptions.pas',
   uSoColliderObjectTypes in 'Parts\Collider\uSoColliderObjectTypes.pas',
-  uRawShapes in 'Common\uRawShapes.pas',
-  uRawShapesConverter in 'Common\uRawShapesConverter.pas',
-  uColliderDefinition in 'Parts\Collider\uColliderDefinition.pas';
+  uColliderDefinition in 'Parts\Collider\uColliderDefinition.pas',
+  uRawShapes in 'Common\RawShapes\uRawShapes.pas',
+  uRawShapeBaseConverter in 'Common\RawShapes\Converters\uRawShapeBaseConverter.pas',
+  uRawShapeJsonConverter in 'Common\RawShapes\Converters\uRawShapeJsonConverter.pas',
+  uRawShapeBox2DConverter in 'Common\RawShapes\Converters\uRawShapeBox2DConverter.pas',
+  uRawShapeNewFigureConverter in 'Common\RawShapes\Converters\uRawShapeNewFigureConverter.pas';
 
 end.

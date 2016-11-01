@@ -1,26 +1,12 @@
-unit uRawShapesConverter;
+unit uRawShapeBox2DConverter;
 
 interface
 
 uses
-  System.Types, System.SysUtils,
-  uRawShapes, System.JSON, UPhysics2D, uNewFigure, uGeometryClasses, uJsonUtils;
+  UPhysics2D, System.SysUtils,
+  uGeometryClasses, uSoTypes,uRawShapes, uRawShapeBaseConverter;
 
 type
-  TRawShapeConverter<T> = class abstract
-  protected const
-    CConvertNotImplementedErrorMessage = 'Converting from %class1 to %class2 of some shape not implemented yet';
-  public
-    class function ConvertFrom(const AObject: T): TRawShape; virtual; abstract;
-    class function ConvertTo(const AShape: TRawShape): T; virtual; abstract;
-  end;
-
-  TRawShapeJsonConverter = class(TRawShapeConverter<TJsonValue>)
-  public
-    class function ConvertFrom(const AObject: TJsonValue): TRawShape; override;
-    class function ConvertTo(const AShape: TRawShape): TJsonValue; override;
-  end;
-
   TRawShapeBox2DShapeConverter = class(TRawShapeConverter<Tb2Shape>)
   private
     class function B2PolyVerticesToPointArray(APoly: Tb2PolyVertices; const ACount: Integer): TArray<TPointF>;
@@ -30,52 +16,7 @@ type
     class function ConvertTo(const AShape: TRawShape): Tb2Shape; override;
   end;
 
-  TRawShapeNewFigureConverter = class(TRawShapeConverter<TNewFigure>)
-  public
-    class function ConvertFrom(const AObject: TNewFigure): TRawShape; override;
-    class function ConvertTo(const AShape: TRawShape): TNewFigure; override;
-  end;
-
-
 implementation
-
-{ TRawShapeJsonConverter }
-
-class function TRawShapeJsonConverter.ConvertFrom(
-  const AObject: TJsonValue): TRawShape;
-var
-  vProp: TJSONValue;
-  vType: TFigureType;
-  vCenter: TPointF;
-  vRadius: Single;
-   vPoints: TArray<TPointF>;
-begin
-  if AObject.TryGetValue('Type', vProp) then
-  begin
-    vType := JsonToShapeType(vProp);
-
-    case vType of
-      ftCircle: begin
-        if AObject.TryGetValue('Center', vProp) then
-          vCenter := JsonToPointF(vProp);
-        if AObject.TryGetValue('Radius', vProp) then
-          vRadius := JsonToSingle(vProp);
-      end;
-      ftPoly: begin
-        if AObject.TryGetValue('Points', vProp) then
-          vPoints := JsonToPointFArray(vProp);
-      end;
-      else raise Exception.Create('Converting of this shape type from Json to RawShape not implemented yet ');
-    end;
-  end;
-
-
-end;
-
-class function TRawShapeJsonConverter.ConvertTo(const AShape: TRawShape): TJsonValue;
-begin
-
-end;
 
 { TRawShapeBox2DShapeConverter }
 
@@ -150,20 +91,6 @@ begin
   SetLength(Result, ACount);
   for i := 0 to ACount - 1 do
     Result[i] := TPointF.Create(APoly[i].X, APoly[i].Y)
-end;
-
-{ TRawShapeNewFigureConverter }
-
-class function TRawShapeNewFigureConverter.ConvertFrom(
-  const AObject: TNewFigure): TRawShape;
-begin
-
-end;
-
-class function TRawShapeNewFigureConverter.ConvertTo(
-  const AShape: TRawShape): TNewFigure;
-begin
-
 end;
 
 end.

@@ -4,7 +4,7 @@ interface
 
 uses
   System.JSON, uJsonUtils,
-  uSoTypes, uSoColliderObject, uSoObject, uRawShapesConverter, uRawShapes;
+  uSoTypes, uSoColliderObject, uSoObject, uRawShapeJsonConverter, uRawShapes;
 
 type
   TSoColliderTemplate = class
