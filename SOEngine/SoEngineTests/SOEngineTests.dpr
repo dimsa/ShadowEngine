@@ -14,11 +14,11 @@ program SOEngineTests;
 {$APPTYPE CONSOLE}
 {$ENDIF}
 
-ususes
-  DUnitTestRunner,
-  Unit1 in 'Unit1.pas';
+uses
+  TestRawShapes in 'TestRawShapes.pas',
+  DUnitTestRunner;
 
-R *.RES}
+{$R *.RES}
 
 begin
   DUnitTestRunner.RunRegisteredTests;

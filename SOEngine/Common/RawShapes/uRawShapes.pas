@@ -19,7 +19,6 @@ type
   TRawCircle = class(TRawShape)
   public
     function FigureType: TFigureType; override;
-//    constructor Create(const ACircle: TCircle); overload;
     constructor Create(const AX, AY, AR: Single); overload;
   end;
   TRawPoly = class(TRawShape)
@@ -27,8 +26,6 @@ type
     function Count: Integer;
     function FigureType: TFigureType; override;
     constructor Create(const APoly: TArray<TPointF>); overload;
-//    constructor Create(const APoly: TPolygon);
-  //  constructor Create(const APoly: TPolygon);
   end;
 
 implementation

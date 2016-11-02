@@ -16,7 +16,7 @@
             <Dependencies>SOEngine\SOEngine.dproj</Dependencies>
         </Projects>
         <Projects Include="SOEngine\SoEngineTests\SOEngineTests.dproj">
-            <Dependencies/>
+            <Dependencies>SOEngine\SOEngine.dproj</Dependencies>
         </Projects>
     </ItemGroup>
     <ProjectExtensions>
@@ -62,13 +62,13 @@
     <Target Name="AsteroidsDemo:Make" DependsOnTargets="SOEngine:Make">
         <MSBuild Projects="AsteroidsDemo\AsteroidsDemo.dproj" Targets="Make"/>
     </Target>
-    <Target Name="SOEngineTests">
+    <Target Name="SOEngineTests" DependsOnTargets="SOEngine">
         <MSBuild Projects="SOEngine\SoEngineTests\SOEngineTests.dproj"/>
     </Target>
-    <Target Name="SOEngineTests:Clean">
+    <Target Name="SOEngineTests:Clean" DependsOnTargets="SOEngine:Clean">
         <MSBuild Projects="SOEngine\SoEngineTests\SOEngineTests.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="SOEngineTests:Make">
+    <Target Name="SOEngineTests:Make" DependsOnTargets="SOEngine:Make">
         <MSBuild Projects="SOEngine\SoEngineTests\SOEngineTests.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
