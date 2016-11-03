@@ -11,6 +11,7 @@ uses
   function JsonToTextAlign(AJson: TJsonObject): TTextAlign;
   function JsonToBool(AJson: TJsonValue): Bool;
   function JsonToPointF(AJson: TJsonValue): TPointF;
+  function PointFToJson(APoint: TPointF): TJsonValue;
   function JsonToRectF(AJson: TJsonValue): TRectF;
   function JsonToJustify(AJson: TJsonValue): TObjectJustify;
   function JsonToRenditionType(AJson: TJsonValue): TRenditionType;
@@ -19,6 +20,13 @@ uses
   function JsonToSingle(AJson: TJsonValue): Single;
   function JsonToPointFArray(AJson: TJsonValue): TArray<TPointF>;
 implementation
+
+function PointFToJson(APoint: TPointF): TJsonValue;
+begin
+  Result := TJSONObject.Create;
+  TJSONObject(Result).AddPair('X', FloatToStr(APoint.X));
+  TJSONObject(Result).AddPair('Y', FloatToStr(APoint.Y));
+end;
 
 function JsonToShapeType(AJson: TJsonValue): TFigureType;
 begin
