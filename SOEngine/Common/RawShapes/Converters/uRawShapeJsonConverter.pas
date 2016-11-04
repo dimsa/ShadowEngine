@@ -57,22 +57,22 @@ var
   VJStr: TJSONString;
   i: Integer;
 begin
-
   case AShape.FigureType of
     ftCircle: begin
+      vObj := TJSONObject.Create;
       vObj.AddPair('Type', 'Circle');
-      vObj.AddPair('Center', FloatToStr(AShape.GetData[0].x) + ',' + FloatToStr(AShape.GetData[0].x));
+      vObj.AddPair('Center', FloatToStr(AShape.GetData[0].x) + ',' + FloatToStr(AShape.GetData[0].y));
       vObj.AddPair('Radius', FloatToStr(AShape.GetData[1].x));
       Result := vObj;
     end;
     ftPoly: begin
+      vObj := TJSONObject.Create;
       vObj.AddPair('Type', 'Poly');
       vArr := AShape.GetData;
       vJArr := TJSONArray.Create;
       for i := 0 to High(vArr) do
       begin
-        vJStr := TJSONString.Create;
-        vJStr := FloatToStr(vArr[i].X) + ',' + FloatToStr(vArr[i].Y);
+        vJStr := TJSONString.Create(FloatToStr(vArr[i].X) + ',' + FloatToStr(vArr[i].Y));
         vJArr.AddElement(VJStr);
       end;
       vObj.AddPair('Points', vJArr);

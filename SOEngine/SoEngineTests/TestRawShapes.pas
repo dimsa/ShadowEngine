@@ -13,7 +13,7 @@ interface
 
 uses
   TestFramework, System.Math, uRawShapes, uGeometryClasses, uSoTypes,
-  System.Generics.Collections;
+  System.Generics.Collections, uTestRawShapesContructors;
 
 type
   // Test methods for class TRawShape
@@ -149,15 +149,8 @@ begin
 end;
 
 procedure TestTRawPoly.SetUp;
-var
-  vArr: TArray<TPointF>;
 begin
-  SetLength(vArr, 4);
-  vArr[0] := TPointF.Create(-40, -40);
-  vArr[1] := TPointF.Create(60, -40);
-  vArr[2] := TPointF.Create(40, 60);
-  vArr[3] := TPointF.Create(-60, 40);
-  FRawPoly := TRawPoly.Create(vArr);
+  FRawPoly := TRawShapesContructor.CreateRawPoly([-40, -40, 60, -40, 40, 60, -60, 40]);
 end;
 
 procedure TestTRawPoly.TearDown;

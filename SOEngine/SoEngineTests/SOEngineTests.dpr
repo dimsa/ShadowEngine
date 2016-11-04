@@ -16,7 +16,9 @@ program SOEngineTests;
 
 uses
   TestRawShapes in 'TestRawShapes.pas',
-  DUnitTestRunner;
+  DUnitTestRunner,
+  TestRawShapeJsonConverter in 'TestRawShapeJsonConverter.pas',
+  uTestRawShapesContructors in 'uTestRawShapesContructors.pas';
 
 {$R *.RES}
 

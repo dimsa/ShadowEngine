@@ -18,8 +18,14 @@ uses
   function JsonToColliderType(AJson: TJsonValue): TColliderType;
   function JsonToShapeType(AJson: TJsonValue): TFigureType;
   function JsonToSingle(AJson: TJsonValue): Single;
+  function JsonToString(AJson: TJsonValue): string;
   function JsonToPointFArray(AJson: TJsonValue): TArray<TPointF>;
 implementation
+
+function JsonToString(AJson: TJsonValue): string;
+begin
+  Result := AJson.Value;
+end;
 
 function PointFToJson(APoint: TPointF): TJsonValue;
 begin
@@ -46,21 +52,16 @@ begin
   vArr := TJSONArray(AJson);
 
   SetLength(Result, vArr.Count);
-
   for i := 0 to vArr.Count - 1 do
     Result[i] := JsonToPointF(vArr.Items[i]);
-
-
-
 end;
 
 function JsonToSingle(AJson: TJsonValue): Single;
 var
-  s: string;
   vErr: Integer;
 begin
   Result := 0;
-  Val(AJson.ToString, Result, vErr);
+  Val(AJson.Value, Result, vErr);
 end;
 
 function JsonToColliderType(AJson: TJsonValue): TColliderType;

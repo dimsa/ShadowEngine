@@ -91,7 +91,7 @@ var
 begin
   SetLength(FData, Length(APoly));
   for i := 0 to High(APoly) do
-    FData[i] := TPointF.Create(FData[i].X, FData[i].Y)
+    FData[i] := TPointF.Create(APoly[i].X, APoly[i].Y)
 end;
 
 function TRawPoly.FigureType: TFigureType;
