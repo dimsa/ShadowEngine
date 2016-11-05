@@ -30,6 +30,7 @@ begin
           Tb2CircleShape(AObject).m_p.x,
           Tb2CircleShape(AObject).m_p.y,
           Tb2CircleShape(AObject).m_radius);
+
     e_polygonShape:
       Result :=
         TRawPoly.Create(

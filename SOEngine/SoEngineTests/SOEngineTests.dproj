@@ -94,9 +94,11 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="TestRawShapes.pas"/>
-        <DCCReference Include="TestRawShapeJsonConverter.pas"/>
-        <DCCReference Include="uTestRawShapesContructors.pas"/>
+        <DCCReference Include="RawFigures\TestRawShapeJsonConverter.pas"/>
+        <DCCReference Include="RawFigures\TestRawShapes.pas"/>
+        <DCCReference Include="RawFigures\uTestRawShapesContructors.pas"/>
+        <DCCReference Include="RawFigures\TestRawShapeBox2DConverter.pas"/>
+        <DCCReference Include="..\Common\RawShapes\Converters\uRawShapeBox2DConverter.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
