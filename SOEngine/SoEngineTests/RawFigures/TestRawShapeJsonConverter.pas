@@ -22,7 +22,6 @@ type
   TestTRawShapeJsonConverter = class(TTestCase)
   strict private
     FRawShapeJsonConverter: TRawShapeJsonConverter;
-    function IsPointArrayEquals(const AArr1, AArr2: TArray<TPointF>): Boolean;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -34,21 +33,6 @@ type
   end;
 
 implementation
-
-function TestTRawShapeJsonConverter.IsPointArrayEquals(const AArr1,
-  AArr2: TArray<TPointF>): Boolean;
-var
-  i: Integer;
-begin
-  if Length(AArr1) <> Length(AArr2) then
-    Exit(False);
-
-  for i := 0 to High(AArr1) do
-    if (AArr1[i].X <> AArr2[i].X) or (AArr1[i].X <> AArr2[i].X)  then
-      Exit(False);
-
-  Result := True;
-end;
 
 procedure TestTRawShapeJsonConverter.SetUp;
 begin
@@ -66,7 +50,7 @@ var
   ReturnValue: TRawShape;
   AObject: TJSONValue;
 begin
-  AObject := TRawShapesContructor.CreateJsonCircle(25, -25, 127);
+  AObject := TTestShapesContructor.CreateJsonCircle(25, -25, 127);
 
   ReturnValue := FRawShapeJsonConverter.ConvertFrom(AObject);
   Check(
@@ -83,7 +67,7 @@ var
   ReturnValue: TRawShape;
   AObject: TJSONValue;
 begin
-  AObject := TRawShapesContructor.CreateJsonPoly([3,7,5,9,-50, -50, 100, 110]);
+  AObject := TTestShapesContructor.CreateJsonPoly([3,7,5,9,-50, -50, 100, 110]);
 
   ReturnValue := FRawShapeJsonConverter.ConvertFrom(AObject);
   Check(
@@ -110,7 +94,7 @@ var
   vVal: TJSONValue;
   vS: string;
 begin
-  AShape := TRawShapesContructor.CreateRawCircle(-3, 73, 102);
+  AShape := TTestShapesContructor.CreateRawCircle(-3, 73, 102);
 
   ReturnValue := FRawShapeJsonConverter.ConvertTo(AShape);
 
@@ -142,7 +126,7 @@ var
   vArr: TArray<TPointF>;
   vS: string;
 begin
-  AShape := TRawShapesContructor.CreateRawPoly([50, -50, -50, -50, -50, 60, 60, 60]);
+  AShape := TTestShapesContructor.CreateRawPoly([50, -50, -50, -50, -50, 60, 60, 60]);
 
   ReturnValue := FRawShapeJsonConverter.ConvertTo(AShape);
 
@@ -150,7 +134,7 @@ begin
     vArr := JsonToPointFArray(vJArr);
 
   Check(
-    IsPointArrayEquals(AShape.GetData, vArr),
+    TTestShapesContructor.IsPointArrayEquals(AShape.GetData, vArr),
     'Convert to RawPoly unsuccesful'
   );
 end;

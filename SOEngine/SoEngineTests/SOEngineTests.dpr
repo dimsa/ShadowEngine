@@ -19,8 +19,7 @@ uses
   TestRawShapeJsonConverter in 'RawFigures\TestRawShapeJsonConverter.pas',
   TestRawShapes in 'RawFigures\TestRawShapes.pas',
   uTestRawShapesContructors in 'RawFigures\uTestRawShapesContructors.pas',
-  TestRawShapeBox2DConverter in 'RawFigures\TestRawShapeBox2DConverter.pas',
-  uRawShapeBox2DConverter in '..\Common\RawShapes\Converters\uRawShapeBox2DConverter.pas';
+  TestRawShapeBox2DConverter in 'RawFigures\TestRawShapeBox2DConverter.pas';
 
 {$R *.RES}
 

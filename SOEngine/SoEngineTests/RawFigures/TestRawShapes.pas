@@ -27,6 +27,11 @@ type
   published
     procedure TestCorrectClone;
     procedure TestIncorrectClone;
+    procedure TestIsEqualPolyToPoly;
+    procedure TestIsNotEqualPolyToPoly;
+    procedure TestIsEqualCircleToCircle;
+    procedure TestIsNotEqualCircleToCircle;
+    procedure TestIsNotEqualPolyToCircle;
     procedure TestGetData;
   end;
 
@@ -59,7 +64,7 @@ implementation
 
 procedure TestTRawShape.SetUp;
 begin
-  FRawShape := TRawCircle.Create(50, 50, 100); //TRawShape.Create;
+  FRawShape := TRawCircle.Create(50, 50, 100);
 end;
 
 procedure TestTRawShape.TearDown;
@@ -73,18 +78,22 @@ var
   vIsRawFiguresIdentical: Boolean;
   vArr: TArray<TPointF>;
   vSample: TRawShape;
+
   i: Integer;
 begin
-  vSample := TRawCircle.Create(50, 50, 100);
+  vSample := FRawShape.Clone; //.TRawCircle.Create(50, 50, 100);
 
-  vIsRawFiguresIdentical := True;
-  vArr := FRawShape.GetData;
-  for i := 0 to High(vArr) do
-    vIsRawFiguresIdentical := vIsRawFiguresIdentical and (vArr[i] = vSample.GetData[i]);
+  vIsRawFiguresIdentical := TTestShapesContructor.IsPointArrayEquals(vSample.GetData, FRawShape.GetData);
 
-  vIsRawFiguresIdentical := vIsRawFiguresIdentical and (vSample.FigureType = FRawShape.FigureType);
+  vIsRawFiguresIdentical :=
+    vIsRawFiguresIdentical and
+    (vSample.FigureType = FRawShape.FigureType) and
+    (vSample.ClassName = FRawShape.ClassName);
 
-  Check(vIsRawFiguresIdentical, 'Clone in TRawShape works incorrect');
+  Check(
+    vIsRawFiguresIdentical,
+    'Clone in TRawShape works incorrect'
+  );
 end;
 
 procedure TestTRawShape.TestGetData;
@@ -129,28 +138,93 @@ begin
   Check(not vIsRawFiguresIdentical, 'Clone in TRawShape works incorrect. Error in FigureType');
 end;
 
+procedure TestTRawShape.TestIsEqualCircleToCircle;
+var
+  vCircle1, vCircle2: TRawCircle;
+begin
+  vCircle1 := TTestShapesContructor.CreateRawCircle(50, -25, 100);
+  vCircle2 := TTestShapesContructor.CreateRawCircle(50, -25, 100);
+
+  Check(
+    vCircle1.IsEqualTo(vCircle2),
+    'IsEqualTo Method in in TRawShape working incorrect with Circles'
+  )
+end;
+
+procedure TestTRawShape.TestIsNotEqualCircleToCircle;
+var
+  vCircle1, vCircle2: TRawCircle;
+begin
+  vCircle1 := TTestShapesContructor.CreateRawCircle(50, -25, 100);
+  vCircle2 := TTestShapesContructor.CreateRawCircle(50, -25, 101);
+
+  Check(
+     not vCircle1.IsEqualTo(vCircle2),
+    'IsEqualTo Method in in TRawShape working incorrect with Circles'
+  )
+end;
+
+procedure TestTRawShape.TestIsNotEqualPolyToCircle;
+var
+  vCircle: TRawCircle;
+  vPoly: TRawPoly;
+begin
+  vCircle := TTestShapesContructor.CreateRawCircle(50, -25, 100);
+  vPoly := TTestShapesContructor.CreateRawPoly([50, -25, 100, 0]);
+
+  Check(
+    not vCircle.IsEqualTo(vPoly),
+    'IsEqualTo Method in in TRawShape working incorrect with Circles and Poly'
+  )
+end;
+
+procedure TestTRawShape.TestIsNotEqualPolyToPoly;
+var
+  vPoly1, vPoly2: TRawPoly;
+begin
+  vPoly1 := TTestShapesContructor.CreateRawPoly([-20, -30, 20, -30, 30, 20, -30, 20]);
+  vPoly2 := TTestShapesContructor.CreateRawPoly([-30, -30, 20, -30, 30, 20, -30, 20]);
+
+  Check(
+    not vPoly1.IsEqualTo(vPoly2),
+    'IsEqualTo Method in in TRawShape working incorrect with Polygons'
+  )
+end;
+
+procedure TestTRawShape.TestIsEqualPolyToPoly;
+var
+  vPoly1, vPoly2: TRawPoly;
+begin
+  vPoly1 := TTestShapesContructor.CreateRawPoly([-20, -30, 20, -30, 30, 20, -30, 20]);
+  vPoly2 := TTestShapesContructor.CreateRawPoly([-20, -30, 20, -30, 30, 20, -30, 20]);
+
+  Check(
+    vPoly1.IsEqualTo(vPoly2),
+    'IsEqualTo Method in in TRawShape working incorrect with Polygons'
+  )
+end;
+
 procedure TestTRawCircle.SetUp;
 begin
-  FRawCircle := TRawCircle.Create(-100, 100, 50);
 end;
 
 procedure TestTRawCircle.TearDown;
 begin
-  FRawCircle.Free;
-  FRawCircle := nil;
 end;
 
 procedure TestTRawCircle.TestFigureType;
 var
   ReturnValue: TFigureType;
+  vRawCircle: TRawShape;
 begin
-  ReturnValue := FRawCircle.FigureType;
+  vRawCircle := TRawCircle.Create(-100, 100, 50);
+  ReturnValue := vRawCircle.FigureType;
   Check(ReturnValue = ftCircle, 'Error in FigureType in TRawCircle');
 end;
 
 procedure TestTRawPoly.SetUp;
 begin
-  FRawPoly := TRawShapesContructor.CreateRawPoly([-40, -40, 60, -40, 40, 60, -60, 40]);
+  FRawPoly := TTestShapesContructor.CreateRawPoly([-40, -40, 60, -40, 40, 60, -60, 40]);
 end;
 
 procedure TestTRawPoly.TearDown;

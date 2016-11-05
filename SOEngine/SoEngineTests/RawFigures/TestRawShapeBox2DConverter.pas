@@ -13,7 +13,8 @@ interface
 
 uses
   TestFramework, System.SysUtils, uSoTypes, uRawShapes, uRawShapeBaseConverter,
-  uGeometryClasses, UPhysics2D, uRawShapeBox2DConverter;
+  System.Math,
+  uGeometryClasses, UPhysics2D, uRawShapeBox2DConverter, uTestRawShapesContructors;
 
 type
   // Test methods for class TRawShapeBox2DShapeConverter
@@ -25,8 +26,10 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    procedure TestConvertFrom;
-    procedure TestConvertTo;
+    procedure TestConvertFromCircle;
+    procedure TestConvertFromPoly;
+    procedure TestConvertToCircle;
+    procedure TestConvertToPoly;
   end;
 
 implementation
@@ -42,24 +45,74 @@ begin
   FRawShapeBox2DShapeConverter := nil;
 end;
 
-procedure TestTRawShapeBox2DShapeConverter.TestConvertFrom;
+procedure TestTRawShapeBox2DShapeConverter.TestConvertFromCircle;
 var
   ReturnValue: TRawShape;
   AObject: Tb2Shape;
 begin
-  // TODO: Setup method call parameters
+  AObject := TTestShapesContructor.CreateBox2DCircle(78, -0, 3);
   ReturnValue := FRawShapeBox2DShapeConverter.ConvertFrom(AObject);
-  // TODO: Validate method results
+
+  Check(
+    ReturnValue.IsEqualTo(TTestShapesContructor.CreateRawCircle(78, -0, 3)),
+    'Converting from Box2D to TRawShape is working wrong'
+  );
 end;
 
-procedure TestTRawShapeBox2DShapeConverter.TestConvertTo;
+procedure TestTRawShapeBox2DShapeConverter.TestConvertFromPoly;
+var
+  ReturnValue: TRawShape;
+  AObject: Tb2Shape;
+begin
+  AObject := TTestShapesContructor.CreateBox2DPoly([23.0, 45.0, -5.0, -10.0, -100.0, -100.0, -100.0, 400.0, 50.0, 50.0]);
+  ReturnValue := FRawShapeBox2DShapeConverter.ConvertFrom(AObject);
+
+  Check(
+    ReturnValue.IsEqualTo(
+    TTestShapesContructor.CreateRawPoly([23.0, 45.0, -5.0, -10.0, -100.0, -100.0, -100.0, 400.0, 50.0, 50.0])),
+    'Converting from Box2D to TRawPoly is working wrong'
+  );
+end;
+
+procedure TestTRawShapeBox2DShapeConverter.TestConvertToCircle;
 var
   ReturnValue: Tb2Shape;
   AShape: TRawShape;
 begin
-  // TODO: Setup method call parameters
+  AShape := TTestShapesContructor.CreateRawCircle(23, -1, 7);
   ReturnValue := FRawShapeBox2DShapeConverter.ConvertTo(AShape);
-  // TODO: Validate method results
+
+  Check(
+    (ReturnValue.m_radius = 7) and
+    (SameValue(Tb2CircleShape(ReturnValue).m_p.x, 23)) and
+    (SameValue(Tb2CircleShape(ReturnValue).m_p.y, -1)) and
+    (ReturnValue.ClassType = Tb2CircleShape),
+    'Convert to Box2D Circle works incorrect'
+  );
+end;
+
+procedure TestTRawShapeBox2DShapeConverter.TestConvertToPoly;
+var
+  ReturnValue: Tb2Shape;
+  AShape: TRawShape;
+  i: Integer;
+  vArr: TArray<TPointF>;
+begin
+  AShape := TTestShapesContructor.CreateRawPoly([23, 23, -23, 7, -45, -45, 60, -100]);
+  ReturnValue := FRawShapeBox2DShapeConverter.ConvertTo(AShape);
+
+  SetLength(vArr, Tb2PolygonShape(ReturnValue).m_count);
+  for i := 0 to Tb2PolygonShape(ReturnValue).m_count - 1 do
+  begin
+    vArr[i].X := Tb2PolygonShape(ReturnValue).m_vertices[i].x;
+    vArr[i].Y := Tb2PolygonShape(ReturnValue).m_vertices[i].y;
+  end;
+
+  Check(
+    TTestShapesContructor.IsPointArrayEquals(vArr, AShape.GetData) and
+    (ReturnValue.ClassType = Tb2PolygonShape),
+    'Convert RawShape to Box2DPolygon works incorrect'
+   );
 end;
 
 initialization

@@ -3,23 +3,55 @@ unit uTestRawShapesContructors;
 interface
 
 uses
-  System.JSON, System.SysUtils, System.Types,
+  System.JSON, System.SysUtils, System.Types, UPhysics2D,
   uRawShapes;
 
 type
-  TRawShapesContructor = class
+  TTestShapesContructor = class
   public
     class function CreateJsonCircle(const AX, AY, AR: Single): TJSONObject;
     class function CreateJsonPoly(const AArr: array of const): TJSONObject;
     class function CreateRawCircle(const AX, AY, AR: Single): TRawCircle;
     class function CreateRawPoly(const AArr: array of const): TRawPoly;
+    class function CreateBox2DCircle(const AX, AY, AR: Single): Tb2CircleShape;
+    class function CreateBox2DPoly(const AArr: array of const): Tb2PolygonShape;
+    class function IsPointArrayEquals(const AArr1, AArr2: TArray<TPointF>): Boolean;
   end;
 
 implementation
 
 { TRawShapesContructor }
 
-class function TRawShapesContructor.CreateJsonCircle(const AX, AY,
+class function TTestShapesContructor.CreateBox2DCircle(const AX, AY,
+  AR: Single): Tb2CircleShape;
+begin
+  Result := Tb2CircleShape.Create;
+
+  Result.m_p.x := AX;
+  Result.m_p.y := AY;
+  Result.m_radius := AR;
+end;
+
+class function TTestShapesContructor.CreateBox2DPoly(
+  const AArr: array of const): Tb2PolygonShape;
+var
+  vL: Integer;
+  i: Integer;
+begin
+  Result := Tb2PolygonShape.Create;
+
+  vL := Length(AArr) div 2;
+
+  Result.m_count := vL;
+
+  for i := 0 to vL - 1 do
+  begin
+    Result.m_vertices[i].x := AArr[i * 2].VExtended^;
+    Result.m_vertices[i].y := AArr[i * 2 + 1].VExtended^;
+  end;
+end;
+
+class function TTestShapesContructor.CreateJsonCircle(const AX, AY,
   AR: Single): TJSONObject;
 begin
   Result := TJSONObject.Create;
@@ -30,7 +62,7 @@ begin
   end;
 end;
 
-class function TRawShapesContructor.CreateJsonPoly(
+class function TTestShapesContructor.CreateJsonPoly(
   const AArr: array of const): TJSONObject;
 var
   i, vL: Integer;
@@ -50,13 +82,13 @@ begin
   Result.AddPair('Points', vArr);
 end;
 
-class function TRawShapesContructor.CreateRawCircle(const AX, AY,
+class function TTestShapesContructor.CreateRawCircle(const AX, AY,
   AR: Single): TRawCircle;
 begin
   Result := TRawCircle.Create(AX, AY, AR);
 end;
 
-class function TRawShapesContructor.CreateRawPoly(
+class function TTestShapesContructor.CreateRawPoly(
   const AArr: array of const): TRawPoly;
 var
   vArr: TArray<TPointF>;
@@ -67,11 +99,33 @@ begin
 
  for i := 0 to vL - 1 do
   begin
-    vArr[i].X := AArr[i * 2].VInteger;
-    vArr[i].Y := AArr[i * 2].VInteger;
+    if AArr[i * 2].VType = vtInteger then
+      vArr[i].X := AArr[i * 2].VInteger
+    else
+      vArr[i].X := AArr[i * 2].VExtended^;
+
+    if AArr[i * 2].VType = vtInteger then
+      vArr[i].Y := AArr[i * 2 + 1].VInteger
+    else
+      vArr[i].Y := AArr[i * 2 + 1].VExtended^;
   end;
 
   Result := TRawPoly.Create(vArr);
+end;
+
+class function TTestShapesContructor.IsPointArrayEquals(const AArr1,
+  AArr2: TArray<TPointF>): Boolean;
+var
+  i: Integer;
+begin
+  if Length(AArr1) <> Length(AArr2) then
+    Exit(False);
+
+  for i := 0 to High(AArr1) do
+    if (AArr1[i].X <> AArr2[i].X) or (AArr1[i].X <> AArr2[i].X)  then
+      Exit(False);
+
+  Result := True;
 end;
 
 end.
