@@ -1,4 +1,4 @@
-unit uTestRawShapesContructors;
+unit uTestRawShapesHelpers;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   uRawShapes;
 
 type
-  TTestShapesContructor = class
+  TTestShapesHelpers = class
   public
     class function CreateJsonCircle(const AX, AY, AR: Single): TJSONObject;
     class function CreateJsonPoly(const AArr: array of const): TJSONObject;
@@ -22,7 +22,7 @@ implementation
 
 { TRawShapesContructor }
 
-class function TTestShapesContructor.CreateBox2DCircle(const AX, AY,
+class function TTestShapesHelpers.CreateBox2DCircle(const AX, AY,
   AR: Single): Tb2CircleShape;
 begin
   Result := Tb2CircleShape.Create;
@@ -32,7 +32,7 @@ begin
   Result.m_radius := AR;
 end;
 
-class function TTestShapesContructor.CreateBox2DPoly(
+class function TTestShapesHelpers.CreateBox2DPoly(
   const AArr: array of const): Tb2PolygonShape;
 var
   vL: Integer;
@@ -51,7 +51,7 @@ begin
   end;
 end;
 
-class function TTestShapesContructor.CreateJsonCircle(const AX, AY,
+class function TTestShapesHelpers.CreateJsonCircle(const AX, AY,
   AR: Single): TJSONObject;
 begin
   Result := TJSONObject.Create;
@@ -62,7 +62,7 @@ begin
   end;
 end;
 
-class function TTestShapesContructor.CreateJsonPoly(
+class function TTestShapesHelpers.CreateJsonPoly(
   const AArr: array of const): TJSONObject;
 var
   i, vL: Integer;
@@ -82,13 +82,13 @@ begin
   Result.AddPair('Points', vArr);
 end;
 
-class function TTestShapesContructor.CreateRawCircle(const AX, AY,
+class function TTestShapesHelpers.CreateRawCircle(const AX, AY,
   AR: Single): TRawCircle;
 begin
   Result := TRawCircle.Create(AX, AY, AR);
 end;
 
-class function TTestShapesContructor.CreateRawPoly(
+class function TTestShapesHelpers.CreateRawPoly(
   const AArr: array of const): TRawPoly;
 var
   vArr: TArray<TPointF>;
@@ -113,7 +113,7 @@ begin
   Result := TRawPoly.Create(vArr);
 end;
 
-class function TTestShapesContructor.IsPointArrayEquals(const AArr1,
+class function TTestShapesHelpers.IsPointArrayEquals(const AArr1,
   AArr2: TArray<TPointF>): Boolean;
 var
   i: Integer;

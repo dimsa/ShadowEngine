@@ -5,7 +5,8 @@ interface
 uses
   UPhysics2D, UPhysics2DTypes,
   uCommonClasses, uSoTypes, uSoBox2DListener, uSoColliderTypes, uSoColliderObjectTypes,
-  uSoColliderWrapper, uSoColliderOptions, uSoColliderObject, uColliderDefinition;
+  uSoColliderWrapper, uSoColliderOptions, uSoColliderObject, uColliderDefinition, uSoBox2DColliderObj,
+  uSoObject;
 
 type
   TSoBox2DWrapper = class(TSoColliderWrapper)
@@ -21,7 +22,7 @@ type
     procedure OnBeginContactHandler(AContact: Tb2Contact);
     procedure OnEndContactHandler(AContact: Tb2Contact);
   public
-    procedure AddColliderDefinition(const AColliderDef: TColliderDefinition); override;
+    function AddColliderDefinition(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj; override;
     procedure ProcessStep; override;
 
     constructor Create(const AOptions: TSoColliderOptions);
@@ -32,10 +33,9 @@ implementation
 
 { TSoBox2DWrapper }
 
-procedure TSoBox2DWrapper.AddColliderDefinition(const AColliderDef: TColliderDefinition);
+function TSoBox2DWrapper.AddColliderDefinition(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj;
 begin
-  inherited;
-
+  Result := TSoBox2DColliderObj.Create(ASubject, FBox2DWorld, AColliderDef);
 end;
 
 constructor TSoBox2DWrapper.Create(const AOptions: TSoColliderOptions);

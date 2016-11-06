@@ -14,7 +14,7 @@ interface
 uses
   TestFramework, System.SysUtils, uSoTypes, uRawShapes, System.JSON, uGeometryClasses,
   uRawShapeBaseConverter, uRawShapeJsonConverter, uJsonUtils, System.Math, System.Types,
-  uTestRawShapesContructors;
+  uTestRawShapesHelpers;
 
 type
   // Test methods for class TRawShapeJsonConverter
@@ -50,7 +50,7 @@ var
   ReturnValue: TRawShape;
   AObject: TJSONValue;
 begin
-  AObject := TTestShapesContructor.CreateJsonCircle(25, -25, 127);
+  AObject := TTestShapesHelpers.CreateJsonCircle(25, -25, 127);
 
   ReturnValue := FRawShapeJsonConverter.ConvertFrom(AObject);
   Check(
@@ -67,7 +67,7 @@ var
   ReturnValue: TRawShape;
   AObject: TJSONValue;
 begin
-  AObject := TTestShapesContructor.CreateJsonPoly([3,7,5,9,-50, -50, 100, 110]);
+  AObject := TTestShapesHelpers.CreateJsonPoly([3,7,5,9,-50, -50, 100, 110]);
 
   ReturnValue := FRawShapeJsonConverter.ConvertFrom(AObject);
   Check(
@@ -94,7 +94,7 @@ var
   vVal: TJSONValue;
   vS: string;
 begin
-  AShape := TTestShapesContructor.CreateRawCircle(-3, 73, 102);
+  AShape := TTestShapesHelpers.CreateRawCircle(-3, 73, 102);
 
   ReturnValue := FRawShapeJsonConverter.ConvertTo(AShape);
 
@@ -126,7 +126,7 @@ var
   vArr: TArray<TPointF>;
   vS: string;
 begin
-  AShape := TTestShapesContructor.CreateRawPoly([50, -50, -50, -50, -50, 60, 60, 60]);
+  AShape := TTestShapesHelpers.CreateRawPoly([50, -50, -50, -50, -50, 60, 60, 60]);
 
   ReturnValue := FRawShapeJsonConverter.ConvertTo(AShape);
 
@@ -134,7 +134,7 @@ begin
     vArr := JsonToPointFArray(vJArr);
 
   Check(
-    TTestShapesContructor.IsPointArrayEquals(AShape.GetData, vArr),
+    TTestShapesHelpers.IsPointArrayEquals(AShape.GetData, vArr),
     'Convert to RawPoly unsuccesful'
   );
 end;

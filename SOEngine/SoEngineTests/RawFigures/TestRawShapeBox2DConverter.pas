@@ -14,7 +14,7 @@ interface
 uses
   TestFramework, System.SysUtils, uSoTypes, uRawShapes, uRawShapeBaseConverter,
   System.Math,
-  uGeometryClasses, UPhysics2D, uRawShapeBox2DConverter, uTestRawShapesContructors;
+  uGeometryClasses, UPhysics2D, uRawShapeBox2DConverter, uTestRawShapesHelpers;
 
 type
   // Test methods for class TRawShapeBox2DShapeConverter
@@ -50,11 +50,11 @@ var
   ReturnValue: TRawShape;
   AObject: Tb2Shape;
 begin
-  AObject := TTestShapesContructor.CreateBox2DCircle(78, -0, 3);
+  AObject := TTestShapesHelpers.CreateBox2DCircle(78, -0, 3);
   ReturnValue := FRawShapeBox2DShapeConverter.ConvertFrom(AObject);
 
   Check(
-    ReturnValue.IsEqualTo(TTestShapesContructor.CreateRawCircle(78, -0, 3)),
+    ReturnValue.IsEqualTo(TTestShapesHelpers.CreateRawCircle(78, -0, 3)),
     'Converting from Box2D to TRawShape is working wrong'
   );
 end;
@@ -64,12 +64,12 @@ var
   ReturnValue: TRawShape;
   AObject: Tb2Shape;
 begin
-  AObject := TTestShapesContructor.CreateBox2DPoly([23.0, 45.0, -5.0, -10.0, -100.0, -100.0, -100.0, 400.0, 50.0, 50.0]);
+  AObject := TTestShapesHelpers.CreateBox2DPoly([23.0, 45.0, -5.0, -10.0, -100.0, -100.0, -100.0, 400.0, 50.0, 50.0]);
   ReturnValue := FRawShapeBox2DShapeConverter.ConvertFrom(AObject);
 
   Check(
     ReturnValue.IsEqualTo(
-    TTestShapesContructor.CreateRawPoly([23.0, 45.0, -5.0, -10.0, -100.0, -100.0, -100.0, 400.0, 50.0, 50.0])),
+    TTestShapesHelpers.CreateRawPoly([23.0, 45.0, -5.0, -10.0, -100.0, -100.0, -100.0, 400.0, 50.0, 50.0])),
     'Converting from Box2D to TRawPoly is working wrong'
   );
 end;
@@ -79,7 +79,7 @@ var
   ReturnValue: Tb2Shape;
   AShape: TRawShape;
 begin
-  AShape := TTestShapesContructor.CreateRawCircle(23, -1, 7);
+  AShape := TTestShapesHelpers.CreateRawCircle(23, -1, 7);
   ReturnValue := FRawShapeBox2DShapeConverter.ConvertTo(AShape);
 
   Check(
@@ -98,7 +98,7 @@ var
   i: Integer;
   vArr: TArray<TPointF>;
 begin
-  AShape := TTestShapesContructor.CreateRawPoly([23, 23, -23, 7, -45, -45, 60, -100]);
+  AShape := TTestShapesHelpers.CreateRawPoly([23, 23, -23, 7, -45, -45, 60, -100]);
   ReturnValue := FRawShapeBox2DShapeConverter.ConvertTo(AShape);
 
   SetLength(vArr, Tb2PolygonShape(ReturnValue).m_count);
@@ -109,7 +109,7 @@ begin
   end;
 
   Check(
-    TTestShapesContructor.IsPointArrayEquals(vArr, AShape.GetData) and
+    TTestShapesHelpers.IsPointArrayEquals(vArr, AShape.GetData) and
     (ReturnValue.ClassType = Tb2PolygonShape),
     'Convert RawShape to Box2DPolygon works incorrect'
    );

@@ -18,7 +18,7 @@ uses
   DUnitTestRunner,
   TestRawShapeJsonConverter in 'RawFigures\TestRawShapeJsonConverter.pas',
   TestRawShapes in 'RawFigures\TestRawShapes.pas',
-  uTestRawShapesContructors in 'RawFigures\uTestRawShapesContructors.pas',
+  uTestRawShapesHelpers in 'RawFigures\uTestRawShapesHelpers.pas',
   TestRawShapeBox2DConverter in 'RawFigures\TestRawShapeBox2DConverter.pas';
 
 {$R *.RES}

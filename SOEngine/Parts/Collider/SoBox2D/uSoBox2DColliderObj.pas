@@ -4,18 +4,20 @@ interface
 
 uses
   UPhysics2D, UPhysics2DTypes, uSoTypes,
-  uSoColliderObject, uSoObject, uSoBox2DUtils;
+  uSoColliderObject, uSoObject, uSoBox2DUtils, uColliderDefinition;
 
 type
   TSoBox2DColliderObj = class(TSoColliderObj)
   private
     FBody: TB2Body;
     FWorld: Tb2World;
+    FColliderDefinition: TColliderDefinition;
     function B2TransformFromSubject: Tb2Transform;
   public
     function IsContainsPoint(const AX, AY: Single): Boolean; overload; override;
     function IsContainsPoint(const APoint: TPointF): Boolean; overload; override;
-    constructor Create(const ASubject: TSoObject; const AWorld: Tb2World);
+    constructor Create(const ASubject: TSoObject; const AWorld: Tb2World; const AColliderDef: TColliderDefinition);
+    destructor Destroy; override;
   end;
 
 implementation
@@ -30,12 +32,20 @@ begin
   end;
 end;
 
-constructor TSoBox2DColliderObj.Create(const ASubject: TSoObject; const AWorld: Tb2World);
+constructor TSoBox2DColliderObj.Create(const ASubject: TSoObject; const AWorld: Tb2World; const AColliderDef: TColliderDefinition);
 begin
   inherited Create(ASubject);
 
+  FColliderDefinition := AColliderDef;
   FWorld := AWorld;
   FBody := Tb2Body.Create(Tb2BodyDef.Create, FWorld);
+end;
+
+destructor TSoBox2DColliderObj.Destroy;
+begin
+  FBody.Free;
+//  FColliderDefinition.Free;
+  inherited;
 end;
 
 function TSoBox2DColliderObj.IsContainsPoint(const AX, AY: Single): Boolean;

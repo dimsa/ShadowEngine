@@ -13,7 +13,7 @@ interface
 
 uses
   TestFramework, System.Math, uRawShapes, uGeometryClasses, uSoTypes,
-  System.Generics.Collections, uTestRawShapesContructors;
+  System.Generics.Collections, uTestRawShapesHelpers;
 
 type
   // Test methods for class TRawShape
@@ -83,7 +83,7 @@ var
 begin
   vSample := FRawShape.Clone; //.TRawCircle.Create(50, 50, 100);
 
-  vIsRawFiguresIdentical := TTestShapesContructor.IsPointArrayEquals(vSample.GetData, FRawShape.GetData);
+  vIsRawFiguresIdentical := TTestShapesHelpers.IsPointArrayEquals(vSample.GetData, FRawShape.GetData);
 
   vIsRawFiguresIdentical :=
     vIsRawFiguresIdentical and
@@ -142,8 +142,8 @@ procedure TestTRawShape.TestIsEqualCircleToCircle;
 var
   vCircle1, vCircle2: TRawCircle;
 begin
-  vCircle1 := TTestShapesContructor.CreateRawCircle(50, -25, 100);
-  vCircle2 := TTestShapesContructor.CreateRawCircle(50, -25, 100);
+  vCircle1 := TTestShapesHelpers.CreateRawCircle(50, -25, 100);
+  vCircle2 := TTestShapesHelpers.CreateRawCircle(50, -25, 100);
 
   Check(
     vCircle1.IsEqualTo(vCircle2),
@@ -155,8 +155,8 @@ procedure TestTRawShape.TestIsNotEqualCircleToCircle;
 var
   vCircle1, vCircle2: TRawCircle;
 begin
-  vCircle1 := TTestShapesContructor.CreateRawCircle(50, -25, 100);
-  vCircle2 := TTestShapesContructor.CreateRawCircle(50, -25, 101);
+  vCircle1 := TTestShapesHelpers.CreateRawCircle(50, -25, 100);
+  vCircle2 := TTestShapesHelpers.CreateRawCircle(50, -25, 101);
 
   Check(
      not vCircle1.IsEqualTo(vCircle2),
@@ -169,8 +169,8 @@ var
   vCircle: TRawCircle;
   vPoly: TRawPoly;
 begin
-  vCircle := TTestShapesContructor.CreateRawCircle(50, -25, 100);
-  vPoly := TTestShapesContructor.CreateRawPoly([50, -25, 100, 0]);
+  vCircle := TTestShapesHelpers.CreateRawCircle(50, -25, 100);
+  vPoly := TTestShapesHelpers.CreateRawPoly([50, -25, 100, 0]);
 
   Check(
     not vCircle.IsEqualTo(vPoly),
@@ -182,8 +182,8 @@ procedure TestTRawShape.TestIsNotEqualPolyToPoly;
 var
   vPoly1, vPoly2: TRawPoly;
 begin
-  vPoly1 := TTestShapesContructor.CreateRawPoly([-20, -30, 20, -30, 30, 20, -30, 20]);
-  vPoly2 := TTestShapesContructor.CreateRawPoly([-30, -30, 20, -30, 30, 20, -30, 20]);
+  vPoly1 := TTestShapesHelpers.CreateRawPoly([-20, -30, 20, -30, 30, 20, -30, 20]);
+  vPoly2 := TTestShapesHelpers.CreateRawPoly([-30, -30, 20, -30, 30, 20, -30, 20]);
 
   Check(
     not vPoly1.IsEqualTo(vPoly2),
@@ -195,8 +195,8 @@ procedure TestTRawShape.TestIsEqualPolyToPoly;
 var
   vPoly1, vPoly2: TRawPoly;
 begin
-  vPoly1 := TTestShapesContructor.CreateRawPoly([-20, -30, 20, -30, 30, 20, -30, 20]);
-  vPoly2 := TTestShapesContructor.CreateRawPoly([-20, -30, 20, -30, 30, 20, -30, 20]);
+  vPoly1 := TTestShapesHelpers.CreateRawPoly([-20, -30, 20, -30, 30, 20, -30, 20]);
+  vPoly2 := TTestShapesHelpers.CreateRawPoly([-20, -30, 20, -30, 30, 20, -30, 20]);
 
   Check(
     vPoly1.IsEqualTo(vPoly2),
@@ -224,7 +224,7 @@ end;
 
 procedure TestTRawPoly.SetUp;
 begin
-  FRawPoly := TTestShapesContructor.CreateRawPoly([-40, -40, 60, -40, 40, 60, -60, 40]);
+  FRawPoly := TTestShapesHelpers.CreateRawPoly([-40, -40, 60, -40, 40, 60, -60, 40]);
 end;
 
 procedure TestTRawPoly.TearDown;

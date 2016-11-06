@@ -2,7 +2,7 @@ unit uSoColliderWrapper;
 
 interface
 uses
-  uCommonClasses, uSoColliderTypes, uColliderDefinition;
+  uCommonClasses, uSoColliderTypes, uColliderDefinition, uSoColliderObject, uSoObject;
 
 type
 
@@ -20,7 +20,7 @@ public
   procedure RemoveOnEndContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
 
   procedure ProcessStep; virtual; abstract;
-  procedure AddColliderDefinition(const AColliderDef: TColliderDefinition); virtual; abstract;
+  function AddColliderDefinition(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj; virtual; abstract;
 
   constructor Create;
   destructor Destroy; override;

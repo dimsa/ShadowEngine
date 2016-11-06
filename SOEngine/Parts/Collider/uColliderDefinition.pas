@@ -3,19 +3,21 @@ unit uColliderDefinition;
 interface
 
 uses
+  System.Generics.Collections,
   uRawShapes;
 
 type
   TColliderDefinition = class
   private
-    FShape: TRawShape;
+    FShapes: TList<TRawShape>;
     FFriction, FDensity: Single;
   public
-    property Shape: TRawShape read FShape;
+    property Shape: TList<TRawShape> read FShapes;
     property Friction: Single read FFriction;
     property Density: Single read FDensity;
 
-    constructor Create(const AShape: TRawShape; const AFriction, ADensity: Single);
+    constructor Create(const AShapes: TList<TRawShape>; const AFriction, ADensity: Single);
+    destructor Destroy; override;
   end;
 
 
@@ -23,12 +25,27 @@ implementation
 
 { TColliderDefinition }
 
-constructor TColliderDefinition.Create(const AShape: TRawShape; const AFriction,
+constructor TColliderDefinition.Create(const AShapes: TList<TRawShape>; const AFriction,
   ADensity: Single);
+var
+  i: Integer;
 begin
-  FShape := AShape.Clone;
+  FShapes := TList<TRawShape>.Create;
+  for i := 0 to AShapes.Count - 1 do
+    FShapes.Add(AShapes[i].Clone);
+
   FFriction := AFriction;
   FDensity := ADensity;
+end;
+
+destructor TColliderDefinition.Destroy;
+var
+  i: Integer;
+begin
+  for i := 0 to FShapes.Count - 1 do
+    FShapes[i].Free;
+  FShapes.Free;
+  inherited;
 end;
 
 end.
