@@ -19,8 +19,8 @@ type
     procedure OnItemDestroy(ASender: TObject); virtual;
     procedure AddAsProperty(const AItem: TSoBasePart; const AName: string);
     function PropertyName: string; virtual; abstract;
-  public
     procedure Add(const AItem: T; const AName: string = ''); virtual;
+  public
     property OnAdd: TEvent<TOnAddContainerEventArgs> read FOnAdd write FOnAdd;
     function Contains(const AName: string): Boolean; overload;
     function Contains(const AItem: T): Boolean; overload;

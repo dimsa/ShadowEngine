@@ -6,7 +6,7 @@ uses
 
 type
 
-TSoColliderWrapper = class abstract
+TSoColliderExtender = class abstract
 private
   FOnEndContact: TEventList<TPairCollidedEventArgs>;
   FOnBeginContact: TEventList<TPairCollidedEventArgs>;
@@ -20,7 +20,7 @@ public
   procedure RemoveOnEndContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
 
   procedure ProcessStep; virtual; abstract;
-  function AddColliderDefinition(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj; virtual; abstract;
+  function ProduceColliderObj(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj; virtual; abstract;
 
   constructor Create;
   destructor Destroy; override;
@@ -30,47 +30,47 @@ implementation
 
 { TSoColliderWrapper }
 
-procedure TSoColliderWrapper.AddOnBeginContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
+procedure TSoColliderExtender.AddOnBeginContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
 begin
   FOnBeginContact.Add(AEventHandler);
 end;
 
-procedure TSoColliderWrapper.AddOnEndContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
+procedure TSoColliderExtender.AddOnEndContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
 begin
   FOnEndContact.Add(AEventHandler);
 end;
 
-constructor TSoColliderWrapper.Create;
+constructor TSoColliderExtender.Create;
 begin
   FOnBeginContact := TEventList<TPairCollidedEventArgs>.Create;
   FOnEndContact := TEventList<TPairCollidedEventArgs>.Create;
 end;
 
-destructor TSoColliderWrapper.Destroy;
+destructor TSoColliderExtender.Destroy;
 begin
   FOnBeginContact.Free;
   FOnEndContact.Free;
   inherited;
 end;
 
-procedure TSoColliderWrapper.RaiseOnBeginContact(
+procedure TSoColliderExtender.RaiseOnBeginContact(
   const AEventArgs: TPairCollidedEventArgs);
 begin
   FOnBeginContact.RaiseEvent(Self, AEventArgs);
 end;
 
-procedure TSoColliderWrapper.RaiseOnEndContact(
+procedure TSoColliderExtender.RaiseOnEndContact(
   const AEventArgs: TPairCollidedEventArgs);
 begin
   FOnEndContact.RaiseEvent(Self, AEventArgs);
 end;
 
-procedure TSoColliderWrapper.RemoveOnBeginContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
+procedure TSoColliderExtender.RemoveOnBeginContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
 begin
   FOnBeginContact.Remove(AEventHandler);
 end;
 
-procedure TSoColliderWrapper.RemoveOnEndContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
+procedure TSoColliderExtender.RemoveOnEndContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
 begin
   FOnEndContact.Remove(AEventHandler);
 end;

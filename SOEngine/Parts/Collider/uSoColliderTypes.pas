@@ -6,9 +6,6 @@ uses
   uSoColliderObject;
 
 type
-
-
-
   TPairCollidedEventArgs = record
     Friction: Single;
     Restitution: Single;

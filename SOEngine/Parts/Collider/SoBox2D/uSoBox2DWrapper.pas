@@ -9,7 +9,7 @@ uses
   uSoObject;
 
 type
-  TSoBox2DWrapper = class(TSoColliderWrapper)
+  TSoBox2DWrapper = class(TSoColliderExtender)
   private type
     TSoColliderObjFriend = class(TSoColliderObj);
   private
@@ -22,7 +22,7 @@ type
     procedure OnBeginContactHandler(AContact: Tb2Contact);
     procedure OnEndContactHandler(AContact: Tb2Contact);
   public
-    function AddColliderDefinition(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj; override;
+    function ProduceColliderObj(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj; override;
     procedure ProcessStep; override;
 
     constructor Create(const AOptions: TSoColliderOptions);
@@ -33,7 +33,7 @@ implementation
 
 { TSoBox2DWrapper }
 
-function TSoBox2DWrapper.AddColliderDefinition(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj;
+function TSoBox2DWrapper.ProduceColliderObj(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj;
 begin
   Result := TSoBox2DColliderObj.Create(ASubject, FBox2DWorld, AColliderDef);
 end;

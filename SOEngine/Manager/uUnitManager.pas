@@ -6,7 +6,7 @@ uses
   uCommonClasses, uSoTypes,
   uSoModel, uSoObject,
   uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoFormatter, uSoAnimation,
-  uSoLogic, uSoProperties, uSoProperty;
+  uSoLogic, uSoProperties, uSoProperty, uColliderDefinition;
 
 type
   TSoModelFriend = class(TSoModel);
@@ -24,7 +24,8 @@ type
     function AddRendition(const AObject: TEngine2DRendition): TEngine2DRendition; overload;
 
     function AddColliderObj(const ATemplateName: string): TSoColliderObj; overload;
-    function AddColliderObj(const AObject: TSoColliderObj): TSoColliderObj; overload;
+    function AddColliderObj(const ADefinition: TColliderDefinition): TSoColliderObj; overload;
+//    function AddColliderObj(const AObject: TSoColliderObj): TSoColliderObj; overload;
 
     function AddMouseHandler(const ATemplateName: string): TSoMouseHandler; overload;
     function AddMouseHandler(const AObject: TSoMouseHandler): TSoMouseHandler; overload;
@@ -85,10 +86,16 @@ begin
   Result := AObject;
 end;
 
-function TUnitManager.AddColliderObj(const AObject: TSoColliderObj): TSoColliderObj;
+{function TUnitManager.AddColliderObj(const AObject: TSoColliderObj): TSoColliderObj;
 begin
   FModel.Collider.Add(AObject);
   Result := AObject;
+end;}
+
+function TUnitManager.AddColliderObj(
+  const ADefinition: TColliderDefinition): TSoColliderObj;
+begin
+  FModel.Collider.Add(FActiveContainer, ADefinition);
 end;
 
 function TUnitManager.AddContainer(const AName: string): TSoObject;

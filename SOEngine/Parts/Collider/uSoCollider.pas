@@ -4,22 +4,23 @@ interface
 
 uses
   System.SysUtils, System.JSON,
-  uSoTypes, uSoColliderObject, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart,
-  uSoColliderTemplate, uSoColliderWrapper ;
+  uSoTypes, uCommonClasses, uSoColliderTypes, uSoColliderObject, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart,
+  uSoColliderTemplate, uSoColliderWrapper, uColliderDefinition;
 
 type
-  TSoCollider = class(TSoOperator<TSoColliderObj>)
+  TSoCollider = class abstract(TSoOperator<TSoColliderObj>)
   private
-    FWrapper: TSoColliderWrapper;
+    FExtender: TSoColliderExtender;
     FTemplates: TDict<string, TSoColliderTemplate>;
     FColliderObjBySubject: TDict<TSoObject, TList<TSoColliderObj>>;
     procedure OnItemDestroy(ASender: TObject);
+    procedure Add(const AItem: TSoColliderObj; const AName: string = ''); overload; override;
   public
     procedure Execute; // Test for collide on tick
     function Contains(const AX, AY: Single): TArray<TSoObject>;
-    procedure Add(const AItem: TSoColliderObj; const AName: string = ''); override;
+    procedure Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition; const AName: string = ''); overload;
     procedure AddTemplateFromJson(const AJson: TJsonValue);
-    constructor Create(const ACritical: TCriticalSection; const AWrapper: TSoColliderWrapper);
+    constructor Create(const ACritical: TCriticalSection; const AExtender: TSoColliderExtender);
     destructor Destroy; override;
   end;
 
@@ -32,6 +33,11 @@ var
   vName: string;
 begin
   {$I .\Template\uItemAdd.inc}
+end;
+
+procedure TSoCollider.Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition; const AName: string);
+begin
+  Add(FExtender.ProduceColliderObj(ASubject, AColliderDef), AName)
 end;
 
 procedure TSoCollider.AddTemplateFromJson(const AJson: TJsonValue);
@@ -60,11 +66,11 @@ begin
   Result := vRes;
 end;
 
-constructor TSoCollider.Create(const ACritical: TCriticalSection; const AWrapper: TSoColliderWrapper);
+constructor TSoCollider.Create(const ACritical: TCriticalSection; const AExtender: TSoColliderExtender);
 begin
   inherited Create(ACritical);
 
-  FWrapper := AWrapper;
+  FExtender := AExtender;
   FTemplates := TDict<string, TSoColliderTemplate>.Create;
   FColliderObjBySubject := TDict<TSoObject, TList<TSoColliderObj>>.Create;
 end;
@@ -85,8 +91,8 @@ end;
 procedure TSoCollider.Execute;
 begin
   inherited;
-  { TODO : Add method for colliding }
-end;
+  //FExtender.ProcessStep;
+ end;
 
 {procedure TSoCollider.InitilizeBox2D;
 begin
