@@ -1,4 +1,4 @@
-unit uSoBox2DWrapper;
+unit uSoBox2DExtender;
 
 interface
 
@@ -9,7 +9,7 @@ uses
   uSoObject;
 
 type
-  TSoBox2DWrapper = class(TSoColliderExtender)
+  TSoBox2DExtender = class(TSoColliderExtender)
   private type
     TSoColliderObjFriend = class(TSoColliderObj);
   private
@@ -33,12 +33,12 @@ implementation
 
 { TSoBox2DWrapper }
 
-function TSoBox2DWrapper.ProduceColliderObj(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj;
+function TSoBox2DExtender.ProduceColliderObj(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj;
 begin
   Result := TSoBox2DColliderObj.Create(ASubject, FBox2DWorld, AColliderDef);
 end;
 
-constructor TSoBox2DWrapper.Create(const AOptions: TSoColliderOptions);
+constructor TSoBox2DExtender.Create(const AOptions: TSoColliderOptions);
 var
   vGravVector: TVector2;
 begin
@@ -56,7 +56,7 @@ begin
   FBox2DWorld.SetContactListener(FContactListener);
 end;
 
-destructor TSoBox2DWrapper.Destroy;
+destructor TSoBox2DExtender.Destroy;
 begin
   FBox2DWorld.Free;
   FContactListener.Free;
@@ -66,7 +66,7 @@ begin
   inherited;
 end;
 
-function TSoBox2DWrapper.WorldEventArgsFromContact(
+function TSoBox2DExtender.WorldEventArgsFromContact(
   const AContact: Tb2Contact): TPairCollidedEventArgs;
 begin
   with Result do begin
@@ -78,7 +78,7 @@ begin
   end;
 end;
 
-function TSoBox2DWrapper.ObjectEventArgsFromContact(
+function TSoBox2DExtender.ObjectEventArgsFromContact(
   const AContact: Tb2Contact; const AOpponent: Tb2Fixture): TObjectCollidedEventArgs;
 begin
   with Result do begin
@@ -89,7 +89,7 @@ begin
   end;
 end;
 
-procedure TSoBox2DWrapper.OnBeginContactHandler(AContact: Tb2Contact);
+procedure TSoBox2DExtender.OnBeginContactHandler(AContact: Tb2Contact);
 begin
   if FOptions.NeedToGenerateWorldEvents then
     RaiseOnBeginContact(WorldEventArgsFromContact(AContact));
@@ -107,7 +107,7 @@ begin
   end;
 end;
 
-procedure TSoBox2DWrapper.OnEndContactHandler(AContact: Tb2Contact);
+procedure TSoBox2DExtender.OnEndContactHandler(AContact: Tb2Contact);
 begin
   if FOptions.NeedToGenerateWorldEvents then
     RaiseOnEndContact(WorldEventArgsFromContact(AContact));
@@ -125,7 +125,7 @@ begin
   end;
 end;
 
-procedure TSoBox2DWrapper.ProcessStep;
+procedure TSoBox2DExtender.ProcessStep;
 begin
   FBox2DWorld.Step(1, 1, 1);
 end;
