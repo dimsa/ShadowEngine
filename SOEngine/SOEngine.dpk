@@ -129,12 +129,12 @@ contains
   uXCadencer in 'Parts\Collider\SoBox2D\Box2D\uXCadencer.pas',
   uSoBox2DColliderObj in 'Parts\Collider\SoBox2D\uSoBox2DColliderObj.pas',
   uSoBox2DListener in 'Parts\Collider\SoBox2D\uSoBox2DListener.pas',
-  uSoBox2DWrapper in 'Parts\Collider\SoBox2D\uSoBox2DWrapper.pas',
+  uSoBox2DExtender in 'Parts\Collider\SoBox2D\uSoBox2DExtender.pas',
   uEngine2DObjectShape in 'Parts\Collider\NewShapeCollider\uEngine2DObjectShape.pas',
   uIntersectorMethods in 'Parts\Collider\NewShapeCollider\uIntersectorMethods.pas',
   uNewFigure in 'Parts\Collider\NewShapeCollider\uNewFigure.pas',
   uSoBox2DUtils in 'Parts\Collider\SoBox2D\uSoBox2DUtils.pas',
-  uSoColliderWrapper in 'Parts\Collider\uSoColliderWrapper.pas',
+  uSoColliderExtender in 'Parts\Collider\uSoColliderExtender.pas',
   uSoColliderOptions in 'Parts\Collider\uSoColliderOptions.pas',
   uSoColliderObjectTypes in 'Parts\Collider\uSoColliderObjectTypes.pas',
   uColliderDefinition in 'Parts\Collider\uColliderDefinition.pas',
@@ -142,6 +142,8 @@ contains
   uRawShapeBaseConverter in 'Common\RawShapes\Converters\uRawShapeBaseConverter.pas',
   uRawShapeJsonConverter in 'Common\RawShapes\Converters\uRawShapeJsonConverter.pas',
   uRawShapeBox2DConverter in 'Common\RawShapes\Converters\uRawShapeBox2DConverter.pas',
-  uRawShapeNewFigureConverter in 'Common\RawShapes\Converters\uRawShapeNewFigureConverter.pas';
+  uRawShapeNewFigureConverter in 'Common\RawShapes\Converters\uRawShapeNewFigureConverter.pas',
+  uSoEngineOptions in 'Main\uSoEngineOptions.pas',
+  uSoColliderExtenderFactory in 'Parts\Collider\uSoColliderExtenderFactory.pas';
 
 end.

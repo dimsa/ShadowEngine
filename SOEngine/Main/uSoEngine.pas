@@ -5,7 +5,7 @@ interface
 uses
   System.SyncObjs,
   uSoTypes, uCommonClasses, uEasyDevice,
-  uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uEngine2DOptions,
+  uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uSoEngineOptions,
   uEngine2DManager, uEngine2DStatus, uSoObject, uSoManager, uWorldStatus,
   uSoObjectDefaultProperties, uSoEngineEvents;
 
@@ -17,7 +17,7 @@ type
     FEngineThread: TEngineThread; // Thread that paint all sprites (But there are possibility to use not one thread)  // Поток в котором происходит отрисовка
     FCritical: TCriticalSection; // The critical section for multithread operation, to protect model on changind in paint time // Критическая секция движка
     FModel: TSoModel; // All main lists are in It.
-    FOptions: TEngine2DOptions; // All Engine options. If you add some feature to manage engine, it shoulb be here// Настройки движка
+    FOptions: TSoEngineOptions; // All Engine options. If you add some feature to manage engine, it shoulb be here// Настройки движка
     FStatus: TEngine2DStatus; // All Engine status you can get from herem like width-height,speed and etc.
     //FIsMouseDowned: Boolean; // True if Mouse is Downed  // Хранит состояние нажатости мыши
     FImage: TAnonImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка\
@@ -34,13 +34,14 @@ type
     function GetFps: Single;
     procedure InitEngineObject;
     procedure SubscribeImageEvent;
+    procedure InitDefaultOptions;
   protected
     property EngineThread: TEngineThread read FEngineThread;
     procedure WorkProcedure; virtual; // The main Paint procedure.
   public
     // Main properties of Engine. Ключевые свойства движка
     property Image: TAnonImage read FImage write SetImage;
-    property Options: TEngine2dOptions read FOptions;
+    property Options: TSoEngineOptions read FOptions;
 
     procedure Start; virtual; // Start Engine. Need to run only once Включает движок
     procedure Suspend; virtual;// Suspend main thread
@@ -70,24 +71,21 @@ constructor TSoEngine.Create(const AImage: TAnonImage);
 begin
   FImage := AImage;
   FRect:= TRectObject.Create;
+  InitDefaultOptions;
 
-  FOptions := TEngine2DOptions.Create;
 
   FEvents:= TSoEngineEvents.Create(AImage);
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
 
-  FModel := TSoModel.Create(TAnonImage(FImage), FCritical, IsHor);
+  FModel := TSoModel.Create(TAnonImage(FImage), FCritical, FOptions);
 
   SubscribeImageEvent;
 
   FManager := TSoManager.Create(FModel, FEvents);
   InitEngineObject;
   FWorldStatus := TWorldStatus.Create(FModel, FRect);
-
-  FOptions.Up([EAnimateForever, EUseCollider]);
-  FOptions.Down([EClickOnlyTop]);
 end;
 
 destructor TSoEngine.Destroy;
@@ -111,6 +109,11 @@ end;
 begin
   Image := AImage;
 end;   }
+
+procedure TSoEngine.InitDefaultOptions;
+begin
+   FOptions := TSoEngineOptions.Create;
+end;
 
 procedure TSoEngine.InitEngineObject;
 begin

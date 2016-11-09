@@ -5,7 +5,7 @@ interface
 uses
   UPhysics2D, UPhysics2DTypes,
   uCommonClasses, uSoTypes, uSoBox2DListener, uSoColliderTypes, uSoColliderObjectTypes,
-  uSoColliderWrapper, uSoColliderOptions, uSoColliderObject, uColliderDefinition, uSoBox2DColliderObj,
+  uSoColliderExtender, uSoColliderOptions, uSoColliderObject, uColliderDefinition, uSoBox2DColliderObj,
   uSoObject;
 
 type

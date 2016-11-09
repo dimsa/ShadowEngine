@@ -242,12 +242,12 @@
         <DCCReference Include="Parts\Collider\SoBox2D\Box2D\uXCadencer.pas"/>
         <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DColliderObj.pas"/>
         <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DListener.pas"/>
-        <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DWrapper.pas"/>
+        <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DExtender.pas"/>
         <DCCReference Include="Parts\Collider\NewShapeCollider\uEngine2DObjectShape.pas"/>
         <DCCReference Include="Parts\Collider\NewShapeCollider\uIntersectorMethods.pas"/>
         <DCCReference Include="Parts\Collider\NewShapeCollider\uNewFigure.pas"/>
         <DCCReference Include="Parts\Collider\SoBox2D\uSoBox2DUtils.pas"/>
-        <DCCReference Include="Parts\Collider\uSoColliderWrapper.pas"/>
+        <DCCReference Include="Parts\Collider\uSoColliderExtender.pas"/>
         <DCCReference Include="Parts\Collider\uSoColliderOptions.pas"/>
         <DCCReference Include="Parts\Collider\uSoColliderObjectTypes.pas"/>
         <DCCReference Include="Parts\Collider\uColliderDefinition.pas"/>
@@ -256,6 +256,8 @@
         <DCCReference Include="Common\RawShapes\Converters\uRawShapeJsonConverter.pas"/>
         <DCCReference Include="Common\RawShapes\Converters\uRawShapeBox2DConverter.pas"/>
         <DCCReference Include="Common\RawShapes\Converters\uRawShapeNewFigureConverter.pas"/>
+        <DCCReference Include="Main\uSoEngineOptions.pas"/>
+        <DCCReference Include="Parts\Collider\uSoColliderExtenderFactory.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>
@@ -323,7 +325,16 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="ProjectOSXResource">
                     <Platform Name="OSX32">
                         <RemoteDir>Contents\Resources</RemoteDir>
@@ -635,16 +646,7 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

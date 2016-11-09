@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.JSON,
   uSoTypes, uCommonClasses, uSoColliderTypes, uSoColliderObject, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart,
-  uSoColliderTemplate, uSoColliderWrapper, uColliderDefinition;
+  uSoColliderTemplate, uSoColliderExtender, uColliderDefinition;
 
 type
   TSoCollider = class abstract(TSoOperator<TSoColliderObj>)
