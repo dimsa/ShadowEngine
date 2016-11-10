@@ -13,9 +13,18 @@ type
     FExtender: TSoColliderExtender;
     FTemplates: TDict<string, TSoColliderTemplate>;
     FColliderObjBySubject: TDict<TSoObject, TList<TSoColliderObj>>;
+    FOnEndContact: TEventList<TPairCollidedEventArgs>;
+    FOnBeginContact: TEventList<TPairCollidedEventArgs>;
     procedure OnItemDestroy(ASender: TObject);
     procedure Add(const AItem: TSoColliderObj; const AName: string = ''); overload; override;
+    procedure OnBeginContact(ASender: TObject; AEventArgs: TPairCollidedEventArgs);
+    procedure OnEndContact(ASender: TObject; AEventArgs: TPairCollidedEventArgs);
   public
+    procedure AddOnBeginContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
+    procedure RemoveOnBeginContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
+    procedure AddOnEndContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
+    procedure RemoveOnEndContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
+
     procedure Execute; // Test for collide on tick
     function Contains(const AX, AY: Single): TArray<TSoObject>;
     procedure Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition; const AName: string = ''); overload;
@@ -38,6 +47,18 @@ end;
 procedure TSoCollider.Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition; const AName: string);
 begin
   Add(FExtender.ProduceColliderObj(ASubject, AColliderDef), AName)
+end;
+
+procedure TSoCollider.AddOnBeginContactHandler(
+  AEventHandler: TEvent<TPairCollidedEventArgs>);
+begin
+  FOnBeginContact.Add(AEventHandler);
+end;
+
+procedure TSoCollider.AddOnEndContactHandler(
+  AEventHandler: TEvent<TPairCollidedEventArgs>);
+begin
+  FOnEndContact.Add(AEventHandler);
 end;
 
 procedure TSoCollider.AddTemplateFromJson(const AJson: TJsonValue);
@@ -70,7 +91,13 @@ constructor TSoCollider.Create(const ACritical: TCriticalSection; const AExtende
 begin
   inherited Create(ACritical);
 
+  FOnBeginContact := TEventList<TPairCollidedEventArgs>.Create;
+  FOnEndContact := TEventList<TPairCollidedEventArgs>.Create;
+
   FExtender := AExtender;
+  FExtender.OnBeginContact := OnBeginContact;
+  FExtender.OnEndContact := OnBeginContact;
+
   FTemplates := TDict<string, TSoColliderTemplate>.Create;
   FColliderObjBySubject := TDict<TSoObject, TList<TSoColliderObj>>.Create;
 end;
@@ -85,28 +112,45 @@ begin
 
   FColliderObjBySubject.Free;
 
+  FOnBeginContact.Free;
+  FOnEndContact.Free;
+
   inherited;
 end;
 
 procedure TSoCollider.Execute;
 begin
   inherited;
-  //FExtender.ProcessStep;
+  FExtender.ProcessStep;
  end;
 
-{procedure TSoCollider.InitilizeBox2D;
+procedure TSoCollider.OnBeginContact(ASender: TObject; AEventArgs: TPairCollidedEventArgs);
 begin
-   if Assigned(FWorld) then
-      FWorld.Free; // box2D只需销毁world即可，其中的物体也会被销毁
+  FOnBeginContact.RaiseEvent(Self, AEventArgs);
+end;
 
-   FContactListener := TSoBox2DContactListener.Create;
-   FWorld := Tb2World.Create(b2Vec2_Zero);
-   FWorld.SetContactListener(FContactListener);
-end;}
+procedure TSoCollider.OnEndContact(ASender: TObject;
+  AEventArgs: TPairCollidedEventArgs);
+begin
+  FOnEndContact.RaiseEvent(Self, AEventArgs);
+end;
 
 procedure TSoCollider.OnItemDestroy(ASender: TObject);
 begin
   FList.Delete(TSoColliderObj(ASender));
 end;
 
+procedure TSoCollider.RemoveOnBeginContactHandler(
+  AEventHandler: TEvent<TPairCollidedEventArgs>);
+begin
+  FOnBeginContact.Remove(AEventHandler);
+end;
+
+procedure TSoCollider.RemoveOnEndContactHandler(
+  AEventHandler: TEvent<TPairCollidedEventArgs>);
+begin
+  FOnEndContact.Remove(AEventHandler);
+end;
+
 end.
+

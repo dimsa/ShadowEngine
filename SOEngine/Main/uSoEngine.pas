@@ -40,7 +40,6 @@ type
     procedure WorkProcedure; virtual; // The main Paint procedure.
   public
     // Main properties of Engine. Ключевые свойства движка
-    property Image: TAnonImage read FImage write SetImage;
     property Options: TSoEngineOptions read FOptions;
 
     procedure Start; virtual; // Start Engine. Need to run only once Включает движок
@@ -52,9 +51,7 @@ type
 
     // You should use Managers to Work with Engine
     property Manager: TSoManager read FManager;
-{    property WorldManager: TWorldManager read FWorldManager;
-    property UnitManager: TUnitManager read FUnitManager;
-    property TemplateManager: TTemplateManager read FTemplateManager;  }
+
     property WorldStatus: TWorldStatus read FWorldStatus;
     property Status: TEngine2DStatus read FStatus;
     property Fps: Single read GetFps;
@@ -72,7 +69,6 @@ begin
   FImage := AImage;
   FRect:= TRectObject.Create;
   InitDefaultOptions;
-
 
   FEvents:= TSoEngineEvents.Create(AImage);
   FCritical := TCriticalSection.Create;
