@@ -8,7 +8,7 @@ uses
   uSoColliderTemplate, uSoColliderExtender, uColliderDefinition;
 
 type
-  TSoCollider = class abstract(TSoOperator<TSoColliderObj>)
+  TSoCollider = class(TSoOperator<TSoColliderObj>)
   private
     FExtender: TSoColliderExtender;
     FTemplates: TDict<string, TSoColliderTemplate>;
@@ -27,7 +27,8 @@ type
 
     procedure Execute; // Test for collide on tick
     function Contains(const AX, AY: Single): TArray<TSoObject>;
-    procedure Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition; const AName: string = ''); overload;
+    function Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition; const AName: string = ''): TSoColliderObj; overload;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoColliderObj; override;
     procedure AddTemplateFromJson(const AJson: TJsonValue);
     constructor Create(const ACritical: TCriticalSection; const AExtender: TSoColliderExtender);
     destructor Destroy; override;
@@ -44,9 +45,19 @@ begin
   {$I .\Template\uItemAdd.inc}
 end;
 
-procedure TSoCollider.Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition; const AName: string);
+function TSoCollider.Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition; const AName: string): TSoColliderObj;
 begin
-  Add(FExtender.ProduceColliderObj(ASubject, AColliderDef), AName)
+  Result := FExtender.ProduceColliderObj(ASubject, AColliderDef);
+  Add(Result, AName);
+end;
+
+function TSoCollider.AddFromTemplate(const ASubject: TSoObject;
+  const ATemplateName, AName: string): TSoColliderObj;
+var
+  vColliderDef: TColliderDefinition;
+begin
+  vColliderDef := FTemplates[ATemplateName].Definition;
+  Result := FExtender.ProduceColliderObj(ASubject, vColliderDef);
 end;
 
 procedure TSoCollider.AddOnBeginContactHandler(

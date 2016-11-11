@@ -115,7 +115,7 @@ begin
   with FManager.New(vTemplateName) do begin
     FContainer := ActiveContainer;
     AddRendition(vTemplateName);
-   // AddColliderObj(vTemplateName);
+    AddColliderObj(vTemplateName);
     // AddSound(vTemplateName);
     AddProperty('Acceleration', FAcceleration);
     AddProperty('Destinations', FDest);
@@ -146,7 +146,7 @@ begin
   with FManager.New do begin
     FContainer := ActiveContainer;
     AddRendition(vTemplateName);
-    // AddColliderObj(vTemplateName);
+    AddColliderObj(vTemplateName);
     // AddSound(vTemplateName);
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));

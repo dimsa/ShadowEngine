@@ -4,15 +4,20 @@ interface
 
 uses
   System.JSON, uJsonUtils,
-  uSoTypes, uSoColliderObject, uSoObject, uRawShapeJsonConverter, uRawShapes;
+  uSoTypes, uSoColliderObject, uSoObject, uRawShapeJsonConverter, uRawShapes,
+  uColliderDefinition;
 
 type
   TSoColliderTemplate = class
   private
     FShapeList: TList<TRawShape>;
+    FFriction: Single;
+    FDensity: Single;
+    FDefinition: TColliderDefinition;
   public
-    property ShapeList: TList<TRawShape> read FShapeList;
+//    property ShapeList: TList<TRawShape> read FShapeList;
 //    function Instantiate(const ASubject: TSoObject): TSoColliderObj;
+    property Definition: TColliderDefinition read FDefinition;
     constructor Create(const AJson: TJSONValue); virtual;
     destructor Destroy; override;
   end;
@@ -33,9 +38,11 @@ begin
   begin
     vVal := vArr.Items[i];
 
-    if vVal.TryGetValue('Type', vProp) then
-      FShapeList.Add(TRawShapeJsonConverter.ConvertFrom(vProp));
+//    if vVal.TryGetValue('Type', vProp) then
+    FShapeList.Add(TRawShapeJsonConverter.ConvertFrom(vVal));
   end;
+
+  FDefinition := TColliderDefinition.Create(FShapeList, FFriction, FDensity);
 end;
 
 destructor TSoColliderTemplate.Destroy;
