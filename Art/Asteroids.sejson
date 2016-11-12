@@ -150,22 +150,22 @@
 			"Type": "Circle",
 			"Center": "-1,52",
 			"Radius": "113",
-			"Density": "10",
+			"Density": "1",
 			"Friction": "0"
 		}, {
 			"Type": "Poly",
 			"Points": ["-92,-102", "-111,29", "-63,-35", "-64,-66"],
-			"Density": "0",
+			"Density": "1",
 			"Friction": "0"
 		}, {
 			"Type": "Poly",
 			"Points": ["-1,-162", "-25,-99", "-28,-59", "26,-59", "21,-104"],
-			"Density": "10",
+			"Density": "1",
 			"Friction": "0"
 		}, {
 			"Type": "Poly",
 			"Points": ["89,-101", "66,-72", "54,-40", "112,26"],
-			"Density": "0",
+			"Density": "1",
 			"Friction": "0"
 		}]
 	}, {

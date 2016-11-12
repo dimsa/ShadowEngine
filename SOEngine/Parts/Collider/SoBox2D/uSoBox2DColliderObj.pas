@@ -12,13 +12,13 @@ type
     FBodyDef: Tb2BodyDef;
     FBody: TB2Body;
     FWorld: Tb2World;
-    FColliderDefinition: TColliderDefinition;
     function B2TransformFromSubject: Tb2Transform;
     procedure OnPositionChanged(ASender: TObject; APosition: TPosition);
   public
     procedure RefreshSubjectPosition; override;
     function IsContainsPoint(const AX, AY: Single): Boolean; overload; override;
     function IsContainsPoint(const APoint: TPointF): Boolean; overload; override;
+    procedure ApplyForce(const AX, AY: Single; const ACenterX: Single = 0; const ACenterY: Single = 0); override;
     constructor Create(const ASubject: TSoObject; const AWorld: Tb2World; const AColliderDef: TColliderDefinition);
     destructor Destroy; override;
   end;
@@ -26,6 +26,19 @@ type
 implementation
 
 { TSoBox2DColliderObj }
+
+procedure TSoBox2DColliderObj.ApplyForce(const AX, AY, ACenterX,
+  ACenterY: Single);
+var
+  vVecForce, vVecCenterOfForce: TVector2;
+begin
+  vVecForce.x := AX;
+  vVecForce.y := AY;
+  vVecCenterOfForce.x := ACenterX;
+  vVecCenterOfForce.y := ACenterY;
+
+  FBody.ApplyForce(vVecForce, vVecCenterOfForce);
+end;
 
 function TSoBox2DColliderObj.B2TransformFromSubject: Tb2Transform;
 begin
@@ -46,7 +59,6 @@ begin
 
   ASubject.AddChangePositionHandler(OnPositionChanged);
 
-  FColliderDefinition := AColliderDef;
   FWorld := AWorld;
   FBodyDef := Tb2BodyDef.Create;
   FBodyDef.bodyType := b2_dynamicBody;
@@ -59,20 +71,14 @@ begin
     vFixture.shape := vShape;
     vFixture.density := AColliderDef.Density;
     vFixture.friction := AColliderDef.Friction;
-    vFixture.restitution := 1;
+    vFixture.restitution := 1;//AColliderDef.Restitution;
     FBody.CreateFixture(vFixture);
-    //vFixture.Free;
   end;
-  vVec.x := (Random - 0.5) * 8;
-  vVec.y := (Random - 0.5) * 8;
-  FBody.ApplyForce(vVec, vVec);
-
 end;
 
 destructor TSoBox2DColliderObj.Destroy;
 begin
   FBody.Free;
-//  FColliderDefinition.Free;
   inherited;
 end;
 

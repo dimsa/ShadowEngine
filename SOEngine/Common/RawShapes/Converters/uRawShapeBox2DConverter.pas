@@ -3,7 +3,7 @@ unit uRawShapeBox2DConverter;
 interface
 
 uses
-  UPhysics2D, System.SysUtils,
+  UPhysics2D, UPhysics2DTypes, System.SysUtils,
   uGeometryClasses, uSoTypes,uRawShapes, uRawShapeBaseConverter;
 
 type
@@ -11,6 +11,7 @@ type
   private
     class function B2PolyVerticesToPointArray(APoly: Tb2PolyVertices; const ACount: Integer): TArray<TPointF>;
     class function PointArrayToB2PolyVertices(APoly: TArray<TPointF>): Tb2PolyVertices;
+    class function PointArrayToB2PolyNormalsVertices(APoly: TArray<TPointF>): Tb2PolyVertices;
   public
     class function ConvertFrom(const AObject: Tb2Shape): TRawShape; override;
     class function ConvertTo(const AShape: TRawShape): Tb2Shape; override;
@@ -62,12 +63,43 @@ begin
       Result := Tb2PolygonShape.Create;
       with Tb2PolygonShape(Result) do
       begin
-        m_vertices := PointArrayToB2PolyVertices(AShape.GetData);
         m_count := TRawPoly(AShape).Count;
+        m_vertices := PointArrayToB2PolyVertices(AShape.GetData);
+        m_normals := PointArrayToB2PolyNormalsVertices(AShape.GetData);
+        m_centroid := b2Vec2_Zero;
       end;
     end;
     else
       raise Exception.Create(Format(CConvertNotImplementedErrorMessage, [AShape.ClassName, Result.ClassName]));
+  end;
+end;
+
+class function TRawShapeBox2DShapeConverter.PointArrayToB2PolyNormalsVertices(
+  APoly: TArray<TPointF>): Tb2PolyVertices;
+var
+  i, vNext: Integer;
+  vDx, vDy, vL: Single;
+
+begin
+  // Suppose I have a line segment going from (x1,y1) to (x2,y2).
+  // How do I calculate the normal vector perpendicular to the line?
+  // if we define dx=x2-x1 and dy=y2-y1, then the normals are (-dy, dx) and (dy, -dx).
+
+  for i := 0 to High(APoly) do
+  begin
+    vNext := i + 1;
+    if vNext = High(APoly) then
+      vNext := 0;
+    vDx := APoly[vNext].X - APoly[i].X;
+    vDy := APoly[vNext].Y - APoly[i].Y;
+    vL := Sqrt(Sqr(vDx) + Sqr(vDy));
+
+    if vL <> 0 then
+    begin
+      Result[i].x := vDy / vL;
+      Result[i].y := -vDx / vL;
+    end else
+      Result[i] :=b2Vec2_Zero;
   end;
 end;
 

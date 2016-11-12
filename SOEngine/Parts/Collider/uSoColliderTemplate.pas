@@ -13,6 +13,7 @@ type
     FShapeList: TList<TRawShape>;
     FFriction: Single;
     FDensity: Single;
+    FRestitution: Single;
     FDefinition: TColliderDefinition;
   public
 //    property ShapeList: TList<TRawShape> read FShapeList;
@@ -38,16 +39,26 @@ begin
   begin
     vVal := vArr.Items[i];
 
-//    if vVal.TryGetValue('Type', vProp) then
     FShapeList.Add(TRawShapeJsonConverter.ConvertFrom(vVal));
 
     if vVal.TryGetValue('Friction', vProp) then
+    begin
       FFriction := JsonToSingle(vProp);
+      vProp.Free;
+    end;
     if vVal.TryGetValue('Density', vProp) then
+    begin
       FDensity := JsonToSingle(vProp);
+      vProp.Free;
+    end;
+    if vVal.TryGetValue('Restitution', vProp) then
+    begin
+      FRestitution := JsonToSingle(vProp);
+      vProp.Free;
+    end;
   end;
 
-  FDefinition := TColliderDefinition.Create(FShapeList, FFriction, FDensity);
+  FDefinition := TColliderDefinition.Create(FShapeList, FFriction, FDensity, FRestitution);
 end;
 
 destructor TSoColliderTemplate.Destroy;

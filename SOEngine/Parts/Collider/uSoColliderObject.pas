@@ -25,6 +25,7 @@ type
  //   property OnEndContact: TEventList<TObjectCollidedEventArgs> read FOnEndContact;
     function IsContainsPoint(const AX, AY: Single): Boolean; overload; virtual; abstract;
     function IsContainsPoint(const APoint: TPointF): Boolean; overload; virtual; abstract;
+    procedure ApplyForce(const AX, AY: Single; const ACenterX: Single = 0; const ACenterY: Single = 0); virtual; abstract;
     constructor Create(const ASubject: TSoObject); override;
     destructor Destroy; override;
   end;

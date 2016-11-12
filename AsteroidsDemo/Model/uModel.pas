@@ -146,7 +146,7 @@ begin
   with FManager.New do begin
     FContainer := ActiveContainer;
     AddRendition(vTemplateName);
-    AddColliderObj(vTemplateName);
+    AddColliderObj(vTemplateName).ApplyForce((Random - 0.5) * 1000, (Random - 0.5) * 1000);
     // AddSound(vTemplateName);
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));
