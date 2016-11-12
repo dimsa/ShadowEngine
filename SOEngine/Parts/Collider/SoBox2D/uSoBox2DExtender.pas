@@ -46,8 +46,8 @@ begin
   FFixtureToColliderObjReferenceDict := TDict<Tb2Fixture, TSoColliderObj>.Create;
 
   // Initialization of Box2D
-  vGravVector.x := FOptions.Gravity.X;
-  vGravVector.y := FOptions.Gravity.Y;
+  vGravVector.x := FOptions.Gravity.X;// + random * 10;
+  vGravVector.y := FOptions.Gravity.Y;// + random * 10;
   FBox2DWorld := Tb2World.Create(vGravVector);
 
   FContactListener := TSoBox2DContactListener.Create;

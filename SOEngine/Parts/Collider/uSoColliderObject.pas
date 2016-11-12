@@ -15,6 +15,7 @@ type
     procedure RaiseOnBeginContact(const ACollideArgs: TObjectCollidedEventArgs);
     procedure RaiseOnEndContact(const ACollideArgs: TObjectCollidedEventArgs);
   public
+    procedure RefreshSubjectPosition; virtual; abstract;
     procedure AddOnBeginContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
     procedure RemoveOnBeginContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
     procedure AddOnEndContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);

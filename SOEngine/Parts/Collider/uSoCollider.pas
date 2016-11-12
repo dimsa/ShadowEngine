@@ -5,12 +5,13 @@ interface
 uses
   System.SysUtils, System.JSON,
   uSoTypes, uCommonClasses, uSoColliderTypes, uSoColliderObject, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart,
-  uSoColliderTemplate, uSoColliderExtender, uColliderDefinition;
+  uSoColliderTemplate, uSoColliderExtender, uColliderDefinition, uSoColliderOptions;
 
 type
   TSoCollider = class(TSoOperator<TSoColliderObj>)
   private
     FExtender: TSoColliderExtender;
+    FOptions: TSoColliderOptions;
     FTemplates: TDict<string, TSoColliderTemplate>;
     FColliderObjBySubject: TDict<TSoObject, TList<TSoColliderObj>>;
     FOnEndContact: TEventList<TPairCollidedEventArgs>;
@@ -30,7 +31,7 @@ type
     function Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition; const AName: string = ''): TSoColliderObj; overload;
     function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoColliderObj; override;
     procedure AddTemplateFromJson(const AJson: TJsonValue);
-    constructor Create(const ACritical: TCriticalSection; const AExtender: TSoColliderExtender);
+    constructor Create(const ACritical: TCriticalSection; const AExtender: TSoColliderExtender; const AOptions: TSoColliderOptions);
     destructor Destroy; override;
   end;
 
@@ -57,7 +58,7 @@ var
   vColliderDef: TColliderDefinition;
 begin
   vColliderDef := FTemplates[ATemplateName].Definition;
-  Result := FExtender.ProduceColliderObj(ASubject, vColliderDef);
+  Result := Add(ASubject, vColliderDef, AName);
 end;
 
 procedure TSoCollider.AddOnBeginContactHandler(
@@ -98,10 +99,11 @@ begin
   Result := vRes;
 end;
 
-constructor TSoCollider.Create(const ACritical: TCriticalSection; const AExtender: TSoColliderExtender);
+constructor TSoCollider.Create(const ACritical: TCriticalSection; const AExtender: TSoColliderExtender; const AOptions: TSoColliderOptions);
 begin
   inherited Create(ACritical);
 
+  FOptions := AOptions;
   FOnBeginContact := TEventList<TPairCollidedEventArgs>.Create;
   FOnEndContact := TEventList<TPairCollidedEventArgs>.Create;
 
@@ -130,9 +132,15 @@ begin
 end;
 
 procedure TSoCollider.Execute;
+var
+  i: Integer;
 begin
   inherited;
   FExtender.ProcessStep;
+
+  if FOptions.IsPositionRefreshing then
+    for i := 0 to FList.Count - 1 do
+      FList[i].RefreshSubjectPosition;
  end;
 
 procedure TSoCollider.OnBeginContact(ASender: TObject; AEventArgs: TPairCollidedEventArgs);

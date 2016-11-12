@@ -150,7 +150,7 @@
 			"Type": "Circle",
 			"Center": "-1,52",
 			"Radius": "113",
-			"Density": "0",
+			"Density": "10",
 			"Friction": "0"
 		}, {
 			"Type": "Poly",
@@ -160,7 +160,7 @@
 		}, {
 			"Type": "Poly",
 			"Points": ["-1,-162", "-25,-99", "-28,-59", "26,-59", "21,-104"],
-			"Density": "0",
+			"Density": "10",
 			"Friction": "0"
 		}, {
 			"Type": "Poly",

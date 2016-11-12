@@ -263,7 +263,7 @@ begin
         Bitmap.Canvas.EndScene();
 
         {$IFDEF POSIX}
-        InvalidateRect(RectF(0, 0, Bitmap.Width, Bitmap.Height));
+        InvalidateRect(TRectF.Create(0, 0, Bitmap.Width, Bitmap.Height));
         {$ENDIF}
       end;
       FCritical.Leave;

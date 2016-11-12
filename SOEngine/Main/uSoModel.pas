@@ -74,7 +74,7 @@ begin
   FObjectKeeper := TSoObjectKeeper.Create(FCritical);
   FLogicKeper := TSoLogicKeeper.Create(FCritical);
   FRenderer := TSoRenderer.Create(FCritical, AImage);
-  FCollider := TSoCollider.Create(FCritical, FColliderExtenderFactory.Produce);
+  FCollider := TSoCollider.Create(FCritical, FColliderExtenderFactory.Produce, FOptions.ColliderOptions);
   FFormattor := TSoFormattor.Create(FCritical);
   FAnimator := TSoAnimator.Create(FCritical);
   FKeyProcessor := TSoKeyProcessor.Create(FCritical);

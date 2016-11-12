@@ -65,6 +65,8 @@ procedure MovingByAcceleration(ASoObject: TSoObject);
 var
   vAcceleration: TAcceleration;
 begin
+MovingThroughSides(ASoObject, ASoObject['World'].Val<TSoObject>);
+exit;
   with ASoObject do begin
     vAcceleration := ASoObject['Acceleration'].Val<TAcceleration>;
     X := X + vAcceleration.Dx;

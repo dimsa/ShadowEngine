@@ -49,12 +49,14 @@ type
 
     property Container: TObject read FContainer;
     property Properties[APropertyName: string]: TSoProperty read GetProperty; default;// write SetProperty; default;
+
     function HasProperty(const APropertyName: string): Boolean;
     procedure RemoveChangePositionHandler(const AHandler: TEvent<TPosition>);
     procedure AddChangePositionHandler(const AHandler: TEvent<TPosition>);
     function AddProperty(const AName: string): TSoProperty;
     procedure AddDestroyHandler(const AHandler: TNotifyEvent);
     procedure RemoveDestroyHandler(const AHandler: TNotifyEvent);
+    procedure SetPositionSilent(const AX, AY: Single; const ARotate: Single);
     constructor Create;
     destructor Destroy; override;
   end;
@@ -159,6 +161,13 @@ begin
   FPosition := Value;
 
   FOnChangePositionHandlers.RaiseEvent(Self, FPosition);
+end;
+
+procedure TSoObject.SetPositionSilent(const AX, AY: Single; const ARotate: Single);
+begin
+  FPosition.X := AX;
+  FPosition.Y := AY;
+  FPosition.Rotate := ARotate;
 end;
 
 procedure TSoObject.SetRotate(const Value: Single);

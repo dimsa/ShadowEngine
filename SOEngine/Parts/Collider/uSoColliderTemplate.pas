@@ -40,6 +40,11 @@ begin
 
 //    if vVal.TryGetValue('Type', vProp) then
     FShapeList.Add(TRawShapeJsonConverter.ConvertFrom(vVal));
+
+    if vVal.TryGetValue('Friction', vProp) then
+      FFriction := JsonToSingle(vProp);
+    if vVal.TryGetValue('Density', vProp) then
+      FDensity := JsonToSingle(vProp);
   end;
 
   FDefinition := TColliderDefinition.Create(FShapeList, FFriction, FDensity);
