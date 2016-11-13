@@ -6,7 +6,7 @@ uses
   uCommonClasses, uSoTypes,
   uSoModel, uSoObject,
   uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoFormatter, uSoAnimation,
-  uSoLogic, uSoProperties, uSoProperty, uColliderDefinition;
+  uSoLogic, uSoProperties, uSoProperty, uColliderDefinition, uSoSound;
 
 type
   TSoModelFriend = class(TSoModel);
@@ -32,6 +32,9 @@ type
 
     function AddKeyHandler(const ATemplateName: string): TSoKeyHandler; overload;
     function AddKeyHandler(const AObject: TSoKeyHandler): TSoKeyHandler; overload;
+
+    function AddSound(const APath: string): TSoSound; overload;
+    function AddSound(const AObject: TSoSound): TSoSound; overload;
 
     function AddFormatter(const ATemplateName: string): TSoFormatter; overload;
     function AddFormatter(const AObject: TSoFormatter): TSoFormatter; overload;
@@ -179,6 +182,16 @@ end;
 function TUnitManager.AddRendition(const AObject: TEngine2DRendition): TEngine2DRendition;
 begin
   FModel.Renderer.Add(AObject);
+end;
+
+function TUnitManager.AddSound(const APath: string): TSoSound;
+begin
+  Result := FModel.SoundKeeper.AddByFileName(FActiveContainer, APath);
+end;
+
+function TUnitManager.AddSound(const AObject: TSoSound): TSoSound;
+begin
+  FModel.SoundKeeper.Add(AObject);
 end;
 
 function TUnitManager.AddRendition(const ATemplateName: string): TEngine2DRendition;

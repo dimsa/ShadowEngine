@@ -67,7 +67,6 @@ implementation
 constructor TSoEngine.Create(const AImage: TAnonImage);
 begin
   FImage := AImage;
-  FRect:= TRectObject.Create;
   InitDefaultOptions;
 
   FEvents:= TSoEngineEvents.Create(AImage);
@@ -113,6 +112,9 @@ end;
 
 procedure TSoEngine.InitEngineObject;
 begin
+  FRect:= TRectObject.Create;
+  FRect.TopLeft := TPointF.Create(0, 0);
+  FRect.BottomRight := TPointF.Create(FImage.Width, FImage.Height);
   with FManager.UnitManager.New('World') do begin
     FEngineObject := ActiveContainer;
     FEngineObject.AddProperty(RenditionRect).Obj := FRect;

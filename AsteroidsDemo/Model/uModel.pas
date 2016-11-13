@@ -73,7 +73,7 @@ type
 implementation
 
 uses
-  uSoSprite;
+  uSoSprite, uUtils;
 
 { TGameUnit }
 
@@ -116,7 +116,7 @@ begin
     FContainer := ActiveContainer;
     AddRendition(vTemplateName);
     AddColliderObj(vTemplateName);
-    // AddSound(vTemplateName);
+    //AddSound(ResourcePath('AsteroidCollide.wav'));
     AddProperty('Acceleration', FAcceleration);
     AddProperty('Destinations', FDest);
     AddProperty('World', FManager.ObjectByName('World'));
@@ -146,12 +146,13 @@ begin
   with FManager.New do begin
     FContainer := ActiveContainer;
     AddRendition(vTemplateName);
-    AddColliderObj(vTemplateName).ApplyForce((Random - 0.5) * 1000, (Random - 0.5) * 1000);
-    // AddSound(vTemplateName);
+    AddColliderObj(vTemplateName).ApplyForce((Random - 0.5) * 100000, (Random - 0.5) * 100000);
+    AddSound(ResourcePath('AsteroidCollide.wav'));
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));
     AddNewLogic(MovingByAcceleration);
   end;
+
 
   FAcceleration.Dx := Random(3) + Random  - 2;
   FAcceleration.Dy := Random(3) + Random  - 2;

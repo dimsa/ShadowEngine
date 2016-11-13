@@ -7,7 +7,7 @@ uses
   uSoTypes, uCommonClasses,
   uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper, uSoContainerKeeper,
-  uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory;
+  uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory, uSoSoundKeeper;
 
 type
   TSoModel = class
@@ -21,6 +21,7 @@ type
     FCollider: TSoCollider;
     FFormattor: TSoFormattor;
     FAnimator: TSoAnimator;
+    FSoundKeeper: TSoSoundKeeper;
     // Keepers
     FObjectKeeper: TSoObjectKeeper;
     FLogicKeper: TSoLogicKeeper;
@@ -39,6 +40,7 @@ type
     property Animator: TSoAnimator read FAnimator;
     // Keepers
     property ObjectKeeper: TSoObjectKeeper read FObjectKeeper;
+    property SoundKeeper: TSoSoundKeeper read FSoundKeeper;
     property LogicKeeper: TSoLogicKeeper read FLogicKeper;
 //    property PropertyKeeper: TSoPropertyKeeper read FPropertyKeeper;
     // Processors
@@ -79,6 +81,7 @@ begin
   FAnimator := TSoAnimator.Create(FCritical);
   FKeyProcessor := TSoKeyProcessor.Create(FCritical);
   FMouseProcessor := TSoMouseProcessor.Create(FCritical);
+  FSoundKeeper := TSoSoundKeeper.Create(FCritical);
 //  FPropertyKeeper := TSoPropertyKeeper.Create(FCritical);
 
   // Container Keeper changes on adding of unitpart

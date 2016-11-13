@@ -114,7 +114,7 @@ contains
   uSoManager in 'Manager\uSoManager.pas',
   uSoMouseHandleCheckers in 'Parts\InputProcessor\uSoMouseHandleCheckers.pas',
   uSoEngineEvents in 'Main\uSoEngineEvents.pas',
-  uSoundKeeper in 'Parts\Sound\uSoundKeeper.pas',
+  uSoSoundKeeper in 'Parts\Sound\uSoSoundKeeper.pas',
   uGameAudioManager in 'Parts\Sound\uGameAudioManager.pas',
   uSoCollider in 'Parts\Collider\uSoCollider.pas',
   uSoColliderObject in 'Parts\Collider\uSoColliderObject.pas',

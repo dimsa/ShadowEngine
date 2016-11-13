@@ -62,6 +62,7 @@ begin
   FWorld := AWorld;
   FBodyDef := Tb2BodyDef.Create;
   FBodyDef.bodyType := b2_dynamicBody;
+
   FBody := FWorld.CreateBody(FBodyDef, False);
 
   for i := 0 to AColliderDef.Shape.Count - 1 do
@@ -101,6 +102,7 @@ begin
   vVector.y := APosition.Y;
 
   FBody.SetTransform(vVector, APosition.Rotate);
+
 end;
 
 procedure TSoBox2DColliderObj.RefreshSubjectPosition;

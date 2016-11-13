@@ -36,7 +36,6 @@ begin
   FEngine.Manager.WorldManager.OnEndPaint := OnEndPaintDefault;
 
   FGame := TGame.Create(FEngine.Manager);
-
   FEngine.Start;
 end;
 

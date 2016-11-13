@@ -96,8 +96,8 @@ begin
 
     if vL <> 0 then
     begin
-      Result[i].x := vDy / vL;
-      Result[i].y := -vDx / vL;
+      Result[i].x := -vDy / vL;
+      Result[i].y := vDx / vL;
     end else
       Result[i] :=b2Vec2_Zero;
   end;

@@ -73,25 +73,26 @@ begin
 end;
 
 procedure TSoSound.Load;
-var
-  vTask: ITask;
+//var
+//  vTask: ITask;
 begin
-  vTask := TTask.Create (procedure ()
-  begin
-      if FMedia <> nil then
-      begin
-        FMedia.DisposeOf;
-        FMedia := nil;
-      end;
+{ TODO : Add async loading with OnLoaded Events }
+//  vTask := TTask.Create (procedure ()
+//  begin
+    if FMedia <> nil then
+    begin
+      FMedia.DisposeOf;
+      FMedia := nil;
+    end;
 
-      FMedia := TMediaCodecManager.CreateFromFile(FFileName);
+    FMedia := TMediaCodecManager.CreateFromFile(FFileName);
 
-      FTimer := TTimer.Create(nil);
-      FTimer.Enabled := False;
-      FTimer.OnTimer := OnMediaEnded;
-      FLoaded := True;
-  end);
-  vTask.Start;
+    FTimer := TTimer.Create(nil);
+    FTimer.Enabled := False;
+    FTimer.OnTimer := OnMediaEnded;
+    FLoaded := True;
+//  end);
+//  vTask.Start;
 end;
 
 procedure TSoSound.OnMediaEnded(ASender: TObject);

@@ -712,14 +712,14 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="iOSSimulator\Debug\ShadowEngineDemo.info.plist" Configuration="Debug" Class="ProjectiOSInfoPList">
-                    <Platform Name="iOSSimulator">
-                        <RemoteName>Info.plist</RemoteName>
+                <DeployFile LocalName="OSX32\Debug\ShadowEngineDemo.entitlements" Configuration="Debug" Class="ProjectOSXEntitlements">
+                    <Platform Name="OSX32">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="OSX32\Debug\ShadowEngineDemo.entitlements" Configuration="Debug" Class="ProjectOSXEntitlements">
-                    <Platform Name="OSX32">
+                <DeployFile LocalName="iOSSimulator\Debug\ShadowEngineDemo.info.plist" Configuration="Debug" Class="ProjectiOSInfoPList">
+                    <Platform Name="iOSSimulator">
+                        <RemoteName>Info.plist</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -1002,6 +1002,11 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="Android\Release\AndroidManifest.xml" Configuration="Release" Class="ProjectAndroidManifest">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Source\icons\96.png" Configuration="Release" Class="Android_LauncherIcon96">
                     <Platform Name="Android">
                         <RemoteName>ic_launcher.png</RemoteName>
@@ -1010,11 +1015,6 @@
                 </DeployFile>
                 <DeployFile LocalName="iOSDevice64\Release\ShadowEngineDemo.entitlements" Configuration="Release" Class="ProjectiOSEntitlements">
                     <Platform Name="iOSDevice64">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Android\Release\AndroidManifest.xml" Configuration="Release" Class="ProjectAndroidManifest">
-                    <Platform Name="Android">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

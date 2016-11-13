@@ -1,4 +1,4 @@
-unit uSoundKeeper;
+unit uSoSoundKeeper;
 
 interface
 
@@ -17,11 +17,13 @@ type
     FTemplates: TDict<string, string>;
     FMediaPlayer: TMediaPlayer;
     FInited: Boolean;
+    function PropertyName: string; override;
     procedure InitMediaPlayer(const AName: string);
   public
     procedure Add(const AItem: TSoSound; const AName: string = ''); override;
     procedure AddTemplate(const ATemplateName, AFileName: string);
     function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoSound; override;
+    function AddByFileName(const ASubject: TSoObject; const AFileName: string; const AName: string = ''): TSoSound;
     constructor Create(const ACritical: TCriticalSection); override;
     destructor Destroy; override;
   end;
@@ -41,6 +43,11 @@ begin
   AddAsProperty(AItem, AName);
 
   {$I .\Template\uItemAdd.inc}
+end;
+
+function TSoSoundKeeper.AddByFileName(const ASubject: TSoObject; const AFileName, AName: string): TSoSound;
+begin
+  Add(TSoSound.Create(ASubject, AFileName), AName);
 end;
 
 function TSoSoundKeeper.AddFromTemplate(const ASubject: TSoObject;
@@ -78,6 +85,11 @@ begin
   // it's hack. Without it you can't load any TMedia, you will got Unsupported File format
   FMediaPlayer := TMediaPlayer.Create(nil);
   FMediaPlayer.FileName := AName;
+end;
+
+function TSoSoundKeeper.PropertyName: string;
+begin
+  Result := Sound;
 end;
 
 end.
