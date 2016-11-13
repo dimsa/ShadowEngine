@@ -12,10 +12,11 @@ type
   TSoBox2DExtender = class(TSoColliderExtender)
   private type
     TSoColliderObjFriend = class(TSoColliderObj);
+    TSoBox2DColliderObjFriend = class(TSoBox2DColliderObj);
   private
     FBox2DWorld: Tb2World;
     FContactListener: TSoBox2DContactListener;
-    FFixtureToColliderObjReferenceDict: TDict<Tb2Fixture, TSoColliderObj>;
+    FFixtureToColliderObjReferenceDict: TDict<Tb2Body, TSoColliderObj>;
     FOptions: TSoColliderOptions;
     function WorldEventArgsFromContact(const AContact: Tb2Contact): TPairCollidedEventArgs;
     function ObjectEventArgsFromContact(const AContact: Tb2Contact; const AOpponent: Tb2Fixture): TObjectCollidedEventArgs;
@@ -36,6 +37,7 @@ implementation
 function TSoBox2DExtender.ProduceColliderObj(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj;
 begin
   Result := TSoBox2DColliderObj.Create(ASubject, FBox2DWorld, AColliderDef);
+  FFixtureToColliderObjReferenceDict.Add(TSoBox2DColliderObjFriend(Result).Body, Result);
 end;
 
 constructor TSoBox2DExtender.Create(const AOptions: TSoColliderOptions);
@@ -43,7 +45,7 @@ var
   vGravVector: TVector2;
 begin
   FOptions := AOptions;
-  FFixtureToColliderObjReferenceDict := TDict<Tb2Fixture, TSoColliderObj>.Create;
+  FFixtureToColliderObjReferenceDict := TDict<Tb2Body, TSoColliderObj>.Create;
 
   // Initialization of Box2D
   vGravVector.x := FOptions.Gravity.X;// + random * 10;

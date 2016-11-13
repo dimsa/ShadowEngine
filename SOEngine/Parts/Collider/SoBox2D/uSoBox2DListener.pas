@@ -30,7 +30,6 @@ implementation
 
 procedure TSoBox2DContactListener.BeginContact(var contact: Tb2Contact);
 begin
-Exit;
   if Assigned(FOnBeginContact) then
     FOnBeginContact(contact);
 end;
@@ -48,7 +47,6 @@ end;
 
 procedure TSoBox2DContactListener.EndContact(var contact: Tb2Contact);
 begin
-Exit;
   if Assigned(FOnEndContact) then
     FOnEndContact(contact);
 end;

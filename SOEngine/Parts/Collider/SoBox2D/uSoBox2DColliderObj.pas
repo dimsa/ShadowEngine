@@ -14,6 +14,8 @@ type
     FWorld: Tb2World;
     function B2TransformFromSubject: Tb2Transform;
     procedure OnPositionChanged(ASender: TObject; APosition: TPosition);
+  protected
+    property Body: Tb2Body read FBody;
   public
     procedure RefreshSubjectPosition; override;
     function IsContainsPoint(const AX, AY: Single): Boolean; overload; override;

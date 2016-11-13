@@ -4,7 +4,7 @@ interface
 
 uses
   uSoObject, uSoTypes, uLogicAssets, uUnitManager, System.SysUtils, uSoObjectDefaultProperties,
-  FMX.Dialogs, uGeometryClasses;
+  FMX.Dialogs, uGeometryClasses, uSoColliderObjectTypes, uCommonClasses;
 
 type
   TGameUnit = class
@@ -29,6 +29,8 @@ type
   end;
 
   TBigAsteroid = class(TMovingUnit)
+  private
+    procedure OnCollideAsteroid(ASender: TObject; AEvent: TObjectCollidedEventArgs);
   protected
 
     procedure Init; override;
@@ -73,7 +75,7 @@ type
 implementation
 
 uses
-  uSoSprite, uUtils;
+  uSoSprite, uUtils, uSoSound;
 
 { TGameUnit }
 
@@ -146,14 +148,16 @@ begin
   with FManager.New do begin
     FContainer := ActiveContainer;
     AddRendition(vTemplateName);
-    AddColliderObj(vTemplateName).ApplyForce((Random - 0.5) * 100000, (Random - 0.5) * 100000);
+    with AddColliderObj(vTemplateName) do
+    begin
+      ApplyForce((Random - 0.5) * 100000, (Random - 0.5) * 100000);
+      AddOnBeginContactHandler(OnCollideAsteroid);
+    end;
     AddSound(ResourcePath('AsteroidCollide.wav'));
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));
     AddNewLogic(MovingByAcceleration);
   end;
-
-
   FAcceleration.Dx := Random(3) + Random  - 2;
   FAcceleration.Dy := Random(3) + Random  - 2;
   FContainer.X := Random(Round(FManager.ObjectByName('World').Width));
@@ -185,6 +189,11 @@ procedure TShipFire.SetPower(const Value: Single);
 begin
   FPower := Value;
   FContainer.Scale := FPower;
+end;
+
+procedure TBigAsteroid.OnCollideAsteroid(ASender: TObject; AEvent: TObjectCollidedEventArgs);
+begin
+  FContainer[Sound].Val<TSoSound>.Play;
 end;
 
 { TLtlAsteroid }
