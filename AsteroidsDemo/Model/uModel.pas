@@ -4,7 +4,7 @@ interface
 
 uses
   uSoObject, uSoTypes, uLogicAssets, uUnitManager, System.SysUtils, uSoObjectDefaultProperties,
-  FMX.Dialogs, uGeometryClasses, uSoColliderObjectTypes, uCommonClasses;
+  FMX.Dialogs, uGeometryClasses, uSoColliderObjectTypes, uCommonClasses, uAcceleration;
 
 type
   TGameUnit = class
@@ -29,8 +29,6 @@ type
   end;
 
   TBigAsteroid = class(TMovingUnit)
-  private
-    procedure OnCollideAsteroid(ASender: TObject; AEvent: TObjectCollidedEventArgs);
   protected
 
     procedure Init; override;
@@ -40,7 +38,6 @@ type
   private
     FPower: Single;
     FContainer: TSoObject;
-  //  procedure FollowTheShip(ASender: TObject; APosition: TPosition);
     function GetPosition: TPointF;
     procedure SetPosition(const Value: TPointF);
     procedure SetPower(const Value: Single);
@@ -75,7 +72,7 @@ type
 implementation
 
 uses
-  uSoSprite, uUtils, uSoSound;
+  uSoSprite, uUtils, uSoSound, uSoColliderObject;
 
 { TGameUnit }
 
@@ -122,7 +119,7 @@ begin
     AddProperty('Acceleration', FAcceleration);
     AddProperty('Destinations', FDest);
     AddProperty('World', FManager.ObjectByName('World'));
-    AddNewLogic(MovingToDestination, 'MovingThroughSides');
+    AddNewLogic(TLogicAssets.MovingToDestination, 'MovingThroughSides');
     AddMouseHandler(ByStaticRect).OnMouseDown := OnMouseDown;
   end;
 
@@ -133,7 +130,7 @@ end;
 procedure TShip.OnMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
-  ShowMessage('Click');
+//  ShowMessage('Click');
 end;
 
 { TBigAsteroid }
@@ -151,12 +148,12 @@ begin
     with AddColliderObj(vTemplateName) do
     begin
       ApplyForce((Random - 0.5) * 100000, (Random - 0.5) * 100000);
-      AddOnBeginContactHandler(OnCollideAsteroid);
+      AddOnBeginContactHandler(TLogicAssets.OnCollideAsteroid);
     end;
     AddSound(ResourcePath('AsteroidCollide.wav'));
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));
-    AddNewLogic(MovingByAcceleration);
+    AddNewLogic(TLogicAssets.MovingByAcceleration);
   end;
   FAcceleration.Dx := Random(3) + Random  - 2;
   FAcceleration.Dy := Random(3) + Random  - 2;
@@ -191,11 +188,6 @@ begin
   FContainer.Scale := FPower;
 end;
 
-procedure TBigAsteroid.OnCollideAsteroid(ASender: TObject; AEvent: TObjectCollidedEventArgs);
-begin
-  FContainer[Sound].Val<TSoSound>.Play;
-end;
-
 { TLtlAsteroid }
 
 procedure TLtlAsteroid.Init;
@@ -214,7 +206,7 @@ begin
     AddColliderObj(vTemplateName);
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));
-    AddNewLogic(MovingByAcceleration);
+    AddNewLogic(TLogicAssets.MovingByAcceleration);
   end;
 end;
 
@@ -227,7 +219,7 @@ begin
   with FManager.New do begin
     FContainer := ActiveContainer;
     AddRendition('FireLeft');
-    AddNewLogic(FollowTheShip);
+    AddNewLogic(TLogicAssets.FollowTheShip);
     AddProperty('Ship', FShip);
     FContainer[Rendition].Val<TSoSprite>.BringToBack;
   end;
@@ -242,7 +234,7 @@ begin
   with FManager.New do begin
     FContainer := ActiveContainer;
     AddRendition('FireRight');
-    AddNewLogic(FollowTheShip);
+    AddNewLogic(TLogicAssets.FollowTheShip);
     AddProperty('Ship', FShip);
     FContainer[Rendition].Val<TSoSprite>.BringToBack;
   end;

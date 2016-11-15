@@ -19,7 +19,7 @@ type
     FFixtureToColliderObjReferenceDict: TDict<Tb2Body, TSoColliderObj>;
     FOptions: TSoColliderOptions;
     function WorldEventArgsFromContact(const AContact: Tb2Contact): TPairCollidedEventArgs;
-    function ObjectEventArgsFromContact(const AContact: Tb2Contact; const AOpponent: Tb2Fixture): TObjectCollidedEventArgs;
+    function ObjectEventArgsFromContact(const AContact: Tb2Contact; const AOpponent: Tb2Body): TObjectCollidedEventArgs;
     procedure OnBeginContactHandler(AContact: Tb2Contact);
     procedure OnEndContactHandler(AContact: Tb2Contact);
   public
@@ -75,13 +75,13 @@ begin
     Friction := AContact.m_friction;
     Restitution := AContact.m_restitution;
     TangentSpeed := AContact.m_tangentSpeed;
-    ObjectA := FFixtureToColliderObjReferenceDict[AContact.m_fixtureA];
-    ObjectB := FFixtureToColliderObjReferenceDict[AContact.m_fixtureB];
+    ObjectA := FFixtureToColliderObjReferenceDict[AContact.m_fixtureA.GetBody];
+    ObjectB := FFixtureToColliderObjReferenceDict[AContact.m_fixtureB.GetBody];
   end;
 end;
 
 function TSoBox2DExtender.ObjectEventArgsFromContact(
-  const AContact: Tb2Contact; const AOpponent: Tb2Fixture): TObjectCollidedEventArgs;
+  const AContact: Tb2Contact; const AOpponent: Tb2Body): TObjectCollidedEventArgs;
 begin
   with Result do begin
     Friction := AContact.m_friction;
@@ -100,12 +100,12 @@ begin
   with AContact do
   begin
     TSoColliderObjFriend(
-      FFixtureToColliderObjReferenceDict[AContact.m_fixtureA]).
-        RaiseOnBeginContact(ObjectEventArgsFromContact(AContact, AContact.m_fixtureB));
+      FFixtureToColliderObjReferenceDict[AContact.m_fixtureA.GetBody]).
+        RaiseOnBeginContact(ObjectEventArgsFromContact(AContact, AContact.m_fixtureB.GetBody));
 
     TSoColliderObjFriend(
-      FFixtureToColliderObjReferenceDict[AContact.m_fixtureB]).
-        RaiseOnBeginContact(ObjectEventArgsFromContact(AContact, AContact.m_fixtureA));
+      FFixtureToColliderObjReferenceDict[AContact.m_fixtureB.GetBody]).
+        RaiseOnBeginContact(ObjectEventArgsFromContact(AContact, AContact.m_fixtureA.GetBody));
   end;
 end;
 
@@ -118,12 +118,12 @@ begin
   with AContact do
   begin
     TSoColliderObjFriend(
-      FFixtureToColliderObjReferenceDict[AContact.m_fixtureA]).
-        RaiseOnEndContact(ObjectEventArgsFromContact(AContact, AContact.m_fixtureB));
+      FFixtureToColliderObjReferenceDict[AContact.m_fixtureA.GetBody]).
+        RaiseOnEndContact(ObjectEventArgsFromContact(AContact, AContact.m_fixtureB.GetBody));
 
     TSoColliderObjFriend(
-      FFixtureToColliderObjReferenceDict[AContact.m_fixtureB]).
-        RaiseOnEndContact(ObjectEventArgsFromContact(AContact, AContact.m_fixtureA));
+      FFixtureToColliderObjReferenceDict[AContact.m_fixtureB.GetBody]).
+        RaiseOnEndContact(ObjectEventArgsFromContact(AContact, AContact.m_fixtureA.GetBody));
   end;
 end;
 

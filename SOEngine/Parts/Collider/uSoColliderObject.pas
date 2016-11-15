@@ -18,11 +18,10 @@ type
     procedure RefreshSubjectPosition; virtual; abstract;
     procedure AddOnBeginContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
     procedure RemoveOnBeginContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
+
     procedure AddOnEndContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
     procedure RemoveOnEndContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
-    //property OnCollide: TEvent<TSoObject> read FOnCollide write FOnCollide;
-  //  property OnBeginContact: TEventList<TObjectCollidedEventArgs> read FOnBeginContact;
- //   property OnEndContact: TEventList<TObjectCollidedEventArgs> read FOnEndContact;
+
     function IsContainsPoint(const AX, AY: Single): Boolean; overload; virtual; abstract;
     function IsContainsPoint(const APoint: TPointF): Boolean; overload; virtual; abstract;
     procedure ApplyForce(const AX, AY: Single; const ACenterX: Single = 0; const ACenterY: Single = 0); virtual; abstract;
@@ -34,14 +33,12 @@ implementation
 
 { TSoColliderObj }
 
-procedure TSoColliderObj.AddOnBeginContactHandler(
-  AEventHandler: TEvent<TObjectCollidedEventArgs>);
+procedure TSoColliderObj.AddOnBeginContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
 begin
   FOnBeginContact.Add(AEventHandler);
 end;
 
-procedure TSoColliderObj.AddOnEndContactHandler(
-  AEventHandler: TEvent<TObjectCollidedEventArgs>);
+procedure TSoColliderObj.AddOnEndContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
 begin
   FOnEndContact.Add(AEventHandler);
 end;
@@ -67,20 +64,17 @@ begin
   FOnBeginContact.RaiseEvent(Self, ACollideArgs);
 end;
 
-procedure TSoColliderObj.RaiseOnEndContact(
-  const ACollideArgs: TObjectCollidedEventArgs);
+procedure TSoColliderObj.RaiseOnEndContact(const ACollideArgs: TObjectCollidedEventArgs);
 begin
   FOnEndContact.RaiseEvent(Self, ACollideArgs);
 end;
 
-procedure TSoColliderObj.RemoveOnBeginContactHandler(
-  AEventHandler: TEvent<TObjectCollidedEventArgs>);
+procedure TSoColliderObj.RemoveOnBeginContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
 begin
   FOnBeginContact.Add(AEventHandler);
 end;
 
-procedure TSoColliderObj.RemoveOnEndContactHandler(
-  AEventHandler: TEvent<TObjectCollidedEventArgs>);
+procedure TSoColliderObj.RemoveOnEndContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
 begin
   FOnEndContact.Add(AEventHandler);
 end;

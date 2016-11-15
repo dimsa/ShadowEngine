@@ -9,7 +9,8 @@ uses
   uMapPainter in 'Other\uMapPainter.pas',
   uUnitCreator in 'Other\uUnitCreator.pas',
   uUtils in 'Common\uUtils.pas',
-  uLogicAssets in 'Other\uLogicAssets.pas';
+  uLogicAssets in 'Other\uLogicAssets.pas',
+  uAcceleration in 'Other\uAcceleration.pas';
 
 {$R *.res}
 
