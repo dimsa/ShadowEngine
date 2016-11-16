@@ -30,7 +30,6 @@ type
 
   TBigAsteroid = class(TMovingUnit)
   protected
-
     procedure Init; override;
   end;
 
@@ -153,7 +152,7 @@ begin
     AddSound(ResourcePath('AsteroidCollide.wav'));
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));
-    AddNewLogic(TLogicAssets.MovingByAcceleration);
+    AddNewLogic(TLogicAssets.MovingThroughSides);
   end;
   FAcceleration.Dx := Random(3) + Random  - 2;
   FAcceleration.Dy := Random(3) + Random  - 2;
@@ -195,19 +194,25 @@ var
   vTemplateName: string;
 begin
   inherited;
-  if Random(2) = 0 then
+ { if Random(2) = 0 then
     vTemplateName := 'Star'
   else
-    vTemplateName := 'LittleAsteroid' + IntToStr(Random(3));
+    vTemplateName := 'LittleAsteroid' + IntToStr(Random(3));  }
+    vTemplateName := 'FireLeft';
 
  with FManager.New do begin
     FContainer := ActiveContainer;
     AddRendition(vTemplateName);
-    AddColliderObj(vTemplateName);
+//    AddColliderObj('Asteroid');
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));
     AddNewLogic(TLogicAssets.MovingByAcceleration);
   end;
+  FContainer.X := Random(Round(FManager.ObjectByName('World').Width));
+  FContainer.Y := Random(Round(FManager.ObjectByName('World').Height));
+  FContainer.Rotate := Random(360);
+  FContainer.Scale := 0.5;
+  FAcceleration.Da := (Random * 4 - 2)
 end;
 
 { TLeftFire }

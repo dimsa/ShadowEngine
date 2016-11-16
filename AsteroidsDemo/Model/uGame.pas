@@ -85,8 +85,8 @@ begin
   for i := 0 to 9 do
     FAsteroids.Add(FUnitCreator.NewSpaceDebris(Random(3)));
 
-{  for i:= 0 to 19 do
-    FDecorations.Add(FUnitCreator.NewSpaceDust);  }
+ for i:= 0 to 29 do
+    FDecorations.Add(FUnitCreator.NewSpaceDust);
 end;
 
 end.
