@@ -123,6 +123,9 @@ begin
     vTemp.Free;
   FTemplates.Free;
 
+  FExtender.Free;
+  FOptions.Free;
+
   FColliderObjBySubject.Free;
 
   FOnBeginContact.Free;

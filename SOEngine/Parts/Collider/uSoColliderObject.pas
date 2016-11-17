@@ -10,17 +10,17 @@ type
   private
     FOnEndContact: TEventList<TObjectCollidedEventArgs>;
     FOnBeginContact: TEventList<TObjectCollidedEventArgs>;
-    procedure SetOnExecute(const Value: TNotifyEvent<TSoObject>);
   protected
     procedure RaiseOnBeginContact(const ACollideArgs: TObjectCollidedEventArgs);
     procedure RaiseOnEndContact(const ACollideArgs: TObjectCollidedEventArgs);
   public
-    procedure RefreshSubjectPosition; virtual; abstract;
     procedure AddOnBeginContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
     procedure RemoveOnBeginContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
 
     procedure AddOnEndContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
     procedure RemoveOnEndContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
+
+    procedure RefreshSubjectPosition; virtual; abstract;
 
     function IsContainsPoint(const AX, AY: Single): Boolean; overload; virtual; abstract;
     function IsContainsPoint(const APoint: TPointF): Boolean; overload; virtual; abstract;
@@ -77,11 +77,6 @@ end;
 procedure TSoColliderObj.RemoveOnEndContactHandler(AEventHandler: TEvent<TObjectCollidedEventArgs>);
 begin
   FOnEndContact.Add(AEventHandler);
-end;
-
-procedure TSoColliderObj.SetOnExecute(const Value: TNotifyEvent<TSoObject>);
-begin
-
 end;
 
 end.
