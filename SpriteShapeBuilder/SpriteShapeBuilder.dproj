@@ -321,6 +321,21 @@
         <DCCReference Include="Presenters\uMainPresenter.pas"/>
         <DCCReference Include="Views\IView\uIMainView.pas"/>
         <DCCReference Include="Model\uSeJsonStrings.pas"/>
+        <DCCReference Include="Frames\uShapeFrame.pas">
+            <Form>ShapeFrame</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Frames\uObjectFrame.pas">
+            <Form>ObjectFrame</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Frames\uPictureFrames.pas">
+            <Form>PictureFrame</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

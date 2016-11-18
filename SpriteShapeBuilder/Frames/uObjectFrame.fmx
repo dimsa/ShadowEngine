@@ -1,0 +1,60 @@
+object ObjectFrame: TObjectFrame
+  Size.Width = 108.000000000000000000
+  Size.Height = 163.000000000000000000
+  Size.PlatformDefault = False
+  object Object_Inst: TLayout
+    Align = Client
+    Size.Width = 108.000000000000000000
+    Size.Height = 163.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 3
+    object AddObjectBtn: TCornerButton
+      Align = Horizontal
+      Position.Y = 6.000000000000000000
+      Sides = [Top, Left, Bottom, Right]
+      Size.Width = 108.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = 'Add Object'
+      XRadius = 3.000000000000000000
+      YRadius = 3.000000000000000000
+    end
+    object DelObjectBtn: TCornerButton
+      Align = Horizontal
+      Position.Y = 44.000000000000000000
+      Sides = [Top, Left, Bottom, Right]
+      Size.Width = 108.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 4
+      Text = 'Del Object'
+      XRadius = 3.000000000000000000
+      YRadius = 3.000000000000000000
+    end
+    object EdtObjectBtn: TCornerButton
+      Align = Horizontal
+      Position.Y = 84.000000000000000000
+      Sides = [Top, Left, Bottom, Right]
+      Size.Width = 108.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 3
+      Text = 'Edit Object'
+      XRadius = 3.000000000000000000
+      YRadius = 3.000000000000000000
+    end
+    object CloneObjectBtn: TCornerButton
+      Align = Horizontal
+      Position.Y = 124.000000000000000000
+      Sides = [Top, Left, Bottom, Right]
+      Size.Width = 108.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      Text = 'Clone Object'
+      XRadius = 3.000000000000000000
+      YRadius = 3.000000000000000000
+    end
+  end
+end

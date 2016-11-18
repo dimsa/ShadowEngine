@@ -34,7 +34,10 @@ uses
   uOptionsForm in 'uOptionsForm.pas' {OptionsForm},
   uMainPresenter in 'Presenters\uMainPresenter.pas',
   uIMainView in 'Views\IView\uIMainView.pas',
-  uSeJsonStrings in 'Model\uSeJsonStrings.pas';
+  uSeJsonStrings in 'Model\uSeJsonStrings.pas',
+  uShapeFrame in 'Frames\uShapeFrame.pas' {ShapeFrame: TFrame},
+  uObjectFrame in 'Frames\uObjectFrame.pas' {ObjectFrame: TFrame},
+  uPictureFrames in 'Frames\uPictureFrames.pas' {PictureFrame: TFrame};
 
 {$R *.res}
 

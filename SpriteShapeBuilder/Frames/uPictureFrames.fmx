@@ -1,0 +1,60 @@
+object PictureFrame: TPictureFrame
+  Size.Width = 320.000000000000000000
+  Size.Height = 163.000000000000000000
+  Size.PlatformDefault = False
+  object Picture_Inst: TLayout
+    Align = Client
+    Size.Width = 320.000000000000000000
+    Size.Height = 163.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    object AddPictureBtn: TCornerButton
+      Align = Horizontal
+      Position.Y = 6.000000000000000000
+      Sides = [Top, Left, Bottom, Right]
+      Size.Width = 320.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      Text = 'Add Image'
+      XRadius = 3.000000000000000000
+      YRadius = 3.000000000000000000
+    end
+    object DelPictureBtn: TCornerButton
+      Align = Horizontal
+      Position.Y = 44.000000000000000000
+      Sides = [Top, Left, Bottom, Right]
+      Size.Width = 320.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 5
+      Text = 'Delete Image'
+      XRadius = 3.000000000000000000
+      YRadius = 3.000000000000000000
+    end
+    object ClonePictureBtn: TCornerButton
+      Align = Horizontal
+      Position.Y = 124.000000000000000000
+      Sides = [Top, Left, Bottom, Right]
+      Size.Width = 320.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 4
+      Text = 'Clone Image'
+      XRadius = 3.000000000000000000
+      YRadius = 3.000000000000000000
+    end
+    object EditPictureBtn: TCornerButton
+      Align = Horizontal
+      Position.Y = 84.000000000000000000
+      Sides = [Top, Left, Bottom, Right]
+      Size.Width = 320.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 3
+      Text = 'Edit Image'
+      XRadius = 3.000000000000000000
+      YRadius = 3.000000000000000000
+    end
+  end
+end

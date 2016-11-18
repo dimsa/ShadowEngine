@@ -56,9 +56,6 @@ type
     procedure BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean);
     procedure AddPictureBtnClick(Sender: TObject);
-    {procedure Picture_imgClick(Sender: TObject);
-    procedure Object_imgClick(Sender: TObject);
-    procedure Shape_imgClick(Sender: TObject); }
     procedure BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Single);
     procedure BackgroundResize(Sender: TObject);
