@@ -12,34 +12,25 @@ object NamedOptionsForm: TNamedOptionsForm
   DesignerMasterStyle = 0
   object Grd: TStringGrid
     Anchors = [akLeft, akTop, akRight, akBottom]
+    CanFocus = True
+    ClipChildren = True
     Position.X = 8.000000000000000000
     Position.Y = 82.000000000000000000
     Size.Width = 334.000000000000000000
     Size.Height = 279.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
-    ShowScrollBars = False
-    RowCount = 100
     RowHeight = 21.000000000000000000
-    Viewport.Width = 330.000000000000000000
-    Viewport.Height = 254.000000000000000000
+    Viewport.Width = 314.000000000000000000
+    Viewport.Height = 238.000000000000000000
     object ParamName: TStringColumn
-      Align = MostLeft
       Header = 'Param'
       ReadOnly = True
       Size.Width = 153.000000000000000000
-      Size.Height = 254.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 0
     end
     object ParamValue: TStringColumn
-      Align = MostRight
       Header = 'Value'
-      Position.X = 153.000000000000000000
       Size.Width = 177.000000000000000000
-      Size.Height = 254.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 1
     end
   end
   object ElementPointsLbl: TLabel

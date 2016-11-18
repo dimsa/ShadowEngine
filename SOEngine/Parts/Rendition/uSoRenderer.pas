@@ -134,7 +134,6 @@ begin
       rtShape: vTemplate := TSoShapeTemplate.Create(vVal);
     end;
 
-
   if AJson.TryGetValue('Name', vVal) then
     FTemplates.Add(vVal.Value, vTemplate);
 end;

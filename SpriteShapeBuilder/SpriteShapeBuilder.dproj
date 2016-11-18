@@ -320,6 +320,7 @@
         </DCCReference>
         <DCCReference Include="Presenters\uMainPresenter.pas"/>
         <DCCReference Include="Views\IView\uIMainView.pas"/>
+        <DCCReference Include="Model\uSeJsonStrings.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

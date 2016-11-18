@@ -6,7 +6,8 @@ uses
   FMX.Graphics, System.Generics.Collections, System.Classes, {$I 'Utils\DelphiCompatability.inc'}
   System.Math, System.JSON, System.SysUtils, FMX.Types, System.UITypes,
   FMX.Objects, FMX.StdCtrls, FMX.Controls, System.Types, uStreamUtil,
-  uNamedList, uClasses, uSSBTypes, uMVPFrameWork, uNewFigure, uIntersectorClasses;
+  uNamedList, uClasses, uSSBTypes, uMVPFrameWork, uNewFigure, uIntersectorClasses,
+  uSeJsonStrings;
 
 type
   TFigureKind = (fkCircle, fkPoly);
@@ -14,11 +15,12 @@ type
   TItemShapeModel = class(TModel)
   private
     FFigure: TNewFigure;
-    FDensity, FFriction: Single; // For the box2d
+    FDensity, FFriction, FRestitution: Single; // For the box2d
     function GetMaxRadius: Integer;
     function GetFigureKind: TFigureKind;
     procedure SetDensity(const Value: Single);
     procedure SetFriction(const Value: Single);
+    procedure SetRestitution(const Value: Single);
     property Figure: TNewFigure read FFigure;
   public
     procedure Repaint(ABmp: TBitmap; const ALockedPoint: TPointF; const APointIndex: Integer; const AColor: TColor);
@@ -27,6 +29,7 @@ type
     property MaxRadius: Integer read GetMaxRadius;
     property Density: Single read FDensity write SetDensity;
     property Friction: Single read FFriction write SetFriction;
+    property Restitution: Single read FRestitution write SetRestitution;
     function BelongPointLocal(APoint: TPointF): Boolean;
     procedure SetData(const AData: TPolygon); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const AData: TRectF); overload;// Быстрое задание ректангла
@@ -76,14 +79,12 @@ type
     property Width: Integer read FWidth write SetWidth;
     property Height: Integer read FHeight write SetHeight;
     property Position: TPoint read FPosition write SetPosition;
-//    property ShapesList: TList<TItemShapeModel> read FShapes;// write SetShapesList;
     property ShapeAdded: TNotifyEventList read FShapeAdded;
     property ShapeRemoved: TNotifyEventList read FShapeRemoved;
     property IsHasShapes: Boolean read GetIsHasShapes;
     procedure AddShape(AItem: TItemShapeModel);
     procedure RemoveShape(AItem: TItemShapeModel);
     procedure OnAddShapeHandler(ASender: TObject);
-//    procedure DelShape(const AShape: TItemShapeModel);
     procedure WriteToStream(AStream: TStreamUtil);
     procedure ReadFromStream(AStream: TStreamUtil);
     function AsJson: TJSONObject; // Save Resource
@@ -136,14 +137,14 @@ var
 begin
   vBody := TJSONObject.Create;
 
-  vBody.AddPair('Position',
+  vBody.AddPair(CPosition,
     IntToStr(Self.Position.X) + ',' + IntToStr(Self.Position.Y) + ';' +
     IntToStr(Self.Position.X + Self.Width) + ',' + IntToStr(Self.Position.Y + Self.Height)
   );
 
   vObj := TJSONObject.Create;
-  vObj.AddPair('Name', Self.Name);
-  vObj.AddPair('Body', vBody);
+  vObj.AddPair(CName, Self.Name);
+  vObj.AddPair(CBody, vBody);
   Result := vObj;
 end;
 
@@ -160,8 +161,8 @@ begin
     vShapes.AddElement(FShapes[i].AsJson);
 
   vObj := TJSONObject.Create;
-  vObj.AddPair('Name', Self.Name);
-  vObj.AddPair('Body', vShapes);
+  vObj.AddPair(CName, Self.Name);
+  vObj.AddPair(CBody, vShapes);
   Result := vObj;
 end;
 
@@ -182,13 +183,6 @@ begin
   FShapeRemoved := TNotifyEventList.Create;
   FShapes := TList<TItemShapeModel>.Create;
 end;
-
-{procedure TResourceModel.DelShape(const AShape: TItemShapeModel);
-begin
-  FShapes.Remove(AShape);
-  AShape.Free;
-  RaiseUpdateEvent;
-end;                    ff  }
 
 destructor TResourceModel.Destroy;
 var
@@ -228,17 +222,17 @@ var
 begin
   with AStream do
   begin
-    ReadStr('ObjectName');
+    ReadStr(CObjectName);
     FName := ReadStr;
-    ReadStr('ObjectBody');
-    ReadStr('Position');
+    ReadStr(CObjectBody);
+    ReadStr(CPosition);
     FPosition.X := ReadInt;
     FPosition.Y := ReadInt;
-    ReadStr('Size');
+    ReadStr(CSize);
     FWidth := ReadInt;
     FHeight := ReadInt;
 
-    ReadStr('ObjectFigures');
+    ReadStr(CObjectFigures);
     vN := ReadInt;
     for i := 0 to vN - 1 do
     begin
@@ -293,19 +287,19 @@ var
 begin
   with AStream do
   begin
-    WriteStr('ObjectName');
+    WriteStr(CObjectName);
     WriteStr(FName);
    { WriteStr('ObjectGroup');
     WriteStr(FGroup);}
-    WriteStr('ObjectBody');
-    WriteStr('Position');
+    WriteStr(CObjectBody);
+    WriteStr(CPosition);
     WriteInt(FPosition.X);
     WriteInt(FPosition.Y);
-    WriteStr('Size');
+    WriteStr(CSize);
     WriteInt(FWidth);
     WriteInt(FHeight);
 
-    WriteStr('ObjectFigures');
+    WriteStr(CObjectFigures);
     WriteInt(FShapes.Count);
     for i := 0 to FShapes.Count - 1 do
       FShapes[i].WriteToStream(AStream);
@@ -335,14 +329,14 @@ begin
   vFigure := Self.FFigure;
   case vFigure.Kind of
     TNewFigure.cfCircle: begin
-      vType := 'Circle';
-      vObj.AddPair('Type', vType);
-      vObj.AddPair('Center', Round(vFigure.AsCircle.X).ToString() + ',' + Round(vFigure.AsCircle.Y).ToString());
-      vObj.AddPair('Radius', Round(vFigure.AsCircle.Radius).ToString());
+      vType := CCircle;
+      vObj.AddPair(CType, vType);
+      vObj.AddPair(CCenter, Round(vFigure.AsCircle.X).ToString() + ',' + Round(vFigure.AsCircle.Y).ToString());
+      vObj.AddPair(CRadius, Round(vFigure.AsCircle.Radius).ToString());
     end;
     TNewFigure.cfPoly: begin
-     vType := 'Poly';
-     vObj.AddPair('Type', vType);
+     vType := CPoly;
+     vObj.AddPair(CType, vType);
      vArr := TJSONArray.Create;
      vPoly := vFigure.AsPoly;
      for i := 0 to High(vPoly) do
@@ -350,9 +344,10 @@ begin
        vVal := TJSONString.Create(Round(vPoly[i].X).ToString() + ',' + Round(vPoly[i].Y).ToString());
        vArr.AddElement(vVal);
      end;
-     vObj.AddPair('Points', vArr);
-     vObj.AddPair('Density', FDensity.ToString());
-     vObj.AddPair('Friction', FFriction.ToString());
+     vObj.AddPair(CPoints, vArr);
+     vObj.AddPair(CDensity, FDensity.ToString());
+     vObj.AddPair(CFriction, FFriction.ToString());
+     vObj.AddPair(CRestitution, FFriction.ToString());
     end;
   end;
 
@@ -436,16 +431,16 @@ var
 begin
   with AStream do
   begin
-    ReadStr('FigureType');
+    ReadStr(CFigureType);
     vS := ReadStr;
 
     if LowerCase(vS) = 'circle' then
     begin
       FFigure := TNewFigure.Create(TNewFigure.cfCircle);
-      ReadStr('Center');
+      ReadStr(CCenter);
       vCircle.X := ReadInt;
       vCircle.Y := ReadInt;
-      ReadStr('Radius');
+      ReadStr(CRadius);
       vCircle.Radius := ReadInt;
       FFigure.SetData(vCircle);
     end;
@@ -464,10 +459,12 @@ begin
       FFigure.SetData(vPoly);
     end;
 
-    ReadStr('Density');
+    ReadStr(CDensity);
     FDensity := ReadSingle;
-    ReadStr('Friction');
+    ReadStr(CFriction);
     FFriction := ReadSingle;
+    ReadStr(CRestitution);
+    FRestitution := ReadSingle;
   end;
   RaiseUpdateEvent;
 end;
@@ -503,18 +500,18 @@ var
 begin
   with AStream do
   begin
-    WriteStr('FigureType');
+    WriteStr(CFigureType);
     case FFigure.Kind of
       TNewFigure.cfCircle: begin
-        WriteStr('Circle');
-        WriteStr('Center');
+        WriteStr(CCircle);
+        WriteStr(CCenter);
         WriteInt(Round(FFigure.AsCircle.X));
         WriteInt(Round(FFigure.AsCircle.Y));
-        WriteStr('Radius');
+        WriteStr(CRadius);
         WriteInt(Round(FFigure.AsCircle.Radius));
       end;
       TNewFigure.cfPoly: begin
-        WriteStr('Poly');
+        WriteStr(CPoly);
         vPoly := FFigure.AsPoly;
         WriteInt(Length(vPoly));
         for i := 0 to High(vPoly) do
@@ -524,10 +521,12 @@ begin
         end;
       end;
     end;
-    WriteStr('Density');
+    WriteStr(CDensity);
     WriteSingle(FDensity);
-    WriteStr('Friction');
+    WriteStr(CFriction);
     WriteSingle(FFriction);
+    WriteStr(CRestitution);
+    WriteSingle(FRestitution);
   end;
 end;
 
@@ -547,6 +546,11 @@ procedure TItemShapeModel.SetFriction(const Value: Single);
 begin
   FFriction := Value;
   RaiseUpdateEvent;
+end;
+
+procedure TItemShapeModel.SetRestitution(const Value: Single);
+begin
+  FRestitution := Value;
 end;
 
 constructor TItemImageModel.Create(const AUpdateHandler: TNotifyEvent);
@@ -603,9 +607,9 @@ begin
     vBmp.Free;
     FreeAndNil(vStream);
 
-    ReadStr('Position');
+    ReadStr(CPosition);
     vPos := Point(ReadInt, ReadInt);
-    ReadStr('Size');
+    ReadStr(CSize);
     vSize := Point(ReadInt, ReadInt);
     FRect := System.Types.Rect(vPos.X, vPos.Y, vPos.X + vSize.X, vPos.Y + vSize.Y);
 
@@ -668,10 +672,10 @@ begin
 
     vStream.Free;
 
-    WriteStr('Position');
+    WriteStr(CPosition);
     WriteInt(Self.Position.X);
     WriteInt(Self.Position.Y);
-    WriteStr('Size');
+    WriteStr(CSize);
     WriteInt(Self.Width);
     WriteInt(Self.Height);
   end;

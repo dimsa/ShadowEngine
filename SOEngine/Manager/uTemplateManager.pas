@@ -48,6 +48,10 @@ begin
   vArr := AJSON.GetValue('Templates') as TJSONArray;
   for i := 0 to vArr.Count - 1 do
     FModel.Renderer.AddTemplateFromJson(TJSONObject(vArr.Items[i]));
+
+  vArr := AJSON.GetValue('Resources') as TJSONArray;
+  for i := 0 to vArr.Count - 1 do
+    FModel.Renderer.AddTemplateFromJson(TJSONObject(vArr.Items[i]));
 end;
 
 procedure TTemplateManager.LoadResources(const AFileName: string; const AJson: TJSONObject);

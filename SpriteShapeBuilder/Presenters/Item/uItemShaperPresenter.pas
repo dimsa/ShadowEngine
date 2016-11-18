@@ -220,6 +220,7 @@ begin
 
   FParams.Add('Density', FloatToStr(Model.Density));
   FParams.Add('Friction', FloatToStr(Model.Friction));
+  FParams.Add('Restitution', FloatToStr(Model.Restitution));
 
   Result := FParams;
 end;

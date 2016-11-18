@@ -33,7 +33,8 @@ uses
   uNamedTableView in 'Views\View\uNamedTableView.pas',
   uOptionsForm in 'uOptionsForm.pas' {OptionsForm},
   uMainPresenter in 'Presenters\uMainPresenter.pas',
-  uIMainView in 'Views\IView\uIMainView.pas';
+  uIMainView in 'Views\IView\uIMainView.pas',
+  uSeJsonStrings in 'Model\uSeJsonStrings.pas';
 
 {$R *.res}
 

@@ -35,34 +35,25 @@ object OptionsForm: TOptionsForm
   end
   object Grd: TStringGrid
     Anchors = [akLeft, akTop, akRight, akBottom]
+    CanFocus = True
+    ClipChildren = True
     Position.X = 8.000000000000000000
     Position.Y = 24.000000000000000000
     Size.Width = 290.000000000000000000
     Size.Height = 331.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
-    ShowScrollBars = False
-    RowCount = 100
     RowHeight = 21.000000000000000000
-    Viewport.Width = 286.000000000000000000
-    Viewport.Height = 306.000000000000000000
+    Viewport.Width = 270.000000000000000000
+    Viewport.Height = 290.000000000000000000
     object ParamName: TStringColumn
-      Align = MostLeft
       Header = 'Param'
       ReadOnly = True
       Size.Width = 153.000000000000000000
-      Size.Height = 306.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 0
     end
     object ParamValue: TStringColumn
-      Align = MostRight
       Header = 'Value'
-      Position.X = -157.000000000000000000
       Size.Width = 443.000000000000000000
-      Size.Height = 306.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 1
     end
   end
 end
