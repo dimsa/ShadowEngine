@@ -9,8 +9,8 @@ object ObjectFrame: TObjectFrame
     Size.PlatformDefault = False
     TabOrder = 3
     object AddObjectBtn: TCornerButton
-      Align = Horizontal
-      Position.Y = 6.000000000000000000
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
       Sides = [Top, Left, Bottom, Right]
       Size.Width = 108.000000000000000000
       Size.Height = 33.000000000000000000
@@ -19,10 +19,12 @@ object ObjectFrame: TObjectFrame
       Text = 'Add Object'
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
+      OnClick = AddObjectBtnClick
     end
     object DelObjectBtn: TCornerButton
-      Align = Horizontal
-      Position.Y = 44.000000000000000000
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
+      Position.Y = 36.000000000000000000
       Sides = [Top, Left, Bottom, Right]
       Size.Width = 108.000000000000000000
       Size.Height = 33.000000000000000000
@@ -31,10 +33,12 @@ object ObjectFrame: TObjectFrame
       Text = 'Del Object'
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
+      OnClick = DelObjectBtnClick
     end
     object EdtObjectBtn: TCornerButton
-      Align = Horizontal
-      Position.Y = 84.000000000000000000
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
+      Position.Y = 72.000000000000000000
       Sides = [Top, Left, Bottom, Right]
       Size.Width = 108.000000000000000000
       Size.Height = 33.000000000000000000
@@ -43,10 +47,12 @@ object ObjectFrame: TObjectFrame
       Text = 'Edit Object'
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
+      OnClick = EdtObjectBtnClick
     end
     object CloneObjectBtn: TCornerButton
-      Align = Horizontal
-      Position.Y = 124.000000000000000000
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
+      Position.Y = 108.000000000000000000
       Sides = [Top, Left, Bottom, Right]
       Size.Width = 108.000000000000000000
       Size.Height = 33.000000000000000000
@@ -55,6 +61,7 @@ object ObjectFrame: TObjectFrame
       Text = 'Clone Object'
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
+      OnClick = CloneObjectBtnClick
     end
   end
 end

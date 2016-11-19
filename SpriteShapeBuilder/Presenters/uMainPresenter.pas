@@ -58,7 +58,6 @@ begin
   FImager := TImagerPresenter.Create(AWorkSpaceView, FModel, GetStatus);
   FObjecter := TObjecterPresenter.Create(AWorkSpaceView, FModel, GetStatus);
   FResourceFileName := 'NoName';
-  InitImager;
 end;
 
 destructor TMainPresenter.Destroy;

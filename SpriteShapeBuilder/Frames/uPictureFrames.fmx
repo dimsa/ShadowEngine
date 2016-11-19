@@ -9,8 +9,8 @@ object PictureFrame: TPictureFrame
     Size.PlatformDefault = False
     TabOrder = 2
     object AddPictureBtn: TCornerButton
-      Align = Horizontal
-      Position.Y = 6.000000000000000000
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
       Sides = [Top, Left, Bottom, Right]
       Size.Width = 320.000000000000000000
       Size.Height = 33.000000000000000000
@@ -19,10 +19,12 @@ object PictureFrame: TPictureFrame
       Text = 'Add Image'
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
+      OnClick = AddPictureBtnClick
     end
     object DelPictureBtn: TCornerButton
-      Align = Horizontal
-      Position.Y = 44.000000000000000000
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
+      Position.Y = 36.000000000000000000
       Sides = [Top, Left, Bottom, Right]
       Size.Width = 320.000000000000000000
       Size.Height = 33.000000000000000000
@@ -31,10 +33,12 @@ object PictureFrame: TPictureFrame
       Text = 'Delete Image'
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
+      OnClick = DelPictureBtnClick
     end
     object ClonePictureBtn: TCornerButton
-      Align = Horizontal
-      Position.Y = 124.000000000000000000
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
+      Position.Y = 108.000000000000000000
       Sides = [Top, Left, Bottom, Right]
       Size.Width = 320.000000000000000000
       Size.Height = 33.000000000000000000
@@ -43,10 +47,12 @@ object PictureFrame: TPictureFrame
       Text = 'Clone Image'
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
+      OnClick = ClonePictureBtnClick
     end
     object EditPictureBtn: TCornerButton
-      Align = Horizontal
-      Position.Y = 84.000000000000000000
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
+      Position.Y = 72.000000000000000000
       Sides = [Top, Left, Bottom, Right]
       Size.Width = 320.000000000000000000
       Size.Height = 33.000000000000000000
@@ -55,6 +61,7 @@ object PictureFrame: TPictureFrame
       Text = 'Edit Image'
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
+      OnClick = EditPictureBtnClick
     end
   end
 end

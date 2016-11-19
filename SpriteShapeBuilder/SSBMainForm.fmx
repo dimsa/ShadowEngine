@@ -2,7 +2,7 @@ object SSBForm: TSSBForm
   Left = 0
   Top = 0
   Caption = 'SSBForm'
-  ClientHeight = 576
+  ClientHeight = 811
   ClientWidth = 640
   FormFactor.Width = 320
   FormFactor.Height = 480
@@ -12,7 +12,7 @@ object SSBForm: TSSBForm
   object MenuPanel: TPanel
     Align = MostLeft
     Size.Width = 117.791412353515600000
-    Size.Height = 576.000000000000000000
+    Size.Height = 811.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 3
     object Selected: TImage
@@ -28,7 +28,7 @@ object SSBForm: TSSBForm
     object InfoLbl: TLabel
       Anchors = [akLeft, akBottom]
       Position.X = 8.000000000000000000
-      Position.Y = 364.000000000000000000
+      Position.Y = 599.000000000000000000
       Size.Width = 98.000000000000000000
       Size.Height = 87.000000000000000000
       Size.PlatformDefault = False
@@ -40,7 +40,7 @@ object SSBForm: TSSBForm
   object SaveProjectBtn: TCornerButton
     Anchors = [akLeft, akBottom]
     Position.X = 8.000000000000000000
-    Position.Y = 536.000000000000000000
+    Position.Y = 771.000000000000000000
     Sides = [Top, Left, Bottom, Right]
     Size.Width = 97.000000000000000000
     Size.Height = 33.000000000000000000
@@ -54,7 +54,7 @@ object SSBForm: TSSBForm
   object LoadProjectBtn: TCornerButton
     Anchors = [akLeft, akBottom]
     Position.X = 8.000000000000000000
-    Position.Y = 495.000000000000000000
+    Position.Y = 730.000000000000000000
     Sides = [Top, Left, Bottom, Right]
     Size.Width = 97.000000000000000000
     Size.Height = 33.000000000000000000
@@ -68,7 +68,7 @@ object SSBForm: TSSBForm
   object MainPanel: TPanel
     Align = Client
     Size.Width = 522.208618164062500000
-    Size.Height = 576.000000000000000000
+    Size.Height = 811.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 4
     object Background: TImage
@@ -77,7 +77,7 @@ object SSBForm: TSSBForm
         end>
       Align = Client
       Size.Width = 522.208618164062500000
-      Size.Height = 576.000000000000000000
+      Size.Height = 811.000000000000000000
       Size.PlatformDefault = False
       OnMouseDown = BackgroundMouseDown
       OnMouseMove = BackgroundMouseMove
@@ -94,7 +94,7 @@ object SSBForm: TSSBForm
   object SaveForEngineBtn: TCornerButton
     Anchors = [akLeft, akBottom]
     Position.X = 8.000000000000000000
-    Position.Y = 455.000000000000000000
+    Position.Y = 690.000000000000000000
     Sides = [Top, Left, Bottom, Right]
     Size.Width = 97.000000000000000000
     Size.Height = 33.000000000000000000
@@ -110,7 +110,7 @@ object SSBForm: TSSBForm
     Top = 8
   end
   object GlowEffect1: TGlowEffect
-    Softness = 0.400000005960464400
+    Softness = 0.400000005960464500
     GlowColor = claGold
     Opacity = 0.899999976158142100
   end
@@ -118,7 +118,7 @@ object SSBForm: TSSBForm
     Position.X = 9.000000000000000000
     Position.Y = 113.000000000000000000
     Size.Width = 96.000000000000000000
-    Size.Height = 232.000000000000000000
+    Size.Height = 432.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 7
     object InsrumentTabs: TLayout
@@ -127,83 +127,11 @@ object SSBForm: TSSBForm
       Size.Height = 33.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
-      object Object_rect: TRectangle
-        Position.X = 32.000000000000000000
-        Size.Width = 32.000000000000000000
-        Size.Height = 32.000000000000000000
-        Size.PlatformDefault = False
-        object Object_img: TImage
-          MultiResBitmap.Height = 64
-          MultiResBitmap.Width = 64
-          MultiResBitmap = <
-            item
-              Width = 64
-              Height = 64
-              PNG = {
-                89504E470D0A1A0A0000000D4948445200000040000000400806000000AA6971
-                DE000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
-                063849444154785EED9A5D6C145514C7E7CE6C77B72D6EF9B0B6DD76776D6D05
-                5131A46A4813A220567C411F40C190182C1013A3289228898960FCA0117CF041
-                23E1C1073F82268610C4003E188D981A1FFC088DC690D0FDEA87B6846DDAEC76
-                F7DEEBFFCE5E4BB7B6D999D9D9C1A5F34B66CF3D77EECEDC7BE6DE73CE9D5DC5
-                C5C5C5C5650143A49C97702834015193D72A8EC9682C562BCB73A24A392FE94C
-                26238B158791BE173580DFE7E3B2587118E97B51035CEF18F101A3104BF39AA2
-                C0A45188CFF25A492CC1CD7B20A9C2D851AEAAC2D794CA63B86658960563F001
-                CB64794E4C1B009D3D1B4D241E929A655A5A5AB6AA847C2ACA8CF38DF178FC8C
-                7EA204C2CDCD671455ED96AAA0A8014C2F01468847164B4265EC45CCA66F144A
-                7F82BA2F5F5B1A56FA764D7C402412B94DD1B4BB09E7C7B8A67D8499B03E180C
-                86E46947B92606608C3D2144965231ED4FE150354DDB22CE398DE306E8ECECAC
-                82E37912C5EF060707FF8EC5621751FE9550FA1464519F64378E1B606464640D
-                4408EBFFFD7C8D1E59DEC392B83D120CDE25AB1CC3710370CEB74BB91391E073
-                71407D5CD4314DDB26A493386A80B6B6B63AACFF4D48512FC3F12D5773B92E71
-                60DEB753C65238B7A5BDBDDD279B3B82A306C8E572DD1E4D6BF4F97C4F233EDF
-                1C1D1A0AE907CA1A42A1A6AAAD48DFEF93CD1DC1D925C0798F78FA5353535F42
-                63338F1CE75F5C49A5D2980D3BA03B866903A89CE764D114ADADAD0D101BFC5E
-                EF07C3C3C3FF497B93C9E4685D202032C347EAEBEB17E56BCD61A56FE6536145
-                4920909F9465C3204BEBC0BADF008F7F9A303620AB0BC07E60053AB40EA9F129
-                0C2626AB8DA3AA9BF0D99C5774CAB017A82CECDF0B5C6FB8069072C162C5074C
-                229CF5EAD22A9C77C3613D28B53C8C9D5308392B352BD4E0FB2FE9F22A657182
-                A3B8A8086934AF9A27140ABD8C1BBF25551D4487FDD8181D92AA1534F4751872
-                E680CBE20409F2F73A59B68A5FCA99CC556718D9A7A20F7436AE139472C1E246
-                0129E7650E27388654B5231E8F8F495DBC8DDD0E0FDC0AEFAE6F6591D232A4B2
-                BF23FDED936F7C0A80133C801BBF2A551D38C183687B40AAD3A06D10D7DA068F
-                BB0EEA121C9709213F688C9DBA9448FCA23702F0014B916AFF8962415F9DC904
-                39DF0303BC8601EFC2AEAE07FBFA3D9C908F2726262E60007B652BD360508FC2
-                50BFE15A87554A5760E035186407EA5EA7AAFAAC6C5612B618806B5A164F309A
-                CD66DB162F5E1C59944EB750C6D65457575F44678F0483C15B6553C360F0F766
-                3299E3394AA770EDEEE8E0600766C86A3CD1E584D2D594D283B26949D8E603F0
-                D429B6B993FDFDFD537F8C8E8E2712893E3CB1C3E29CC7E359A5373201BEDB5B
-                EDF77BF1DDCD18F83954C10E790692C99FB17D36BF5B9C033B9DA0F027D39D14
-                68577DCCB4BF300296CD2DF8E2FD289E8946A3DFE76BCB836D06C01323CB972D
-                BB0153B7BAA1A1A116F21EACDDFD7098E771EABC6C6608CEF99DBA5494525263
-                43D86580349C5328E5F5C6E0079298B649E83F6224E7FD7EFFFA818181B46C67
-                0855556FD225E7437A4519B1C50084314F36971BC7C0DFF67ABDBD1A21EFC029
-                1CA79CAF4DA7D3EF8A19219B1A83D282A5544E6C3100E27E15A6F9289CD51B38
-                0E45E3F183D144622B0CF12666C26E5F55D533B2A921104EFF92526CBACA8A5D
-                4B00CB9D886B15FC3A9BA5F484904C51D6EA1506810FB820E5037A4519B1CB00
-                02316D0BDECA7A0969111237311505104245F6D887D9B3311C0E77E66BCB833D
-                4B0068AAEA8944228D4D4D4D378A57E008656B91201D15E731033ED11B1A8721
-                ACBC02A9E1E22722CDCD0F8BE8025D5DB972A557FCBC2E5264BD6589D862003C
-                2931F543E3E3E39726272763707C31C4F16F517707E17C9F957F7F20FE7F8D29
-                B503471D7CCC69DC231E6E6C8CA552A91867AC1F4D0ADF2859C41603200A1CC0
-                93DA555B5BFB422010D88B68F01CA2C066B1691A88C78FC866A68143FD102171
-                158CF03C8EAF98C723728A93B8F66EA4C2E27F0525F36FA6362F46768366C1F4
-                35BC1B340A96C835DC0D5630AE01A45CB0B80690D20C1C0EF08A2C5B65AECD91
-                A90DD36C649FE04BCD613A0A883F3120D41D43D17287913775C163774955C7CA
-                B679167EE4083BEB028199BF2F94E597A14AC20D83C5286A807426537496FC5F
-                31D2F7A206F0FB7C8EFE6DCD4E2AB9EF2E2E2E2E2EE54751FE01177E70C5CED5
-                5CB60000000049454E44AE426082}
-              FileName = 'D:\Dropbox\ShadowEngine\SpriteShapeBuilder\img\object_edt.png'
-            end>
-          Size.Width = 32.000000000000000000
-          Size.Height = 32.000000000000000000
-          Size.PlatformDefault = False
-          OnMouseDown = Object_imgMouseDown
-        end
-      end
       object Picture_rect: TRectangle
+        Align = Left
+        Anchors = [akLeft, akTop]
         Size.Width = 32.000000000000000000
-        Size.Height = 32.000000000000000000
+        Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         object Picture_img: TImage
           MultiResBitmap.Height = 64
@@ -270,16 +198,19 @@ object SSBForm: TSSBForm
                 5443E79FDD76370000000049454E44AE426082}
               FileName = 'D:\Dropbox\ShadowEngine\SpriteShapeBuilder\img\picture_edt.png'
             end>
+          Align = Client
           Size.Width = 32.000000000000000000
-          Size.Height = 32.000000000000000000
+          Size.Height = 33.000000000000000000
           Size.PlatformDefault = False
           OnMouseDown = Picture_imgMouseDown
         end
       end
       object Shape_rect: TRectangle
+        Align = Left
+        Anchors = [akLeft, akTop]
         Position.X = 64.000000000000000000
         Size.Width = 32.000000000000000000
-        Size.Height = 32.000000000000000000
+        Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         object Shape_img: TImage
           MultiResBitmap.Height = 64
@@ -376,215 +307,181 @@ object SSBForm: TSSBForm
                 426082}
               FileName = 'D:\Dropbox\ShadowEngine\SpriteShapeBuilder\img\shaped_edt.png'
             end>
+          Align = Client
           Size.Width = 32.000000000000000000
-          Size.Height = 32.000000000000000000
+          Size.Height = 33.000000000000000000
           Size.PlatformDefault = False
           OnMouseDown = Shape_imgMouseDown
         end
       end
-    end
-    object Picture_Inst: TLayout
-      Position.Y = 32.000000000000000000
-      Size.Width = 96.000000000000000000
-      Size.Height = 161.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 2
-      object AddPictureBtn: TCornerButton
-        Align = Horizontal
-        Position.Y = 6.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
-        Size.Width = 96.000000000000000000
+      object Object_rect: TRectangle
+        Align = Left
+        Anchors = [akLeft, akTop]
+        Position.X = 32.000000000000000000
+        Size.Width = 32.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 2
-        Text = 'Add Image'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = AddPictureBtnClick
-      end
-      object DelPictureBtn: TCornerButton
-        Align = Horizontal
-        Position.Y = 44.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
-        Size.Width = 96.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 5
-        Text = 'Delete Image'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = DelPictureBtnClick
-      end
-      object ClonePictureBtn: TCornerButton
-        Align = Horizontal
-        Position.Y = 124.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
-        Size.Width = 96.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 4
-        Text = 'Clone Image'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = ClonePictureBtnClick
-      end
-      object EditPictureBtn: TCornerButton
-        Align = Horizontal
-        Position.Y = 84.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
-        Size.Width = 96.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 3
-        Text = 'Edit Image'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = EditPictureBtnClick
-      end
-    end
-    object Object_Inst: TLayout
-      Position.X = 96.000000000000000000
-      Position.Y = 32.000000000000000000
-      Size.Width = 96.000000000000000000
-      Size.Height = 161.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 3
-      object AddObjectBtn: TCornerButton
-        Align = Horizontal
-        Position.Y = 6.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
-        Size.Width = 96.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 1
-        Text = 'Add Object'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = AddObjectBtnClick
-      end
-      object DelObjectBtn: TCornerButton
-        Align = Horizontal
-        Position.Y = 44.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
-        Size.Width = 96.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 4
-        Text = 'Del Object'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = DelObjectBtnClick
-      end
-      object EdtObjectBtn: TCornerButton
-        Align = Horizontal
-        Position.Y = 84.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
-        Size.Width = 96.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 3
-        Text = 'Edit Object'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = EdtObjectBtnClick
-      end
-      object CloneObjectBtn: TCornerButton
-        Align = Horizontal
-        Position.Y = 124.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
-        Size.Width = 96.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 2
-        Text = 'Clone Object'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = CloneObjectBtnClick
+        object Object_img: TImage
+          MultiResBitmap.Height = 64
+          MultiResBitmap.Width = 64
+          MultiResBitmap = <
+            item
+              Width = 64
+              Height = 64
+              PNG = {
+                89504E470D0A1A0A0000000D4948445200000040000000400806000000AA6971
+                DE000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                063849444154785EED9A5D6C145514C7E7CE6C77B72D6EF9B0B6DD76776D6D05
+                5131A46A4813A220567C411F40C190182C1013A3289228898960FCA0117CF041
+                23E1C1073F82268610C4003E188D981A1FFC088DC690D0FDEA87B6846DDAEC76
+                F7DEEBFFCE5E4BB7B6D999D9D9C1A5F34B66CF3D77EECEDC7BE6DE73CE9D5DC5
+                C5C5C5C5650143A49C97702834015193D72A8EC9682C562BCB73A24A392FE94C
+                26238B158791BE173580DFE7E3B2587118E97B51035CEF18F101A3104BF39AA2
+                C0A45188CFF25A492CC1CD7B20A9C2D851AEAAC2D794CA63B86658960563F001
+                CB64794E4C1B009D3D1B4D241E929A655A5A5AB6AA847C2ACA8CF38DF178FC8C
+                7EA204C2CDCD671455ED96AAA0A8014C2F01468847164B4265EC45CCA66F144A
+                7F82BA2F5F5B1A56FA764D7C402412B94DD1B4BB09E7C7B8A67D8499B03E180C
+                86E46947B92606608C3D2144965231ED4FE150354DDB22CE398DE306E8ECECAC
+                82E37912C5EF060707FF8EC5621751FE9550FA1464519F64378E1B606464640D
+                4408EBFFFD7C8D1E59DEC392B83D120CDE25AB1CC3710370CEB74BB91391E073
+                71407D5CD4314DDB26A493386A80B6B6B63AACFF4D48512FC3F12D5773B92E71
+                60DEB753C65238B7A5BDBDDD279B3B82A306C8E572DD1E4D6BF4F97C4F233EDF
+                1C1D1A0AE907CA1A42A1A6AAAD48DFEF93CD1DC1D925C0798F78FA5353535F42
+                63338F1CE75F5C49A5D2980D3BA03B866903A89CE764D114ADADAD0D101BFC5E
+                EF07C3C3C3FF497B93C9E4685D202032C347EAEBEB17E56BCD61A56FE6536145
+                4920909F9465C3204BEBC0BADF008F7F9A303620AB0BC07E60053AB40EA9F129
+                0C2626AB8DA3AA9BF0D99C5774CAB017A82CECDF0B5C6FB8069072C162C5074C
+                229CF5EAD22A9C77C3613D28B53C8C9D5308392B352BD4E0FB2FE9F22A657182
+                A3B8A8086934AF9A27140ABD8C1BBF25551D4487FDD8181D92AA1534F4751872
+                E680CBE20409F2F73A59B68A5FCA99CC556718D9A7A20F7436AE139472C1E246
+                0129E7650E27388654B5231E8F8F495DBC8DDD0E0FDC0AEFAE6F6591D232A4B2
+                BF23FDED936F7C0A80133C801BBF2A551D38C183687B40AAD3A06D10D7DA068F
+                BB0EEA121C9709213F688C9DBA9448FCA23702F0014B916AFF8962415F9DC904
+                39DF0303BC8601EFC2AEAE07FBFA3D9C908F2726262E60007B652BD360508FC2
+                50BFE15A87554A5760E035186407EA5EA7AAFAAC6C5612B618806B5A164F309A
+                CD66DB162F5E1C59944EB750C6D65457575F44678F0483C15B6553C360F0F766
+                3299E3394AA770EDEEE8E0600766C86A3CD1E584D2D594D283B26949D8E603F0
+                D429B6B993FDFDFD537F8C8E8E2712893E3CB1C3E29CC7E359A5373201BEDB5B
+                EDF77BF1DDCD18F83954C10E790692C99FB17D36BF5B9C033B9DA0F027D39D14
+                68577DCCB4BF300296CD2DF8E2FD289E8946A3DFE76BCB836D06C01323CB972D
+                BB0153B7BAA1A1A116F21EACDDFD7098E771EABC6C6608CEF99DBA5494525263
+                43D86580349C5328E5F5C6E0079298B649E83F6224E7FD7EFFFA818181B46C67
+                0855556FD225E7437A4519B1C50084314F36971BC7C0DFF67ABDBD1A21EFC029
+                1CA79CAF4DA7D3EF8A19219B1A83D282A5544E6C3100E27E15A6F9289CD51B38
+                0E45E3F183D144622B0CF12666C26E5F55D533B2A921104EFF92526CBACA8A5D
+                4B00CB9D886B15FC3A9BA5F484904C51D6EA1506810FB820E5037A4519B1CB00
+                02316D0BDECA7A0969111237311505104245F6D887D9B3311C0E77E66BCB833D
+                4B0068AAEA8944228D4D4D4D378A57E008656B91201D15E731033ED11B1A8721
+                ACBC02A9E1E22722CDCD0F8BE8025D5DB972A557FCBC2E5264BD6589D862003C
+                2931F543E3E3E39726272763707C31C4F16F517707E17C9F957F7F20FE7F8D29
+                B503471D7CCC69DC231E6E6C8CA552A91867AC1F4D0ADF2859C41603200A1CC0
+                93DA555B5BFB422010D88B68F01CA2C066B1691A88C78FC866A68143FD102171
+                158CF03C8EAF98C723728A93B8F66EA4C2E27F0525F36FA6362F46768366C1F4
+                35BC1B340A96C835DC0D5630AE01A45CB0B80690D20C1C0EF08A2C5B65AECD91
+                A90DD36C649FE04BCD613A0A883F3120D41D43D17287913775C163774955C7CA
+                B679167EE4083BEB028199BF2F94E597A14AC20D83C5286A807426537496FC5F
+                31D2F7A206F0FB7C8EFE6DCD4E2AB9EF2E2E2E2E2EE54751FE01177E70C5CED5
+                5CB60000000049454E44AE426082}
+              FileName = 'D:\Dropbox\ShadowEngine\SpriteShapeBuilder\img\object_edt.png'
+            end>
+          Align = Client
+          Size.Width = 32.000000000000000000
+          Size.Height = 33.000000000000000000
+          Size.PlatformDefault = False
+          WrapMode = Place
+          OnMouseDown = Object_imgMouseDown
+        end
       end
     end
-    object Shape_Inst: TLayout
-      Position.X = 192.000000000000000000
-      Position.Y = 32.000000000000000000
+    inline PictureFrame: TPictureFrame
+      Align = Top
+      Position.Y = 33.000000000000000000
       Size.Width = 96.000000000000000000
-      Size.Height = 200.000000000000000000
+      Size.Height = 163.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 4
-      object AddCircleBtn: TCornerButton
-        Align = Horizontal
-        Position.Y = 6.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
+      inherited Picture_Inst: TLayout
         Size.Width = 96.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 8
-        Text = 'Add Circle'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = AddCircleBtnClick
+        inherited AddPictureBtn: TCornerButton
+          Size.Width = 96.000000000000000000
+        end
+        inherited DelPictureBtn: TCornerButton
+          Size.Width = 96.000000000000000000
+        end
+        inherited ClonePictureBtn: TCornerButton
+          Size.Width = 96.000000000000000000
+        end
+        inherited EditPictureBtn: TCornerButton
+          Size.Width = 96.000000000000000000
+        end
       end
-      object AddPolyBtn: TCornerButton
-        Align = Horizontal
-        Position.Y = 45.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
+    end
+    inline ObjectFrame: TObjectFrame
+      Align = Top
+      Position.Y = 196.000000000000000000
+      Size.Width = 96.000000000000000000
+      Size.Height = 160.000000000000000000
+      Size.PlatformDefault = False
+      inherited Object_Inst: TLayout
         Size.Width = 96.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 7
-        Text = 'Add Poly'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = AddPolyBtnClick
+        Size.Height = 160.000000000000000000
+        inherited AddObjectBtn: TCornerButton
+          Size.Width = 96.000000000000000000
+        end
+        inherited DelObjectBtn: TCornerButton
+          Size.Width = 96.000000000000000000
+        end
+        inherited EdtObjectBtn: TCornerButton
+          Size.Width = 96.000000000000000000
+        end
+        inherited CloneObjectBtn: TCornerButton
+          Size.Width = 96.000000000000000000
+        end
       end
-      object DelShapeBtn: TCornerButton
-        Align = Horizontal
-        Position.Y = 160.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
+    end
+    inline ShapeFrame: TShapeFrame
+      Align = Top
+      Position.Y = 356.000000000000000000
+      Size.Width = 96.000000000000000000
+      Size.Height = 204.000000000000000000
+      Size.PlatformDefault = False
+      inherited Shape_Inst: TLayout
         Size.Width = 96.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 3
-        Text = 'Delete Shape'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = DelShapeBtnClick
-      end
-      object EdtShapeBtn: TCornerButton
-        Align = Horizontal
-        Position.Y = 84.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
-        Size.Width = 96.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 6
-        Text = 'Edit Shape'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = EdtShapeBtnClick
-      end
-      object DelPointBtn: TCornerButton
-        Position.Y = 122.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
-        Size.Width = 45.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 5
-        Text = '- Pnt'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = DelPointBtnClick
-      end
-      object AddPointBtn: TCornerButton
-        Position.X = 51.000000000000000000
-        Position.Y = 122.000000000000000000
-        Sides = [Top, Left, Bottom, Right]
-        Size.Width = 45.000000000000000000
-        Size.Height = 33.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 4
-        Text = '+ Pnt'
-        XRadius = 3.000000000000000000
-        YRadius = 3.000000000000000000
-        OnClick = AddPointBtnClick
+        Size.Height = 204.000000000000000000
+        inherited AddCircleBtn: TCornerButton
+          Margins.Top = 3.000000000000000000
+          Position.Y = 3.000000000000000000
+          Size.Width = 96.000000000000000000
+        end
+        inherited AddPolyBtn: TCornerButton
+          Margins.Top = 3.000000000000000000
+          Position.Y = 41.000000000000000000
+          Size.Width = 96.000000000000000000
+        end
+        inherited DelShapeBtn: TCornerButton
+          Margins.Top = 3.000000000000000000
+          Position.Y = 149.000000000000000000
+          Size.Width = 96.000000000000000000
+        end
+        inherited EdtShapeBtn: TCornerButton
+          Margins.Top = 3.000000000000000000
+          Position.Y = 79.000000000000000000
+          Size.Width = 96.000000000000000000
+        end
+        inherited PointLayout: TLayout
+          Position.Y = 114.000000000000000000
+          Size.Width = 96.000000000000000000
+          inherited DelPointBtn: TCornerButton
+            Margins.Top = 3.000000000000000000
+            Position.X = 48.000000000000000000
+            Position.Y = 3.000000000000000000
+            Size.Height = 26.000000000000000000
+          end
+          inherited AddPointBtn: TCornerButton
+            Margins.Top = 3.000000000000000000
+            Position.Y = 3.000000000000000000
+            Size.Height = 26.000000000000000000
+          end
+        end
       end
     end
   end

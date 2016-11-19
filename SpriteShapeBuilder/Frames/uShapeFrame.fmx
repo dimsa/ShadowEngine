@@ -1,83 +1,103 @@
 object ShapeFrame: TShapeFrame
-  Size.Width = 116.000000000000000000
-  Size.Height = 240.000000000000000000
+  Size.Width = 111.000000000000000000
+  Size.Height = 187.000000000000000000
   Size.PlatformDefault = False
   object Shape_Inst: TLayout
-    Align = Client
-    Size.Width = 116.000000000000000000
-    Size.Height = 240.000000000000000000
+    Align = Top
+    Size.Width = 111.000000000000000000
+    Size.Height = 187.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 4
     object AddCircleBtn: TCornerButton
-      Align = Horizontal
-      Position.Y = 6.000000000000000000
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
       Sides = [Top, Left, Bottom, Right]
-      Size.Width = 116.000000000000000000
-      Size.Height = 33.000000000000000000
+      Size.Width = 111.000000000000000000
+      Size.Height = 32.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 8
+      TabOrder = 6
       Text = 'Add Circle'
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
+      OnClick = AddCircleBtnClick
     end
     object AddPolyBtn: TCornerButton
-      Align = Horizontal
-      Position.Y = 45.000000000000000000
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
+      Position.Y = 35.000000000000000000
       Sides = [Top, Left, Bottom, Right]
-      Size.Width = 116.000000000000000000
-      Size.Height = 33.000000000000000000
+      Size.Width = 111.000000000000000000
+      Size.Height = 32.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 7
+      TabOrder = 5
       Text = 'Add Poly'
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
+      OnClick = AddPolyBtnClick
     end
     object DelShapeBtn: TCornerButton
-      Align = Horizontal
-      Position.Y = 160.000000000000000000
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
+      Position.Y = 140.000000000000000000
       Sides = [Top, Left, Bottom, Right]
-      Size.Width = 116.000000000000000000
-      Size.Height = 33.000000000000000000
+      Size.Width = 111.000000000000000000
+      Size.Height = 32.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 3
       Text = 'Delete Shape'
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
+      OnClick = DelShapeBtnClick
     end
     object EdtShapeBtn: TCornerButton
-      Align = Horizontal
-      Position.Y = 84.000000000000000000
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
+      Position.Y = 70.000000000000000000
       Sides = [Top, Left, Bottom, Right]
-      Size.Width = 116.000000000000000000
-      Size.Height = 33.000000000000000000
+      Size.Width = 111.000000000000000000
+      Size.Height = 32.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 6
+      TabOrder = 4
       Text = 'Edit Shape'
       XRadius = 3.000000000000000000
       YRadius = 3.000000000000000000
+      OnClick = EdtShapeBtnClick
     end
-    object DelPointBtn: TCornerButton
-      Position.Y = 120.000000000000000000
-      Sides = [Top, Left, Bottom, Right]
-      Size.Width = 50.000000000000000000
-      Size.Height = 33.000000000000000000
+    object PointLayout: TLayout
+      Align = Top
+      Margins.Bottom = 3.000000000000000000
+      Position.Y = 105.000000000000000000
+      Size.Width = 111.000000000000000000
+      Size.Height = 32.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 5
-      Text = '- Pnt'
-      XRadius = 3.000000000000000000
-      YRadius = 3.000000000000000000
-    end
-    object AddPointBtn: TCornerButton
-      Position.X = 69.000000000000000000
-      Position.Y = 120.000000000000000000
-      Sides = [Top, Left, Bottom, Right]
-      Size.Width = 47.000000000000000000
-      Size.Height = 33.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 4
-      Text = '+ Pnt'
-      XRadius = 3.000000000000000000
-      YRadius = 3.000000000000000000
+      TabOrder = 7
+      object DelPointBtn: TCornerButton
+        Align = Right
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 63.000000000000000000
+        Sides = [Top, Left, Bottom, Right]
+        Size.Width = 48.000000000000000000
+        Size.Height = 29.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 5
+        Text = '- Pnt'
+        XRadius = 3.000000000000000000
+        YRadius = 3.000000000000000000
+        OnClick = DelPointBtnClick
+      end
+      object AddPointBtn: TCornerButton
+        Align = Left
+        Margins.Bottom = 3.000000000000000000
+        Sides = [Top, Left, Bottom, Right]
+        Size.Width = 48.000000000000000000
+        Size.Height = 29.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 4
+        Text = '+ Pnt'
+        XRadius = 3.000000000000000000
+        YRadius = 3.000000000000000000
+        OnClick = AddPointBtnClick
+      end
     end
   end
 end

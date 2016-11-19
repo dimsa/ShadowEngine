@@ -7,7 +7,8 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, System.ImageList,
   FMX.ImgList, FMX.Layouts, uSSBTypes, FMX.Effects,
-  uMainPresenter, uIMainView, uWorkSpaceView;
+  uMainPresenter, uIMainView, uWorkSpaceView, uPictureFrames, uObjectFrame,
+  uShapeFrame;
 
 type
 
@@ -28,48 +29,27 @@ type
     Object_rect: TRectangle;
     Shape_rect: TRectangle;
     InsrumentTabs: TLayout;
-    Picture_Inst: TLayout;
     Picture_img: TImage;
-    Object_Inst: TLayout;
-    Shape_Inst: TLayout;
-    AddPictureBtn: TCornerButton;
-    DelPictureBtn: TCornerButton;
-    AddCircleBtn: TCornerButton;
-    AddPolyBtn: TCornerButton;
-    DelShapeBtn: TCornerButton;
-    AddObjectBtn: TCornerButton;
-    DelObjectBtn: TCornerButton;
-    EdtObjectBtn: TCornerButton;
-    EdtShapeBtn: TCornerButton;
     Background: TImage;
     GlowEffect1: TGlowEffect;
-    DelPointBtn: TCornerButton;
-    AddPointBtn: TCornerButton;
-    ClonePictureBtn: TCornerButton;
-    CloneObjectBtn: TCornerButton;
-    EditPictureBtn: TCornerButton;
+    PictureFrame: TPictureFrame;
+    ObjectFrame: TObjectFrame;
+    ShapeFrame: TShapeFrame;
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
     procedure SaveForEngineBtnClick(Sender: TObject);
-    procedure DelPictureBtnClick(Sender: TObject);
+
     procedure BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean);
-    procedure AddPictureBtnClick(Sender: TObject);
     procedure BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Single);
     procedure BackgroundResize(Sender: TObject);
-    procedure AddObjectBtnClick(Sender: TObject);
-    procedure DelObjectBtnClick(Sender: TObject);
+
     procedure BackgroundMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
     procedure BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
-    procedure AddCircleBtnClick(Sender: TObject);
-    procedure AddPolyBtnClick(Sender: TObject);
-    procedure DelShapeBtnClick(Sender: TObject);
-    procedure AddPointBtnClick(Sender: TObject);
-    procedure DelPointBtnClick(Sender: TObject);
     procedure Picture_imgMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
     procedure Object_imgMouseDown(Sender: TObject; Button: TMouseButton;
@@ -77,14 +57,10 @@ type
     procedure Shape_imgMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
     function FormTopLeft: TPointF;
-    procedure CloneObjectBtnClick(Sender: TObject);
-    procedure ClonePictureBtnClick(Sender: TObject);
+
     procedure BackgroundPaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
-    procedure EditPictureBtnClick(Sender: TObject);
-    procedure EdtObjectBtnClick(Sender: TObject);
-    procedure EdtShapeBtnClick(Sender: TObject);
   private
-    FPanels: array[TSSBStatus] of TLayout;
+    FFrames: array[TSSBStatus] of TFrame;
     FStatus: TSSBStatus;
     FMainPresenter: TMainPresenter;
     FWorkSpaceView: TWorkSpaceView;
@@ -93,6 +69,7 @@ type
     procedure SetStatus(const AStatus: TSSBStatus);
     function ClientToScreenPoint(const APoint: TPoint): TPoint;
     function FilenameFromDlg(out AFileName: string): boolean;
+    procedure InitFrames;
   public
 
   end;
@@ -103,31 +80,6 @@ var
 implementation
 
 {$R *.fmx}
-
-procedure TSSBForm.AddCircleBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Objecter.AddCircle;
-end;
-
-procedure TSSBForm.AddObjectBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Objecter.AddObj;
-end;
-
-procedure TSSBForm.AddPictureBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Imager.AddImg;
-end;
-
-procedure TSSBForm.AddPointBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Objecter.AddPoint;
-end;
-
-procedure TSSBForm.AddPolyBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Objecter.AddPoly;
-end;
 
 procedure TSSBForm.BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
@@ -179,51 +131,6 @@ begin
   Result := Self.ClientToScreen(APoint).Round;
 end;
 
-procedure TSSBForm.DelObjectBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Objecter.DelObj;
-end;
-
-procedure TSSBForm.CloneObjectBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Objecter.CloneObj;
-end;
-
-procedure TSSBForm.ClonePictureBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Imager.CloneImg;
-end;
-
-procedure TSSBForm.DelPictureBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Imager.DelImg;
-end;
-
-procedure TSSBForm.DelPointBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Objecter.DelPoint;
-end;
-
-procedure TSSBForm.DelShapeBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Objecter.DelShape;
-end;
-
-procedure TSSBForm.EditPictureBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Imager.ShowOptions;
-end;
-
-procedure TSSBForm.EdtObjectBtnClick(Sender: TObject);
-begin
-  FWorkSpaceView.Objecter.ShowOptions;
-end;
-
-procedure TSSBForm.EdtShapeBtnClick(Sender: TObject);
-begin
-    FWorkSpaceView.Objecter.ShowOptions;
-end;
-
 function TSSBForm.FilenameFromDlg(out AFileName: string): boolean;
 begin
   AFileName := '';
@@ -233,28 +140,33 @@ begin
     AFileName := OpenDialog.FileName;
 end;
 
+procedure TSSBForm.InitFrames;
+var
+  i: TSSBStatus;
+begin
+  PictureFrame.Init(FMainPresenter.Imager);
+  ObjectFrame.Init(FMainPresenter.Objecter);
+  ShapeFrame.Init(FMainPresenter.Objecter);
+  FFrames[TSSBStatus.sPicture] := PictureFrame;
+  FFrames[TSSBStatus.sObject] := ObjectFrame;
+  FFrames[TSSBStatus.sShape] := ShapeFrame;
+
+  for i := Low(TSSBStatus) to High(TSSBStatus) do
+    FFrames[i].Visible := False;
+end;
+
 procedure TSSBForm.FormCreate(Sender: TObject);
 begin
-  // Initiilizing of controls
-  Picture_Inst.Position.X := 0;
-  Object_Inst.Position.X := 0;
-  Shape_Inst.Position.X := 0;
-
-  FPanels[TSSBStatus.sPicture] := Picture_Inst;
-  FPanels[TSSBStatus.sObject] := Object_Inst;
-  FPanels[TSSBStatus.sShape] := Shape_Inst;
-
-  Picture_Inst.Visible := False;
-  Object_Inst.Visible := False;
-  Shape_Inst.Visible := False;
-
   // MVP
   FWorkSpaceView := TWorkSpaceView.Create(MainPanel, Background, Selected, OpenDialog, FormTopLeft);
 
   FMainPresenter := TMainPresenter.Create(Self, FWorkSpaceView);
+  InitFrames;
 
   FWorkSpaceView.Imager := FMainPresenter.Imager;
   FWorkSpaceView.Objecter := FMainPresenter.Objecter;
+
+  FMainPresenter.InitImager;
 end;
 
 function TSSBForm.GetStatus: TSSBStatus;
@@ -300,9 +212,9 @@ end;
 
 procedure TSSBForm.SetStatus(const AStatus: TSSBStatus);
 begin
-  FPanels[FStatus].Visible := False;
+  FFrames[FStatus].Visible := False;
   FStatus := AStatus;
-  FPanels[FStatus].Visible := True;
+  FFrames[FStatus].Visible := True;
 end;
 
 procedure TSSBForm.Shape_imgMouseDown(Sender: TObject; Button: TMouseButton;
