@@ -35,6 +35,12 @@ type
     PictureFrame: TPictureFrame;
     ObjectFrame: TObjectFrame;
     ShapeFrame: TShapeFrame;
+    LineOneLayout: TLayout;
+    LineTwoLayout: TLayout;
+    Rendition_rect: TRectangle;
+    Rendition_img: TImage;
+    Sounder_rect: TRectangle;
+    Sounder_img: TImage;
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
@@ -51,8 +57,6 @@ type
     procedure BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
     procedure Picture_imgMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Single);
-    procedure Object_imgMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
     procedure Shape_imgMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
@@ -186,12 +190,6 @@ end;
 procedure TSSBForm.LoadProjectBtnClick(Sender: TObject);
 begin
   FMainPresenter.LoadProject;
-end;
-
-procedure TSSBForm.Object_imgMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-begin
-  FMainPresenter.InitObjecter;
 end;
 
 procedure TSSBForm.Picture_imgMouseDown(Sender: TObject; Button: TMouseButton;
