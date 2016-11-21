@@ -8,7 +8,7 @@ uses
   FMX.Controls.Presentation, FMX.Objects, System.ImageList,
   FMX.ImgList, FMX.Layouts, uSSBTypes, FMX.Effects,
   uMainPresenter, uIMainView, uWorkSpaceView, uPictureFrames, uObjectFrame,
-  uShapeFrame;
+  uShapeFrame, uStatusSelectorFrame;
 
 type
 
@@ -23,29 +23,16 @@ type
     SaveForEngineBtn: TCornerButton;
     SaveDialog: TSaveDialog;
     Instruments: TPanel;
-    Shape_img: TImage;
-    Object_img: TImage;
-    Picture_rect: TRectangle;
-    Object_rect: TRectangle;
-    Shape_rect: TRectangle;
-    InsrumentTabs: TLayout;
-    Picture_img: TImage;
     Background: TImage;
     GlowEffect1: TGlowEffect;
     PictureFrame: TPictureFrame;
     ObjectFrame: TObjectFrame;
     ShapeFrame: TShapeFrame;
-    LineOneLayout: TLayout;
-    LineTwoLayout: TLayout;
-    Rendition_rect: TRectangle;
-    Rendition_img: TImage;
-    Sounder_rect: TRectangle;
-    Sounder_img: TImage;
+    StatusSelectorFrame: TStatusSelectorFrame;
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
     procedure SaveForEngineBtnClick(Sender: TObject);
-
     procedure BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; var Handled: Boolean);
     procedure BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -56,12 +43,7 @@ type
       Shift: TShiftState; X, Y: Single);
     procedure BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
-    procedure Picture_imgMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Single);
-    procedure Shape_imgMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Single);
     function FormTopLeft: TPointF;
-
     procedure BackgroundPaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
   private
     FFrames: array[TSSBStatus] of TFrame;
@@ -151,6 +133,7 @@ begin
   PictureFrame.Init(FMainPresenter.Imager);
   ObjectFrame.Init(FMainPresenter.Objecter);
   ShapeFrame.Init(FMainPresenter.Objecter);
+  StatusSelectorFrame.Init(FMainPresenter);
   FFrames[TSSBStatus.sPicture] := PictureFrame;
   FFrames[TSSBStatus.sObject] := ObjectFrame;
   FFrames[TSSBStatus.sShape] := ShapeFrame;
@@ -192,12 +175,6 @@ begin
   FMainPresenter.LoadProject;
 end;
 
-procedure TSSBForm.Picture_imgMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-begin
-  FMainPresenter.InitImager;
-end;
-
 procedure TSSBForm.SaveForEngineBtnClick(Sender: TObject);
 begin
   FMainPresenter.SaveForEngine;
@@ -213,12 +190,6 @@ begin
   FFrames[FStatus].Visible := False;
   FStatus := AStatus;
   FFrames[FStatus].Visible := True;
-end;
-
-procedure TSSBForm.Shape_imgMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-begin
-  FMainPresenter.InitShaper;
 end;
 
 function TSSBForm.FormTopLeft: TPointF;

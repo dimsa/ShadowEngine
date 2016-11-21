@@ -37,7 +37,9 @@ uses
   uSeJsonStrings in 'Model\uSeJsonStrings.pas',
   uShapeFrame in 'Frames\uShapeFrame.pas' {ShapeFrame: TFrame},
   uObjectFrame in 'Frames\uObjectFrame.pas' {ObjectFrame: TFrame},
-  uPictureFrames in 'Frames\uPictureFrames.pas' {PictureFrame: TFrame};
+  uPictureFrames in 'Frames\uPictureFrames.pas' {PictureFrame: TFrame},
+  uMainPanelFrame in 'Frames\uMainPanelFrame.pas' {MainPanelFrame: TFrame},
+  uStatusSelectorFrame in 'Frames\uStatusSelectorFrame.pas' {StatusSelectorFrame: TFrame};
 
 {$R *.res}
 

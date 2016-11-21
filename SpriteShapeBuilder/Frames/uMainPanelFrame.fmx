@@ -1,0 +1,17 @@
+object MainPanelFrame: TMainPanelFrame
+  Size.Width = 320.000000000000000000
+  Size.Height = 240.000000000000000000
+  Size.PlatformDefault = False
+  object MainImg: TImage
+    MultiResBitmap = <
+      item
+      end>
+    Align = Client
+    Size.Width = 320.000000000000000000
+    Size.Height = 240.000000000000000000
+    Size.PlatformDefault = False
+    OnMouseDown = MainImgMouseDown
+    OnMouseMove = MainImgMouseMove
+    OnMouseUp = MainImgMouseUp
+  end
+end
