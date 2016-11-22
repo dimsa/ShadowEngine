@@ -8,7 +8,7 @@ uses
   FMX.Controls.Presentation, FMX.Objects, System.ImageList,
   FMX.ImgList, FMX.Layouts, uSSBTypes, FMX.Effects,
   uMainPresenter, uIMainView, uWorkSpaceView, uPictureFrames, uObjectFrame,
-  uShapeFrame, uStatusSelectorFrame;
+  uShapeFrame, uStatusSelectorFrame, uMainPanelFrame;
 
 type
 
@@ -17,39 +17,27 @@ type
     SaveProjectBtn: TCornerButton;
     LoadProjectBtn: TCornerButton;
     MenuPanel: TPanel;
-    MainPanel: TPanel;
     OpenDialog: TOpenDialog;
     InfoLbl: TLabel;
     SaveForEngineBtn: TCornerButton;
     SaveDialog: TSaveDialog;
     Instruments: TPanel;
-    Background: TImage;
     GlowEffect1: TGlowEffect;
     PictureFrame: TPictureFrame;
     ObjectFrame: TObjectFrame;
     ShapeFrame: TShapeFrame;
     StatusSelectorFrame: TStatusSelectorFrame;
+    MainPanelFrame: TMainPanelFrame;
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
     procedure SaveForEngineBtnClick(Sender: TObject);
-    procedure BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; var Handled: Boolean);
-    procedure BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Single);
-    procedure BackgroundResize(Sender: TObject);
-
-    procedure BackgroundMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Single);
-    procedure BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Single);
-    function FormTopLeft: TPointF;
-    procedure BackgroundPaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
   private
     FFrames: array[TSSBStatus] of TFrame;
     FStatus: TSSBStatus;
     FMainPresenter: TMainPresenter;
     FWorkSpaceView: TWorkSpaceView;
+    function FormTopLeft: TPointF;
     function LoadDialog(out AFileName: string): boolean;
     function GetStatus: TSSBStatus;
     procedure SetStatus(const AStatus: TSSBStatus);
@@ -66,51 +54,6 @@ var
 implementation
 
 {$R *.fmx}
-
-procedure TSSBForm.BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-begin
-  FWorkSpaceView.Objecter.MouseDown;
-  FWorkSpaceView.Imager.MouseDown;
-end;
-
-procedure TSSBForm.BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
-  Y: Single);
-begin
-  FWorkSpaceView.Imager.MouseMove;
-  FWorkSpaceView.Objecter.MouseMove;
-end;
-
-procedure TSSBForm.BackgroundMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-begin
-  FWorkSpaceView.Objecter.MouseUp;
-  FWorkSpaceView.Imager.MouseUp;
-end;
-
-procedure TSSBForm.BackgroundMouseWheel(Sender: TObject; Shift: TShiftState;
-  WheelDelta: Integer; var Handled: Boolean);
-begin
-  if MainPanel.Scale.X + ((WheelDelta / 120) * 0.1) > 0.1 then
-  begin
-    MainPanel.Scale.X := MainPanel.Scale.X + ((WheelDelta / 120) * 0.1);
-    MainPanel.Scale.Y := MainPanel.Scale.X;
-    MainPanel.RecalcSize;
-  end;
-end;
-
-procedure TSSBForm.BackgroundPaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
-begin
-  Canvas.BeginScene();
-  Canvas.Fill.Color := TAlphaColorRec.White;
-  Canvas.FillRect(ARect, 0, 0, [], 1, FMX.Types.TCornerType.ctBevel);
-  Canvas.EndScene();
-end;
-
-procedure TSSBForm.BackgroundResize(Sender: TObject);
-begin
-  SSBForm.Caption := Random(100).ToString;
-end;
 
 function TSSBForm.ClientToScreenPoint(const APoint: TPoint): TPoint;
 begin
@@ -145,7 +88,7 @@ end;
 procedure TSSBForm.FormCreate(Sender: TObject);
 begin
   // MVP
-  FWorkSpaceView := TWorkSpaceView.Create(MainPanel, Background, Selected, OpenDialog, FormTopLeft);
+  FWorkSpaceView := TWorkSpaceView.Create(MainPanelFrame,  Selected, OpenDialog, FormTopLeft);
 
   FMainPresenter := TMainPresenter.Create(Self, FWorkSpaceView);
   InitFrames;

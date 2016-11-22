@@ -14,7 +14,7 @@ type
 
   TCaptureMode = (cmMove, cmResize, cmNone);
 
-  TPositionFunc = Function(const APoint: TPointF) : TPointF of Object;
+//  TPositionFunc = Function(const APoint: TPointF) : TPointF of Object;
 
   TPointFunction = Function : TPointF of Object;
 

@@ -7,7 +7,7 @@ uses
   FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms, FMX.Dialogs,
   FMX.Types, System.Classes, System.UITypes, uEasyDevice, uNamedOptionsForm,
   uSSBTypes, uIWorkSpaceView, uIItemView, uItemView, uMVPFrameWork, FMX.Effects,
-  uImagerPresenter, uObjecterPresenter, uITableView, uNamedTableView;
+  uImagerPresenter, uObjecterPresenter, uITableView, uNamedTableView, uMainPanelFrame;
 
 type
   TWorkSpaceView = class(TInterfacedObject, IWorkSpaceView, IView)
@@ -16,8 +16,7 @@ type
     FOptionsForm: TNamedOptionsForm;
     FEffect: TGlowEffect;
     FParentTopLeft: TPointFunction;
-    FPanel: TPanel;
-    FBackground: TImage;
+    FFrame: TMainPanelFrame;
     FSelected: TImage;
     FOpenDialog: TOpenDialog;
     FObjecter: IInterface;
@@ -29,7 +28,7 @@ type
     procedure SetImager(const Value: TImagerPresenter);
     procedure SetObjecter(const Value: TObjecterPresenter);
   public
-    constructor Create(APanel: TPanel; ABackground, ASelected: TImage;
+    constructor Create(AFrame: TMainPanelFrame;{APanel: TPanel; ABackground,} ASelected: TImage;
       AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
     destructor Destroy; override;
     procedure ClearAndFreeImg;
@@ -52,7 +51,7 @@ implementation
 
 function TWorkSpaceView.PanelTopLeft: TPointF;
 begin
-  Result := (FPanel.Position.Point + FParentTopLeft);
+  Result := (FFrame.Position.Point + FParentTopLeft);
 //  FPanel. (FPanel.Position.Point - FParentTopLeft);
 end;
 
@@ -60,7 +59,7 @@ function TWorkSpaceView.AddElement: IItemView;
 var
   vImg: TItemView;
 begin
-  vImg := TItemView.Create(FPanel, PanelTopLeft);
+  vImg := TItemView.Create(FFrame.Panel, PanelTopLeft);
   FElements.Add(vImg, vImg);
   vImg.Image.WrapMode := TImageWrapMode.Stretch;
   Result := vImg;
@@ -73,9 +72,9 @@ end;
 
 procedure TWorkSpaceView.ChangeCursor(const ACursor: TCursor);
 begin
-  if ACursor = FPanel.Cursor then
+  if ACursor = FFrame.MainImg.Cursor then
     Exit;
-  FPanel.Cursor := ACursor;
+  FFrame.MainImg.Cursor := ACursor;
 end;
 
 procedure TWorkSpaceView.ClearAndFreeImg;
@@ -83,12 +82,11 @@ begin
 
 end;
 
-constructor TWorkSpaceView.Create(APanel: TPanel; ABackground, ASelected: TImage;
+constructor TWorkSpaceView.Create(AFrame: TMainPanelFrame; ASelected: TImage;
   AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
 begin
   FElements := TDictionary<IItemView, TItemView>.Create;
-  FPanel := APanel;
-  FBackground := ABackground;
+  FFrame := AFrame;
   FSelected := ASelected;
   FOpenDialog := AOpenDialog;
   FParentTopLeft := AParentTopLeft;
@@ -110,8 +108,9 @@ begin
   FElements.Clear;
   FElements.Free;
 
-  FPanel := nil;
-  FBackground := nil;
+ // FPanel := nil;
+  //FBackground := nil;
+  FFrame := nil;
   FSelected := nil;
   FOpenDialog := nil;
 
@@ -133,7 +132,7 @@ end;
 
 function TWorkSpaceView.GetMousePos: TPoint;
 begin
-  Result := ((uEasyDevice.MousePos- FPanel.Position.Point - FParentTopLeft)  / FPanel.Scale.X).Round;
+  Result := ((uEasyDevice.MousePos - FFrame.Position.Point - FParentTopLeft) / FFrame.Panel.Scale.X).Round;
 end;
 
 function TWorkSpaceView.GetObjecter: TObjecterPresenter;
@@ -143,7 +142,7 @@ end;
 
 function TWorkSpaceView.GetScale: Single;
 begin
-  Result := FPanel.Scale.X;
+  Result := FFrame.Panel.Scale.X;
 end;
 
 procedure TWorkSpaceView.MouseDown(Sender: TObject; Button: TMouseButton;
