@@ -36,7 +36,7 @@ type
     FFrames: array[TSSBStatus] of TFrame;
     FStatus: TSSBStatus;
     FMainPresenter: TMainPresenter;
-    FWorkSpaceView: TWorkSpaceView;
+    FWorkSpaceView: TGraphicItemWorkspace;
     function FormTopLeft: TPointF;
     function LoadDialog(out AFileName: string): boolean;
     function GetStatus: TSSBStatus;
@@ -88,7 +88,7 @@ end;
 procedure TSSBForm.FormCreate(Sender: TObject);
 begin
   // MVP
-  FWorkSpaceView := TWorkSpaceView.Create(MainPanelFrame,  Selected, OpenDialog, FormTopLeft);
+  FWorkSpaceView := TGraphicItemWorkspace.Create(MainPanelFrame,  Selected, OpenDialog, FormTopLeft);
 
   FMainPresenter := TMainPresenter.Create(Self, FWorkSpaceView);
   InitFrames;

@@ -10,7 +10,7 @@ uses
   uImagerPresenter, uObjecterPresenter, uITableView, uNamedTableView, uMainPanelFrame;
 
 type
-  TWorkSpaceView = class(TInterfacedObject, IWorkSpaceView, IView)
+  TGraphicItemWorkspace = class(TInterfacedObject, IWorkSpaceView, IView)
   private
     FElements: TDictionary<IItemView, TItemView>;
     FOptionsForm: TNamedOptionsForm;
@@ -21,12 +21,14 @@ type
     FOpenDialog: TOpenDialog;
     FObjecter: IInterface;
     FImager: IInterface;
-    procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     function PanelTopLeft: TPointF;
     function GetImager: TImagerPresenter;
     function GetObjecter: TObjecterPresenter;
     procedure SetImager(const Value: TImagerPresenter);
     procedure SetObjecter(const Value: TObjecterPresenter);
+    procedure OnWorkspaceMouseDown(ASender: TObject);
+    procedure OnWorkspaceMouseUp(ASender: TObject);
+    procedure OnWorkspaceMouseMove(ASender: TObject);
   public
     constructor Create(AFrame: TMainPanelFrame;{APanel: TPanel; ABackground,} ASelected: TImage;
       AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
@@ -49,13 +51,12 @@ implementation
 
 { TSSBView }
 
-function TWorkSpaceView.PanelTopLeft: TPointF;
+function TGraphicItemWorkspace.PanelTopLeft: TPointF;
 begin
   Result := (FFrame.Position.Point + FParentTopLeft);
-//  FPanel. (FPanel.Position.Point - FParentTopLeft);
 end;
 
-function TWorkSpaceView.AddElement: IItemView;
+function TGraphicItemWorkspace.AddElement: IItemView;
 var
   vImg: TItemView;
 begin
@@ -65,36 +66,42 @@ begin
   Result := vImg;
 end;
 
-function TWorkSpaceView.AddTableView: ITableView;
+function TGraphicItemWorkspace.AddTableView: ITableView;
 begin
   Result := TTableView.Create;
 end;
 
-procedure TWorkSpaceView.ChangeCursor(const ACursor: TCursor);
+procedure TGraphicItemWorkspace.ChangeCursor(const ACursor: TCursor);
 begin
   if ACursor = FFrame.MainImg.Cursor then
     Exit;
   FFrame.MainImg.Cursor := ACursor;
 end;
 
-procedure TWorkSpaceView.ClearAndFreeImg;
+procedure TGraphicItemWorkspace.ClearAndFreeImg;
 begin
 
 end;
 
-constructor TWorkSpaceView.Create(AFrame: TMainPanelFrame; ASelected: TImage;
+constructor TGraphicItemWorkspace.Create(AFrame: TMainPanelFrame; ASelected: TImage;
   AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
 begin
   FElements := TDictionary<IItemView, TItemView>.Create;
-  FFrame := AFrame;
   FSelected := ASelected;
   FOpenDialog := AOpenDialog;
   FParentTopLeft := AParentTopLeft;
   FOptionsForm := TNamedOptionsForm.Create(nil);
   FEffect := TGlowEffect.Create(nil);
+
+  FFrame := AFrame;
+  with FFrame do begin
+    MouseDowned := OnWorkspaceMouseDown;
+    MouseUpped := OnWorkspaceMouseUp;
+    MouseMoved := OnWorkspaceMouseMove;
+  end;
 end;
 
-destructor TWorkSpaceView.Destroy;
+destructor TGraphicItemWorkspace.Destroy;
 var
   vItem: TPair<IItemView, TItemView>;
 begin
@@ -108,8 +115,6 @@ begin
   FElements.Clear;
   FElements.Free;
 
- // FPanel := nil;
-  //FBackground := nil;
   FFrame := nil;
   FSelected := nil;
   FOpenDialog := nil;
@@ -117,7 +122,7 @@ begin
   inherited;
 end;
 
-function TWorkSpaceView.FilenameFromDlg(out AFileName: string): Boolean;
+function TGraphicItemWorkspace.FilenameFromDlg(out AFileName: string): Boolean;
 begin
   AFileName := '';
   Result := FOpenDialog.Execute;
@@ -125,33 +130,45 @@ begin
     AFileName := FOpenDialog.FileName;
 end;
 
-function TWorkSpaceView.GetImager: TImagerPresenter;
+function TGraphicItemWorkspace.GetImager: TImagerPresenter;
 begin
   Result := TImagerPresenter(FImager);
 end;
 
-function TWorkSpaceView.GetMousePos: TPoint;
+function TGraphicItemWorkspace.GetMousePos: TPoint;
 begin
   Result := ((uEasyDevice.MousePos - FFrame.Position.Point - FParentTopLeft) / FFrame.Panel.Scale.X).Round;
 end;
 
-function TWorkSpaceView.GetObjecter: TObjecterPresenter;
+function TGraphicItemWorkspace.GetObjecter: TObjecterPresenter;
 begin
   Result := TObjecterPresenter(FObjecter);
 end;
 
-function TWorkSpaceView.GetScale: Single;
+function TGraphicItemWorkspace.GetScale: Single;
 begin
   Result := FFrame.Panel.Scale.X;
 end;
 
-procedure TWorkSpaceView.MouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
+procedure TGraphicItemWorkspace.OnWorkspaceMouseDown(ASender: TObject);
 begin
-
+  Objecter.MouseDown;
+  Imager.MouseDown;
 end;
 
-procedure TWorkSpaceView.RemoveElement(const AElement: IItemView);
+procedure TGraphicItemWorkspace.OnWorkspaceMouseMove(ASender: TObject);
+begin
+  Objecter.MouseMove;
+  Imager.MouseMove;
+end;
+
+procedure TGraphicItemWorkspace.OnWorkspaceMouseUp(ASender: TObject);
+begin
+  Objecter.MouseUp;
+  Imager.MouseUp;
+end;
+
+procedure TGraphicItemWorkspace.RemoveElement(const AElement: IItemView);
 var
   vItem: TItemView;
 begin
@@ -161,23 +178,23 @@ begin
   vItem.Image.Free;
 end;
 
-procedure TWorkSpaceView.SelectElement(const AElement: IItemView);
+procedure TGraphicItemWorkspace.SelectElement(const AElement: IItemView);
 begin
   FSelected.Bitmap.Assign(FElements[AElement].Image.Bitmap);
   FEffect.Parent := FElements[AElement].Image;
 end;
 
-procedure TWorkSpaceView.SetBackground(const AImg: TImage);
+procedure TGraphicItemWorkspace.SetBackground(const AImg: TImage);
 begin
 
 end;
 
-procedure TWorkSpaceView.SetImager(const Value: TImagerPresenter);
+procedure TGraphicItemWorkspace.SetImager(const Value: TImagerPresenter);
 begin
   FImager := Value;
 end;
 
-procedure TWorkSpaceView.SetObjecter(const Value: TObjecterPresenter);
+procedure TGraphicItemWorkspace.SetObjecter(const Value: TObjecterPresenter);
 begin
   FObjecter := Value;
 end;
