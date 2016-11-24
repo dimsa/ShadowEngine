@@ -7,7 +7,7 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, System.ImageList,
   FMX.ImgList, FMX.Layouts, uSSBTypes, FMX.Effects,
-  uMainPresenter, uIMainView, uWorkSpaceView, uPictureFrames, uObjectFrame,
+  uMainPresenter, uIMainView, uGraphicItemWorkspaceView, uPictureFrames, uObjectFrame,
   uShapeFrame, uStatusSelectorFrame, uMainPanelFrame;
 
 type

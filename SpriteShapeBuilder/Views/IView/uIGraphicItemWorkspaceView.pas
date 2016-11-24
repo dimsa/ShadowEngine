@@ -1,4 +1,4 @@
-unit uIWorkSpaceView;
+unit uIGraphicItemWorkspaceView;
 
 interface
 

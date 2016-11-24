@@ -309,9 +309,9 @@
         <DCCReference Include="Utils\uStreamUtil.pas"/>
         <DCCReference Include="Model\uMainModel.pas"/>
         <DCCReference Include="Views\IView\uIItemView.pas"/>
-        <DCCReference Include="Views\IView\uIWorkSpaceView.pas"/>
+        <DCCReference Include="Views\IView\uIGraphicItemWorkspaceView.pas"/>
         <DCCReference Include="Views\View\uItemView.pas"/>
-        <DCCReference Include="Views\View\uWorkSpaceView.pas"/>
+        <DCCReference Include="Views\View\uGraphicItemWorkspaceView.pas"/>
         <DCCReference Include="Views\IView\uITableView.pas"/>
         <DCCReference Include="Views\View\uNamedTableView.pas"/>
         <DCCReference Include="uOptionsForm.pas">

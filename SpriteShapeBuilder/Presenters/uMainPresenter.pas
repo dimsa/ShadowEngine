@@ -6,8 +6,8 @@ uses
   System.Generics.Collections, FMX.Objects, FMX.StdCtrls, System.Classes, FMX.Forms,
   FMX.Dialogs, System.SysUtils, System.UITypes, FMX.Types, System.Types, FMX.Graphics,
   System.JSON, FMX.Controls, FMX.Layouts,
-  uNamedList, uEasyDevice, uClasses, uStreamUtil, uMainModel, uIMainView, uIWorkSpaceView,
-  uSSBModels, uWorkSpaceView, uSSBTypes, uImagerPresenter, uObjecterPresenter;
+  uNamedList, uEasyDevice, uClasses, uStreamUtil, uMainModel, uIMainView, uIGraphicItemWorkspaceView,
+  uSSBModels, uGraphicItemWorkspaceView, uSSBTypes, uImagerPresenter, uObjecterPresenter;
 
 type
   TMainPresenter = class
@@ -43,9 +43,6 @@ type
 
 
 implementation
-
-uses
-  SSBMainForm;
 
 { TSpriteShapeBuilder }
 
@@ -213,7 +210,7 @@ begin
   end;
 end;
 
-procedure TMainPresenter.SaveProject;//(const AFileName: string);
+procedure TMainPresenter.SaveProject;
 var
   vStream: TStreamUtil;
   i: Integer;

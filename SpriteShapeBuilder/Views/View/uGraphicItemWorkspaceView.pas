@@ -1,4 +1,4 @@
-unit uWorkSpaceView;
+unit uGraphicItemWorkspaceView;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   System.Generics.Collections, System.SysUtils, System.Types, FMX.Graphics,
   FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms, FMX.Dialogs,
   FMX.Types, System.Classes, System.UITypes, uEasyDevice, uNamedOptionsForm,
-  uSSBTypes, uIWorkSpaceView, uIItemView, uItemView, uMVPFrameWork, FMX.Effects,
+  uSSBTypes, uIGraphicItemWorkspaceView, uIItemView, uItemView, uMVPFrameWork, FMX.Effects,
   uImagerPresenter, uObjecterPresenter, uITableView, uNamedTableView, uMainPanelFrame;
 
 type

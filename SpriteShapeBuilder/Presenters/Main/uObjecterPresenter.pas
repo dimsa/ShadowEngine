@@ -4,7 +4,7 @@ interface
 
 uses
   System.Generics.Collections, FMX.Objects, System.Types, uClasses,
-  uIWorkSpaceView, uMVPFrameWork, uSSBModels, uMainModel, uSSBTypes,
+  uIGraphicItemWorkspaceView, uMVPFrameWork, uSSBModels, uMainModel, uSSBTypes,
   uIItemView, uItemObjecterPresenter,
   uBasePresenterIncapsulator, uITableView, uItemBasePresenter;
 
