@@ -41,7 +41,10 @@ uses
   uMainPanelFrame in 'Frames\uMainPanelFrame.pas' {MainPanelFrame: TFrame},
   uStatusSelectorFrame in 'Frames\uStatusSelectorFrame.pas' {StatusSelectorFrame: TFrame},
   uRenditionConstructorFrame in 'Frames\uRenditionConstructorFrame.pas' {RenditionConstructorFrame: TFrame},
-  uItemListFrame in 'Frames\uItemListFrame.pas' {ItemListFrame: TFrame};
+  uItemListFrame in 'Frames\uItemListFrame.pas' {ItemListFrame: TFrame},
+  uIObjectListView in 'Views\IView\uIObjectListView.pas',
+  uIObjectListItemView in 'Views\IView\uIObjectListItemView.pas',
+  uObjectListView in 'Views\View\uObjectListView.pas';
 
 {$R *.res}
 

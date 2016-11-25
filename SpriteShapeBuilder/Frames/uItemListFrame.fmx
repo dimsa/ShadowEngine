@@ -2,17 +2,6 @@ object ItemListFrame: TItemListFrame
   Size.Width = 320.000000000000000000
   Size.Height = 418.000000000000000000
   Size.PlatformDefault = False
-  object ObjectList: TListView
-    ItemAppearanceClassName = 'TListItemAppearance'
-    ItemEditAppearanceClassName = 'TListItemShowCheckAppearance'
-    HeaderAppearanceClassName = 'TListHeaderObjects'
-    FooterAppearanceClassName = 'TListHeaderObjects'
-    Align = Client
-    Size.Width = 320.000000000000000000
-    Size.Height = 327.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 0
-  end
   object SearchRect: TRectangle
     Align = Top
     Size.Width = 320.000000000000000000
@@ -61,6 +50,7 @@ object ItemListFrame: TItemListFrame
       Size.Height = 50.000000000000000000
       Size.PlatformDefault = False
       Text = 'Add Item'
+      OnClick = AddItemBtnClick
     end
     object DelItemBtn: TSpeedButton
       Align = Left
@@ -70,5 +60,71 @@ object ItemListFrame: TItemListFrame
       Size.PlatformDefault = False
       Text = 'Delete Item'
     end
+  end
+  object ListView: TListView
+    ItemAppearanceClassName = 'TImageListItemAppearance'
+    ItemEditAppearanceClassName = 'TImageListItemDeleteAppearance'
+    HeaderAppearanceClassName = 'TListHeaderObjects'
+    FooterAppearanceClassName = 'TListHeaderObjects'
+    Align = Client
+    Size.Width = 320.000000000000000000
+    Size.Height = 327.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+  end
+  object BindingsList: TBindingsList
+    Methods = <>
+    OutputConverters = <>
+    Left = 180
+    Top = 173
+    object LinkFillControlToField1: TLinkFillControlToField
+      Category = 'Quick Bindings'
+      Track = True
+      FillDataSource = PrototypeBindSource
+      FillDisplayFieldName = 'BitmapName'
+      AutoFill = True
+      FillExpressions = <
+        item
+          SourceMemberName = 'Bitmap'
+          ControlMemberName = 'Bitmap'
+        end>
+      FillHeaderExpressions = <>
+      FillBreakGroups = <>
+    end
+    object LinkFillControlToField2: TLinkFillControlToField
+      Category = 'Quick Bindings'
+      Control = ListView
+      Track = True
+      FillDataSource = PrototypeBindSource
+      FillDisplayFieldName = 'BitmapName'
+      AutoFill = True
+      FillExpressions = <
+        item
+          SourceMemberName = 'Bitmap'
+          ControlMemberName = 'Bitmap'
+        end>
+      FillHeaderExpressions = <>
+      FillBreakGroups = <>
+    end
+  end
+  object PrototypeBindSource: TPrototypeBindSource
+    AutoActivate = True
+    AutoPost = False
+    RecordCount = 10
+    FieldDefs = <
+      item
+        Name = 'Bitmap'
+        FieldType = ftBitmap
+        Generator = 'Bitmaps'
+        ReadOnly = False
+      end
+      item
+        Name = 'BitmapName'
+        Generator = 'BitmapNames'
+        ReadOnly = False
+      end>
+    ScopeMappings = <>
+    Left = 176
+    Top = 273
   end
 end
