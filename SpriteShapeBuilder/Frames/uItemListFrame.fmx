@@ -1,0 +1,74 @@
+object ItemListFrame: TItemListFrame
+  Size.Width = 320.000000000000000000
+  Size.Height = 418.000000000000000000
+  Size.PlatformDefault = False
+  object ObjectList: TListView
+    ItemAppearanceClassName = 'TListItemAppearance'
+    ItemEditAppearanceClassName = 'TListItemShowCheckAppearance'
+    HeaderAppearanceClassName = 'TListHeaderObjects'
+    FooterAppearanceClassName = 'TListHeaderObjects'
+    Align = Client
+    Size.Width = 320.000000000000000000
+    Size.Height = 327.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+  end
+  object SearchRect: TRectangle
+    Align = Top
+    Size.Width = 320.000000000000000000
+    Size.Height = 41.000000000000000000
+    Size.PlatformDefault = False
+    object SearchEdit: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      Align = Left
+      TabOrder = 0
+      TextSettings.Font.Size = 14.000000000000000000
+      Position.X = 5.000000000000000000
+      Position.Y = 5.000000000000000000
+      Margins.Left = 5.000000000000000000
+      Margins.Top = 5.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Size.Width = 148.000000000000000000
+      Size.Height = 31.000000000000000000
+      Size.PlatformDefault = False
+      StyledSettings = [Family, Style, FontColor]
+    end
+    object SearchBtn: TSpeedButton
+      Align = Left
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      StyledSettings = [Family, Style, FontColor]
+      Margins.Left = 5.000000000000000000
+      Margins.Top = 5.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 158.000000000000000000
+      Position.Y = 5.000000000000000000
+      Size.Width = 136.000000000000000000
+      Size.Height = 31.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Search'
+      TextSettings.Font.Size = 14.000000000000000000
+    end
+  end
+  object ListEditorRect: TRectangle
+    Align = Bottom
+    Position.Y = 368.000000000000000000
+    Size.Width = 320.000000000000000000
+    Size.Height = 50.000000000000000000
+    Size.PlatformDefault = False
+    object AddItemBtn: TSpeedButton
+      Align = Left
+      Size.Width = 80.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Add Item'
+    end
+    object DelItemBtn: TSpeedButton
+      Align = Left
+      Position.X = 80.000000000000000000
+      Size.Width = 80.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Delete Item'
+    end
+  end
+end

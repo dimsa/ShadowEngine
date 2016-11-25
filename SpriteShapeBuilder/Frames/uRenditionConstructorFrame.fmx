@@ -1,0 +1,57 @@
+object RenditionConstructorFrame: TRenditionConstructorFrame
+  Size.Width = 844.000000000000000000
+  Size.Height = 677.000000000000000000
+  Size.PlatformDefault = False
+  object ToolPanel: TPanel
+    Align = Left
+    Size.Width = 217.000000000000000000
+    Size.Height = 677.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object ObjectPropertiesRect: TRectangle
+      Align = Top
+      Size.Width = 217.000000000000000000
+      Size.Height = 182.000000000000000000
+      Size.PlatformDefault = False
+      object ObjectPropertyHeader: TLabel
+        Align = Top
+        Size.Width = 217.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'ObjectPropertyHeader'
+      end
+    end
+    inline ItemListFrame: TItemListFrame
+      Align = Top
+      Position.Y = 182.000000000000000000
+      Size.Width = 217.000000000000000000
+      Size.Height = 418.000000000000000000
+      Size.PlatformDefault = False
+      inherited ObjectList: TListView
+        Size.Width = 217.000000000000000000
+      end
+      inherited SearchRect: TRectangle
+        Size.Width = 217.000000000000000000
+        inherited SearchEdit: TEdit
+          Size.Width = 132.000000000000000000
+        end
+        inherited SearchBtn: TSpeedButton
+          Position.X = 142.000000000000000000
+          Size.Width = 86.000000000000000000
+        end
+      end
+      inherited ListEditorRect: TRectangle
+        Size.Width = 217.000000000000000000
+      end
+    end
+  end
+  object RenditionImg: TImage
+    MultiResBitmap = <
+      item
+      end>
+    Align = Client
+    Size.Width = 627.000000000000000000
+    Size.Height = 677.000000000000000000
+    Size.PlatformDefault = False
+  end
+end

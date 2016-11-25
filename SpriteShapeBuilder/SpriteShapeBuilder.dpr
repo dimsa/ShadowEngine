@@ -39,7 +39,9 @@ uses
   uObjectFrame in 'Frames\uObjectFrame.pas' {ObjectFrame: TFrame},
   uPictureFrames in 'Frames\uPictureFrames.pas' {PictureFrame: TFrame},
   uMainPanelFrame in 'Frames\uMainPanelFrame.pas' {MainPanelFrame: TFrame},
-  uStatusSelectorFrame in 'Frames\uStatusSelectorFrame.pas' {StatusSelectorFrame: TFrame};
+  uStatusSelectorFrame in 'Frames\uStatusSelectorFrame.pas' {StatusSelectorFrame: TFrame},
+  uRenditionConstructorFrame in 'Frames\uRenditionConstructorFrame.pas' {RenditionConstructorFrame: TFrame},
+  uItemListFrame in 'Frames\uItemListFrame.pas' {ItemListFrame: TFrame};
 
 {$R *.res}
 
