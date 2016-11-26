@@ -11,7 +11,7 @@ type
     function GetSelectedItem: IObjectListItemView;
     function RemSelectedItem: IObjectListItemView;
     function AddItem: IObjectListItemView;
-    function Items: IEnumerable<IObjectListItemView>;
+    function Items: TList<IObjectListItemView>;
   end;
 
 implementation

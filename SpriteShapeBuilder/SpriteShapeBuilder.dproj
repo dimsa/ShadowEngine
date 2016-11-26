@@ -359,6 +359,7 @@
         <DCCReference Include="Views\IView\uIObjectListView.pas"/>
         <DCCReference Include="Views\IView\uIObjectListItemView.pas"/>
         <DCCReference Include="Views\View\uObjectListView.pas"/>
+        <DCCReference Include="Views\View\uObjectListItemView.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

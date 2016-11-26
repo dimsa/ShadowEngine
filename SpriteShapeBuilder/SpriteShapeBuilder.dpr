@@ -44,7 +44,8 @@ uses
   uItemListFrame in 'Frames\uItemListFrame.pas' {ItemListFrame: TFrame},
   uIObjectListView in 'Views\IView\uIObjectListView.pas',
   uIObjectListItemView in 'Views\IView\uIObjectListItemView.pas',
-  uObjectListView in 'Views\View\uObjectListView.pas';
+  uObjectListView in 'Views\View\uObjectListView.pas',
+  uObjectListItemView in 'Views\View\uObjectListItemView.pas';
 
 {$R *.res}
 
