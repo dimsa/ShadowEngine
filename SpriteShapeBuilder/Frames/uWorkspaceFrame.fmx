@@ -1,0 +1,33 @@
+object WorkspaceFrame: TWorkspaceFrame
+  Size.Width = 1026.000000000000000000
+  Size.Height = 626.000000000000000000
+  Size.PlatformDefault = False
+  inline GraphicItemWorkspaceFrame: TGraphicItemWorkspaceFrame
+    Align = Client
+    Size.Width = 1026.000000000000000000
+    Size.Height = 626.000000000000000000
+    Size.PlatformDefault = False
+    inherited Panel: TPanel
+      Size.Width = 1026.000000000000000000
+      Size.Height = 626.000000000000000000
+      inherited MainImg: TImage
+        Size.Width = 1026.000000000000000000
+        Size.Height = 626.000000000000000000
+      end
+    end
+  end
+  inline RenditionConstructorFrame: TRenditionConstructorFrame
+    Position.X = 300.000000000000000000
+    Size.Width = 300.000000000000000000
+    Size.Height = 300.000000000000000000
+    Size.PlatformDefault = False
+    Visible = False
+    inherited ToolPanel: TPanel
+      Size.Height = 300.000000000000000000
+    end
+    inherited RenditionImg: TImage
+      Size.Width = 83.000000000000000000
+      Size.Height = 300.000000000000000000
+    end
+  end
+end

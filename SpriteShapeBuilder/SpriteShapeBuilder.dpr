@@ -38,14 +38,15 @@ uses
   uShapeFrame in 'Frames\uShapeFrame.pas' {ShapeFrame: TFrame},
   uObjectFrame in 'Frames\uObjectFrame.pas' {ObjectFrame: TFrame},
   uPictureFrames in 'Frames\uPictureFrames.pas' {PictureFrame: TFrame},
-  uMainPanelFrame in 'Frames\uMainPanelFrame.pas' {MainPanelFrame: TFrame},
+  uGraphicItemWorkspaceFrame in 'Frames\uGraphicItemWorkspaceFrame.pas' {GraphicItemWorkspaceFrame: TFrame},
   uStatusSelectorFrame in 'Frames\uStatusSelectorFrame.pas' {StatusSelectorFrame: TFrame},
   uRenditionConstructorFrame in 'Frames\uRenditionConstructorFrame.pas' {RenditionConstructorFrame: TFrame},
   uItemListFrame in 'Frames\uItemListFrame.pas' {ItemListFrame: TFrame},
   uIObjectListView in 'Views\IView\uIObjectListView.pas',
   uIObjectListItemView in 'Views\IView\uIObjectListItemView.pas',
   uObjectListView in 'Views\View\uObjectListView.pas',
-  uObjectListItemView in 'Views\View\uObjectListItemView.pas';
+  uObjectListItemView in 'Views\View\uObjectListItemView.pas',
+  uWorkspaceFrame in 'Frames\uWorkspaceFrame.pas' {WorkspaceFrame: TFrame};
 
 {$R *.res}
 

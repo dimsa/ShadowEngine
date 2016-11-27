@@ -8,7 +8,7 @@ uses
   FMX.Controls.Presentation, FMX.Objects, System.ImageList,
   FMX.ImgList, FMX.Layouts, uSSBTypes, FMX.Effects,
   uMainPresenter, uIMainView, uGraphicItemWorkspaceView, uPictureFrames, uObjectFrame,
-  uShapeFrame, uStatusSelectorFrame, uMainPanelFrame;
+  uShapeFrame, uStatusSelectorFrame, uGraphicItemWorkspaceFrame, uWorkspaceFrame;
 
 type
 
@@ -27,7 +27,7 @@ type
     ObjectFrame: TObjectFrame;
     ShapeFrame: TShapeFrame;
     StatusSelectorFrame: TStatusSelectorFrame;
-    MainPanelFrame: TMainPanelFrame;
+    WorkspaceFrame: TWorkspaceFrame;
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
@@ -36,7 +36,7 @@ type
     FFrames: array[TSSBStatus] of TFrame;
     FStatus: TSSBStatus;
     FMainPresenter: TMainPresenter;
-    FWorkSpaceView: TGraphicItemWorkspace;
+    FGraphicItemWorkspaceView: TGraphicItemWorkspace;
     function FormTopLeft: TPointF;
     function LoadDialog(out AFileName: string): boolean;
     function GetStatus: TSSBStatus;
@@ -88,13 +88,13 @@ end;
 procedure TSSBForm.FormCreate(Sender: TObject);
 begin
   // MVP
-  FWorkSpaceView := TGraphicItemWorkspace.Create(MainPanelFrame,  Selected, OpenDialog, FormTopLeft);
+  FGraphicItemWorkspaceView := TGraphicItemWorkspace.Create(WorkspaceFrame.GraphicItemWorkspaceFrame, Selected, OpenDialog, FormTopLeft);
 
-  FMainPresenter := TMainPresenter.Create(Self, FWorkSpaceView);
+  FMainPresenter := TMainPresenter.Create(Self, FGraphicItemWorkspaceView);
   InitFrames;
 
-  FWorkSpaceView.Imager := FMainPresenter.Imager;
-  FWorkSpaceView.Objecter := FMainPresenter.Objecter;
+  FGraphicItemWorkspaceView.Imager := FMainPresenter.Imager;
+  FGraphicItemWorkspaceView.Objecter := FMainPresenter.Objecter;
 
   FMainPresenter.InitImager;
 end;

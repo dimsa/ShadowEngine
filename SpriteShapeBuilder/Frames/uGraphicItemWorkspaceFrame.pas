@@ -1,4 +1,4 @@
-unit uMainPanelFrame;
+unit uGraphicItemWorkspaceFrame;
 
 interface
 
@@ -9,7 +9,7 @@ uses
   FMX.Controls.Presentation;
 
 type
-  TMainPanelFrame = class(TFrame)
+  TGraphicItemWorkspaceFrame = class(TFrame)
     MainImg: TImage;
     Panel: TPanel;
     procedure MainImgMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
@@ -32,28 +32,28 @@ implementation
 
 {$R *.fmx}
 
-procedure TMainPanelFrame.MainImgMouseDown(Sender: TObject;
+procedure TGraphicItemWorkspaceFrame.MainImgMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
   if Assigned(FMouseDowned) then
     FMouseDowned(Self);
 end;
 
-procedure TMainPanelFrame.MainImgMouseMove(Sender: TObject; Shift: TShiftState;
+procedure TGraphicItemWorkspaceFrame.MainImgMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Single);
 begin
   if Assigned(FMouseMoved) then
     FMouseMoved(Self);
 end;
 
-procedure TMainPanelFrame.MainImgMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TGraphicItemWorkspaceFrame.MainImgMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
   if Assigned(FMouseUpped) then
     FMouseUpped(Self);
 end;
 
-procedure TMainPanelFrame.MainImgMouseWheel(Sender: TObject; Shift: TShiftState;
+procedure TGraphicItemWorkspaceFrame.MainImgMouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; var Handled: Boolean);
 begin
   if Panel.Scale.X + ((WheelDelta / 120) * 0.1) > 0.1 then

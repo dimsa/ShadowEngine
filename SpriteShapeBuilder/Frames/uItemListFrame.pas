@@ -19,9 +19,10 @@ type
     ListEditorRect: TRectangle;
     AddItemBtn: TSpeedButton;
     DelItemBtn: TSpeedButton;
-    BindingsList: TBindingsList;
     PrototypeBindSource: TPrototypeBindSource;
     ListView: TListView;
+    BindingsList1: TBindingsList;
+    LinkFillControlToField1: TLinkFillControlToField;
     procedure AddItemBtnClick(Sender: TObject);
   private
     { Private declarations }

@@ -1,37 +1,31 @@
-﻿[ListEditorRect]
-Coordinates=40,90,84,33
-
-[AddItemBtn]
-Coordinates=780,180,72,51
-
-[SearchBtn]
-Coordinates=800,30,65,51
+﻿[SearchEdit]
+Coordinates=273,10,77,58
 
 [DelItemBtn]
-Coordinates=920,170,68,51
+Coordinates=360,10,78,58
 
-[SearchEdit]
-Coordinates=810,100,68,51
+[SearchBtn]
+Coordinates=448,10,74,58
 
-[SearchRect]
-Coordinates=120,260,71,33
+[ListEditorRect]
+Coordinates=194,232,95,36
 
-[Module Settings]
-ModelLayerNames=
-
-[]
-Coordinates=680,60,89,177
-Visible=True
-LayerNames=
-ExplicitSubNodes=Active;AutoEdit;Name;Owner.Tag;Tag
-
-[BindingsList]
-Coordinates=0,0,76,33
+[AddItemBtn]
+Coordinates=10,232,82,58
 
 [PrototypeBindSource]
-Coordinates=340,190,120,87
-ExplicitSubNodes=
+Coordinates=127,10,136,102
 
 [ListView]
-Coordinates=143,72,89,177
+Coordinates=10,10,107,212
+Visible=True
+
+[SearchRect]
+Coordinates=102,232,82,36
+
+[]
+Coordinates=397,1,91,36
+
+[BindingsList1]
+Coordinates=136,131,91,36
 

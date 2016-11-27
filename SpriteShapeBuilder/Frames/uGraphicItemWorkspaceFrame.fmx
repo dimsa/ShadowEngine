@@ -1,4 +1,4 @@
-object MainPanelFrame: TMainPanelFrame
+object GraphicItemWorkspaceFrame: TGraphicItemWorkspaceFrame
   Size.Width = 648.000000000000000000
   Size.Height = 560.000000000000000000
   Size.PlatformDefault = False

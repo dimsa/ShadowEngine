@@ -336,8 +336,8 @@
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Frames\uMainPanelFrame.pas">
-            <Form>MainPanelFrame</Form>
+        <DCCReference Include="Frames\uGraphicItemWorkspaceFrame.pas">
+            <Form>GraphicItemWorkspaceFrame</Form>
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
@@ -360,6 +360,11 @@
         <DCCReference Include="Views\IView\uIObjectListItemView.pas"/>
         <DCCReference Include="Views\View\uObjectListView.pas"/>
         <DCCReference Include="Views\View\uObjectListItemView.pas"/>
+        <DCCReference Include="Frames\uWorkspaceFrame.pas">
+            <Form>WorkspaceFrame</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <None Include="Utils\DelphiCompatability.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

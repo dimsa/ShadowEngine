@@ -7,7 +7,7 @@ uses
   FMX.Controls, FMX.Layouts,  FMX.Objects, FMX.StdCtrls, FMX.Forms, FMX.Dialogs,
   FMX.Types, System.Classes, System.UITypes, uEasyDevice, uNamedOptionsForm,
   uSSBTypes, uIGraphicItemWorkspaceView, uIItemView, uItemView, uMVPFrameWork, FMX.Effects,
-  uImagerPresenter, uObjecterPresenter, uITableView, uNamedTableView, uMainPanelFrame;
+  uImagerPresenter, uObjecterPresenter, uITableView, uNamedTableView, uGraphicItemWorkspaceFrame;
 
 type
   TGraphicItemWorkspace = class(TInterfacedObject, IWorkSpaceView, IView)
@@ -16,7 +16,7 @@ type
     FOptionsForm: TNamedOptionsForm;
     FEffect: TGlowEffect;
     FParentTopLeft: TPointFunction;
-    FFrame: TMainPanelFrame;
+    FFrame: TGraphicItemWorkspaceFrame;
     FSelected: TImage;
     FOpenDialog: TOpenDialog;
     FObjecter: IInterface;
@@ -30,7 +30,7 @@ type
     procedure OnWorkspaceMouseUp(ASender: TObject);
     procedure OnWorkspaceMouseMove(ASender: TObject);
   public
-    constructor Create(AFrame: TMainPanelFrame;{APanel: TPanel; ABackground,} ASelected: TImage;
+    constructor Create(AFrame: TGraphicItemWorkspaceFrame;{APanel: TPanel; ABackground,} ASelected: TImage;
       AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
     destructor Destroy; override;
     procedure ClearAndFreeImg;
@@ -83,7 +83,7 @@ begin
 
 end;
 
-constructor TGraphicItemWorkspace.Create(AFrame: TMainPanelFrame; ASelected: TImage;
+constructor TGraphicItemWorkspace.Create(AFrame: TGraphicItemWorkspaceFrame; ASelected: TImage;
   AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
 begin
   FElements := TDictionary<IItemView, TItemView>.Create;

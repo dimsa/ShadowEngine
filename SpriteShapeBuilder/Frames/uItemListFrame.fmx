@@ -72,41 +72,6 @@ object ItemListFrame: TItemListFrame
     Size.PlatformDefault = False
     TabOrder = 2
   end
-  object BindingsList: TBindingsList
-    Methods = <>
-    OutputConverters = <>
-    Left = 180
-    Top = 173
-    object LinkFillControlToField1: TLinkFillControlToField
-      Category = 'Quick Bindings'
-      Track = True
-      FillDataSource = PrototypeBindSource
-      FillDisplayFieldName = 'BitmapName'
-      AutoFill = True
-      FillExpressions = <
-        item
-          SourceMemberName = 'Bitmap'
-          ControlMemberName = 'Bitmap'
-        end>
-      FillHeaderExpressions = <>
-      FillBreakGroups = <>
-    end
-    object LinkFillControlToField2: TLinkFillControlToField
-      Category = 'Quick Bindings'
-      Control = ListView
-      Track = True
-      FillDataSource = PrototypeBindSource
-      FillDisplayFieldName = 'BitmapName'
-      AutoFill = True
-      FillExpressions = <
-        item
-          SourceMemberName = 'Bitmap'
-          ControlMemberName = 'Bitmap'
-        end>
-      FillHeaderExpressions = <>
-      FillBreakGroups = <>
-    end
-  end
   object PrototypeBindSource: TPrototypeBindSource
     AutoActivate = True
     AutoPost = False
@@ -126,5 +91,26 @@ object ItemListFrame: TItemListFrame
     ScopeMappings = <>
     Left = 176
     Top = 273
+  end
+  object BindingsList1: TBindingsList
+    Methods = <>
+    OutputConverters = <>
+    Left = 20
+    Top = 5
+    object LinkFillControlToField1: TLinkFillControlToField
+      Category = 'Quick Bindings'
+      Control = ListView
+      Track = True
+      FillDataSource = PrototypeBindSource
+      FillDisplayFieldName = 'BitmapName'
+      AutoFill = True
+      FillExpressions = <
+        item
+          SourceMemberName = 'Bitmap'
+          ControlMemberName = 'Bitmap'
+        end>
+      FillHeaderExpressions = <>
+      FillBreakGroups = <>
+    end
   end
 end
