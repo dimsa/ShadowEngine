@@ -37,7 +37,6 @@ type
     property Background: TBitmap write SetBackground;
     procedure AddTemplateFromJson(const AJson: TJSONObject);
     procedure AddResourceFromJson(const ABitmap: TBitmap; const AJson: TJSONObject);
-    procedure LoadTemplateFromSeJson(const AFilename: string);
     constructor Create(const ACritical: TCriticalSection; const AImage: TAnonImage);
     destructor Destroy; override;
     procedure Execute; // Render On Tick
@@ -135,7 +134,8 @@ begin
     end;
 
   if AJson.TryGetValue('Name', vVal) then
-    FTemplates.Add(vVal.Value, vTemplate);
+    if not FTemplates.ContainsKey(vVal.Value) then
+      FTemplates.Add(vVal.Value, vTemplate);
 end;
 
 procedure TSoRenderer.BringToBack(ASender: TObject);
@@ -266,11 +266,6 @@ begin
         {$ENDIF}
       end;
       FCritical.Leave;
-end;
-
-procedure TSoRenderer.LoadTemplateFromSeJson(const AFilename: string);
-begin
-
 end;
 
 {procedure TSoRenderer.OnItemDestroy(ASender: TObject);

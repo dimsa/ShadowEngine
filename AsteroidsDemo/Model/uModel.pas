@@ -149,7 +149,8 @@ begin
       ApplyForce((Random - 0.5) * 100000, (Random - 0.5) * 100000);
       AddOnBeginContactHandler(TLogicAssets.OnCollideAsteroid);
     end;
-    AddSound(ResourcePath('AsteroidCollide.wav'));
+//    AddSound(ResourcePath('AsteroidCollide.wav'));
+    AddSoundFromTemplate('AsteroidCollide');
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));
     AddNewLogic(TLogicAssets.MovingThroughSides);
@@ -194,11 +195,11 @@ var
   vTemplateName: string;
 begin
   inherited;
- { if Random(2) = 0 then
+  if Random(2) = 0 then
     vTemplateName := 'Star'
   else
-    vTemplateName := 'LittleAsteroid' + IntToStr(Random(3));  }
-    vTemplateName := 'FireLeft';
+    vTemplateName := 'LittleAsteroid' + IntToStr(Random(3) + 1);
+   // vTemplateName := 'FireLeft';
 
  with FManager.New do begin
     FContainer := ActiveContainer;
@@ -211,7 +212,7 @@ begin
   FContainer.X := Random(Round(FManager.ObjectByName('World').Width));
   FContainer.Y := Random(Round(FManager.ObjectByName('World').Height));
   FContainer.Rotate := Random(360);
-  FContainer.Scale := 0.5;
+  FContainer.Scale := 1;
   FAcceleration.Da := (Random * 4 - 2)
 end;
 

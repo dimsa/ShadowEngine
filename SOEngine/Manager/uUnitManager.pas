@@ -34,6 +34,7 @@ type
     function AddKeyHandler(const AObject: TSoKeyHandler): TSoKeyHandler; overload;
 
     function AddSound(const APath: string): TSoSound; overload;
+    function AddSoundFromTemplate(const ATemplateName: string): TSoSound; overload;
     function AddSound(const AObject: TSoSound): TSoSound; overload;
 
     function AddFormatter(const ATemplateName: string): TSoFormatter; overload;
@@ -192,6 +193,11 @@ end;
 function TUnitManager.AddSound(const AObject: TSoSound): TSoSound;
 begin
   FModel.SoundKeeper.Add(AObject);
+end;
+
+function TUnitManager.AddSoundFromTemplate(const ATemplateName: string): TSoSound;
+begin
+  Result := FModel.SoundKeeper.AddFromTemplate(FActiveContainer, ATemplateName);
 end;
 
 function TUnitManager.AddRendition(const ATemplateName: string): TEngine2DRendition;

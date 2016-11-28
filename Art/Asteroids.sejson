@@ -29,17 +29,17 @@
 			"Position": "240,145;380,260"
 		}
 	}, {
-		"Name": "Littleasteroid1",
+		"Name": "LittleAsteroid1",
 		"Body": {
 			"Position": "380,145;415,180"
 		}
 	}, {
-		"Name": "Littleasteroid2",
+		"Name": "LittleAsteroid2",
 		"Body": {
 			"Position": "415,145;450,180"
 		}
 	}, {
-		"Name": "Littleasteroid3",
+		"Name": "LittleAsteroid3",
 		"Body": {
 			"Position": "380,180;415,215"
 		}
@@ -152,8 +152,7 @@
 			"Radius": "113",
 			"Density": "1",
 			"Friction": "0"
-		},
-{
+		}, {
 			"Type": "Poly",
 			"Points": ["2,-163", "-31,-68", "27,-71"],
 			"Density": "1",
@@ -168,8 +167,7 @@
 			"Points": ["91,-103", "60,-62", "102,-21"],
 			"Density": "1",
 			"Friction": "0"
-		}
-		]
+		}]
 	}, {
 		"Name": "Asteroid",
 		"Body": [{
@@ -196,8 +194,7 @@
 			"Justify": "Center",
 			"Resources": ["Asteroid"]
 		}
-	},
-{
+	}, {
 		"Name": "FireRight",
 		"Type": "Sprite",
 		"Body": {
@@ -233,5 +230,38 @@
 		"Body": {
 			"Resources": ["Collision1", "Collision2", "Collision3", "Collision4"]
 		}
-	}]
+	}, {
+		"Name": "LittleAsteroid1",
+		"Type": "Sprite",
+		"Body": {
+			"Resources": ["LittleAsteroid1"]
+		}
+	}, {
+		"Name": "LittleAsteroid2",
+		"Type": "Sprite",
+		"Body": {
+			"Resources": ["LittleAsteroid2"]
+		}
+	}, {
+		"Name": "LittleAsteroid3",
+		"Type": "Sprite",
+		"Body": {
+			"Resources": ["LittleAsteroid3"]
+		}
+	}, {
+		"Name": "Star",
+		"Type": "Sprite",
+		"Body": {
+			"Resources": ["Star"]
+		}
+	}
+	],
+	"Sounds": [{
+			"Name": "AsteroidCollide",
+			"Path": "AsteroidCollide.wav"
+		}, {
+			"Name": "ShipCollide",
+			"Path": "ShipCollide.wav"
+		}
+	]
 }

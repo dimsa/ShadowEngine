@@ -4,7 +4,7 @@ interface
 
 uses
   System.JSON, System.SysUtils, System.StrUtils,
-  uSoTypes, uSoModel, uEngine2DClasses;
+  uSoTypes, uSoModel, uEngine2DClasses, uSoObjectDefaultProperties, uJsonUtils;
 
 type
   TSoModelFriend = class(TSoModel);
@@ -12,9 +12,12 @@ type
   TTemplateManager = class
   private
     FModel: TSoModelFriend;
+    FBasePath: string;
     procedure LoadResources(const AFileName: string; const AJson: TJSONObject);
     procedure LoadColliders(const AJson: TJSONObject);
     procedure LoadRenditions(const AJson: TJSONObject);
+    procedure LoadSound(const AJson: TJSONObject);
+    procedure GetBasePath(const AFileName: string);
   public
     procedure LoadSeJson(const AFileName: string);
     procedure LoadSeCss(const AFileName: string);
@@ -28,6 +31,19 @@ implementation
 constructor TTemplateManager.Create(const AModel: TSoModel);
 begin
   FModel := TSoModelFriend(AModel);
+end;
+
+procedure TTemplateManager.GetBasePath(const AFileName: string);
+var
+  vS: string;
+  vNum: Integer;
+begin
+  // There is no good function that returns dir of AFileName or I can nor find it. So it's Analog.
+  vS := AFileName;
+  vNum := PosEx('/', ReverseString(AFileName));
+  Delete(vS, Length(vS) - vNum + 1, vNum);
+
+  FBasePath := vS + '/';
 end;
 
 procedure TTemplateManager.LoadColliders(const AJson: TJSONObject);
@@ -59,16 +75,10 @@ var
   vArr: TJSONArray;
   i: Integer;
   vImg: TAnonImage;
-  vNum: Int;
-  vS: string;
 begin
   vImg := TAnonImage.Create(nil);
 
-  // There is no good function that returns dir of AFileName or I can nor find it. So it's Analog.
-  vS := AFileName;
-  vNum := PosEx('/', ReverseString(AFileName));
-  Delete(vS, Length(vS) - vNum + 1, vNum );
-  vImg.Bitmap.LoadFromFile(vS + '/' + AJSON.GetValue('ImageFile').Value);
+  vImg.Bitmap.LoadFromFile(FBasePath + '/' + AJSON.GetValue('ImageFile').Value);
 
   vArr := AJSON.GetValue('Resources') as TJSONArray;
 
@@ -96,9 +106,26 @@ begin
   vJSON := TJSONObject.ParseJSONValue(vFile.Text) as TJsonObject;
   vFile.Free;
 
+  GetBasePath(AFileName);
+
   LoadResources(AFileName, vJSON);
   LoadColliders(vJSON);
   LoadRenditions(vJSON);
+  LoadSound(vJSON);
+end;
+
+procedure TTemplateManager.LoadSound(const AJson: TJSONObject);
+var
+  vArr: TJSONArray;
+  i: Integer;
+  vName, vPath: TJSONValue;
+begin
+  vArr := AJSON.GetValue('Sounds') as TJSONArray;
+  for i := 0 to vArr.Count - 1 do
+  begin
+    if (vArr.Items[i].TryGetValue('Name', vName)) and (vArr.Items[i].TryGetValue('Path', vPath)) then
+      FModel.SoundKeeper.AddTemplate(JsonToString(vName), FBasePath + JsonToString(vPath));
+  end;
 end;
 
 end.
