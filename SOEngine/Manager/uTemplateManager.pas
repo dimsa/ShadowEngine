@@ -58,8 +58,11 @@ end;
 
 procedure TTemplateManager.LoadRenditions(const AJson: TJSONObject);
 var
-  vArr: TJSONArray;
+  vArr, vBodyArr: TJSONArray;
   i: Integer;
+  vJson, vBody: TJSONObject;
+  vJsonVal: TJSONValue;
+  vName: string;
 begin
   vArr := AJSON.GetValue('Templates') as TJSONArray;
   for i := 0 to vArr.Count - 1 do
@@ -67,7 +70,21 @@ begin
 
   vArr := AJSON.GetValue('Resources') as TJSONArray;
   for i := 0 to vArr.Count - 1 do
-    FModel.Renderer.AddTemplateFromJson(TJSONObject(vArr.Items[i]));
+    if vArr.Items[i].TryGetValue('Name', vJsonVal) then
+    begin
+      vName := JsonToString(vJsonVal);
+      vJson := TJSONObject.Create;
+      vJson.AddPair('Type', 'Sprite');
+      vJson.AddPair('Name', vName);
+
+      vBody := TJSONObject.Create;
+      vBodyArr := TJSONArray.Create;
+      vBodyArr.Add(vName);
+      vBody.AddPair('Resources', vBodyArr);
+      vJson.AddPair('Body', vBody);
+
+      FModel.Renderer.AddTemplateFromJson(vJson);
+    end;
 end;
 
 procedure TTemplateManager.LoadResources(const AFileName: string; const AJson: TJSONObject);
