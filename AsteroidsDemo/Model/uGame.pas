@@ -46,7 +46,6 @@ begin
 
     StartGame;
   end;
-
 end;
 
 destructor TGame.Destroy;
@@ -62,18 +61,8 @@ begin
 end;
 
 procedure TGame.OnResize(ASender: TObject);
-var
-  i: Integer;
-  vPoint: TPointF;
 begin
-  vPoint := TPointF.Create(TAnonImage(ASender).Width, TAnonImage(ASender).Height);
-{  FShip.SetWorldSize(vPoint);
 
-  for i := 0 to FAsteroids.Count - 1 do
-    FAsteroids[i].SetWorldSize(vPoint);
-
-  for i := 0 to FDecorations.Count - 1 do
-    FDecorations[i].SetWorldSize(vPoint);  }
 end;
 
 procedure TGame.StartGame;
@@ -82,10 +71,10 @@ var
 begin
   FShip := FUnitCreator.NewShip;
 
-  for i := 0 to 9 do
+  for i := 0 to 4 do
     FAsteroids.Add(FUnitCreator.NewSpaceDebris(Random(3)));
 
- for i:= 0 to 29 do
+  for i:= 0 to 29 do
     FDecorations.Add(FUnitCreator.NewSpaceDust);
 end;
 

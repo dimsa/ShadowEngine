@@ -22,6 +22,8 @@ type
     class procedure MovingToDestination(ASoObject: TSoObject);
     class procedure FollowTheShip(ASoObject: TSoObject);
     class procedure OnCollideAsteroid(ASender: TObject; AEvent: TObjectCollidedEventArgs);
+    class procedure OnCollideShip(ASender: TObject; AEvent: TObjectCollidedEventArgs);
+    class procedure OnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   end;
 
 
@@ -139,6 +141,18 @@ class procedure TLogicAssets.OnCollideAsteroid(ASender: TObject;
   AEvent: TObjectCollidedEventArgs);
 begin
   TSoColliderObj(ASender).Subject[Sound].Val<TSoSound>.Play;
+end;
+
+class procedure TLogicAssets.OnCollideShip(ASender: TObject;
+  AEvent: TObjectCollidedEventArgs);
+begin
+  TSoColliderObj(ASender).Subject[Sound].Val<TSoSound>.Play;
+end;
+
+class procedure TLogicAssets.OnMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+begin
+
 end;
 
 end.

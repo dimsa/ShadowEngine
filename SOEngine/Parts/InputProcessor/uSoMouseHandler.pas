@@ -12,6 +12,7 @@ type
     FOnMouseDown: TMouseEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseUp: TMouseEvent;
+    FOnMouseMove: TMouseMoveEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnClick: TNotifyEvent;
     FCheckMouseHandleBehavior: TCheckMouseHandleBehavior;
@@ -23,15 +24,18 @@ type
     procedure SetOnMouseUp(const Value: TMouseEvent);
     procedure EmptyNotifyEvent(ASender: TObject);
     procedure EmptyMouseEvent(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure SetOnMouseMove(const Value: TMouseMoveEvent);
   protected
     procedure MouseDown(Args: TMouseEventArgs);
     procedure MouseUp(Args: TMouseEventArgs);
     procedure MouseEnter;
     procedure MouseLeave;
+    procedure MouseMove(Args: TMouseMoveEventArgs);
   public
     property Enabled: Boolean read FEnabled write SetEnabled;
     property OnMouseDown: TMouseEvent read FOnMouseDown write SetOnMouseDown;
     property OnMouseUp: TMouseEvent read FOnMouseUp write SetOnMouseUp;
+    property OnMouseMove: TMouseMoveEvent read FOnMouseMove write SetOnMouseMove;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write SetOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write SetOnMouseLeave;
     property OnClick: TNotifyEvent read FOnClick write SetOnClick;
@@ -78,20 +82,26 @@ end;
 
 procedure TSoMouseHandler.MouseDown(Args: TMouseEventArgs);
 begin
-//  if Assigned(FOnMouseDown) then
+  if Assigned(FOnMouseDown) then
     FOnMouseDown(Self, Args.Button, Args.Shift, Args.X, Args.Y);
 end;
 
 procedure TSoMouseHandler.MouseEnter;
 begin
-//  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Subject);
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
 end;
 
 procedure TSoMouseHandler.MouseLeave;
 begin
-//  if Assigned(FOnMouseEnter) then
-    FOnMouseLeave(Subject);
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
+procedure TSoMouseHandler.MouseMove(Args: TMouseMoveEventArgs);
+begin
+  if Assigned(FOnMouseMove) then
+    FOnMouseMove(Self, Args.Shift, Args.X, Args.Y);
 end;
 
 procedure TSoMouseHandler.MouseUp(Args: TMouseEventArgs);
@@ -123,6 +133,11 @@ end;
 procedure TSoMouseHandler.SetOnMouseLeave(const Value: TNotifyEvent);
 begin
   FOnMouseLeave := Value;
+end;
+
+procedure TSoMouseHandler.SetOnMouseMove(const Value: TMouseMoveEvent);
+begin
+  FOnMouseMove := Value;
 end;
 
 procedure TSoMouseHandler.SetOnMouseUp(const Value: TMouseEvent);

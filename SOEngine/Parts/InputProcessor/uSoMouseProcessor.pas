@@ -67,6 +67,11 @@ begin
   FContainers.Clear;
   FContainers.Free;
   FTemplates.Free;
+
+  FOldMouseOver.Free;
+  FMouseOver.Free;
+  FMouseDowned.Free;
+  FMouseUpped.Free;
   inherited;
 end;
 
@@ -76,8 +81,7 @@ var
 begin
   for i := 0 to FMouseOver.Count - 1 do
   begin
-  //  if TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).CanExecute(X, Y) then
-      TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseDown(Args);
+    TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseDown(Args);
   end;
   FMouseDowned := FMouseOver;
 end;
@@ -88,12 +92,15 @@ var
   vWas: Boolean;
   vItem: TSoObject;
 begin
-//  FMouseOver := FCollider.Contains(X, Y);
+  // Mouse moving at object
   FMouseOver.Clear;
   for i := 0 to FList.Count - 1 do
   begin
     if FList[i].CanExecute(Args.X - FList[i].Subject.X ,Args.Y - FList[i].Subject.Y) then
+    begin
+      TSoMouseHandlerFriend(FContainers[FList[i].Subject]).MouseMove(Args);
       FMouseOver.Add(FList[i].Subject)
+    end;
   end;
 
   for i := 0 to FMouseOver.Count - 1 do
@@ -109,12 +116,10 @@ begin
       end;
     end;
     if vWas then
-      TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseLeave;
+      TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseLeave
+    else
+      TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseEnter;
   end;
-
-  for j := 0 to FOldMouseOver.Count - 1 do
-    if FOldMouseOver[j] <> nil then
-      TSoMouseHandlerFriend(FContainers[FOldMouseOver[j]]).MouseEnter;
 
   FOldMouseOver.Clear;
   for i := 0 to FMouseOver.Count - 1 do

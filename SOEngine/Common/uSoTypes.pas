@@ -34,6 +34,7 @@ type
   TStringList = System.Classes.TStringList;
 
   TMouseEvent = FMX.Types.TMouseEvent;
+  TMouseMoveEvent = FMX.Types.TMouseMoveEvent;
 
   TCriticalSection = System.SyncObjs.TCriticalSection;
   TAlphaColorRec = System.UITypes.TAlphaColorRec;
