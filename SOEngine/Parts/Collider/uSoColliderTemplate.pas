@@ -14,6 +14,7 @@ type
     FFriction: Single;
     FDensity: Single;
     FRestitution: Single;
+    FIsSensor: Boolean;
     FDefinition: TColliderDefinition;
   public
 //    property ShapeList: TList<TRawShape> read FShapeList;
@@ -56,9 +57,16 @@ begin
       FRestitution := JsonToSingle(vProp);
       vProp.Free;
     end;
+    if vVal.TryGetValue('IsSensor', vProp) then
+    begin
+      FIsSensor:= JsonToBool(vProp);
+      vProp.Free;
+    end else
+      FIsSensor := False;
+
   end;
 
-  FDefinition := TColliderDefinition.Create(FShapeList, FFriction, FDensity, FRestitution);
+  FDefinition := TColliderDefinition.Create(FShapeList, FFriction, FDensity, FRestitution, FIsSensor);
 end;
 
 destructor TSoColliderTemplate.Destroy;

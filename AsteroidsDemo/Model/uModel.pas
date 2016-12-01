@@ -12,6 +12,7 @@ type
     FContainer: TSoObject;
     FManager: TUnitManager;
     procedure Init; virtual; abstract;
+    procedure RandomizePosition(const ASubject: TSoObject);
   public
     constructor Create(const AManager: TUnitManager); virtual;
   end;
@@ -61,7 +62,6 @@ type
   private
     FLeftFire, FRightFire: TShipFire;
     FDest: TList<TPointF>;
-    procedure OnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   protected
     procedure Init; override;
   public
@@ -79,6 +79,13 @@ constructor TGameUnit.Create(const AManager: TUnitManager);
 begin
   FManager := AManager;
   Init;
+end;
+
+procedure TGameUnit.RandomizePosition(const ASubject: TSoObject);
+begin
+  ASubject.X := Random(Round(FManager.ObjectByName('World').Width));
+  ASubject.Y := Random(Round(FManager.ObjectByName('World').Height));
+  ASubject.Rotate := Random(360);
 end;
 
 { TMovingUnit }
@@ -120,7 +127,6 @@ begin
     AddProperty('World', FManager.ObjectByName('World'));
     AddSoundFromTemplate('ShipCollide');
     AddNewLogic(TLogicAssets.MovingToDestination, 'MovingThroughSides');
-    AddMouseHandler(ByStaticRect).OnMouseDown := OnMouseDown;
   end;
 
   FLeftFire := TLeftFire.Create(FManager, FContainer);
@@ -129,12 +135,6 @@ begin
   FAcceleration.Dx := 4;
   FAcceleration.Dy := 4;
   FAcceleration.Da := 4;
-end;
-
-procedure TShip.OnMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Single);
-begin
-//  ShowMessage('Click');
 end;
 
 { TBigAsteroid }
@@ -161,8 +161,7 @@ begin
   end;
 
   FAcceleration.Da := (Random * 4) - 2;
-  FContainer.X := Random(Round(FManager.ObjectByName('World').Width));
-  FContainer.Y := Random(Round(FManager.ObjectByName('World').Height));
+  RandomizePosition(FContainer);
 end;
 
 constructor TShipFire.Create(const AManager: TUnitManager; AShip: TSoObject);
@@ -212,9 +211,7 @@ begin
     AddNewLogic(TLogicAssets.MovingByAcceleration);
   end;
 
-  FContainer.X := Random(Round(FManager.ObjectByName('World').Width));
-  FContainer.Y := Random(Round(FManager.ObjectByName('World').Height));
-  FContainer.Rotate := Random(360);
+  RandomizePosition(FContainer);
   FContainer.Scale := 0.5 + Random - 0.5;
 
   FAcceleration.Dx := Random(10);

@@ -15,9 +15,12 @@ type
     FMapPainter: TMapPainter; // Some object to draw parallax or map or etc
     FUnitCreator: TUnitCreator;
     FManager: TSoManager;
+    FMouseDowned: Boolean;
     procedure StartGame;
     procedure OnResize(ASender: TObject);
     procedure OnMouseDown(Sender: TObject; AEventArgs: TMouseEventArgs);
+    procedure OnMouseUp(Sender: TObject; AEventArgs: TMouseEventArgs);
+    procedure OnMouseMove(Sender: TObject; AEventArgs: TMouseMoveEventArgs);
   public
     constructor Create(const AManager: TSoManager);
     destructor Destroy; override;
@@ -43,6 +46,8 @@ begin
 
     WorldManager.OnResize.Add(OnResize);
     WorldManager.OnMouseDown.Add(OnMouseDown);
+    WorldManager.OnMouseUp.Add(OnMouseUp);
+    WorldManager.OnMouseMove.Add(OnMouseMove);
 
     StartGame;
   end;
@@ -57,7 +62,19 @@ end;
 
 procedure TGame.OnMouseDown(Sender: TObject; AEventArgs: TMouseEventArgs);
 begin
+  FMouseDowned := True;
   FShip.AddDestination(TPointF.Create(AEventArgs.X, AEventArgs.Y));
+end;
+
+procedure TGame.OnMouseMove(Sender: TObject; AEventArgs: TMouseMoveEventArgs);
+begin
+  if FMouseDowned then
+    FShip.AddDestination(TPointF.Create(AEventArgs.X, AEventArgs.Y));
+end;
+
+procedure TGame.OnMouseUp(Sender: TObject; AEventArgs: TMouseEventArgs);
+begin
+  FMouseDowned := False;
 end;
 
 procedure TGame.OnResize(ASender: TObject);

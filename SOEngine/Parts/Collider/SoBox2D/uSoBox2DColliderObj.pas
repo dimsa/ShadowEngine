@@ -74,7 +74,8 @@ begin
     vFixture.shape := vShape;
     vFixture.density := AColliderDef.Density;
     vFixture.friction := AColliderDef.Friction;
-    vFixture.restitution := 1;//AColliderDef.Restitution;
+    vFixture.restitution := AColliderDef.Restitution;
+    vFixture.isSensor := AColliderDef.IsSensor;
     FBody.CreateFixture(vFixture);
   end;
 end;

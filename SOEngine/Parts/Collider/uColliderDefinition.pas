@@ -11,13 +11,15 @@ type
   private
     FShapes: TList<TRawShape>;
     FFriction, FDensity, FRestitution: Single;
+    FIsSensor: Boolean;
   public
     property Shape: TList<TRawShape> read FShapes;
     property Friction: Single read FFriction; // Трение
     property Restitution: Single read FRestitution; // Коэффициент упругости
     property Density: Single read FDensity; // Плотность
+    property IsSensor: Boolean read FIsSensor; // Будет ли участвовать в коллайде или только фикировать его
 
-    constructor Create(const AShapes: TList<TRawShape>; const AFriction, ADensity, ARestitution: Single);
+    constructor Create(const AShapes: TList<TRawShape>; const AFriction, ADensity, ARestitution: Single; const AIsSensor: Boolean);
     destructor Destroy; override;
   end;
 
@@ -26,7 +28,7 @@ implementation
 
 { TColliderDefinition }
 
-constructor TColliderDefinition.Create(const AShapes: TList<TRawShape>; const AFriction, ADensity, ARestitution: Single);
+constructor TColliderDefinition.Create(const AShapes: TList<TRawShape>; const AFriction, ADensity, ARestitution: Single; const AIsSensor: Boolean);
 var
   i: Integer;
 begin
@@ -37,6 +39,7 @@ begin
   FFriction := AFriction;
   FDensity := ADensity;
   FRestitution := ARestitution;
+  FIsSensor := AIsSensor;
 end;
 
 destructor TColliderDefinition.Destroy;
