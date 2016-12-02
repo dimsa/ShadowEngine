@@ -146,46 +146,48 @@
 	}],
 	"Colliders": [{
 		"Name": "Ship",
-		"Body": [{
-			"Type": "Circle",
-			"Center": "-1,52",
-			"Radius": "113",
-			"Density": "1",
-			"Friction": "0",
-			"IsSensor": true,
-			"Restitution": "1"
-		}, {
-			"Type": "Poly",
-			"Points": ["2,-163", "-31,-68", "27,-71"],
-			"Density": "1",
-			"Friction": "0",
-			"IsSensor": true,
-			"Restitution": "1"
-		}, {
-			"Type": "Poly",
-			"Points": ["-91,-103", "-106,-17", "-61,-52"],
-			"Density": "1",
-			"Friction": "0",
-			"IsSensor": true,
-			"Restitution": "1"
-		}, {
-			"Type": "Poly",
-			"Points": ["91,-103", "60,-62", "102,-21"],
-			"Density": "1",
-			"Friction": "0",
-			"IsSensor": true,
-			"Restitution": "1"
-		}]
+		"Body": {
+			"Type": "Static",
+			"Fixtures": [{
+				"Type": "Circle",
+				"Center": "-1,52",
+				"Radius": "113",
+				"Density": "1",
+				"Friction": "0",
+				"Restitution": "1"
+			}, {
+				"Type": "Poly",
+				"Points": ["2,-163", "-31,-68", "27,-71"],
+				"Density": "1",
+				"Friction": "0",
+				"Restitution": "1"
+			}, {
+				"Type": "Poly",
+				"Points": ["-91,-103", "-106,-17", "-61,-52"],
+				"Density": "1",
+				"Friction": "0",
+				"Restitution": "1"
+			}, {
+				"Type": "Poly",
+				"Points": ["91,-103", "60,-62", "102,-21"],
+				"Density": "1",
+				"Friction": "0",
+				"Restitution": "1"
+			}]
+		}
 	}, {
 		"Name": "Asteroid",
-		"Body": [{
-			"Type": "Circle",
-			"Center": "0,0",
-			"Radius": "50",
-			"Density": "1",
-			"Friction": "0",
-			"Restitution": "1"
-		}]
+		"Body": {
+			"Type": "Dynamic",
+			"Fixtures": [{
+				"Type": "Circle",
+				"Center": "0,0",
+				"Radius": "50",
+				"Density": "1",
+				"Friction": "0",
+				"Restitution": "1"
+			}]
+		}
 	}],
 	"Templates": [{
 		"Name": "Ship",
@@ -263,14 +265,12 @@
 		"Body": {
 			"Resources": ["Star"]
 		}
-	}
-	],
+	}],
 	"Sounds": [{
-			"Name": "AsteroidCollide",
-			"Path": "AsteroidCollide.wav"
-		}, {
-			"Name": "ShipCollide",
-			"Path": "ShipCollide.wav"
-		}
-	]
+		"Name": "AsteroidCollide",
+		"Path": "AsteroidCollide.wav"
+	}, {
+		"Name": "ShipCollide",
+		"Path": "ShipCollide.wav"
+	}]
 }

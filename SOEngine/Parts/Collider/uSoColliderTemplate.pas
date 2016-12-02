@@ -3,7 +3,7 @@ unit uSoColliderTemplate;
 interface
 
 uses
-  System.JSON, uJsonUtils,
+  System.JSON, System.SysUtils, uJsonUtils,
   uSoTypes, uSoColliderObject, uSoObject, uRawShapeJsonConverter, uRawShapes,
   uColliderDefinition;
 
@@ -15,6 +15,7 @@ type
     FDensity: Single;
     FRestitution: Single;
     FIsSensor: Boolean;
+    FBodyType: TBodyType;
     FDefinition: TColliderDefinition;
   public
 //    property ShapeList: TList<TRawShape> read FShapeList;
@@ -32,41 +33,57 @@ constructor TSoColliderTemplate.Create(const AJson: TJSONValue);
 var
   vVal, vProp: TJSONValue;
   vArr: TJSONArray;
+  vType: string;
   i: Integer;
 begin
-  FShapeList := TList<TRawShape>.Create;
-  vArr := TJSONArray(AJson);
-  for i := 0 to vArr.Count - 1 do
+
+  if AJson.TryGetValue('Type', vProp) then
   begin
-    vVal := vArr.Items[i];
+    vType := JsonToString(vProp);
+    if LowerCase(vType) = 'static' then
+      FBodyType := btStatic;
+    if LowerCase(vType) = 'dynamic' then
+      FBodyType := btDynamic;
+    if LowerCase(vType) = 'kinematic' then
+      FBodyType := btKinematic;
+  end else
+    FBodyType := btDynamic;
 
-    FShapeList.Add(TRawShapeJsonConverter.ConvertFrom(vVal));
+  if AJson.TryGetValue('Fixtures', vProp) then
+  begin
+    FShapeList := TList<TRawShape>.Create;
+    vArr := TJSONArray(vProp);
+    for i := 0 to vArr.Count - 1 do
+    begin
+      vVal := vArr.Items[i];
 
-    if vVal.TryGetValue('Friction', vProp) then
-    begin
-      FFriction := JsonToSingle(vProp);
-      vProp.Free;
-    end;
-    if vVal.TryGetValue('Density', vProp) then
-    begin
-      FDensity := JsonToSingle(vProp);
-      vProp.Free;
-    end;
-    if vVal.TryGetValue('Restitution', vProp) then
-    begin
-      FRestitution := JsonToSingle(vProp);
-      vProp.Free;
-    end;
-    if vVal.TryGetValue('IsSensor', vProp) then
-    begin
-      FIsSensor:= JsonToBool(vProp);
-      vProp.Free;
-    end else
-      FIsSensor := False;
+      FShapeList.Add(TRawShapeJsonConverter.ConvertFrom(vVal));
 
+      if vVal.TryGetValue('Friction', vProp) then
+      begin
+        FFriction := JsonToSingle(vProp);
+        vProp.Free;
+      end;
+      if vVal.TryGetValue('Density', vProp) then
+      begin
+        FDensity := JsonToSingle(vProp);
+        vProp.Free;
+      end;
+      if vVal.TryGetValue('Restitution', vProp) then
+      begin
+        FRestitution := JsonToSingle(vProp);
+        vProp.Free;
+      end;
+      if vVal.TryGetValue('IsSensor', vProp) then
+      begin
+        FIsSensor:= JsonToBool(vProp);
+        vProp.Free;
+      end else
+        FIsSensor := False;
+    end;
   end;
 
-  FDefinition := TColliderDefinition.Create(FShapeList, FFriction, FDensity, FRestitution, FIsSensor);
+  FDefinition := TColliderDefinition.Create(FShapeList, FFriction, FDensity, FRestitution, FIsSensor, FBodyType);
 end;
 
 destructor TSoColliderTemplate.Destroy;

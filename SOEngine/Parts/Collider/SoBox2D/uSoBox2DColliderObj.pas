@@ -14,6 +14,7 @@ type
     FWorld: Tb2World;
     function B2TransformFromSubject: Tb2Transform;
     procedure OnPositionChanged(ASender: TObject; APosition: TPosition);
+    function BodyTypeToBox2DBodyType(const ABodyType: TBodyType): Tb2BodyType;
   protected
     property Body: Tb2Body read FBody;
   public
@@ -50,6 +51,17 @@ begin
   end;
 end;
 
+function TSoBox2DColliderObj.BodyTypeToBox2DBodyType(const ABodyType: TBodyType): Tb2BodyType;
+begin
+  case ABodyType of
+    btStatic: Exit(Tb2BodyType.b2_staticBody);
+    btKinematic: Exit(Tb2BodyType.b2_kinematicBody);
+    btDynamic: Exit(Tb2BodyType.b2_dynamicBody);
+  end;
+
+  raise Exception.Create('Not supported body type');
+end;
+
 constructor TSoBox2DColliderObj.Create(const ASubject: TSoObject; const AWorld: Tb2World; const AColliderDef: TColliderDefinition);
 var
   i: Integer;
@@ -63,7 +75,7 @@ begin
 
   FWorld := AWorld;
   FBodyDef := Tb2BodyDef.Create;
-  FBodyDef.bodyType := b2_dynamicBody;
+  FBodyDef.bodyType := BodyTypeToBox2DBodyType(AColliderDef.BodyType);
 
   FBody := FWorld.CreateBody(FBodyDef, False);
 
