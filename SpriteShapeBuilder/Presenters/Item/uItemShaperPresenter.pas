@@ -6,7 +6,7 @@ uses
   System.Types, FMX.Graphics, System.UITypes,  {$I 'Utils\DelphiCompatability.inc'}
   System.Math, uItemBasePresenter, uIntersectorClasses, uIntersectorMethods,
   System.Generics.Collections, System.SysUtils, System.Classes,  uClasses,
-  uIItemView, uSSBModels, uITableView;
+  uIItemView, uSSBModels, uITableView, uSeJsonStrings;
 
 type
   TItemShaperPresenter = class(TItemBasePresenter)
@@ -218,9 +218,10 @@ begin
     end;
   end;
 
-  FParams.Add('Density', FloatToStr(Model.Density));
-  FParams.Add('Friction', FloatToStr(Model.Friction));
-  FParams.Add('Restitution', FloatToStr(Model.Restitution));
+  FParams.Add(CDensity, FloatToStr(Model.Density));
+  FParams.Add(CFriction, FloatToStr(Model.Friction));
+  FParams.Add(CRestitution, FloatToStr(Model.Restitution));
+  FParams.Add(CIsSensor, Model.IsSensor.ToString());
 
   Result := FParams;
 end;
@@ -373,8 +374,10 @@ begin
     end;
   end;
 
-  Model.Friction := ToFloat(AValue['Friction']);
-  Model.Density := ToFloat(AValue['Density']);
+  Model.Friction := ToFloat(AValue[CFriction]);
+  Model.Density := ToFloat(AValue[CDensity]);
+  Model.Restitution := ToFloat(AValue[CRestitution]);
+  Model.IsSensor := ToBool(AValue[CIsSensor]);
 end;
 
 procedure TItemShaperPresenter.SetPosition(const Value: TPoint);

@@ -79,8 +79,20 @@ type
   function RGBColor(const AR, AG, AB, AA: Byte): TAlphaColorRec;
   function ToInt(const AValue: string): Integer;
   function ToFloat(const AValue: string): Double;
+  function ToBool(const AValue: string): Boolean;
 
 implementation
+
+function ToBool(const AValue: string): Boolean;
+begin
+  if (LowerCase(AValue).Trim = 'true') or (LowerCase(AValue).Trim = '1') then
+    Exit(True);
+
+  if (LowerCase(AValue).Trim = 'false') or (LowerCase(AValue).Trim = '0') then
+    Exit(False);
+
+  ShowMessage('Can not convert to Boolean ' + AValue);
+end;
 
 function ToInt(const AValue: string): Integer;
 var

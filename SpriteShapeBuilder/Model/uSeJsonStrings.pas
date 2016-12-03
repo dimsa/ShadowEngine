@@ -19,7 +19,8 @@ const
   CDensity = 'Density';
   CFriction = 'Friction';
   CRestitution = 'Restitution';
-
+  CIsSensor = 'IsSensor';
+  CFixtures = 'Fixtures';
 
   CObjectName = 'ObjectName';
   CObjectBody = 'ObjectBody';

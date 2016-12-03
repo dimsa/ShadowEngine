@@ -31,6 +31,7 @@ type
     function ReadStr: TStreamString; overload; // Read TStreamString if Size is writed
     function ReadStr(const ACheck: TStreamString): TStreamString; overload;// Read TStreamString if Size is writed and compares it with parameter ACheck
     function ReadInt: Int64; // Read TStreamString if Size is writed
+    function ReadBool: Boolean; // Read TStreamString if Size is writed
     function ReadSingle: Single; // Read TStreamString if Size is writed
     function ReadStream(const ASize: Int64): TMemoryStream;
     function ReadStrWithLength(const ASize: Integer): TStreamString; // Read TStreamString if Size is writed
@@ -38,6 +39,7 @@ type
     procedure WriteStrOnly(const AText: TStreamString);
     procedure WriteInt(const AInt: Int64);
     procedure WriteSingle(const ASingle: Single);
+    procedure WriteBool(const ABool: Boolean);
     procedure WriteStream(AStream: TStream);
   end;
 
@@ -58,6 +60,22 @@ begin
      FreeAndNil(FFileStream);
 
   inherited;
+end;
+
+function TStreamUtil.ReadBool: Boolean;
+var
+  vBool: Boolean;
+begin
+  TestCanRead;
+  try
+    FFileStream.ReadBuffer(vBool, SizeOf(vBool));
+    Result := vBool;
+  except
+    if FFileStream <> nil then
+      FreeAndNil(FFileName);
+
+    raise Exception.Create('Can not read Bool from stream');
+  end;
 end;
 
 function TStreamUtil.ReadInt: Int64;
@@ -234,6 +252,12 @@ procedure TStreamUtil.TestCanWrite;
 begin
   if (FFileStream = nil) or (FStatus <> usWrite) then
     raise Exception.Create('TStreamUtil not ready for Write!');
+end;
+
+procedure TStreamUtil.WriteBool(const ABool: Boolean);
+begin
+  TestCanWrite;
+  FFileStream.WriteBuffer(ABool, SizeOf(ABool));
 end;
 
 procedure TStreamUtil.WriteInt(const AInt: Int64);

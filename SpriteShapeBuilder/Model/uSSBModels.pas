@@ -16,11 +16,13 @@ type
   private
     FFigure: TNewFigure;
     FDensity, FFriction, FRestitution: Single; // For the box2d
+    FIsSensor: Boolean;
     function GetMaxRadius: Integer;
     function GetFigureKind: TFigureKind;
     procedure SetDensity(const Value: Single);
     procedure SetFriction(const Value: Single);
     procedure SetRestitution(const Value: Single);
+    procedure SetIsSensor(const Value: Boolean);
     property Figure: TNewFigure read FFigure;
   public
     procedure Repaint(ABmp: TBitmap; const ALockedPoint: TPointF; const APointIndex: Integer; const AColor: TColor);
@@ -30,6 +32,7 @@ type
     property Density: Single read FDensity write SetDensity;
     property Friction: Single read FFriction write SetFriction;
     property Restitution: Single read FRestitution write SetRestitution;
+    property IsSensor: Boolean read FIsSensor write SetIsSensor;
     function BelongPointLocal(APoint: TPointF): Boolean;
     procedure SetData(const AData: TPolygon); overload;// Трактует данные в зависимости от своего типа
     procedure SetData(const AData: TRectF); overload;// Быстрое задание ректангла
@@ -153,6 +156,7 @@ var
   i: Integer;
   vObj: TJSONObject;
   vShapes: TJSONArray;
+  vBody: TJSONObject;
 begin
   vObj := TJSONObject.Create;
 
@@ -160,9 +164,13 @@ begin
   for i := 0 to FShapes.Count - 1 do
     vShapes.AddElement(FShapes[i].AsJson);
 
+  vBody := TJSONObject.Create;
+  vBody.AddPair(CFixtures, vShapes);
+  vBody.AddPair(CType, 'Dynamic');
+
   vObj := TJSONObject.Create;
   vObj.AddPair(CName, Self.Name);
-  vObj.AddPair(CBody, vShapes);
+  vObj.AddPair(CBody, vBody);
   Result := vObj;
 end;
 
@@ -333,6 +341,10 @@ begin
       vObj.AddPair(CType, vType);
       vObj.AddPair(CCenter, Round(vFigure.AsCircle.X).ToString() + ',' + Round(vFigure.AsCircle.Y).ToString());
       vObj.AddPair(CRadius, Round(vFigure.AsCircle.Radius).ToString());
+      vObj.AddPair(CDensity, FDensity.ToString());
+      vObj.AddPair(CFriction, FFriction.ToString());
+      vObj.AddPair(CRestitution, FFriction.ToString());
+      vObj.AddPair(CIsSensor, FIsSensor.ToString());
     end;
     TNewFigure.cfPoly: begin
      vType := CPoly;
@@ -348,6 +360,7 @@ begin
      vObj.AddPair(CDensity, FDensity.ToString());
      vObj.AddPair(CFriction, FFriction.ToString());
      vObj.AddPair(CRestitution, FFriction.ToString());
+     vObj.AddPair(CIsSensor, FIsSensor.ToString());
     end;
   end;
 
@@ -375,7 +388,9 @@ begin
   vCircle.Radius := 25;
   FFigure.SetData(vCircle);
   FDensity := 1;
-  FFriction := 0.1;
+  FFriction := 0;
+  FRestitution := 1;
+  FIsSensor := False;
 end;
 
 constructor TItemShapeModel.CreatePoly(const AUpdateHandler: TNotifyEvent);
@@ -396,7 +411,9 @@ begin
 
   FFigure.SetData(vPoly);
   FDensity := 1;
-  FFriction := 0.1;
+  FFriction := 0;
+  FRestitution := 1;
+  FIsSensor := False;
 end;
 
 destructor TItemShapeModel.Destroy;
@@ -465,6 +482,8 @@ begin
     FFriction := ReadSingle;
     ReadStr(CRestitution);
     FRestitution := ReadSingle;
+    ReadStr(CIsSensor);
+    FIsSensor := ReadBool;
   end;
   RaiseUpdateEvent;
 end;
@@ -527,6 +546,8 @@ begin
     WriteSingle(FFriction);
     WriteStr(CRestitution);
     WriteSingle(FRestitution);
+    WriteStr(CIsSensor);
+    WriteBool(FIsSensor);
   end;
 end;
 
@@ -548,9 +569,16 @@ begin
   RaiseUpdateEvent;
 end;
 
+procedure TItemShapeModel.SetIsSensor(const Value: Boolean);
+begin
+  FIsSensor := Value;
+  RaiseUpdateEvent;
+end;
+
 procedure TItemShapeModel.SetRestitution(const Value: Single);
 begin
   FRestitution := Value;
+  RaiseUpdateEvent;
 end;
 
 constructor TItemImageModel.Create(const AUpdateHandler: TNotifyEvent);
