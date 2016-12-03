@@ -137,7 +137,10 @@ end;
 
 function TSSBForm.FormTopLeft: TPointF;
 begin
-  Result := ClientToScreenPoint(TPoint.Zero);
+  Result :=  TPointF.Create(
+    ClientToScreenPoint(TPoint.Zero).X + WorkspaceFrame.Position.X,
+    ClientToScreenPoint(TPoint.Zero).Y + WorkspaceFrame.Position.Y
+  ) ;
 end;
 
 end.
