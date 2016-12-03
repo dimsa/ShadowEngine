@@ -36,8 +36,8 @@ type
   protected
     FModel: TSSBModel;
     FItems: TDictionary<TItemObjPresenter, IItemView>;
-    function GetView: IWorkSpaceView;
-    property View: IWorkSpaceView read GetView;
+    function GetView: IGraphicItemWorkspaceView;
+    property View: IGraphicItemWorkspaceView read GetView;
 
     // Методы на клик
     procedure DoMouseUp(ASender: TObject);
@@ -45,7 +45,7 @@ type
     procedure DoMouseMove(ASender: TObject);
     procedure DoOptionsShow(ASender: TObject);
   public
-    constructor Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);
+    constructor Create(AView: IGraphicItemWorkspaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);
     procedure ShowShapes;
     procedure HideShapes;
     procedure AddPoly;
@@ -144,7 +144,7 @@ begin
   end;
 end;
 
-constructor TObjecterPresenter.Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);
+constructor TObjecterPresenter.Create(AView: IGraphicItemWorkspaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);
 begin
   inherited Create(AView, AModel, AStatus);
   FItems := TDictionary<TItemObjPresenter, IItemView>.Create;
@@ -227,9 +227,9 @@ begin
     i.Enable;
 end;
 
-function TObjecterPresenter.GetView: IWorkSpaceView;
+function TObjecterPresenter.GetView: IGraphicItemWorkspaceView;
 begin
-  Result := IWorkSpaceView(FView);
+  Result := IGraphicItemWorkspaceView(FView);
 end;
 
 procedure TObjecterPresenter.HideShapes;

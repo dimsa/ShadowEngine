@@ -14,20 +14,20 @@ type
     FMouseStartPoint: TPoint;
     FIsMouseDowned: Boolean;
     FStatus: TDelegate<TSSBStatus>;
-    function GetView: IWorkSpaceView;
+    function GetView: IGraphicItemWorkspaceView;
     procedure SetIsMouseDowned(const Value: Boolean);
   private
     function GetStatus: TSSBStatus;
   protected
     procedure SetElementStart(const ARect: TRect); virtual;
-    property View: IWorkSpaceView read GetView;
+    property View: IGraphicItemWorkspaceView read GetView;
     property ElementStart: TRect read FElementStart;
     property MouseStart: TPoint read FMouseStartPoint;
     property IsMouseDowned: Boolean read FIsMouseDowned write SetIsMouseDowned;
     property Status: TSSBStatus read GetStatus;
     property Model: TSSBModel read FModel;
 
-    constructor Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>); virtual;
+    constructor Create(AView: IGraphicItemWorkspaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>); virtual;
     destructor Destroy; override;
   end;
 
@@ -35,7 +35,7 @@ implementation
 
 { TBasePresenterIncapsulator }
 
-constructor TBasePresenterIncapsulator.Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);
+constructor TBasePresenterIncapsulator.Create(AView: IGraphicItemWorkspaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);
 begin
   FView := AView;
   FModel := AModel;
@@ -53,9 +53,9 @@ begin
   Result := FStatus;
 end;
 
-function TBasePresenterIncapsulator.GetView: IWorkSpaceView;
+function TBasePresenterIncapsulator.GetView: IGraphicItemWorkspaceView;
 begin
-  Result := IWorkSpaceView(FView);
+  Result := IGraphicItemWorkspaceView(FView);
 end;
 
 procedure TBasePresenterIncapsulator.SetElementStart(const ARect: TRect);

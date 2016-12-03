@@ -10,7 +10,7 @@ uses
   uImagerPresenter, uObjecterPresenter, uITableView, uNamedTableView, uGraphicItemWorkspaceFrame;
 
 type
-  TGraphicItemWorkspace = class(TInterfacedObject, IWorkSpaceView, IView)
+  TGraphicItemWorkspace = class(TInterfacedObject, IGraphicItemWorkspaceView, IView)
   private
     FElements: TDictionary<IItemView, TItemView>;
     FOptionsForm: TNamedOptionsForm;

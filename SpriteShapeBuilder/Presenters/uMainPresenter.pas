@@ -33,7 +33,7 @@ type
     procedure LoadProject;
     procedure SaveProject;
     procedure SaveForEngine;
-    constructor Create(const AView: IMainView; const AWorkSpaceView: IWorkSpaceView);
+    constructor Create(const AView: IMainView; const AWorkSpaceView: IGraphicItemWorkspaceView);
     property Imager: TImagerPresenter read FImager;
     property Objecter: TObjecterPresenter read FObjecter;
     destructor Destroy; override;
@@ -46,7 +46,7 @@ implementation
 
 { TSpriteShapeBuilder }
 
-constructor TMainPresenter.Create(const AView: IMainView; const AWorkSpaceView: IWorkSpaceView);
+constructor TMainPresenter.Create(const AView: IMainView; const AWorkSpaceView: IGraphicItemWorkspaceView);
 var
   vImg: TImage;
 begin

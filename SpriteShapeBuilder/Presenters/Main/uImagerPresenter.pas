@@ -38,7 +38,7 @@ type
     procedure DoOptionsShow(ASender: TObject);
 
     function ResizeType(const AItem: TItemImgPresenter): TResizeType;
-    function GetView: IWorkSpaceView;
+    function GetView: IGraphicItemWorkspaceView;
     procedure JustifyPoints(AItem: TItemImgPresenter);
     procedure JustifyAnchors(AItem: TItemImgPresenter);
   public
@@ -52,7 +52,7 @@ type
     procedure ShowOptions;
     procedure DisableItems;
     procedure EnableItems;
-    constructor Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>); override;
+    constructor Create(AView: IGraphicItemWorkspaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>); override;
     destructor Destroy; override;
   end;
 
@@ -121,7 +121,7 @@ begin
   end;
 end;
 
-constructor TImagerPresenter.Create(AView: IWorkSpaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);
+constructor TImagerPresenter.Create(AView: IGraphicItemWorkspaceView; AModel: TSSBModel; AStatus: TDelegate<TSSBStatus>);
 begin
   inherited Create(AView, AModel, AStatus);
   FItems := TDictionary<TItemImgPresenter, IItemView>.Create;
@@ -256,7 +256,7 @@ begin
     i.Enable;
 end;
 
-function TImagerPresenter.GetView: IWorkSpaceView;
+function TImagerPresenter.GetView: IGraphicItemWorkspaceView;
 begin
 
 end;
