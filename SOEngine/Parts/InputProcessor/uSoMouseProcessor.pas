@@ -96,7 +96,7 @@ begin
   FMouseOver.Clear;
   for i := 0 to FList.Count - 1 do
   begin
-    if FList[i].CanExecute(Args.X - FList[i].Subject.X ,Args.Y - FList[i].Subject.Y) then
+    if FList[i].CanExecute(Args.X {- FList[i].Subject.X} ,Args.Y{ - FList[i].Subject.Y}) then
     begin
       TSoMouseHandlerFriend(FContainers[FList[i].Subject]).MouseMove(Args);
       FMouseOver.Add(FList[i].Subject)

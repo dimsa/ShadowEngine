@@ -16,6 +16,8 @@ type
     class function MakeTurnToDestination(const AShip: TSoObject; const ADir, ATurnRate: Single): TFireKoef;
     class procedure MovingThroughSidesInner(ASoObject, AWorld: TSoObject);
   public
+    class procedure OnTestMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    //(Sender: TObject; AEventArgs: TMouseEventArgs);
     class procedure MovingThroughSides(ASoObject: TSoObject);
     class procedure MovingByAcceleration(ASoObject: TSoObject);
     class procedure MovingToDestination(ASoObject: TSoObject);
@@ -27,7 +29,7 @@ type
 implementation
 
 uses
-  uModel, uSoSprite, uSoSound, uSoColliderObject;
+  uModel, uSoSprite, uSoSound, uSoColliderObject, uSoMouseHandler;
 
 { TLogicAssets }
 
@@ -132,16 +134,23 @@ begin
   end;
 end;
 
-class procedure TLogicAssets.OnCollideAsteroid(ASender: TObject;
-  AEvent: TObjectCollidedEventArgs);
+class procedure TLogicAssets.OnCollideAsteroid(ASender: TObject; AEvent: TObjectCollidedEventArgs);
 begin
   TSoColliderObj(ASender).Subject[Sound].Val<TSoSound>.Play;
 end;
 
-class procedure TLogicAssets.OnCollideShip(ASender: TObject;
-  AEvent: TObjectCollidedEventArgs);
+class procedure TLogicAssets.OnCollideShip(ASender: TObject; AEvent: TObjectCollidedEventArgs);
 begin
   TSoColliderObj(ASender).Subject[Sound].Val<TSoSound>.Play;
+end;
+
+class procedure TLogicAssets.OnTestMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+var
+  vObj: TSoObject;
+begin
+  vObj := TSoMouseHandler(Sender).Subject;
+
+  vObj.Properties[Collider].Val<TSoColliderObj>.ApplyForce(0, -10000);
 end;
 
 end.

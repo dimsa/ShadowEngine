@@ -127,6 +127,7 @@ begin
     AddProperty('World', FManager.ObjectByName('World'));
     AddSoundFromTemplate('ShipCollide');
     AddNewLogic(TLogicAssets.MovingToDestination, 'MovingThroughSides');
+    AddMouseHandler(ByCollider).OnMouseDown := TLogicAssets.OnTestMouseDown;
   end;
 
   FLeftFire := TLeftFire.Create(FManager, FContainer);
@@ -161,6 +162,7 @@ begin
   end;
 
   FAcceleration.Da := (Random * 4) - 2;
+  //FContainer.Scale := 0.5;
   RandomizePosition(FContainer);
 end;
 

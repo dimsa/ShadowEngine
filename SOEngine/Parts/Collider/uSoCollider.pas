@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.JSON,
   uSoTypes, uCommonClasses, uSoColliderTypes, uSoColliderObject, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart,
-  uSoColliderTemplate, uSoColliderExtender, uColliderDefinition, uSoColliderOptions;
+  uSoColliderTemplate, uSoColliderExtender, uColliderDefinition, uSoColliderOptions, uSoObjectDefaultProperties;
 
 type
   TSoCollider = class(TSoOperator<TSoColliderObj>)
@@ -20,6 +20,7 @@ type
     procedure Add(const AItem: TSoColliderObj; const AName: string = ''); overload; override;
     procedure OnBeginContact(ASender: TObject; AEventArgs: TPairCollidedEventArgs);
     procedure OnEndContact(ASender: TObject; AEventArgs: TPairCollidedEventArgs);
+    function PropertyName: string; override;
   public
     procedure AddOnBeginContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
     procedure RemoveOnBeginContactHandler(AEventHandler: TEvent<TPairCollidedEventArgs>);
@@ -43,6 +44,7 @@ procedure TSoCollider.Add(const AItem: TSoColliderObj; const AName: string);
 var
   vName: string;
 begin
+  AddAsProperty(AItem, AName);
   {$I .\Template\uItemAdd.inc}
 end;
 
@@ -160,6 +162,11 @@ end;
 procedure TSoCollider.OnItemDestroy(ASender: TObject);
 begin
   FList.Delete(TSoColliderObj(ASender));
+end;
+
+function TSoCollider.PropertyName: string;
+begin
+  Result := Collider;
 end;
 
 procedure TSoCollider.RemoveOnBeginContactHandler(

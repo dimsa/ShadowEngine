@@ -100,12 +100,22 @@ end;
 
 function TSoBox2DColliderObj.IsContainsPoint(const AX, AY: Single): Boolean;
 begin
-  FBody.GetFixtureList.GetShape.TestPoint(B2TransformFromSubject, Vector2FromPoint(AX, AY));
+  Result := IsContainsPoint(TPointF.Create(AX, AY));
 end;
 
 function TSoBox2DColliderObj.IsContainsPoint(const APoint: TPointF): Boolean;
+var
+  vFix: Tb2Fixture;
 begin
-  FBody.GetFixtureList.GetShape.TestPoint(B2TransformFromSubject, Vector2FromPoint(APoint));
+  vFix := FBody.GetFixtureList;
+
+  while vFix <> nil do begin
+    if vFix.GetShape.TestPoint(B2TransformFromSubject, Vector2FromPoint(APoint)) then
+      Exit(True);
+    vFix := vFix.GetNext;
+  end;
+
+  Result := False;
 end;
 
 procedure TSoBox2DColliderObj.OnPositionChanged(ASender: TObject;
@@ -117,7 +127,6 @@ begin
   vVector.y := APosition.Y;
 
   FBody.SetTransform(vVector, APosition.Rotate);
-
 end;
 
 procedure TSoBox2DColliderObj.RefreshSubjectPosition;
