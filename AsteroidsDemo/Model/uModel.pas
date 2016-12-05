@@ -162,7 +162,7 @@ begin
   end;
 
   FAcceleration.Da := (Random * 4) - 2;
-  //FContainer.Scale := 0.5;
+  FContainer.Scale := 1;
   RandomizePosition(FContainer);
 end;
 

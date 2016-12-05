@@ -12,9 +12,12 @@ type
     FBodyDef: Tb2BodyDef;
     FBody: TB2Body;
     FWorld: Tb2World;
+    FLastScale: TPointF;
+    FOriginalShapes: TList<Tb2Shape>;
     function B2TransformFromSubject: Tb2Transform;
     procedure OnPositionChanged(ASender: TObject; APosition: TPosition);
     function BodyTypeToBox2DBodyType(const ABodyType: TBodyType): Tb2BodyType;
+    procedure Scale(const AScale: TPointF);
   protected
     property Body: Tb2Body read FBody;
   public
@@ -71,6 +74,9 @@ var
 begin
   inherited Create(ASubject);
 
+  FOriginalShapes := TList<Tb2Shape>.Create;
+  FLastScale := ASubject.ScalePoint;
+
   ASubject.AddChangePositionHandler(OnPositionChanged);
 
   FWorld := AWorld;
@@ -89,12 +95,19 @@ begin
     vFixture.restitution := AColliderDef.Restitution;
     vFixture.isSensor := AColliderDef.IsSensor;
     FBody.CreateFixture(vFixture);
+    FOriginalShapes.Add(TRawShapeBox2DShapeConverter.ConvertTo(AColliderDef.Shape[i]))
   end;
+  FOriginalShapes.Reverse;
 end;
 
 destructor TSoBox2DColliderObj.Destroy;
+var
+  i: Integer;
 begin
   FBody.Free;
+  for i := 0 to FOriginalShapes.Count - 1 do
+    FOriginalShapes[i].Free;
+  FOriginalShapes.Free;
   inherited;
 end;
 
@@ -127,12 +140,54 @@ begin
   vVector.y := APosition.Y;
 
   FBody.SetTransform(vVector, APosition.Rotate);
+  Scale(APosition.Scale);
+
 end;
 
 procedure TSoBox2DColliderObj.RefreshSubjectPosition;
 begin
   inherited;
   FSubject.SetPositionSilent(FBody.GetPosition.x, FBody.GetPosition.y, FBody.GetAngle);
+end;
+
+procedure TSoBox2DColliderObj.Scale(const AScale: TPointF);
+var
+  vFix: Tb2Fixture;
+  i, j: Integer;
+begin
+  if AScale = FLastScale then
+    Exit;
+
+  FLastScale := AScale;
+
+  vFix := FBody.GetFixtureList;
+  i := 0;
+  while vFix <> nil do begin
+    case vFix.GetShape.GetType of
+      e_circleShape:
+      begin
+        Tb2CircleShape(vFix.GetShape).m_radius := FOriginalShapes[i].m_radius * AScale.X;
+        Tb2CircleShape(vFix.GetShape).m_p.x := Tb2CircleShape(FOriginalShapes[i]).m_p.x * AScale.X;
+        Tb2CircleShape(vFix.GetShape).m_p.y := Tb2CircleShape(FOriginalShapes[i]).m_p.y * AScale.Y;
+      end;
+      e_polygonShape: begin
+        Tb2PolygonShape(vFix.GetShape).m_centroid :=
+          Vector2FromPoint(
+            Tb2PolygonShape(FOriginalShapes[i]).m_centroid.x * AScale.X,
+            Tb2PolygonShape(FOriginalShapes[i]).m_centroid.y * AScale.Y
+          );
+        for j := 0 to Tb2PolygonShape(vFix.GetShape).m_count - 1 do
+        begin
+          Tb2PolygonShape(vFix.GetShape).m_vertices[j].x := Tb2PolygonShape(FOriginalShapes[i]).m_vertices[j].x * AScale.X;
+          Tb2PolygonShape(vFix.GetShape).m_vertices[j].y := Tb2PolygonShape(FOriginalShapes[i]).m_vertices[j].y * AScale.Y;
+        end;
+      end;
+      e_edgeShape, e_chainShape: raise Exception.Create('Can not scale this type');
+    end;
+
+    vFix := vFix.GetNext;
+    i := i + 1;
+  end;
 end;
 
 end.
