@@ -144,7 +144,8 @@ contains
   uRawShapeBox2DConverter in 'Common\RawShapes\Converters\uRawShapeBox2DConverter.pas',
   uRawShapeNewFigureConverter in 'Common\RawShapes\Converters\uRawShapeNewFigureConverter.pas',
   uSoEngineOptions in 'Main\uSoEngineOptions.pas',
-  uSoColliderExtenderFactory in 'Parts\Collider\uSoColliderExtenderFactory.pas';
+  uSoColliderExtenderFactory in 'Parts\Collider\uSoColliderExtenderFactory.pas',
+  uSoText in 'Parts\Rendition\uSoText.pas';
 
 end.
 

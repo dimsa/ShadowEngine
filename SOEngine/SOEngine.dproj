@@ -258,6 +258,7 @@
         <DCCReference Include="Common\RawShapes\Converters\uRawShapeNewFigureConverter.pas"/>
         <DCCReference Include="Main\uSoEngineOptions.pas"/>
         <DCCReference Include="Parts\Collider\uSoColliderExtenderFactory.pas"/>
+        <DCCReference Include="Parts\Rendition\uSoText.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>
