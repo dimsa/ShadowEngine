@@ -106,7 +106,7 @@ end;
 
 procedure TSoMouseHandler.MouseUp(Args: TMouseEventArgs);
 begin
-//  if Assigned(FOnMouseUp) then
+  if Assigned(FOnMouseUp) then
     FOnMouseUp(Self, Args.Button, Args.Shift, Args.X, Args.Y);
 end;
 

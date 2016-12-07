@@ -49,7 +49,6 @@ begin
   inherited Create(ASubject, AImage);
   FResourceList := AResourceList;
 
-//  FSize := TSizeObject.Create;
   RecalculateSize;
   with TSoObjectFriend(ASubject) do begin
     if not FProperties.HasProperty(RenditionRect) then
@@ -62,28 +61,6 @@ begin
 
       vProp.AddOnChangeHandler(OnWidthChanged);
     end;
-
-
-
-{    if not FProperties.HasProperty(SummaryWidth) then
-    begin
-      vProp := FProperties.Add(SummaryWidth);
-      vProp.AsDouble := Self.Width;
-      if APrefix <> '' then
-        FProperties.Add(APrefix + 'Width', vProp);
-
-      vProp.AddOnChangeHandler(OnWidthChanged);
-    end;
-
-    if not FProperties.HasProperty(SummaryHeight) then
-    begin
-      vProp := FProperties.Add(SummaryHeight);
-      vProp.AsDouble := Self.Height;
-      if APrefix <> '' then
-        FProperties.Add(APrefix + 'Height', vProp);
-
-      vProp.AddOnChangeHandler(OnHeightChanged);
-    end;                                        }
   end;
 end;
 
@@ -144,7 +121,7 @@ begin
       FSubject.Y + FResourceList[FResIndex].HHalf * CJustifyPoints[Justify].Top + FMargin.Y,
       FSubject.X + FResourceList[FResIndex].WHalf * CJustifyPoints[Justify].Right + FMargin.X,
       FSubject.Y + FResourceList[FResIndex].HHalf * CJustifyPoints[Justify].Bottom + FMargin.Y),
-    1,
+    FOpacity,
     True);
 end;
 

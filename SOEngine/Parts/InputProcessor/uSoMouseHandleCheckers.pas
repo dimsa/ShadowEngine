@@ -28,7 +28,7 @@ end;
 
 function CanMouseHandleByStaticRectCheck(ASender: TSoObject; const APoint: TPointF): Boolean;
 begin
-  Result := ASender[RenditionRect].Val<TRectObject>.Rect.Multiply(ASender.ScalePoint).Contains(APoint);
+  Result :=  ASender[RenditionRect].Val<TRectObject>.Rect.Multiply(ASender.ScalePoint).Move(ASender.Center).Contains(APoint);
 end;
 
 end.

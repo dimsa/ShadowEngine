@@ -42,7 +42,8 @@ var
   i: Integer;
 begin
   for i := 0 to FList.Count - 1 do
-    FList[i].Animate;
+    if FList[i].Enabled then
+      FList[i].Animate;
 end;
 
 procedure TSoAnimator.LoadTemplates(const AFileName: string);

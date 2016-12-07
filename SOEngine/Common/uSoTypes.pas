@@ -20,6 +20,7 @@ type
   TTextAlign = FMX.Types.TTextAlign;
   TStrokeBrush = FMX.Graphics.TStrokeBrush;
   TBrush = FMX.Graphics.TBrush;
+  TBrushKind = FMX.Graphics.TBrushKind;
 
   TDict<TKey,TValue> = class(System.Generics.Collections.TDictionary<TKey,TValue>);
   TList<T> = class(System.Generics.Collections.TList<T>);
@@ -56,6 +57,7 @@ type
 
   TAdvancedRect = record helper for TRectF
     function Multiply(APoint: TPointF) : TRectF;
+    function Move(APoint: TPointF) : TRectF;
   end;
 
   TRectObject = class
@@ -201,6 +203,11 @@ begin
 end;
 
 { TAdvancedRect }
+
+function TAdvancedRect.Move(APoint: TPointF): TRectF;
+begin
+  Result := TRectF.Create(Self.TopLeft + APoint, Self.BottomRight + APoint);
+end;
 
 function TAdvancedRect.Multiply(APoint: TPointF) : TRectF;
 begin
