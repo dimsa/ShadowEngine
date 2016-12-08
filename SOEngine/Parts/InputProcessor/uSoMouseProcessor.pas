@@ -3,7 +3,7 @@ unit uSoMouseProcessor;
 interface
 
 uses
-  System.SysUtils,
+  System.SysUtils, FMX.Types,
   uSoTypes, uSoBaseOperator, uSoMouseHandler, uSoObject, uSoContainerTypes,
   uSoBasePart, uSoObjectDefaultProperties, uSoMouseHandleCheckers;
 
@@ -15,8 +15,11 @@ type
     FContainers: TDict<TSoObject, TSoMouseHandler>;
     FTemplates: TDict<string, TCheckMouseHandleBehavior>;
     FMouseOver, FOldMouseOver, FMouseDowned, FMouseUpped: TList<TSoObject>;
+    FTimerDict: TDict<TSoObject, Integer>;
+    FTimer: TTimer;
     procedure OnItemDestroy(ASender: TObject);
     procedure PrepareTemplates;
+    procedure AddTime(ASender: TObject);
   public
     procedure ExecuteMouseUp(Args: TMouseEventArgs); // Process mouse on tick
     procedure ExecuteMouseDown(Args: TMouseEventArgs); // Process mouse on tick
@@ -47,6 +50,27 @@ begin
   Add(Result, AName);
 end;
 
+procedure TSoMouseProcessor.AddTime(ASender: TObject);
+var
+  it: TSoObject;
+begin
+  for it in FTimerDict.Keys do
+  begin
+    if FMouseOver.Contains(it) then
+      FTimerDict[it] := FTimerDict[it] + FTimer.Interval
+    else begin
+      FTimerDict[it] := 0;
+      Continue;
+    end;
+
+    if FTimerDict[it] >= 500 then
+    begin
+      TSoMouseHandlerFriend(FContainers[it]).MouseLongPress;
+      FTimer.Enabled := False;
+    end;
+  end;
+end;
+
 constructor TSoMouseProcessor.Create(const ACritical: TCriticalSection);
 begin
   inherited Create(ACritical);
@@ -59,11 +83,20 @@ begin
   FContainers := TDict<TSoObject, TSoMouseHandler>.Create;
   FTemplates := TDict<string, TCheckMouseHandleBehavior>.Create;
 
+  FTimer := TTimer.Create(nil);
+  FTimer.Interval := 50;
+  FTimer.Enabled := False;
+  FTimer.OnTimer := AddTime;
+  FTimerDict := TDict<TSoObject, Integer>.Create;
+
   PrepareTemplates;
 end;
 
 destructor TSoMouseProcessor.Destroy;
 begin
+  FTimer.Free;
+  FTimerDict.Free;
+
   FContainers.Clear;
   FContainers.Free;
   FTemplates.Free;
@@ -72,6 +105,7 @@ begin
   FMouseOver.Free;
   FMouseDowned.Free;
   FMouseUpped.Free;
+
   inherited;
 end;
 
@@ -79,9 +113,12 @@ procedure TSoMouseProcessor.ExecuteMouseDown(Args: TMouseEventArgs);
 var
   i: Integer;
 begin
+  FTimerDict.Clear;
+  FTimer.Enabled := True;
   for i := 0 to FMouseOver.Count - 1 do
   begin
     TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseDown(Args);
+    FTimerDict.Add(FMouseOver[i], 0);
   end;
   FMouseDowned := FMouseOver;
 end;
@@ -96,7 +133,7 @@ begin
   FMouseOver.Clear;
   for i := 0 to FList.Count - 1 do
   begin
-    if FList[i].CanExecute(Args.X, Args.Y) then
+    if FList[i].CanExecute(Args.X {- FList[i].Subject.X} ,Args.Y{ - FList[i].Subject.Y}) then
     begin
       TSoMouseHandlerFriend(FContainers[FList[i].Subject]).MouseMove(Args);
       FMouseOver.Add(FList[i].Subject)
@@ -130,6 +167,8 @@ procedure TSoMouseProcessor.ExecuteMouseUp(Args: TMouseEventArgs);
 var
   i: Integer;
 begin
+  FTimer.Enabled := False;
+
   for i := 0 to FMouseOver.Count - 1 do
     TSoMouseHandlerFriend(FContainers[FMouseOver[i]]).MouseDown(Args);
   FMouseUpped := FMouseOver;

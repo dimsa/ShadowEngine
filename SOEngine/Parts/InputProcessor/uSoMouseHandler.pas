@@ -16,6 +16,7 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnClick: TNotifyEvent;
     FCheckMouseHandleBehavior: TCheckMouseHandleBehavior;
+    FOnMouseLongPress: TNotifyEvent;
     procedure SetEnabled(const Value: Boolean);
     procedure SetOnClick(const Value: TNotifyEvent);
     procedure SetOnMouseDown(const Value: TMouseEvent);
@@ -25,17 +26,20 @@ type
     procedure EmptyNotifyEvent(ASender: TObject);
     procedure EmptyMouseEvent(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure SetOnMouseMove(const Value: TMouseMoveEvent);
+    procedure SetOnMouseLongPress(const Value: TNotifyEvent);
   protected
     procedure MouseDown(Args: TMouseEventArgs);
     procedure MouseUp(Args: TMouseEventArgs);
     procedure MouseEnter;
     procedure MouseLeave;
+    procedure MouseLongPress;
     procedure MouseMove(Args: TMouseMoveEventArgs);
   public
     property Enabled: Boolean read FEnabled write SetEnabled;
     property OnMouseDown: TMouseEvent read FOnMouseDown write SetOnMouseDown;
     property OnMouseUp: TMouseEvent read FOnMouseUp write SetOnMouseUp;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write SetOnMouseMove;
+    property OnMouseLongPress: TNotifyEvent read FOnMouseLongPress write SetOnMouseLongPress;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write SetOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write SetOnMouseLeave;
     property OnClick: TNotifyEvent read FOnClick write SetOnClick;
@@ -98,6 +102,12 @@ begin
     FOnMouseLeave(Self);
 end;
 
+procedure TSoMouseHandler.MouseLongPress;
+begin
+  if Assigned(FOnMouseLongPress) then
+    FOnMouseLongPress(Self);
+end;
+
 procedure TSoMouseHandler.MouseMove(Args: TMouseMoveEventArgs);
 begin
   if Assigned(FOnMouseMove) then
@@ -133,6 +143,11 @@ end;
 procedure TSoMouseHandler.SetOnMouseLeave(const Value: TNotifyEvent);
 begin
   FOnMouseLeave := Value;
+end;
+
+procedure TSoMouseHandler.SetOnMouseLongPress(const Value: TNotifyEvent);
+begin
+  FOnMouseLongPress := Value;
 end;
 
 procedure TSoMouseHandler.SetOnMouseMove(const Value: TMouseMoveEvent);
