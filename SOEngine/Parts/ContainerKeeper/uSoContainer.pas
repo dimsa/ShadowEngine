@@ -4,7 +4,8 @@ interface
 
 uses
   uSoTypes, uSoBasePart, uSoContainerTypes,
-  uSoAnimation, uSoColliderObject, uSoKeyHandler, uSoMouseHandler, uE2DRendition, uSoLogic;
+  uSoAnimation, uSoColliderObject, uSoKeyHandler, uSoMouseHandler, uE2DRendition, uSoLogic,
+  uSoObject;
 
 type
   TSoBasePartClass = class of TSoBasePart;
@@ -13,6 +14,7 @@ type
 
   TSoContainer = class
   private
+    FSoObject: TSoObject;
     FParts: TPartDict;
     function GetItem(AIndex: TSoBasePartClass): TList<TSoBasePart>;
     procedure OnBasePartDestroy(ASender: TObject);

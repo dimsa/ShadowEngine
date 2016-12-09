@@ -143,28 +143,6 @@ begin
   FList.Move(FList.IndexOf(TEngine2DRendition(ASender)), 0);
 end;
 
-{function TSoRenderer.OnAllRenditionRequest(ASender: TSoObject): TRectF;
-var
-  i: Integer;
-  vXLeft, vYTop, vXRight, vYBottom: Single;
-  vRend: TEngine2DRendition;
-  cont: TSoContainer;                                                                                                ,,
-begin
-  Result := TRectF.Empty;//TList<TEngine2DRendition>.Create;
-
-  cont := TSoContainer(TSoObject(ASender).Container);
-   for  i := 0 to cont.Items[TEngine2DRendition].Count - 1 do
- // for i in TSoContainer(ASender.Container).Items[TEngine2DRendition].Items do
-  begin
-    vRend := TEngine2DRendition(TSoContainer(ASender.Container).Items[TEngine2DRendition].Items[i]);
-    Result.Left := Min(Result.Left, Abs((vRend.Width / 2)  * CJustifyPoints[vRend.Justify].Left) + vRend.Margin.X);
-    Result.Right := Max(Result.Right, Abs((vRend.Width / 2)  * CJustifyPoints[vRend.Justify].Right) + vRend.Margin.X);
-    Result.Top := Min(Result.Top, Abs((vRend.Height / 2)  * CJustifyPoints[vRend.Justify].Top) + vRend.Margin.Y);
-    Result.Bottom := Max(Result.Bottom, Abs((vRend.Height / 2)  * CJustifyPoints[vRend.Justify].Bottom) + vRend.Margin.Y);
-  end;
-
-end;   }
-
 function TSoRenderer.OnAllRenditionRequest(ASender: TSoObject): TRectF;
 var
   i: Integer;
@@ -174,11 +152,10 @@ var
 begin
   Result := TRectF.Empty;
 
-//  cont := TSoContainer(TSoObject(ASender).Container);
   vList := FElementBySubject[TSoObject(ASender)];
   for  i := 0 to vList.Count - 1 do
   begin
-    vRend := TEngine2DRendition(vList[i]);// TEngine2DRendition(TSoContainer(ASender.Container).Items[TEngine2DRendition].Items[i]);
+    vRend := TEngine2DRendition(vList[i]);
     Result.Left := Min(Result.Left, (vRend.Width / 2)  * CJustifyPoints[vRend.Justify].Left) + vRend.Margin.X;
     Result.Right := Max(Result.Right,(vRend.Width / 2)  * CJustifyPoints[vRend.Justify].Right) + vRend.Margin.X;
     Result.Top := Min(Result.Top, (vRend.Height / 2)  * CJustifyPoints[vRend.Justify].Top) + vRend.Margin.Y;

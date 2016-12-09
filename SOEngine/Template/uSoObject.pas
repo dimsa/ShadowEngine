@@ -13,13 +13,10 @@ type
     function GetProperty(APropertyName: string): TSoProperty;
     function GetHeight: Single;
     function GetWidth: Single;
-    //procedure AddChangeScaleHandler(const AHandler: TNotifyEvent);
-  //  procedure RemoveChangeScaleHandler(const AHandler: TNotifyEvent);
-//    procedure SetProperty(APropertyName: string; const Value: TSoProperty);
   protected
     FPosition: TPosition;
     FProperties: TSoProperties;
-    FOnDestroyHandlers{, FChangeScaleHandlers}: TNotifyEventList;
+    FOnDestroyHandlers: TNotifyEventList;
     FOnChangePositionHandlers: TEventList<TPosition>;
     function GetCenter: TPointF;
     function GetScalePoint: TPointF;
