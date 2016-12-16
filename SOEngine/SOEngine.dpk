@@ -93,9 +93,6 @@ contains
   uUnitManager in 'Manager\uUnitManager.pas',
   uTemplateManager in 'Manager\uTemplateManager.pas',
   uWorldStatus in 'Manager\uWorldStatus.pas',
-  uSoContainerKeeper in 'Parts\ContainerKeeper\uSoContainerKeeper.pas',
-  uSoContainer in 'Parts\ContainerKeeper\uSoContainer.pas',
-  uSoContainerTypes in 'Parts\ContainerKeeper\uSoContainerTypes.pas',
   uSoProperties in 'Parts\Properties\uSoProperties.pas',
   uSoProperty in 'Parts\Properties\uSoProperty.pas',
   uSoPropertyKeeper in 'Parts\Properties\uSoPropertyKeeper.pas',
@@ -107,10 +104,8 @@ contains
   uSoOperandGroup in 'SoExpressionParser\uSoOperandGroup.pas',
   uSoParserValue in 'SoExpressionParser\uSoParserValue.pas',
   uSoRenditionTemplate in 'Parts\Rendition\uSoRenditionTemplate.pas',
-  uSoTypes in 'Common\uSoTypes.pas',
   uJsonUtils in 'Common\uJsonUtils.pas',
   uSoSprite in 'Parts\Rendition\uSoSprite.pas',
-  uSoObjectDefaultProperties in 'Common\uSoObjectDefaultProperties.pas',
   uSoManager in 'Manager\uSoManager.pas',
   uSoMouseHandleCheckers in 'Parts\InputProcessor\uSoMouseHandleCheckers.pas',
   uSoEngineEvents in 'Main\uSoEngineEvents.pas',
@@ -146,8 +141,13 @@ contains
   uSoEngineOptions in 'Main\uSoEngineOptions.pas',
   uSoColliderExtenderFactory in 'Parts\Collider\uSoColliderExtenderFactory.pas',
   uSoText in 'Parts\Rendition\uSoText.pas',
-  uSoBasePosition in 'Common\uSoBasePosition.pas',
-  uSoPositionConverter in 'Common\uSoPositionConverter.pas';
+  uSoBasePosition in 'Main\Position\uSoBasePosition.pas',
+  uSoPositionConverter in 'Main\Position\uSoPositionConverter.pas',
+  uSoObjectDefaultProperties in 'Main\Common\uSoObjectDefaultProperties.pas',
+  uSoTypes in 'Main\Common\uSoTypes.pas',
+  uSoContainer in 'Main\Container\uSoContainer.pas',
+  uSoContainerKeeper in 'Main\Container\uSoContainerKeeper.pas',
+  uSoContainerTypes in 'Main\Container\uSoContainerTypes.pas';
 
 end.
 

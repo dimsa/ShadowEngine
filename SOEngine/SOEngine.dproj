@@ -9,7 +9,7 @@
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1049</TargetedPlatforms>
         <AppType>Package</AppType>
-        <Platform>iOSSimulator</Platform>
+        <Platform>Win32</Platform>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -206,9 +206,6 @@
         <DCCReference Include="Manager\uUnitManager.pas"/>
         <DCCReference Include="Manager\uTemplateManager.pas"/>
         <DCCReference Include="Manager\uWorldStatus.pas"/>
-        <DCCReference Include="Parts\ContainerKeeper\uSoContainerKeeper.pas"/>
-        <DCCReference Include="Parts\ContainerKeeper\uSoContainer.pas"/>
-        <DCCReference Include="Parts\ContainerKeeper\uSoContainerTypes.pas"/>
         <DCCReference Include="Parts\Properties\uSoProperties.pas"/>
         <DCCReference Include="Parts\Properties\uSoProperty.pas"/>
         <DCCReference Include="Parts\Properties\uSoPropertyKeeper.pas"/>
@@ -220,10 +217,8 @@
         <DCCReference Include="SoExpressionParser\uSoOperandGroup.pas"/>
         <DCCReference Include="SoExpressionParser\uSoParserValue.pas"/>
         <DCCReference Include="Parts\Rendition\uSoRenditionTemplate.pas"/>
-        <DCCReference Include="Common\uSoTypes.pas"/>
         <DCCReference Include="Common\uJsonUtils.pas"/>
         <DCCReference Include="Parts\Rendition\uSoSprite.pas"/>
-        <DCCReference Include="Common\uSoObjectDefaultProperties.pas"/>
         <DCCReference Include="Manager\uSoManager.pas"/>
         <DCCReference Include="Parts\InputProcessor\uSoMouseHandleCheckers.pas"/>
         <DCCReference Include="Main\uSoEngineEvents.pas"/>
@@ -259,8 +254,13 @@
         <DCCReference Include="Main\uSoEngineOptions.pas"/>
         <DCCReference Include="Parts\Collider\uSoColliderExtenderFactory.pas"/>
         <DCCReference Include="Parts\Rendition\uSoText.pas"/>
-        <DCCReference Include="Common\uSoBasePosition.pas"/>
-        <DCCReference Include="Common\uSoPositionConverter.pas"/>
+        <DCCReference Include="Main\Position\uSoBasePosition.pas"/>
+        <DCCReference Include="Main\Position\uSoPositionConverter.pas"/>
+        <DCCReference Include="Main\Common\uSoObjectDefaultProperties.pas"/>
+        <DCCReference Include="Main\Common\uSoTypes.pas"/>
+        <DCCReference Include="Main\Container\uSoContainer.pas"/>
+        <DCCReference Include="Main\Container\uSoContainerKeeper.pas"/>
+        <DCCReference Include="Main\Container\uSoContainerTypes.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Template\uItemAdd.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>
@@ -290,7 +290,7 @@
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp230.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
-            <Deployment Version="2">
+            <Deployment Version="3">
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
                         <Overwrite>true</Overwrite>
@@ -311,7 +311,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\17.0\Bpl\SOEngine.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\18.0\Bpl\SOEngine.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>SOEngine.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -322,7 +322,16 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="ProjectOSXResource">
                     <Platform Name="OSX32">
                         <RemoteDir>Contents\Resources</RemoteDir>
@@ -368,16 +377,19 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Required="true" Name="ProjectOutput">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
                     </Platform>
-                    <Platform Name="OSX32">
+                    <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
-                    <Platform Name="iOSDevice32">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                    </Platform>
+                    <Platform Name="Linux64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="OSX32">
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="Android">
@@ -408,12 +420,7 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="AndroidLibnativeX86File">
-                    <Platform Name="Android">
-                        <RemoteDir>library\lib\x86</RemoteDir>
-                        <Operation>1</Operation>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="AndroidLibnativeX86File"/>
                 <DeployClass Name="ProjectiOSDeviceDebug">
                     <Platform Name="iOSDevice64">
                         <RemoteDir>..\$(PROJECTNAME).app.dSYM\Contents\Resources\DWARF</RemoteDir>
@@ -636,16 +643,7 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
