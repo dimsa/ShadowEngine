@@ -14,6 +14,7 @@ type
   private
     FElements: TDictionary<IItemView, TItemView>;
     FOptionsForm: TNamedOptionsForm;
+    FInformLocalLabel, FInformGlobalLabel: TLabel;
     FEffect: TGlowEffect;
     FParentTopLeft: TPointFunction;
     FFrame: TGraphicItemWorkspaceFrame;
@@ -29,9 +30,10 @@ type
     procedure OnWorkspaceMouseDown(ASender: TObject);
     procedure OnWorkspaceMouseUp(ASender: TObject);
     procedure OnWorkspaceMouseMove(ASender: TObject);
+    procedure OnMouseMoving(ASender: TObject; APoint: TpointF);
   public
     constructor Create(AFrame: TGraphicItemWorkspaceFrame;{APanel: TPanel; ABackground,} ASelected: TImage;
-      AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
+      AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction; AInformGlobalLabel,  AInformLocalLabel: TLabel);
     destructor Destroy; override;
     procedure ClearAndFreeImg;
     function GetMousePos: TPoint;
@@ -61,6 +63,7 @@ var
   vImg: TItemView;
 begin
   vImg := TItemView.Create(FFrame.Panel, PanelTopLeft);
+  vImg.MouseMoving := OnMouseMoving;
   FElements.Add(vImg, vImg);
   vImg.Image.WrapMode := TImageWrapMode.Stretch;
   Result := vImg;
@@ -84,7 +87,7 @@ begin
 end;
 
 constructor TGraphicItemWorkspace.Create(AFrame: TGraphicItemWorkspaceFrame; ASelected: TImage;
-  AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction);
+  AOpenDialog: TOpenDialog; AParentTopLeft: TPointFunction; AInformGlobalLabel, AInformLocalLabel: TLabel);
 begin
   FElements := TDictionary<IItemView, TItemView>.Create;
   FSelected := ASelected;
@@ -92,6 +95,8 @@ begin
   FParentTopLeft := AParentTopLeft;
   FOptionsForm := TNamedOptionsForm.Create(nil);
   FEffect := TGlowEffect.Create(nil);
+  FInformLocalLabel := AInformLocalLabel;
+  FInformGlobalLabel := AInformGlobalLabel;
 
   FFrame := AFrame;
   with FFrame do begin
@@ -150,6 +155,24 @@ begin
   Result := FFrame.Panel.Scale.X;
 end;
 
+procedure TGraphicItemWorkspace.OnMouseMoving(ASender: TObject;
+  APoint: TPointF);
+var
+  vSx, vSy: string;
+  vGlobalX, vGlobalY: Single;
+begin
+  Str(APoint.X:0:2, vSx);
+  Str(APoint.Y:0:2, vSy);
+  FInformLocalLabel.Text := 'X = ' + vSx + ' Y = ' + vSy;
+
+  vGlobalX := TItemView(ASender).MousePosGlobal.X;
+  vGlobalY := TItemView(ASender).MousePosGlobal.Y;
+
+  Str(vGlobalX:0:2, vSx);
+  Str(vGlobalY:0:2, vSy);
+  FInformGlobalLabel.Text := 'X = ' + vSx + ' Y = ' + vSy;
+end;
+
 procedure TGraphicItemWorkspace.OnWorkspaceMouseDown(ASender: TObject);
 begin
   Objecter.MouseDown;
@@ -157,9 +180,19 @@ begin
 end;
 
 procedure TGraphicItemWorkspace.OnWorkspaceMouseMove(ASender: TObject);
+var
+   vGlobalX, vGlobalY: Single;
+   vSx, vSy: string;
 begin
   Objecter.MouseMove;
   Imager.MouseMove;
+
+  vGlobalX := MousePos.X - FParentTopLeft.X;
+  vGlobalY := MousePos.Y - FParentTopLeft.Y;
+
+  Str(vGlobalX:0:2, vSx);
+  Str(vGlobalY:0:2, vSy);
+  FInformGlobalLabel.Text := 'X = ' + vSx + ' Y = ' + vSy;
 end;
 
 procedure TGraphicItemWorkspace.OnWorkspaceMouseUp(ASender: TObject);

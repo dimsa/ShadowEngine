@@ -28,6 +28,11 @@ type
     ShapeFrame: TShapeFrame;
     StatusSelectorFrame: TStatusSelectorFrame;
     WorkspaceFrame: TWorkspaceFrame;
+    StatusBar: TPanel;
+    GlobalPosImg: TImage;
+    GlobalPos: TLabel;
+    LocalPos: TLabel;
+    LocalPosImg: TImage;
     procedure FormCreate(Sender: TObject);
     procedure SaveProjectBtnClick(Sender: TObject);
     procedure LoadProjectBtnClick(Sender: TObject);
@@ -88,7 +93,7 @@ end;
 procedure TSSBForm.FormCreate(Sender: TObject);
 begin
   // MVP
-  FGraphicItemWorkspaceView := TGraphicItemWorkspace.Create(WorkspaceFrame.GraphicItemWorkspaceFrame, Selected, OpenDialog, FormTopLeft);
+  FGraphicItemWorkspaceView := TGraphicItemWorkspace.Create(WorkspaceFrame.GraphicItemWorkspaceFrame, Selected, OpenDialog, FormTopLeft, GlobalPos, LocalPos);
 
   FMainPresenter := TMainPresenter.Create(Self, FGraphicItemWorkspaceView);
   InitFrames;

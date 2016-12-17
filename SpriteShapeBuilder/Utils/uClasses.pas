@@ -8,8 +8,6 @@ uses
   System.JSON;
 
 type
-
-
   TProcedure = procedure of Object;
   TDelegate<T> = function: T of object;
   TEvent<T> = procedure(ASender: TObject; AEventArgs: T) of object;

@@ -6,7 +6,7 @@ uses
   System.UITypes, System.Classes, System.Types,
   FMX.Types, FMX.Objects, FMX.Graphics, FMX.Controls, uSSBTypes,
   uIItemView, uItemImagerPresenter, uIItemPresenter, uMVPFrameWork,
-  uEasyDevice;
+  uEasyDevice, uClasses;
 
 type
 
@@ -16,6 +16,7 @@ type
     FImage: TImage;
     FParentTopLeft: TPointFunction;
     FLastMousePos: TPointF;
+    FMouseMoving: TEvent<TPointF>;
     function GetWidth: Integer;
     procedure SetWidth(AValue: Integer);
     function GetHeight: Integer;
@@ -35,7 +36,9 @@ type
     property Presenter: IItemPresenter read GetPresenter write SetPresenter;
     procedure ChangeCursor(const ACursor: TCursor);
     property Image: TImage read FImage write FImage;
+    property MouseMoving: TEvent<TPointF> read FMouseMoving write FMouseMoving;
     function MousePos: TPointF;
+    function MousePosGlobal: TPointF;
     procedure AssignBitmap(ABmp: TBitmap);
     constructor Create(AOwner: TControl; AParentTopLeft: TPointFunction);
     destructor Destroy; override;
@@ -123,16 +126,19 @@ begin
   FLastMousePos.X := X;
   FLastMousePos.Y := Y;
   FPresenter.MouseMove;
+
+  if Assigned(FMouseMoving) then
+    FMouseMoving(Self, TPointF.Create(X, Y));
 end;
 
 function TItemView.MousePos: TPointF;
-var
-  a,b,c: TPointF;
 begin
-  a := uEasyDevice.MousePos;
-  b := FParentTopLeft;
-  c := FImage.Position.Point;
   Result := uEasyDevice.MousePos - FParentTopLeft - FImage.Position.Point;
+end;
+
+function TItemView.MousePosGlobal: TPointF;
+begin
+  Result := uEasyDevice.MousePos - FParentTopLeft;
 end;
 
 procedure TItemView.MouseUp(Sender: TObject; Button: TMouseButton;
