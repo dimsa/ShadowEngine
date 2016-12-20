@@ -28,7 +28,7 @@ procedure TSoLogicKeeper.Add(const AItem: TSoLogic; const AName: string);
 var
   vName: string;
 begin
-  {$I .\Template\uItemAdd.inc}
+  {$I .\SoObject\uItemAdd.inc}
 end;
 
 function TSoLogicKeeper.AddFromTemplate(const ASubject: TSoObject; const ATemplateName,

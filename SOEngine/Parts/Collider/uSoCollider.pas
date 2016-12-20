@@ -45,7 +45,7 @@ var
   vName: string;
 begin
   AddAsProperty(AItem, AName);
-  {$I .\Template\uItemAdd.inc}
+  {$I .\SoObject\uItemAdd.inc}
 end;
 
 function TSoCollider.Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition; const AName: string): TSoColliderObj;

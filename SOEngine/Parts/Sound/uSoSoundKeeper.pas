@@ -42,7 +42,7 @@ begin
 
   AddAsProperty(AItem, AName);
 
-  {$I .\Template\uItemAdd.inc}
+  {$I .\SoObject\uItemAdd.inc}
 end;
 
 function TSoSoundKeeper.AddByFileName(const ASubject: TSoObject; const AFileName, AName: string): TSoSound;

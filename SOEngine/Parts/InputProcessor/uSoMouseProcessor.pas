@@ -39,7 +39,7 @@ procedure TSoMouseProcessor.Add(const AItem: TSoMouseHandler;
 var
   vName: string;
 begin
-  {$I .\Template\uItemAdd.inc}
+  {$I .\SoObject\uItemAdd.inc}
   FContainers.Add(AItem.Subject, AItem);
 end;
 

@@ -27,7 +27,7 @@ procedure TSoKeyProcessor.Add(const AItem: TSoKeyHandler; const AName: string);
 var
   vName: string;
 begin
-  {$I .\Template\uItemAdd.inc}
+  {$I .\SoObject\uItemAdd.inc}
 end;
 
 constructor TSoKeyProcessor.Create(const ACritical: TCriticalSection);

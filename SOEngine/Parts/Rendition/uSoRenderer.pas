@@ -61,7 +61,7 @@ begin
   TSoRenditionFriend(AItem).OnBringToBack := BringToBack;
   TSoRenditionFriend(AItem).OnSendToFront := SendToFront;
 
-  {$I .\Template\uItemAdd.inc}
+  {$I .\SoObject\uItemAdd.inc}
   TSoRenditionFriend(AItem).OnRequestAllRenditions := OnAllRenditionRequest;
 end;
 

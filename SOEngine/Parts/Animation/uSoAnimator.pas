@@ -29,7 +29,7 @@ procedure TSoAnimator.Add(const AItem: TSoAnimation; const AName: string);
 var
   vName: string;
 begin
-  {$I .\Template\uItemAdd.inc}
+  {$I .\SoObject\uItemAdd.inc}
 end;
 
 function TSoAnimator.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoAnimation;

@@ -36,7 +36,7 @@ procedure TSoFormattor.Add(const AItem: TSoFormatter; const AName: string);
 var
   vName: string;
 begin
-  {$I .\Template\uItemAdd.inc}
+  {$I .\SoObject\uItemAdd.inc}
 end;
 
 function TSoFormattor.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoFormatter;
