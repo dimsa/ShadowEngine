@@ -148,7 +148,8 @@ contains
   uSoContainerTypes in 'Main\Container\uSoContainerTypes.pas',
   uSoPositionAdapter in 'Parts\PositionAdapter\uSoPositionAdapter.pas',
   uSoObject in 'SoObject\uSoObject.pas',
-  uSoObjectKeeper in 'SoObject\uSoObjectKeeper.pas';
+  uSoObjectKeeper in 'SoObject\uSoObjectKeeper.pas',
+  uSoPosition in 'Parts\PositionAdapter\uSoPosition.pas';
 
 end.
 

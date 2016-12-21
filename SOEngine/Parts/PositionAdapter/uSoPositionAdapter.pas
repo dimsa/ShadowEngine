@@ -6,53 +6,42 @@ uses
   uSoBasePart;
 
 type
-  TSoPositionAdapter = class(TSoBasePart)
-  private
-    FRotate: Single;
-    FScaleX: Single;
-    FScaleY: Single;
-    FX: Single;
-    FY: Single;
-    procedure SetRotate(const Value: Single);
-    procedure SetScaleX(const Value: Single);
-    procedure SetScaleY(const Value: Single);
-    procedure SetX(const Value: Single);
-    procedure SetY(const Value: Single);
+  TSoPositionAdapter = class
   public
-    property X: Single read FX write SetX;
-    property Y: Single read FY write SetY;
-    property Rotate: Single read FRotate write SetRotate;
-    property ScaleX: Single read FScaleX write SetScaleX;
-    property ScaleY: Single read FScaleY write SetScaleY;
+    function AdaptScaleX(const AValue: Single): Single;
+    function AdaptScaleY(const AValue: Single): Single;
+    function AdaptRotate(const AValue: Single): Single;
+    function AdaptX(const AValue: Single): Single;
+    function AdaptY(const AValue: Single): Single;
   end;
 
 implementation
 
 { TSoPositionAdapter }
 
-procedure TSoPositionAdapter.SetRotate(const Value: Single);
+function TSoPositionAdapter.AdaptRotate(const AValue: Single): Single;
 begin
-  FRotate := Value;
+  Result := AValue;
 end;
 
-procedure TSoPositionAdapter.SetScaleX(const Value: Single);
+function TSoPositionAdapter.AdaptScaleX(const AValue: Single): Single;
 begin
-  FScaleX := Value;
+  Result := AValue;
 end;
 
-procedure TSoPositionAdapter.SetScaleY(const Value: Single);
+function TSoPositionAdapter.AdaptScaleY(const AValue: Single): Single;
 begin
-  FScaleY := Value;
+  Result := AValue;
 end;
 
-procedure TSoPositionAdapter.SetX(const Value: Single);
+function TSoPositionAdapter.AdaptX(const AValue: Single): Single;
 begin
-  FX := Value;
+  Result := AValue;
 end;
 
-procedure TSoPositionAdapter.SetY(const Value: Single);
+function TSoPositionAdapter.AdaptY(const AValue: Single): Single;
 begin
-  FY := Value;
+  Result := AValue;
 end;
 
 end.
