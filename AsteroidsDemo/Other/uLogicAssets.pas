@@ -139,12 +139,12 @@ end;
 
 class procedure TLogicAssets.OnCollideAsteroid(ASender: TObject; AEvent: TObjectCollidedEventArgs);
 begin
-  TSoColliderObj(ASender).Subject[Sound].Val<TSoSound>.Play;
+  //TSoColliderObj(ASender).Subject[Sound].Val<TSoSound>.Play;
 end;
 
 class procedure TLogicAssets.OnCollideShip(ASender: TObject; AEvent: TObjectCollidedEventArgs);
 begin
-  TSoColliderObj(ASender).Subject[Sound].Val<TSoSound>.Play;
+  //TSoColliderObj(ASender).Subject[Sound].Val<TSoSound>.Play;
 end;
 
 class procedure TLogicAssets.OnTestMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);

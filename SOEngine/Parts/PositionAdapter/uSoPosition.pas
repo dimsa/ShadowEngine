@@ -3,13 +3,14 @@ unit uSoPosition;
 interface
 
 uses
-  uSoBasePosition, uGeometryClasses, uCommonClasses, uSoTypes, uSoPositionAdapter;
+  uSoBasePosition, uGeometryClasses, uCommonClasses, uSoTypes,
+  uISoPositionAdapter, uSoPositionAdapter;
 
 type
   TSoPosition = class sealed(TSoBasePosition)
   private
     FPosition: TPosition;
-    FPositionAdapter: TSoPositionAdapter;
+    FPositionAdapter: ISoPositionAdapter;
     FChanged: TNotifyEventList;
     FAbsolutePositionChanged: TEventList<TPosition>;
     function GetRotate: Single;
@@ -39,7 +40,8 @@ type
     property ScalePoint: TPointF read GetScalePoint write SetScalePoint;
     property Changed: TNotifyEventList read FChanged;
     property AbsolutePositionChanged: TEventList<TPosition> read FAbsolutePositionChanged;
-    constructor Create;
+    constructor Create(const APositionAdapter: ISoPositionAdapter); overload;
+    constructor Create; overload;
     destructor Destroy; override;
   end;
 
@@ -47,18 +49,29 @@ implementation
 
 { TSoPosition }
 
-constructor TSoPosition.Create;
+constructor TSoPosition.Create(const APositionAdapter: ISoPositionAdapter);
 begin
   FChanged := TNotifyEventList.Create;
   FAbsolutePositionChanged := TEventList<TPosition>.Create;
-  FPositionAdapter := TSoPositionAdapter.Create;
+  FPositionAdapter := APositionAdapter;
+
+  FPosition.X := 0;
+  FPosition.Y := 0;
+  FPosition.Rotate := 0;
+  FPosition.ScaleX := 1;
+  FPosition.ScaleY := 1;
+end;
+
+constructor TSoPosition.Create;
+begin
+  Create(TAbsolutePositionAdapter.Create);
 end;
 
 destructor TSoPosition.Destroy;
 begin
   FChanged.Free;
   FAbsolutePositionChanged.Free;
-  FPositionAdapter.Free;
+  FPositionAdapter := nil;
   inherited;
 end;
 

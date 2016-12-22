@@ -125,7 +125,7 @@ begin
     AddProperty('Acceleration', FAcceleration);
     AddProperty('Destinations', FDest);
     AddProperty('World', FManager.ObjectByName('World'));
-    AddSoundFromTemplate('ShipCollide');
+    //AddSoundFromTemplate('ShipCollide');
     AddNewLogic(TLogicAssets.MovingToDestination, 'MovingThroughSides');
     AddMouseHandler(ByCollider).OnMouseDown := TLogicAssets.OnTestMouseDown;
   end;
@@ -155,7 +155,7 @@ begin
       ApplyForce((Random - 0.5) * 100000, (Random - 0.5) * 100000);
       AddOnBeginContactHandler(TLogicAssets.OnCollideAsteroid);
     end;
-    AddSoundFromTemplate('AsteroidCollide');
+    //AddSoundFromTemplate('AsteroidCollide');
     AddProperty('Acceleration', FAcceleration);
     AddProperty('World', FManager.ObjectByName('World'));
     AddNewLogic(TLogicAssets.MovingThroughSides);
