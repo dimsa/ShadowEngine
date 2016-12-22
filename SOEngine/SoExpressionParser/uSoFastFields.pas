@@ -4,7 +4,7 @@ interface
 
 uses
   System.Generics.Collections, System.SysUtils, uClasses,
-  uSoParserValue, uNamedList, uSoObject, uSoObjectDefaultProperties, uSoTypes;
+  uSoParserValue, uNamedList, uISoObject, uSoObjectDefaultProperties, uSoTypes;
 
 type
 
@@ -23,7 +23,7 @@ type
     FIsHor: TBooleanFunction;
   public
     function IsHor: Boolean;
-    procedure ClearForSubject(const AObject: TSoObject);
+    procedure ClearForSubject(const AObject: ISoObject);
     procedure ClearBroken; // Удаляет все сломанные фастфильды
     destructor Destroy; override;
     constructor Create(AIsHor: TBooleanFunction); reintroduce;
@@ -53,10 +53,10 @@ type
 
   TFastObjectField = class(TFastField)
   private
-    FObject: TSoObject;
+    FObject: ISoObject;
   public
-    property Subject: TSoObject read FObject;
-    constructor Create(const AObject: TSoObject); reintroduce; virtual;
+    property Subject: ISoObject read FObject;
+    constructor Create(const AObject: ISoObject); reintroduce; virtual;
     function IsBroken: Boolean; override;
     destructor Destroy; override;
   end;
@@ -170,7 +170,7 @@ begin
 end;
 
 procedure TFastFields.ClearForSubject(
-  const AObject: TSoObject);
+  const AObject: ISoObject);
 var
   i: Integer;
   vFF: TFastField;
@@ -284,7 +284,7 @@ end;
 
 { TFastObjectFields }
 
-constructor TFastObjectField.Create(const AObject: TSoObject);
+constructor TFastObjectField.Create(const AObject: ISoObject);
 begin
   fObject := AObject;
 end;

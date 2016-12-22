@@ -6,7 +6,7 @@ uses
   System.SyncObjs,
   uSoTypes, uCommonClasses, uEasyDevice,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uSoEngineOptions,
-  uEngine2DManager, uEngine2DStatus, uSoObject, uSoManager, uWorldStatus,
+  uEngine2DManager, uEngine2DStatus, uISoObject, uSoManager, uWorldStatus,
   uSoObjectDefaultProperties, uSoEngineEvents;
 
 type
@@ -27,7 +27,7 @@ type
     FRect: TRectObject;
     FManager: TSoManager; // Contains all managers
     FWorldStatus: TWorldStatus;
-    FEngineObject: TSoObject; // it's object of engine
+    FEngineObject: ISoObject; // it's object of engine
     procedure OnImageResize(ASender: TObject);
     function IsHor: Boolean;
     procedure SetImage(const Value: TAnonImage);
@@ -100,11 +100,6 @@ begin
   Result := FEngineThread.FPS;
 end;
 
-{procedure TSoEngine.Init(AImage: TImage);
-begin
-  Image := AImage;
-end;   }
-
 procedure TSoEngine.InitDefaultOptions;
 begin
    FOptions := TSoEngineOptions.Create;
@@ -119,26 +114,12 @@ begin
     FEngineObject := ActiveContainer;
     FEngineObject.AddProperty(RenditionRect).Obj := FRect;
   end;
-{  FEngineObject.AddProperty(SummaryWidth).AsDouble := FWidth;
-  FEngineObject.AddProperty(SummaryHeight).AsDouble := FHeight; }
 end;
 
 function TSoEngine.IsHor: Boolean;
 begin
   Result := FRect.IsHor;
 end;
-
-{rocedure TSoEngine.OnMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; x, y: single);
-begin
-  FModel.ExecuteMouseDown()
-end;
-
-procedure TSoEngine.OnMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; x, y: single);
-begin
-
-end;  }
 
 procedure TSoEngine.OnImageResize(ASender: TObject);
 begin

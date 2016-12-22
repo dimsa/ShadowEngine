@@ -5,7 +5,7 @@ interface
 uses
   System.SyncObjs, uEngine2DClasses, System.SysUtils,
   uSoTypes, uCommonClasses,
-  uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
+  uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uISoObject,
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper, uSoContainerKeeper,
   uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory, uSoSoundKeeper;
 
@@ -49,7 +49,7 @@ type
     // Common
     property EngineSize: TPointF read GetEngineSize;
   public
-    function ObjectByName(const AObjectName: string): TSoObject;
+    function ObjectByName(const AObjectName: string): ISoObject;
     procedure ExecuteOnTick;
     procedure ExecuteKeyUp(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
     procedure ExecuteKeyDown(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
@@ -152,7 +152,7 @@ begin
   FColliderExtenderFactory := TSoColliderExtenderFactory.Create(FOptions.ColliderOptions);
 end;
 
-function TSoModel.ObjectByName(const AObjectName: string): TSoObject;
+function TSoModel.ObjectByName(const AObjectName: string): ISoObject;
 begin
   Result := FObjectKeeper.Items[AObjectName];
 end;

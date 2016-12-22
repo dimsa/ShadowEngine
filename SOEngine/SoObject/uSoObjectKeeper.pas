@@ -3,29 +3,32 @@ unit uSoObjectKeeper;
 interface
 
 uses
-  uSoObject, uSoBaseOperator, System.Generics.Collections;
+  uSoBaseOperator, System.Generics.Collections, uISoObject;
 
 type
 
-  TSoObjectKeeper = class(TSoOperator<TSoObject>)
+  TSoObjectKeeper = class(TSoOperator<ISoObject>)
   private
-    function GetItem(AName: string): TSoObject;
+    function GetItem(AName: string): ISoObject;
   public
-    property Items[AName: string]: TSoObject read GetItem; default;
-    function AddNewObject(const AName: string = ''): TSoObject;
+    property Items[AName: string]: ISoObject read GetItem; default;
+    function AddNewObject(const AName: string = ''): ISoObject;
   end;
 
 implementation
 
+uses
+  uSoObject;
+
 { TSoObjectKeeper }
 
-function TSoObjectKeeper.AddNewObject(const AName: string): TSoObject;
+function TSoObjectKeeper.AddNewObject(const AName: string): ISoObject;
 begin
   Result := TSoObject.Create;
   Add(Result, AName);
 end;
 
-function TSoObjectKeeper.GetItem(AName: string): TSoObject;
+function TSoObjectKeeper.GetItem(AName: string): ISoObject;
 begin
   Result := FList[AName];
 end;

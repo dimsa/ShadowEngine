@@ -3,7 +3,7 @@ unit uLogicAssets;
 interface
 
 uses
-  uSoObject, uSoTypes, uGeometryClasses, System.Math, uIntersectorMethods, uSoObjectDefaultProperties,
+  uISoObject, uSoTypes, uGeometryClasses, System.Math, uIntersectorMethods, uSoObjectDefaultProperties,
   uSoColliderObjectTypes, uAcceleration;
 
 type
@@ -13,14 +13,14 @@ type
 
   TLogicAssets = class
   private
-    class function MakeTurnToDestination(const AShip: TSoObject; const ADir, ATurnRate: Single): TFireKoef;
-    class procedure MovingThroughSidesInner(ASoObject, AWorld: TSoObject);
+    class function MakeTurnToDestination(const AShip: ISoObject; const ADir, ATurnRate: Single): TFireKoef;
+    class procedure MovingThroughSidesInner(ASoObject, AWorld: ISoObject);
   public
     class procedure OnTestMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-    class procedure MovingThroughSides(ASoObject: TSoObject);
-    class procedure MovingByAcceleration(ASoObject: TSoObject);
-    class procedure MovingToDestination(ASoObject: TSoObject);
-    class procedure FollowTheShip(ASoObject: TSoObject);
+    class procedure MovingThroughSides(ASoObject: ISoObject);
+    class procedure MovingByAcceleration(ASoObject: ISoObject);
+    class procedure MovingToDestination(ASoObject: ISoObject);
+    class procedure FollowTheShip(ASoObject: ISoObject);
     class procedure OnCollideAsteroid(ASender: TObject; AEvent: TObjectCollidedEventArgs);
     class procedure OnCollideShip(ASender: TObject; AEvent: TObjectCollidedEventArgs);
   end;
@@ -32,11 +32,11 @@ uses
 
 { TLogicAssets }
 
-class procedure TLogicAssets.FollowTheShip(ASoObject: TSoObject);
+class procedure TLogicAssets.FollowTheShip(ASoObject: ISoObject);
 var
-  vShip: TSoObject;
+  vShip: ISoObject;
 begin
-  vShip := ASoObject['Ship'].Val<TSoObject>;
+  vShip := ASoObject['Ship'].Val<ISoObject>;
 
   with ASoObject do begin
     Position.Center := vShip.Position.Center;
@@ -48,7 +48,7 @@ begin
 
 end;
 
-class function TLogicAssets.MakeTurnToDestination(const AShip: TSoObject;
+class function TLogicAssets.MakeTurnToDestination(const AShip: ISoObject;
   const ADir, ATurnRate: Single): TFireKoef;
 var
   vTurnRate: Single;
@@ -73,7 +73,7 @@ begin
     end;
 end;
 
-class procedure TLogicAssets.MovingByAcceleration(ASoObject: TSoObject);
+class procedure TLogicAssets.MovingByAcceleration(ASoObject: ISoObject);
 var
   vAcceleration: TAcceleration;
 begin
@@ -83,10 +83,10 @@ begin
     Position.Y := Position.Y + vAcceleration.Dy;
     Position.Rotate := Position.Rotate + vAcceleration.Da;
   end;
-  MovingThroughSidesInner(ASoObject, ASoObject['World'].Val<TSoObject>);
+  MovingThroughSidesInner(ASoObject, ASoObject['World'].Val<ISoObject>);
 end;
 
-class procedure TLogicAssets.MovingThroughSidesInner(ASoObject, AWorld: TSoObject);
+class procedure TLogicAssets.MovingThroughSidesInner(ASoObject, AWorld: ISoObject);
 begin
   with ASoObject do begin
    if Position.X < - Width then
@@ -103,12 +103,12 @@ begin
   end;
 end;
 
-class procedure TLogicAssets.MovingThroughSides(ASoObject: TSoObject);
+class procedure TLogicAssets.MovingThroughSides(ASoObject: ISoObject);
 begin
-  MovingThroughSidesInner(ASoObject, ASoObject['World'].Val<TSoObject>);
+  MovingThroughSidesInner(ASoObject, ASoObject['World'].Val<ISoObject>);
 end;
 
-class procedure TLogicAssets.MovingToDestination(ASoObject: TSoObject);
+class procedure TLogicAssets.MovingToDestination(ASoObject: ISoObject);
 var
   vAcceleration: TAcceleration;
   vDest: TList<TPointF>;
@@ -133,7 +133,7 @@ begin
         MakeTurnToDestination(ASoObject, vDir, vAcceleration.Da);
     end;
 
-    MovingThroughSidesInner(ASoObject, ASoObject['World'].Val<TSoObject>);
+    MovingThroughSidesInner(ASoObject, ASoObject['World'].Val<ISoObject>);
   end;
 end;
 
@@ -149,7 +149,7 @@ end;
 
 class procedure TLogicAssets.OnTestMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 var
-  vObj: TSoObject;
+  vObj: ISoObject;
 begin
   vObj := TSoMouseHandler(Sender).Subject;
 

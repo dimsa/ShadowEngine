@@ -39,7 +39,7 @@ type
     property ScalePoint: TPointF read GetScalePoint write SetScalePoint;
     property Changed: TNotifyEventList read FChanged;
     property AbsolutePositionChanged: TEventList<TPosition> read FAbsolutePositionChanged;
-    constructor Create;
+    constructor Create(const APositionAdapter: TSoPositionAdapter);
     destructor Destroy; override;
   end;
 
@@ -47,11 +47,17 @@ implementation
 
 { TSoPosition }
 
-constructor TSoPosition.Create;
+constructor TSoPosition.Create(const APositionAdapter: TSoPositionAdapter);
 begin
   FChanged := TNotifyEventList.Create;
   FAbsolutePositionChanged := TEventList<TPosition>.Create;
-  FPositionAdapter := TSoPositionAdapter.Create;
+  FPositionAdapter := APositionAdapter;
+
+  FPosition.X := 0;
+  FPosition.Y := 0;
+  FPosition.Rotate := 0;
+  FPosition.ScaleX := 1;
+  FPosition.ScaleY := 1;
 end;
 
 destructor TSoPosition.Destroy;

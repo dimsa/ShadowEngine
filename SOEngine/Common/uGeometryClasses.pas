@@ -18,8 +18,7 @@ type
     function XY: TPointF; overload;
     procedure XY(const AXY: TPointF); overload;
     procedure XY(const AX, AY: Single); overload;
-   // constructor Create(AX: Single = 0; AY: Single = 0; ARotate: Single = 0; AScaleX: Single = 1; AScaleY: Single = 1);// = (X: 0; Y: 0; Rotate: 0; ScaleX: 1; ScaleY: 1);
-//
+    function Zero: TPosition;
   end;
 
   {
@@ -98,14 +97,14 @@ begin
   Y := AY;
 end;
 
-{function TPosition.Zero: TPosition;
+function TPosition.Zero: TPosition;
 begin
   X := 0;
   Y := 0;
   Rotate := 0;
   ScaleX := 1;
   ScaleY := 1;
-end;  }
+end;
 
 function NormalizeAngle(AAngle: Single): Single;
 begin

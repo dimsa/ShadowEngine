@@ -4,7 +4,7 @@ interface
 
 uses
   uCommonClasses, uSoTypes,
-  uSoModel, uSoObject,
+  uSoModel, uSoObject, uISoObject,
   uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoFormatter, uSoAnimation,
   uSoLogic, uSoProperties, uSoProperty, uColliderDefinition, uSoSound;
 
@@ -15,10 +15,10 @@ type
   TUnitManager = class
   private
     FModel: TSoModelFriend;
-    FActiveContainer: TSoObject;
+    FActiveContainer: ISoObject;
 
-    function AddContainer(const AName: string = ''): TSoObject;
-    procedure Activate(const AContainer: TSoObject);
+    function AddContainer(const AName: string = ''): ISoObject;
+    procedure Activate(const AContainer: ISoObject);
   public
     function AddRendition(const ATemplateName: string): TEngine2DRendition; overload;
     function AddRendition(const AObject: TEngine2DRendition): TEngine2DRendition; overload;
@@ -45,23 +45,24 @@ type
 
     function AddLogic(const ATemplateName: string; const AName: string = ''): TSoLogic; overload;
     function AddLogic(const AObject: TSoLogic; const AName: string = ''): TSoLogic; overload;
-    function AddNewLogic(const AHandler: TNotifyEvent<TSoObject>; const AName: string = ''): TSoLogic; overload;
-    function AddNewLogic(const AHandler: TStaticNotifyEvent<TSoObject>; const AName: string = ''): TSoLogic; overload;
+    function AddNewLogic(const AHandler: TNotifyEvent<ISoObject>; const AName: string = ''): TSoLogic; overload;
+    function AddNewLogic(const AHandler: TStaticNotifyEvent<ISoObject>; const AName: string = ''): TSoLogic; overload;
 
     function AddProperty(const ATemplateName: string): TSoProperty; overload;
     function AddProperty(const AName: string; const AValue: TObject): TSoProperty; overload;
+    function AddProperty(const AName: string; const AValue: IInterface): TSoProperty; overload;
 
-    function ByObject(const AContainer: TSoObject): TUnitManager; overload;
+    function ByObject(const AContainer: ISoObject): TUnitManager; overload;
     function ByName(const AContainerName: string): TUnitManager; overload;
     function New(const AName: string = ''): TUnitManager;
-    function ObjectByName(const AObjectName: string): TSoObject;
+    function ObjectByName(const AObjectName: string): ISoObject;
 
-    property ActiveContainer: TSoObject read FActiveContainer;
+    property ActiveContainer: ISoObject read FActiveContainer;
 
     constructor Create(const AModel: TSoModel);
   end;
 
-{  TManageDelegate = function(const AContainer: TSoObject): TUnitManager of object;
+{  TManageDelegate = function(const AContainer: ISoObject): TUnitManager of object;
   TManageByNameDelegate = function(const AContainer: string): TUnitManager of object;
   TManageNewDelegate = function(const AName: string = ''): TUnitManager of object;}
 
@@ -69,19 +70,19 @@ implementation
 
 { TSoManager }
 
-procedure TUnitManager.Activate(const AContainer: TSoObject);
+procedure TUnitManager.Activate(const AContainer: ISoObject);
 begin
   FActiveContainer := AContainer;
 end;
 
 function TUnitManager.AddColliderObj(const ATemplateName: string): TSoColliderObj;
 begin
-  Result := FModel.Collider.AddFromTemplate(FActiveContainer, ATemplateName);
+  Result := FModel.Collider.AddFromTemplate(TSoObject(FActiveContainer), ATemplateName);
 end;
 
 function TUnitManager.AddAnimation(const ATemplateName: string): TSoAnimation;
 begin
-  Result := FModel.Animator.AddFromTemplate(FActiveContainer, ATemplateName);
+  Result := FModel.Animator.AddFromTemplate(TSoObject(FActiveContainer), ATemplateName);
 end;
 
 function TUnitManager.AddAnimation(const AObject: TSoAnimation): TSoAnimation;
@@ -99,17 +100,17 @@ end;}
 function TUnitManager.AddColliderObj(
   const ADefinition: TColliderDefinition): TSoColliderObj;
 begin
-  FModel.Collider.Add(FActiveContainer, ADefinition);
+  FModel.Collider.Add(TSoObject(FActiveContainer), ADefinition);
 end;
 
-function TUnitManager.AddContainer(const AName: string): TSoObject;
+function TUnitManager.AddContainer(const AName: string): ISoObject;
 begin
   Result := FModel.ObjectKeeper.AddNewObject(AName)
 end;
 
 function TUnitManager.AddFormatter(const ATemplateName: string): TSoFormatter;
 begin
-  FModel.Formattor.AddFromTemplate(FActiveContainer, ATemplateName);
+  FModel.Formattor.AddFromTemplate(TSoObject(FActiveContainer), ATemplateName);
 end;
 
 function TUnitManager.AddFormatter(const AObject: TSoFormatter): TSoFormatter;
@@ -120,7 +121,7 @@ end;
 
 function TUnitManager.AddKeyHandler(const ATemplateName: string): TSoKeyHandler;
 begin
-  Result := FModel.KeyProcessor.AddFromTemplate(FActiveContainer, ATemplateName);
+  Result := FModel.KeyProcessor.AddFromTemplate(TSoObject(FActiveContainer), ATemplateName);
 end;
 
 function TUnitManager.AddKeyHandler(const AObject: TSoKeyHandler): TSoKeyHandler;
@@ -131,7 +132,7 @@ end;
 
 function TUnitManager.AddLogic(const ATemplateName: string; const AName: string): TSoLogic;
 begin
-  Result := FModel.LogicKeeper.AddFromTemplate(FActiveContainer, ATemplateName, AName);
+  Result := FModel.LogicKeeper.AddFromTemplate(TSoObject(FActiveContainer), ATemplateName, AName);
 end;
 
 function TUnitManager.AddLogic(const AObject: TSoLogic; const AName: string): TSoLogic;
@@ -148,7 +149,7 @@ end;
 
 {function TUnitManager.AddProperty(const AName: string; const AValue: Double): TSoProperty;
 begin
-  Result := TSoObjectFriend(FActiveContainer).FProperties.Add(AName);
+  Result := ISoObjectFriend(FActiveContainer).FProperties.Add(AName);
   Result.AsDouble := AValue;
 end; }
 
@@ -159,7 +160,7 @@ end;
 
 {function TUnitManager.AddProperty(const AName: string; const AValue: Integer): TSoProperty;
 begin
-  Result := TSoObjectFriend(FActiveContainer).FProperties.Add(AName);
+  Result := ISoObjectFriend(FActiveContainer).FProperties.Add(AName);
   Result.AsInt := AValue;
 end;}
 
@@ -169,15 +170,16 @@ begin
   Result.Obj := AValue;
 end;
 
-{function TUnitManager.AddProperty(const AName, AValue: string): TSoProperty;
+function TUnitManager.AddProperty(const AName: string;
+  const AValue: IInterface): TSoProperty;
 begin
   Result := TSoObjectFriend(FActiveContainer).FProperties.Add(AName);
-  Result.AsString := AValue;
-end; }
+  Result.Obj := TObject(AValue);
+end;
 
 function TUnitManager.AddMouseHandler(const ATemplateName: string): TSoMouseHandler;
 begin
-  Result := FModel.MouseProcessor.AddFromTemplate(FActiveContainer, ATemplateName);
+  Result := FModel.MouseProcessor.AddFromTemplate(TSoObject(FActiveContainer), ATemplateName);
 end;
 
 function TUnitManager.AddRendition(const AObject: TEngine2DRendition): TEngine2DRendition;
@@ -187,7 +189,7 @@ end;
 
 function TUnitManager.AddSound(const APath: string): TSoSound;
 begin
-  Result := FModel.SoundKeeper.AddByFileName(FActiveContainer, APath);
+  Result := FModel.SoundKeeper.AddByFileName(TSoObject(FActiveContainer), APath);
 end;
 
 function TUnitManager.AddSound(const AObject: TSoSound): TSoSound;
@@ -197,12 +199,12 @@ end;
 
 function TUnitManager.AddSoundFromTemplate(const ATemplateName: string): TSoSound;
 begin
-  Result := FModel.SoundKeeper.AddFromTemplate(FActiveContainer, ATemplateName);
+  Result := FModel.SoundKeeper.AddFromTemplate(TSoObject(FActiveContainer), ATemplateName);
 end;
 
 function TUnitManager.AddRendition(const ATemplateName: string): TEngine2DRendition;
 begin
-  FModel.Renderer.AddFromTemplate(FActiveContainer, ATemplateName);
+  FModel.Renderer.AddFromTemplate(TSoObject(FActiveContainer), ATemplateName);
 end;
 
 constructor TUnitManager.Create(const AModel: TSoModel);
@@ -210,7 +212,7 @@ begin
   FModel := TSoModelFriend(AModel);
 end;
 
-function TUnitManager.ByObject(const AContainer: TSoObject): TUnitManager;
+function TUnitManager.ByObject(const AContainer: ISoObject): TUnitManager;
 begin
   FActiveContainer := AContainer;
   Result := Self;
@@ -227,21 +229,21 @@ begin
   Result := ByObject(AddContainer(AName));
 end;
 
-function TUnitManager.ObjectByName(const AObjectName: string): TSoObject;
+function TUnitManager.ObjectByName(const AObjectName: string): ISoObject;
 begin
   Result := FModel.ObjectByName(AObjectName);
 end;
 
-function TUnitManager.AddNewLogic(const AHandler: TNotifyEvent<TSoObject>; const AName: string): TSoLogic;
+function TUnitManager.AddNewLogic(const AHandler: TNotifyEvent<ISoObject>; const AName: string): TSoLogic;
 begin
-  Result := TSoObjectLogic.Create(FActiveContainer, AHandler);
+  Result := TSoObjectLogic.Create(TSoObject(FActiveContainer), AHandler);
   FModel.LogicKeeper.Add(Result, AName);
 end;
 
-function TUnitManager.AddNewLogic(const AHandler: TStaticNotifyEvent<TSoObject>;
+function TUnitManager.AddNewLogic(const AHandler: TStaticNotifyEvent<ISoObject>;
   const AName: string): TSoLogic;
 begin
-  Result := TSoStaticLogic.Create(FActiveContainer, AHandler);
+  Result := TSoStaticLogic.Create(TSoObject(FActiveContainer), AHandler);
   FModel.LogicKeeper.Add(Result, AName);
 end;
 

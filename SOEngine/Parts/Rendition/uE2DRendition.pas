@@ -9,9 +9,9 @@ uses
   uCommonClasses, uSoTypes, uSoObject, uEngine2DClasses, uSoBasePart, uSoContainerTypes, uGeometryClasses;
 
 type
-  TSoObjectFriend = class(TSoObject);
-
   TEngine2DRendition = class abstract(TSoBasePart)
+  private type
+    TSoObjectFriend = class(TSoObject);
   strict private
     FBringToBack, FSendToFront: TNotifyEvent;
     FOnDestroy: TNotifyEvent;

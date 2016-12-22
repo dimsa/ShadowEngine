@@ -3,7 +3,7 @@ unit uSoLogic;
 interface
 
 uses
-  uCommonClasses, uSoBasePart, uSoObject;
+  uCommonClasses, uSoBasePart, uSoObject, uISoObject;
 
 type
   TSoLogic = class abstract(TSoBasePart)
@@ -13,18 +13,18 @@ type
 
   TSoObjectLogic = class(TSoLogic)
   private
-    FOnExecute: TNotifyEvent<TSoObject>;
+    FOnExecute: TNotifyEvent<ISoObject>;
   public
     procedure Execute; override;
-    constructor Create(const ASubject: TSoObject; AOnExecute: TNotifyEvent<TSoObject>);
+    constructor Create(const ASubject: TSoObject; AOnExecute: TNotifyEvent<ISoObject>);
   end;
 
   TSoStaticLogic = class(TSoLogic)
   private
-    FOnExecute: TStaticNotifyEvent<TSoObject>;
+    FOnExecute: TStaticNotifyEvent<ISoObject>;
   public
     procedure Execute; override;
-    constructor Create(const ASubject: TSoObject; AOnExecute: TStaticNotifyEvent<TSoObject>);
+    constructor Create(const ASubject: TSoObject; AOnExecute: TStaticNotifyEvent<ISoObject>);
   end;
 
 implementation
@@ -32,7 +32,7 @@ implementation
 { TSoObjectLogic }
 
 constructor TSoObjectLogic.Create(const ASubject: TSoObject;
-  AOnExecute: TNotifyEvent<TSoObject>);
+  AOnExecute: TNotifyEvent<ISoObject>);
 begin
   inherited Create(ASubject);
   FOnExecute := AOnExecute;
@@ -46,7 +46,7 @@ end;
 { TSoStaticLogic }
 
 constructor TSoStaticLogic.Create(const ASubject: TSoObject;
-  AOnExecute: TStaticNotifyEvent<TSoObject>);
+  AOnExecute: TStaticNotifyEvent<ISoObject>);
 begin
   inherited Create(ASubject);
   FOnExecute := AOnExecute;

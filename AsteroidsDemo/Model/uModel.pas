@@ -3,16 +3,16 @@ unit uModel;
 interface
 
 uses
-  uSoObject, uSoTypes, uLogicAssets, uUnitManager, System.SysUtils, uSoObjectDefaultProperties,
+  uISoObject, uSoTypes, uLogicAssets, uUnitManager, System.SysUtils, uSoObjectDefaultProperties,
   FMX.Dialogs, uGeometryClasses, uSoColliderObjectTypes, uCommonClasses, uAcceleration;
 
 type
   TGameUnit = class
   protected
-    FContainer: TSoObject;
+    FContainer: ISoObject;
     FManager: TUnitManager;
     procedure Init; virtual; abstract;
-    procedure RandomizePosition(const ASubject: TSoObject);
+    procedure RandomizePosition(const ASubject: ISoObject);
   public
     constructor Create(const AManager: TUnitManager); virtual;
   end;
@@ -37,15 +37,15 @@ type
   TShipFire = class(TGameUnit)
   private
     FPower: Single;
-    FContainer: TSoObject;
+    FContainer: ISoObject;
     function GetPosition: TPointF;
     procedure SetPosition(const Value: TPointF);
     procedure SetPower(const Value: Single);
   protected
-    FShip: TSoObject;
+    FShip: ISoObject;
     procedure Init; override;
   public
-    constructor Create(const AManager: TUnitManager; AShip: TSoObject);
+    constructor Create(const AManager: TUnitManager; AShip: ISoObject);
   end;
 
   TLeftFire = class(TShipFire)
@@ -81,7 +81,7 @@ begin
   Init;
 end;
 
-procedure TGameUnit.RandomizePosition(const ASubject: TSoObject);
+procedure TGameUnit.RandomizePosition(const ASubject: ISoObject);
 begin
   ASubject.Position.X := Random(Round(FManager.ObjectByName('World').Width));
   ASubject.Position.Y := Random(Round(FManager.ObjectByName('World').Height));
@@ -166,7 +166,7 @@ begin
   RandomizePosition(FContainer);
 end;
 
-constructor TShipFire.Create(const AManager: TUnitManager; AShip: TSoObject);
+constructor TShipFire.Create(const AManager: TUnitManager; AShip: ISoObject);
 begin
   FShip := AShip;
   inherited Create(AManager);
@@ -231,7 +231,7 @@ begin
     FContainer := ActiveContainer;
     AddRendition('FireLeft');
     AddNewLogic(TLogicAssets.FollowTheShip);
-    AddProperty('Ship', FShip);
+    AddProperty('ShipPosition', FShip.Position);
     FContainer[Rendition].Val<TSoSprite>.BringToBack;
   end;
 end;
@@ -246,7 +246,7 @@ begin
     FContainer := ActiveContainer;
     AddRendition('FireRight');
     AddNewLogic(TLogicAssets.FollowTheShip);
-    AddProperty('Ship', FShip);
+    AddProperty('ShipPosition', FShip.Position);
     FContainer[Rendition].Val<TSoSprite>.BringToBack;
   end;
 end;

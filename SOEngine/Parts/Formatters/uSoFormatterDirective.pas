@@ -3,19 +3,19 @@ unit uSoFormatterDirective;
 interface
 
 uses
-  uSoExpressionParser, uNamedList, uCommonClasses, uSoObject, uSoTypes,
+  uSoExpressionParser, uNamedList, uCommonClasses, uISoObject, uSoTypes,
   uSoObjectDefaultProperties;
 
 type
   // It's storage of Expressions for fast formatting in Engine
   TFormatterDirective = class
   protected
-    FObject: TSoObject;
+    FObject: ISoObject;
     FExpression: TExpression;
   public
     procedure Format; virtual; abstract;
     function Value: Double;
-    constructor Create(const AObject: TSoObject; const AExpression: TExpression);
+    constructor Create(const AObject: ISoObject; const AExpression: TExpression);
   end;
 
   TWidthDir = class(TFormatterDirective)
@@ -100,7 +100,7 @@ implementation
 
 { TFormatterDirective }
 
-constructor TFormatterDirective.Create(const AObject: TSoObject; const AExpression: TExpression);
+constructor TFormatterDirective.Create(const AObject: ISoObject; const AExpression: TExpression);
 begin
   FExpression := AExpression;
   FObject := AObject;

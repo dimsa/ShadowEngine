@@ -5,13 +5,13 @@ interface
 uses
   FMX.Types, System.Classes, System.Generics.Collections, System.RegularExpressions, System.SysUtils,
   uTextProc,
-  uSoObject, uSoBasePart, uSoFormatterDirective, uSoObjectKeeper, uSoFastFields, uSoExpressionParser,
+  uISoObject, uSoBasePart, uSoFormatterDirective, uSoObjectKeeper, uSoFastFields, uSoExpressionParser,
   uNamedList;
 
 type
   TSoFormatter = class(TSoBasePart)
  private
-    FObject: TSoObject;
+    FObject: ISoObject;
     FList: TList<TFormatterDirective>;
     FObjects: TSoObjectKeeper;
     FFastFields: TFastFields;
@@ -23,9 +23,9 @@ type
     function IsDotProperty(const AText: String): Boolean;
   public
     property Text: String read FText write SetText;
-    property Subject: TSoObject read FObject;
+    property Subject: ISoObject read FObject;
     procedure Format; virtual;
-    constructor Create(AObject: TSoObject; AObjects: TSoObjectKeeper; AFastFiels: TFastFields); virtual;
+    constructor Create(AObject: ISoObject; AObjects: TSoObjectKeeper; AFastFiels: TFastFields); virtual;
     destructor Destroy; override;
   end;
 
@@ -36,7 +36,7 @@ uses
 
 { TSoFormatter }
 
-constructor TSoFormatter.Create(AObject: TSoObject; AObjects: TSoObjectKeeper; AFastFiels: TFastFields);
+constructor TSoFormatter.Create(AObject: ISoObject; AObjects: TSoObjectKeeper; AFastFiels: TFastFields);
 begin
   FObjects := AObjects;
   FFastFields := AFastFiels;
@@ -116,7 +116,7 @@ var
   j, vNj: Integer;
   vExp: TExpression;
   vFast: TFastField;
-  vTmpObject: TSoObject;
+  vTmpObject: ISoObject;
   vName, vNewName: String;
   vVarList: TNamedList<TValue>;
 begin

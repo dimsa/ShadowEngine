@@ -88,10 +88,7 @@ var
 begin
   FCritical.Enter;
   for i := 0 to FList.Count - 1 do
-  begin
-    vObj := @FList;
-    vObj.Free;
-  end;
+    vObj := nil;
 
   FList.Clear;
   FList.Free;
