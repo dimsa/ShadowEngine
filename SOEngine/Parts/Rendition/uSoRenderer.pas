@@ -215,10 +215,10 @@ begin
           begin
 
             Bitmap.Canvas.SetMatrix(
-              tMatrix.CreateTranslation(-IRend.Subject.x, -IRend.Subject.y) *
-              tMatrix.CreateScaling(IRend.Subject.ScaleX, IRend.Subject.ScaleY) *
-              tMatrix.CreateRotation(IRend.Subject.rotate * pi180) *
-              tMatrix.CreateTranslation(IRend.Subject.x, IRend.Subject.y)
+              tMatrix.CreateTranslation(-IRend.Subject.Position.x, -IRend.Subject.Position.Y) *
+              tMatrix.CreateScaling(IRend.Subject.Position.ScaleX, IRend.Subject.Position.ScaleY) *
+              tMatrix.CreateRotation(IRend.Subject.Position.Rotate * pi180) *
+              tMatrix.CreateTranslation(IRend.Subject.Position.X, IRend.Subject.Position.Y)
             );
 
             {$IFDEF DEBUG}

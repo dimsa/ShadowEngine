@@ -3,7 +3,7 @@ unit uSoPosition;
 interface
 
 uses
-  uSoBasePosition, uGeometryClasses, uCommonClasses, uSoPositionAdapter;
+  uSoBasePosition, uGeometryClasses, uCommonClasses, uSoTypes, uSoPositionAdapter;
 
 type
   TSoPosition = class sealed(TSoBasePosition)
@@ -11,6 +11,7 @@ type
     FPosition: TPosition;
     FPositionAdapter: TSoPositionAdapter;
     FChanged: TNotifyEventList;
+    FAbsolutePositionChanged: TEventList<TPosition>;
     function GetRotate: Single;
     function GetScaleX: Single;
     function GetScaleY: Single;
@@ -22,13 +23,22 @@ type
     procedure SetX(const Value: Single);
     procedure SetY(const Value: Single);
     procedure RaiseChanged;
+    function GetCenter: TPointF;
+    function GetScalePoint: TPointF;
+    procedure SetCenter(const Value: TPointF);
+    procedure SetScalePoint(const Value: TPointF);
+    procedure SetScale(const Value: Single);
   public
     property X: Single read GetX write SetX;
     property Y: Single read GetY write SetY;
+    property Center: TPointF read GetCenter write SetCenter;
     property Rotate: Single read GetRotate write SetRotate;
     property ScaleX: Single read GetScaleX write SetScaleX;
     property ScaleY: Single read GetScaleY write SetScaleY;
+    property Scale: Single write SetScale;
+    property ScalePoint: TPointF read GetScalePoint write SetScalePoint;
     property Changed: TNotifyEventList read FChanged;
+    property AbsolutePositionChanged: TEventList<TPosition> read FAbsolutePositionChanged;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -40,17 +50,31 @@ implementation
 constructor TSoPosition.Create;
 begin
   FChanged := TNotifyEventList.Create;
+  FAbsolutePositionChanged := TEventList<TPosition>.Create;
+  FPositionAdapter := TSoPositionAdapter.Create;
 end;
 
 destructor TSoPosition.Destroy;
 begin
   FChanged.Free;
+  FAbsolutePositionChanged.Free;
+  FPositionAdapter.Free;
   inherited;
+end;
+
+function TSoPosition.GetCenter: TPointF;
+begin
+  Result := FPositionAdapter.AdaptCenter(FPosition.XY);
 end;
 
 function TSoPosition.GetRotate: Single;
 begin
   Result := FPositionAdapter.AdaptRotate(FPosition.Rotate);
+end;
+
+function TSoPosition.GetScalePoint: TPointF;
+begin
+  Result := FPositionAdapter.AdaptScale(FPosition.Scale);
 end;
 
 function TSoPosition.GetScaleX: Single;
@@ -76,12 +100,33 @@ end;
 procedure TSoPosition.RaiseChanged;
 begin
   FChanged.RaiseEvent(Self);
+  FAbsolutePositionChanged.RaiseEvent(Self, FPosition);
+end;
+
+procedure TSoPosition.SetCenter(const Value: TPointF);
+begin
+  FPosition.X := FPositionAdapter.AdaptX(Value.X);
+  FPosition.Y := FPositionAdapter.AdaptY(Value.Y);
+  RaiseChanged;
 end;
 
 procedure TSoPosition.SetRotate(const Value: Single);
 begin
   FPosition.Rotate := FPositionAdapter.AdaptRotate(Value);
   RaiseChanged;
+end;
+
+procedure TSoPosition.SetScale(const Value: Single);
+begin
+  FPosition.X := FPositionAdapter.AdaptScaleX(Value);
+  FPosition.Y := FPositionAdapter.AdaptScaleX(Value);
+  RaiseChanged;
+end;
+
+procedure TSoPosition.SetScalePoint(const Value: TPointF);
+begin
+  FPosition.ScaleX := FPositionAdapter.AdaptScaleX(Value.X);
+  FPosition.ScaleY := FPositionAdapter.AdaptScaleY(Value.Y);
 end;
 
 procedure TSoPosition.SetScaleX(const Value: Single);

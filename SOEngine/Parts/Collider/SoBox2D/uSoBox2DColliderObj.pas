@@ -4,10 +4,13 @@ interface
 
 uses
   UPhysics2D, UPhysics2DTypes, uSoTypes, uGeometryClasses,
-  uSoColliderObject, uSoObject, uSoBox2DUtils, uColliderDefinition, uRawShapeBox2DConverter;
+  uSoColliderObject, uSoObject, uSoBox2DUtils, uColliderDefinition, uRawShapeBox2DConverter,
+  uSoPosition;
 
 type
   TSoBox2DColliderObj = class(TSoColliderObj)
+{  private type
+    TSoPositionFriend = class(TSoPosition);}
   private
     FBodyDef: Tb2BodyDef;
     FBody: TB2Body;
@@ -49,8 +52,8 @@ end;
 function TSoBox2DColliderObj.B2TransformFromSubject: Tb2Transform;
 begin
   with Result do begin
-    p.x := FSubject.X;
-    p.y := FSubject.Y;
+    p.x := FSubject.Position.X;
+    p.y := FSubject.Position.Y;
   end;
 end;
 
@@ -75,9 +78,9 @@ begin
   inherited Create(ASubject);
 
   FOriginalShapes := TList<Tb2Shape>.Create;
-  FLastScale := ASubject.ScalePoint;
+  FLastScale := ASubject.Position.ScalePoint;
 
-  ASubject.AddChangePositionHandler(OnPositionChanged);
+  ASubject.Position.AbsolutePositionChanged.Add(OnPositionChanged);
 
   FWorld := AWorld;
   FBodyDef := Tb2BodyDef.Create;
@@ -108,6 +111,7 @@ begin
   for i := 0 to FOriginalShapes.Count - 1 do
     FOriginalShapes[i].Free;
   FOriginalShapes.Free;
+  FSubject.Position.AbsolutePositionChanged.Remove(OnPositionChanged);
   inherited;
 end;
 
@@ -131,8 +135,7 @@ begin
   Result := False;
 end;
 
-procedure TSoBox2DColliderObj.OnPositionChanged(ASender: TObject;
-  APosition: TPosition);
+procedure TSoBox2DColliderObj.OnPositionChanged(ASender: TObject; APosition: TPosition);
 var
   vVector: TVector2;
 begin

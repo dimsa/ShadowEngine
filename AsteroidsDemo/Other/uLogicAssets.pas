@@ -17,7 +17,6 @@ type
     class procedure MovingThroughSidesInner(ASoObject, AWorld: TSoObject);
   public
     class procedure OnTestMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-    //(Sender: TObject; AEventArgs: TMouseEventArgs);
     class procedure MovingThroughSides(ASoObject: TSoObject);
     class procedure MovingByAcceleration(ASoObject: TSoObject);
     class procedure MovingToDestination(ASoObject: TSoObject);
@@ -38,11 +37,15 @@ var
   vShip: TSoObject;
 begin
   vShip := ASoObject['Ship'].Val<TSoObject>;
-  ASoObject.Center := vShip.Position.XY;
-  ASoObject.Rotate := vShip.Position.Rotate;
+
+  with ASoObject do begin
+    Position.Center := vShip.Position.Center;
+    Position.Rotate := vShip.Position.Rotate;
+  end;
 
   ASoObject[Rendition].Val<TSoSprite>.NextFrame;
   ASoObject[Rendition].Val<TSoSprite>.Opacity := 0.6 + Random(40) / 100;
+
 end;
 
 class function TLogicAssets.MakeTurnToDestination(const AShip: TSoObject;
@@ -53,12 +56,12 @@ begin
     vTurnRate := Min(Abs(ADir), ATurnRate);
     if (ADir < 0)  then
     begin
-      AShip.Rotate := NormalizeAngle(AShip.Rotate - vTurnRate);
+      AShip.Position.Rotate := NormalizeAngle(AShip.Position.Rotate - vTurnRate);
       Result.Left := 1;
       Result.Right := 0.4;
     end
     else begin
-      AShip.Rotate := NormalizeAngle(AShip.Rotate + vTurnRate);
+      AShip.Position.Rotate := NormalizeAngle(AShip.Position.Rotate + vTurnRate);
       Result.Left := 0.4;
       Result.Right := 1;
     end;
@@ -76,9 +79,9 @@ var
 begin
   with ASoObject do begin
     vAcceleration := ASoObject['Acceleration'].Val<TAcceleration>;
-    X := X + vAcceleration.Dx;
-    Y := Y + vAcceleration.Dy;
-    Rotate := Rotate + vAcceleration.Da;
+    Position.X := Position.X + vAcceleration.Dx;
+    Position.Y := Position.Y + vAcceleration.Dy;
+    Position.Rotate := Position.Rotate + vAcceleration.Da;
   end;
   MovingThroughSidesInner(ASoObject, ASoObject['World'].Val<TSoObject>);
 end;
@@ -86,17 +89,17 @@ end;
 class procedure TLogicAssets.MovingThroughSidesInner(ASoObject, AWorld: TSoObject);
 begin
   with ASoObject do begin
-   if X < - Width then
-     X := AWorld.Width + Width;
+   if Position.X < - Width then
+     Position.X := AWorld.Width + Width;
 
-   if Y  < - Height then
-     Y := AWorld.Height + Height;
+   if Position.Y  < - Height then
+     Position.Y := AWorld.Height + Height;
 
-   if X > AWorld.Width + Width  then
-     X := - Width;
+   if Position.X > AWorld.Width + Width  then
+     Position.X := - Width;
 
-   if Y > AWorld.Height + Height then
-     Y := - Height;
+   if Position.Y > AWorld.Height + Height then
+     Position.Y := - Height;
   end;
 end;
 
@@ -115,16 +118,16 @@ begin
     vAcceleration := ASoObject['Acceleration'].Val<TAcceleration>;
     vDest := ASoObject['Destinations'].Val<TList<TPointF>>;
 
-    X := X - (vAcceleration.DX * Cos((Rotate + 90) * pi180));
-    Y := Y - (vAcceleration.DY * Sin((Rotate + 90) * pi180));
+    Position.X := Position.X - (vAcceleration.DX * Cos((Position.Rotate + 90) * pi180));
+    Position.Y := Position.Y - (vAcceleration.DY * Sin((Position.Rotate + 90) * pi180));
 
     if vDest.Count > 0 then
     begin
 
-      vAngle := ArcTan2(vDest.First.Y - ASoObject.Y, vDest.First.X - ASoObject.X) / pi180;
-      vDir := NormalizeAngle((vAngle + 90) - (Rotate));
+      vAngle := ArcTan2(vDest.First.Y - Position.Y, vDest.First.X - Position.X) / pi180;
+      vDir := NormalizeAngle((vAngle + 90) - (Position.Rotate));
 
-      if Distance(vDest.Last, Center) <= Abs(vAcceleration.DX * 2) then
+      if Distance(vDest.Last, Position.Center) <= Abs(vAcceleration.DX * 2) then
         vDest.Delete(0)
       else
         MakeTurnToDestination(ASoObject, vDir, vAcceleration.Da);

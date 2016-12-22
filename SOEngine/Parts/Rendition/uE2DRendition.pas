@@ -34,7 +34,7 @@ type
     function GetWidth: Single; virtual; abstract;
     procedure OnSubjectDestroy(ASender: TObject); override;
     procedure OnChangeScale(ASender: TObject);
-    procedure OnChangePosition(ASender: TObject; APosition: TPosition);
+    procedure OnChangePosition(ASender: TObject);
     property OnRequestAllRenditions: TParameteredDelegate<TSoObject,TRectF> read FOnRequestAllRenditions write SetOnRequestAllRendtions;
     property OnBringToBack: TNotifyEvent read FBringToBack write FBringToBack;
     property OnSendToFront: TNotifyEvent read FSendToFront write FSendToFront;
@@ -66,7 +66,7 @@ constructor TEngine2DRendition.Create(const ASubject: TSoObject; const AImage: T
 begin
   inherited Create(ASubject);
   FImage := AImage;
-  FSubject.AddChangePositionHandler(OnChangePosition);
+  FSubject.Position.Changed.Add(OnChangePosition);
   FRect := TRectObject.Create;
 
   FMargin := TPointF.Zero;
@@ -77,7 +77,7 @@ begin
   if Assigned(FOnDestroy) then
     FOnDestroy(Self);
 
-  FSubject.RemoveChangePositionHandler(OnChangePosition);
+  FSubject.Position.Changed.Remove(OnChangePosition);
 //  .RemoveChangeScaleHandler(OnChangeScale);
 
   FRect.Free;
@@ -87,7 +87,7 @@ begin
   inherited;
 end;
 
-procedure TEngine2DRendition.OnChangePosition(ASender: TObject; APosition: TPosition);
+procedure TEngine2DRendition.OnChangePosition(ASender: TObject);
 begin
 
 end;

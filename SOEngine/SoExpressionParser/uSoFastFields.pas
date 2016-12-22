@@ -210,13 +210,13 @@ end;
 
 function TFastWidth.GetValue: Double;
 begin
-  Result := TSizeObject(fObject[SummarySize].Obj).Width * fObject.ScaleX;
+  Result := TSizeObject(fObject[SummarySize].Obj).Width * fObject.Position.ScaleX;
 //  Result := fObject['Width'].AsDouble * fObject.ScaleX;
 end;
 
 procedure TFastWidth.SetValue(const Value: Double);
 begin
-  fObject.Scale := Value / (TSizeObject(fObject[RenditionRect].Obj).Width * fObject.ScaleX);
+  fObject.Position.ScaleX := Value / (TSizeObject(fObject[RenditionRect].Obj).Width * fObject.Position.ScaleX);
 //  fObject.Scale := Value / (fObject['Width'].AsDouble * fObject.ScaleX);
 end;
 
@@ -224,13 +224,13 @@ end;
 
 function TFastHeight.GetValue: Double;
 begin
-  Result := TSizeObject(fObject[RenditionRect].Obj).Height * fObject.ScaleY;
+  Result := TSizeObject(fObject[RenditionRect].Obj).Height * fObject.Position.ScaleY;
 //  Result := FObject['Height'].AsDouble * fObject.ScaleY;
 end;
 
 procedure TFastHeight.SetValue(const Value: Double);
 begin
-  fObject.Scale := Value / (TSizeObject(fObject[RenditionRect].Obj).Height * fObject.ScaleX);
+  fObject.Position.ScaleY := Value / (TSizeObject(fObject[RenditionRect].Obj).Height * fObject.Position.ScaleY);
 //  fObject.h := Value;
 end;
 
@@ -238,48 +238,48 @@ end;
 
 function TFastX.GetValue: Double;
 begin
-  Result := fObject.x;
+  Result := fObject.Position.X;
 end;
 
 procedure TFastX.SetValue(const Value: Double);
 begin
-  fObject.x := Value;
+  fObject.Position.X := Value;
 end;
 
 { TFastY }
 
 function TFastY.GetValue: Double;
 begin
-  Result := fObject.y;
+  Result := fObject.Position.Y;
 end;
 
 procedure TFastY.SetValue(const Value: Double);
 begin
-  fObject.y := Value;
+  fObject.Position.Y := Value;
 end;
 
 { TFastScale }
 
 function TFastScale.GetValue: Double;
 begin
-  Result := fObject.ScaleX;
+  Result := fObject.Position.ScaleX;
 end;
 
 procedure TFastScale.SetValue(const Value: Double);
 begin
-  fObject.Scale := Value;
+  fObject.Position.ScalePoint := TPointF.Create(Value, Value);
 end;
 
 { TFastRotate }
 
 function TFastRotate.GetValue: Double;
 begin
-  Result := fObject.Rotate;
+  Result := fObject.Position.Rotate;
 end;
 
 procedure TFastRotate.SetValue(const Value: Double);
 begin
-  fObject.Rotate := Value;
+  fObject.Position.Rotate := Value;
 end;
 
 { TFastObjectFields }
@@ -360,48 +360,48 @@ end;
 
 function TFastLeftBorder.GetValue: Double;
 begin
-  Result := fObject.x - TSizeObject(FObject[RenditionRect].Obj).Width * fObject.ScaleX * 0.5;
+  Result := fObject.Position.x - TSizeObject(FObject[RenditionRect].Obj).Width * fObject.Position.ScaleX * 0.5;
 end;
 
 procedure TFastLeftBorder.SetValue(const Value: Double);
 begin
-  fObject.x := Value + TSizeObject(FObject[RenditionRect].Obj).Width * fObject.ScaleX * 0.5;
+  fObject.Position.x := Value + TSizeObject(FObject[RenditionRect].Obj).Width * fObject.Position.ScaleX * 0.5;
 end;
 
 { TFastRightBorder }
 
 function TFastRightBorder.GetValue: Double;
 begin
-  Result := fObject.x + TSizeObject(FObject[RenditionRect].Obj).Width * fObject.ScaleX * 0.5;
+  Result := fObject.Position.x + TSizeObject(FObject[RenditionRect].Obj).Width * fObject.Position.ScaleX * 0.5;
 end;
 
 procedure TFastRightBorder.SetValue(const Value: Double);
 begin
-  fObject.x := Value - TSizeObject(FObject[RenditionRect].Obj).Width * fObject.ScaleX * 0.5;
+  fObject.Position.x := Value - TSizeObject(FObject[RenditionRect].Obj).Width * fObject.Position.ScaleX * 0.5;
 end;
 
 { TFastTopBorder }
 
 function TFastTopBorder.GetValue: Double;
 begin
-  Result := fObject.y - TSizeObject(FObject[RenditionRect].Obj).Height * fObject.ScaleY * 0.5;
+  Result := fObject.Position.y - TSizeObject(FObject[RenditionRect].Obj).Height * fObject.Position.ScaleY * 0.5;
 end;
 
 procedure TFastTopBorder.SetValue(const Value: Double);
 begin
-  fObject.y  := Value + TSizeObject(FObject[RenditionRect].Obj).Height * fObject.ScaleY * 0.5;
+  fObject.Position.Y  := Value + TSizeObject(FObject[RenditionRect].Obj).Height * fObject.Position.ScaleY * 0.5;
 end;
 
 { TFastBottomBorder }
 
 function TFastBottomBorder.GetValue: Double;
 begin
-  Result := fObject.y + TSizeObject(FObject[RenditionRect].Obj).Height * fObject.ScaleY * 0.5;
+  Result := fObject.Position.Y + TSizeObject(FObject[RenditionRect].Obj).Height * fObject.Position.ScaleY * 0.5;
 end;
 
 procedure TFastBottomBorder.SetValue(const Value: Double);
 begin
-  fObject.y  := Value - TSizeObject(FObject[RenditionRect].Obj).Height * fObject.ScaleY * 0.5;
+  fObject.Position.y  := Value - TSizeObject(FObject[RenditionRect].Obj).Height * fObject.Position.ScaleY * 0.5;
 end;
 
 end.

@@ -83,9 +83,9 @@ end;
 
 procedure TGameUnit.RandomizePosition(const ASubject: TSoObject);
 begin
-  ASubject.X := Random(Round(FManager.ObjectByName('World').Width));
-  ASubject.Y := Random(Round(FManager.ObjectByName('World').Height));
-  ASubject.Rotate := Random(360);
+  ASubject.Position.X := Random(Round(FManager.ObjectByName('World').Width));
+  ASubject.Position.Y := Random(Round(FManager.ObjectByName('World').Height));
+  ASubject.Position.Rotate := Random(360);
 end;
 
 { TMovingUnit }
@@ -162,7 +162,7 @@ begin
   end;
 
   FAcceleration.Da := (Random * 4) - 2;
-  FContainer.Scale := 1;
+  FContainer.Position.Scale := 1;
   RandomizePosition(FContainer);
 end;
 
@@ -174,7 +174,7 @@ end;
 
 function TShipFire.GetPosition: TPointF;
 begin
-  Result := FContainer.Center;
+  Result := FContainer.Position.Center;
 end;
 
 procedure TShipFire.Init;
@@ -184,13 +184,13 @@ end;
 
 procedure TShipFire.SetPosition(const Value: TPointF);
 begin
-  FContainer.Center := Value;
+  FContainer.Position.Center := Value;
 end;
 
 procedure TShipFire.SetPower(const Value: Single);
 begin
   FPower := Value;
-  FContainer.Scale := FPower;
+  FContainer.Position.Scale := FPower;
 end;
 
 { TLtlAsteroid }
@@ -214,7 +214,7 @@ begin
   end;
 
   RandomizePosition(FContainer);
-  FContainer.Scale := 0.5 + Random - 0.5;
+  FContainer.Position.Scale := 0.5 + Random - 0.5;
 
   FAcceleration.Dx := Random(10);
   FAcceleration.Dy := Random(10);

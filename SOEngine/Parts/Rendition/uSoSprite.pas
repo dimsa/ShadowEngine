@@ -93,17 +93,17 @@ end;
 procedure TSoSprite.OnHeightChanged(ASender: TObject);
 begin
   if Height <> 0 then
-    FSubject.Scale := TSoProperty(ASender).Val<TSizeObject>.Height / Height
+    FSubject.Position.ScaleY := TSoProperty(ASender).Val<TSizeObject>.Height / Height
   else
-    FSubject.Scale := 0;
+    FSubject.Position.ScaleY := 0;
 end;
 
 procedure TSoSprite.OnWidthChanged(ASender: TObject);
 begin
   if Width <> 0 then
-    FSubject.Scale := TSoProperty(ASender).Val<TSizeObject>.Width / Width
+    FSubject.Position.ScaleX := TSoProperty(ASender).Val<TSizeObject>.Width / Width
   else
-    FSubject.Scale := 0;
+    FSubject.Position.ScaleX := 0;
 end;
 
 procedure TSoSprite.PrevFrame;
@@ -117,10 +117,10 @@ begin
     FResourceList[FResIndex].Picture,
     FResourceList[FResIndex].Rect,
     RectF(
-      FSubject.X + FResourceList[FResIndex].WHalf * CJustifyPoints[Justify].Left + FMargin.X,
-      FSubject.Y + FResourceList[FResIndex].HHalf * CJustifyPoints[Justify].Top + FMargin.Y,
-      FSubject.X + FResourceList[FResIndex].WHalf * CJustifyPoints[Justify].Right + FMargin.X,
-      FSubject.Y + FResourceList[FResIndex].HHalf * CJustifyPoints[Justify].Bottom + FMargin.Y),
+      FSubject.Position.X + FResourceList[FResIndex].WHalf * CJustifyPoints[Justify].Left + FMargin.X,
+      FSubject.Position.Y + FResourceList[FResIndex].HHalf * CJustifyPoints[Justify].Top + FMargin.Y,
+      FSubject.Position.X + FResourceList[FResIndex].WHalf * CJustifyPoints[Justify].Right + FMargin.X,
+      FSubject.Position.Y + FResourceList[FResIndex].HHalf * CJustifyPoints[Justify].Bottom + FMargin.Y),
     FOpacity,
     True);
 end;

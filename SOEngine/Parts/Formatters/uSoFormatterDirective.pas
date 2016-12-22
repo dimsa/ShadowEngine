@@ -115,88 +115,89 @@ end;
 
 procedure TWidthDir.Format;
 begin
-  FObject.Scale := Self.Value / (TSizeObject(FObject[RenditionRect].Obj).Width) ;
+  FObject.Position.ScaleX := Self.Value / (TSizeObject(FObject[RenditionRect].Obj).Width);
 end;
 
 { THeightDir }
 
 procedure THeightDir.Format;
 begin
-  FObject.Scale := Self.Value / (TSizeObject(FObject[RenditionRect].Obj).Height);
+  FObject.Position.ScaleY := Self.Value / (TSizeObject(FObject[RenditionRect].Obj).Height);
 end;
 
 { TMaxWidthDir }
 
 procedure TMaxWidthDir.Format;
 begin
-  if TSizeObject(FObject[RenditionRect].Obj).Width * FObject.ScaleX > Value then
-    FObject.Scale := Value / TSizeObject(FObject[RenditionRect].Obj).Width;
+  if TSizeObject(FObject[RenditionRect].Obj).Width * FObject.Position.ScaleX > Value then
+    FObject.Position.ScaleX := Value / TSizeObject(FObject[RenditionRect].Obj).Width;
 end;
 
 { TMaxHeightDir }
 
 procedure TMaxHeightDir.Format;
 begin
-  if TSizeObject(FObject[RenditionRect].Obj).Height * FObject.ScaleY  > Value then
-    FObject.Scale := Value / TSizeObject(FObject[RenditionRect].Obj).Height;
+  if TSizeObject(FObject[RenditionRect].Obj).Height * FObject.Position.ScaleY  > Value then
+    FObject.Position.ScaleY := Value / TSizeObject(FObject[RenditionRect].Obj).Height;
 end;
 
 { TMinWidthDir }
 
 procedure TMinWidthDir.Format;
 begin
-  if TSizeObject(FObject[RenditionRect].Obj).Width * FObject.ScaleX  < Value then
-    FObject.Scale := Value / TSizeObject(FObject[RenditionRect].Obj).Width;
+  if TSizeObject(FObject[RenditionRect].Obj).Width * FObject.Position.ScaleX  < Value then
+    FObject.Position.ScaleX := Value / TSizeObject(FObject[RenditionRect].Obj).Width;
 end;
 
 { TMinHeightDir }
 
 procedure TMinHeightDir.Format;
 begin
-  if TSizeObject(FObject[RenditionRect].Obj).Height * FObject.ScaleY  < Value then
-    FObject.Scale := Value / TSizeObject(FObject[RenditionRect].Obj).Height;
+  if TSizeObject(FObject[RenditionRect].Obj).Height * FObject.Position.ScaleY  < Value then
+    FObject.Position.ScaleY := Value / TSizeObject(FObject[RenditionRect].Obj).Height;
 end;
 
 { TRotateDir }
 
 procedure TRotateDir.Format;
 begin
-  FObject.Rotate := Value;
+  FObject.Position.Rotate := Value;
 end;
 
 { TScaleDir }
 
 procedure TScaleDir.Format;
 begin
-  FObject.Scale := Value;
+  FObject.Position.ScaleX := Value;
+  FObject.Position.ScaleY := Value;
 end;
 
 { TScaleXDir }
 
 procedure TScaleXDir.Format;
 begin
-  FObject.ScaleX := Value;
+  FObject.Position.ScaleX := Value;
 end;
 
 { TScaleYDir }
 
 procedure TScaleYDir.Format;
 begin
-  FObject.ScaleY := Value;
+  FObject.Position.ScaleY := Value;
 end;
 
 { TXDir }
 
 procedure TXDir.Format;
 begin
-  FObject.x := Value;
+  FObject.Position.X := Value;
 end;
 
 { TYDir }
 
 procedure TYDir.Format;
 begin
-  FObject.y := Value;
+  FObject.Position.Y := Value;
 end;
 
 { TConditionalDirective }

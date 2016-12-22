@@ -106,10 +106,10 @@ begin
 
   FImage.Bitmap.Canvas.FillRect(
     RectF(
-      FSubject.X + FWHalf * CJustifyPoints[Justify].Left,
-      FSubject.Y + FHHalf * CJustifyPoints[Justify].Top,
-      FSubject.X + FWHalf * CJustifyPoints[Justify].Right,
-      FSubject.Y + FHHalf * CJustifyPoints[Justify].Bottom),
+      FSubject.Position.X + FWHalf * CJustifyPoints[Justify].Left,
+      FSubject.Position.Y + FHHalf * CJustifyPoints[Justify].Top,
+      FSubject.Position.X + FWHalf * CJustifyPoints[Justify].Right,
+      FSubject.Position.Y + FHHalf * CJustifyPoints[Justify].Bottom),
     0,
     0,
     [],
@@ -120,10 +120,10 @@ begin
   if FPen.Thickness > 0 then
     FImage.Bitmap.Canvas.DrawRect(
       RectF(
-        FSubject.X + FwHalf * CJustifyPoints[Justify].Left,
-        FSubject.Y + FhHalf * CJustifyPoints[Justify].Top,
-        FSubject.X + FwHalf * CJustifyPoints[Justify].Right,
-        FSubject.Y + FhHalf * CJustifyPoints[Justify].Bottom),
+        FSubject.Position.X + FwHalf * CJustifyPoints[Justify].Left,
+        FSubject.Position.Y + FhHalf * CJustifyPoints[Justify].Top,
+        FSubject.Position.X + FwHalf * CJustifyPoints[Justify].Right,
+        FSubject.Position.Y + FhHalf * CJustifyPoints[Justify].Bottom),
       0,
       0,
       [],
@@ -141,10 +141,10 @@ begin
 
   FImage.Bitmap.Canvas.FillEllipse(
     RectF(
-      FSubject.X + FWHalf * CJustifyPoints[Justify].Left,
-      FSubject.Y + FHHalf * CJustifyPoints[Justify].Top,
-      FSubject.X + FWHalf * CJustifyPoints[Justify].Right,
-      FSubject.Y + FHHalf * CJustifyPoints[Justify].Bottom),
+      FSubject.Position.X + FWHalf * CJustifyPoints[Justify].Left,
+      FSubject.Position.Y + FHHalf * CJustifyPoints[Justify].Top,
+      FSubject.Position.X + FWHalf * CJustifyPoints[Justify].Right,
+      FSubject.Position.Y + FHHalf * CJustifyPoints[Justify].Bottom),
     FOpacity
    );
 end;

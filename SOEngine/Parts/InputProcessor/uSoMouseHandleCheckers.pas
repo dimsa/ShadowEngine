@@ -23,12 +23,12 @@ end;
 
 function CanMouseHandleBySqrMaxRadiusCheck(ASender: TSoObject; const APoint: TPointF): Boolean;
 begin
-  Result := (Sqr(APoint.X) + Sqr(APoint.Y)) < ASender[RenditionRect].Val<TRectObject>.SqrMaxRadius * ASender.ScaleX;
+  Result := (Sqr(APoint.X) + Sqr(APoint.Y)) < ASender[RenditionRect].Val<TRectObject>.SqrMaxRadius * ASender.Position.ScaleX;
 end;
 
 function CanMouseHandleByStaticRectCheck(ASender: TSoObject; const APoint: TPointF): Boolean;
 begin
-  Result :=  ASender[RenditionRect].Val<TRectObject>.Rect.Multiply(ASender.ScalePoint).Move(ASender.Center).Contains(APoint);
+  Result :=  ASender[RenditionRect].Val<TRectObject>.Rect.Multiply(ASender.Position.ScalePoint).Move(ASender.Position.Center).Contains(APoint);
 end;
 
 end.
