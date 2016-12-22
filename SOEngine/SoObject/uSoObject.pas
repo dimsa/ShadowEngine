@@ -26,12 +26,11 @@ type
 
     property Container: TObject read FContainer;
     property Properties[APropertyName: string]: TSoProperty read GetProperty; default;// write SetProperty; default;
-
     function HasProperty(const APropertyName: string): Boolean;
     function AddProperty(const AName: string): TSoProperty;
     procedure AddDestroyHandler(const AHandler: TNotifyEvent);
     procedure RemoveDestroyHandler(const AHandler: TNotifyEvent);
-    procedure SetPositionSilent(const AX, AY: Single; const ARotate: Single);
+
     constructor Create;
     destructor Destroy; override;
   end;
@@ -98,13 +97,6 @@ end;
 procedure TSoObject.SetContainer(const AContainer: TObject);
 begin
   FContainer := AContainer;
-end;
-
-procedure TSoObject.SetPositionSilent(const AX, AY: Single; const ARotate: Single);
-begin
-  FPosition.X := AX;
-  FPosition.Y := AY;
-  FPosition.Rotate := ARotate;
 end;
 
 end.

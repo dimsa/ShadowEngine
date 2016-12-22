@@ -24,15 +24,8 @@ type
   public
     function Val<T: class>: T;
     property Obj: TObject read FObject write SetObject;
-{    property AsInt: Integer read FInt write SetInt;
-    property AsDouble: Double read FDouble write SetDouble;
-    property AsString: string read FString write SetString; }
     property PropertyType: TPropertyType read FPropertyType;
     constructor Create; overload;
-{    constructor Create(AObject: TObject); overload;
-    constructor Create(AString: string); overload;
-    constructor Create(AInteger: Integer); overload;
-    constructor Create(ADouble: Double); overload;}
     procedure RaiseOnChange;
     procedure AddOnChangeHandler(AHandler: TNotifyEvent);
     procedure RemOnChangeHandler(AHandler: TNotifyEvent);

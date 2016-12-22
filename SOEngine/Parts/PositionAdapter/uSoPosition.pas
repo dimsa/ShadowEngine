@@ -3,11 +3,11 @@ unit uSoPosition;
 interface
 
 uses
-  uSoBasePosition, uGeometryClasses, uCommonClasses, uSoTypes,
+  uGeometryClasses, uCommonClasses, uSoTypes,
   uISoPositionAdapter, uSoPositionAdapter;
 
 type
-  TSoPosition = class sealed(TSoBasePosition)
+  TSoPosition = class
   private
     FPosition: TPosition;
     FPositionAdapter: ISoPositionAdapter;
@@ -40,6 +40,7 @@ type
     property ScalePoint: TPointF read GetScalePoint write SetScalePoint;
     property Changed: TNotifyEventList read FChanged;
     property AbsolutePositionChanged: TEventList<TPosition> read FAbsolutePositionChanged;
+    procedure SetPositionSilent(const AX, AY: Single; const ARotate: Single);
     constructor Create(const APositionAdapter: ISoPositionAdapter); overload;
     constructor Create; overload;
     destructor Destroy; override;
@@ -121,6 +122,13 @@ begin
   FPosition.X := FPositionAdapter.AdaptX(Value.X);
   FPosition.Y := FPositionAdapter.AdaptY(Value.Y);
   RaiseChanged;
+end;
+
+procedure TSoPosition.SetPositionSilent(const AX, AY, ARotate: Single);
+begin
+  FPosition.X := AX;
+  FPosition.Y := AY;
+  FPosition.Rotate := ARotate;
 end;
 
 procedure TSoPosition.SetRotate(const Value: Single);

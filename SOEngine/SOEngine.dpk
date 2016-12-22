@@ -139,8 +139,6 @@ contains
   uSoEngineOptions in 'Main\uSoEngineOptions.pas',
   uSoColliderExtenderFactory in 'Parts\Collider\uSoColliderExtenderFactory.pas',
   uSoText in 'Parts\Rendition\uSoText.pas',
-  uSoBasePosition in 'Main\Position\uSoBasePosition.pas',
-  uSoPositionConverter in 'Main\Position\uSoPositionConverter.pas',
   uSoObjectDefaultProperties in 'Main\Common\uSoObjectDefaultProperties.pas',
   uSoTypes in 'Main\Common\uSoTypes.pas',
   uSoContainer in 'Main\Container\uSoContainer.pas',

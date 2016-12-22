@@ -150,7 +150,7 @@ end;
 procedure TSoBox2DColliderObj.RefreshSubjectPosition;
 begin
   inherited;
-  FSubject.SetPositionSilent(FBody.GetPosition.x, FBody.GetPosition.y, FBody.GetAngle);
+  FSubject.Position.SetPositionSilent(FBody.GetPosition.x, FBody.GetPosition.y, FBody.GetAngle);
 end;
 
 procedure TSoBox2DColliderObj.Scale(const AScale: TPointF);
