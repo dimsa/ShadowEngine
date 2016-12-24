@@ -11,7 +11,6 @@ type
 
   TUnitCreator = class
   private
-//    FSimpleManager: TSoSimpleManager;
     FUnitManager: TUnitManager;
   public
     function NewShip: TShip;
@@ -35,7 +34,6 @@ end;
 function TUnitCreator.NewShip: TShip;
 begin
   Result := TShip.Create(FUnitManager);
-
 end;
 
 function TUnitCreator.NewSpaceDebris(const ASize: integer): TBigAsteroid;

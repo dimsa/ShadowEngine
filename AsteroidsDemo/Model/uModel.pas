@@ -117,6 +117,9 @@ begin
   FDest := TList<TPointF>.Create;
   vTemplateName := 'Ship';
 
+
+
+
   with FManager.New(vTemplateName) do begin
     FContainer := ActiveContainer;
     AddRendition(vTemplateName);
