@@ -117,7 +117,21 @@ begin
   FDest := TList<TPointF>.Create;
   vTemplateName := 'Ship';
 
+  {
+    vUnit := FManager.CreateUnitContainer;
 
+    with vUnit do begin
+      Add.Rendition(vTemplateName);
+      Add.Collider(vTemplateName).
+        AddOnBeginContactHandler(TLogicAssets.OnCollideShip);
+      Add.Prop('Acceleration', FAcceleration);
+      Add.Prop('Destinations', FDest);
+      Add.Prop('World', FManager.ObjectByName('World'));
+      //Add.Sound('ShipCollide');
+      Add.Logic(TLogicAssets.MovingToDestination, 'MovingThroughSides');
+      Add.MouseHandler(ByCollider).OnMouseDown := TLogicAssets.OnTestMouseDown;
+    end;
+  }
 
 
   with FManager.New(vTemplateName) do begin

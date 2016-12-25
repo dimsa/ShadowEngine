@@ -263,6 +263,7 @@
         <DCCReference Include="Parts\PositionAdapter\uSoPosition.pas"/>
         <DCCReference Include="Parts\PositionAdapter\uISoPositionAdapter.pas"/>
         <DCCReference Include="Main\Container\uSoContainerAdder.pas"/>
+        <DCCReference Include="Main\Container\uSoContainerGetter.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>
         <None Include="Parts\Collider\SoBox2D\Box2D\Physics2D.inc"/>

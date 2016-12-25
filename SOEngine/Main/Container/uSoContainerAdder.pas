@@ -19,21 +19,21 @@ type
     function Collider(const ATemplateName: string; const AName: string = ''): TSoColliderObj; overload;
     function MouseHandler(const ATemplateName: string; const AName: string = ''): TSoMouseHandler; overload;
     function KeyHandler(const ATemplateName: string; const AName: string = ''): TSoKeyHandler; overload;
-    function SoundFromTemplate(const ATemplateName: string; const AName: string = ''): TSoSound; overload;
-    function Formatter(const ATemplateName: string; const AName: string = '': TSoFormatter; overload;
+    function Sound(const ATemplateName: string; const AName: string = ''): TSoSound; overload;
+    function Formatter(const ATemplateName: string; const AName: string = ''): TSoFormatter; overload;
     function Animation(const ATemplateName: string; const AName: string = ''): TSoAnimation; overload;
-    function AddLogic(const ATemplateName: string; const AName: string = ''): TSoLogic; overload;
+    function Logic(const ATemplateName: string; const AName: string = ''): TSoLogic; overload;
     function Prop(const ATemplateName: string; const AName: string = ''): TSoProperty; overload;
 
     function Any<T: class>(AObject: TObject; const AName: string = ''): T;
-    constructor Create(const AModel: TSoModel);
+    constructor Create(const AObject: TSoObject; const AModel: TSoModel);
   end;
 
 implementation
 
 { TSoContainerAdder }
 
-function TSoContainerAdder.AddLogic(const ATemplateName, AName: string): TSoLogic;
+function TSoContainerAdder.Logic(const ATemplateName, AName: string): TSoLogic;
 begin
 
 end;
@@ -84,7 +84,7 @@ begin
 
 end;
 
-function TSoContainerAdder.SoundFromTemplate(const ATemplateName: string; const AName: string): TSoSound;
+function TSoContainerAdder.Sound(const ATemplateName: string; const AName: string): TSoSound;
 begin
 
 end;
