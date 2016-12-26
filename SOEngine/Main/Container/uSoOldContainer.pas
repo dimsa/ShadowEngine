@@ -1,4 +1,4 @@
-unit uSoContainer;
+unit uSoOldContainer;
 
 interface
 
@@ -12,7 +12,7 @@ type
 
   TPartDict = TDict<TSoBasePartClass, TList<TSoBasePart>>;
 
-  TSoContainer = class
+  TSoOldContainer = class
   private
     FSoObject: TSoObject;
     FParts: TPartDict;
@@ -30,7 +30,7 @@ implementation
 
 { TSoContainer }
 
-procedure TSoContainer.Add(APart: TSoBasePart);
+procedure TSoOldContainer.Add(APart: TSoBasePart);
 var
   vClass: TSoBasePartClass;
 begin
@@ -45,23 +45,23 @@ begin
   APart.AddDestroyHandler(OnBasePartDestroy);
 end;
 
-constructor TSoContainer.Create;
+constructor TSoOldContainer.Create;
 begin
   FParts := TPartDict.Create();
 end;
 
-destructor TSoContainer.Destroy;
+destructor TSoOldContainer.Destroy;
 begin
   FParts.Free;
   inherited;
 end;
 
-function TSoContainer.GetItem(AIndex: TSoBasePartClass): TList<TSoBasePart>;
+function TSoOldContainer.GetItem(AIndex: TSoBasePartClass): TList<TSoBasePart>;
 begin
   Result := FParts[AIndex];
 end;
 
-procedure TSoContainer.OnBasePartDestroy(ASender: TObject);
+procedure TSoOldContainer.OnBasePartDestroy(ASender: TObject);
 var
   vBasePart: TSoBasePart;
 begin

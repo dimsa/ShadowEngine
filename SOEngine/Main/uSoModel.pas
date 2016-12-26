@@ -6,7 +6,7 @@ uses
   System.SyncObjs, uEngine2DClasses, System.SysUtils,
   uSoTypes, uCommonClasses,
   uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
-  uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper, uSoContainerKeeper,
+  uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper,
   uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory, uSoSoundKeeper;
 
 type
@@ -15,7 +15,6 @@ type
     FCritical: TCriticalSection;
     FImage: TAnonImage;
     FOptions: TSoEngineOptions;
-    FContainerKeeper: TSoContainerKeeper;
     // Workers
     FRenderer: TSoRenderer;
     FCollider: TSoCollider;
@@ -72,7 +71,6 @@ begin
   FOptions := AOptions;
   InitFactories;
 
-  FContainerKeeper := TSoContainerKeeper.Create;
   FObjectKeeper := TSoObjectKeeper.Create(FCritical);
   FLogicKeper := TSoLogicKeeper.Create(FCritical);
   FRenderer := TSoRenderer.Create(FCritical, AImage);
@@ -82,22 +80,11 @@ begin
   FKeyProcessor := TSoKeyProcessor.Create(FCritical);
   FMouseProcessor := TSoMouseProcessor.Create(FCritical);
   FSoundKeeper := TSoSoundKeeper.Create(FCritical);
-//  FPropertyKeeper := TSoPropertyKeeper.Create(FCritical);
-
-  // Container Keeper changes on adding of unitpart
-  FLogicKeper.OnAdd := FContainerKeeper.OnAdd;
-  FRenderer.OnAdd := FContainerKeeper.OnAdd;
-  FCollider.OnAdd := FContainerKeeper.OnAdd;
-  FFormattor.OnAdd := FContainerKeeper.OnAdd;
-  FAnimator.OnAdd := FContainerKeeper.OnAdd;
-  FKeyProcessor.OnAdd := FContainerKeeper.OnAdd;
-  FMouseProcessor.OnAdd := FContainerKeeper.OnAdd;
- // FPropertyKeeper.OnAdd := FContainerKeeper.OnAdd;
 end;
 
 destructor TSoModel.Destroy;
 begin
-  FContainerKeeper.Free;
+ // FContainerKeeper.Free;
   FObjectKeeper.Free;
   FLogicKeper.Free;
   FRenderer.Free;

@@ -3,21 +3,21 @@ unit uSoContainerKeeper;
 interface
 
 uses
-  uSoTypes, uSoObject, uSoBasePart, uSoContainer, uSoContainerTypes;
+  uSoTypes, uSoObject, uSoBasePart, uSoOldContainer, uSoContainerTypes;
 
 type
-  TSoContainerFriend = class(TSoContainer);
+  TSoContainerFriend = class(TSoOldContainer);
 
   TSoObjectFriend = class(TSoObject);
 
-  TSoContainerKeeper = class
+  TSoOldContainerKeeper = class
   private
-    FContainers: TDict<TSoObject, TSoContainer>;
-    function GetContainer(Index: TSoObject): TSoContainer;
+    FContainers: TDict<TSoObject, TSoOldContainer>;
+    function GetContainer(Index: TSoObject): TSoOldContainer;
     procedure OnObjectDestroy(ASender: TObject);
   public
     procedure OnAdd(ASender: TObject; AEventArgs: TOnAddContainerEventArgs);
-    property Items[Index: TSoObject]: TSoContainer read GetContainer;
+    property Items[Index: TSoObject]: TSoOldContainer read GetContainer;
 
     constructor Create;
     destructor Destroy; override;
@@ -25,14 +25,14 @@ type
 
 implementation
 
-{ TSoContainerKeeper }
+{ TSoOldContainerKeeper }
 
-constructor TSoContainerKeeper.Create;
+constructor TSoOldContainerKeeper.Create;
 begin
-  FContainers := TDict<TSoObject, TSoContainer>.Create;
+  FContainers := TDict<TSoObject, TSoOldContainer>.Create;
 end;
 
-destructor TSoContainerKeeper.Destroy;
+destructor TSoOldContainerKeeper.Destroy;
 var
   It: TSoObject;
 begin
@@ -43,19 +43,19 @@ begin
   inherited;
 end;
 
-function TSoContainerKeeper.GetContainer(Index: TSoObject): TSoContainer;
+function TSoOldContainerKeeper.GetContainer(Index: TSoObject): TSoOldContainer;
 begin
   Result := FContainers[Index];
 end;
 
 
-procedure TSoContainerKeeper.OnAdd(ASender: TObject; AEventArgs: TOnAddContainerEventArgs);
+procedure TSoOldContainerKeeper.OnAdd(ASender: TObject; AEventArgs: TOnAddContainerEventArgs);
 var
-  vContainer: TSoContainer;
+  vContainer: TSoOldContainer;
 begin
   if not FContainers.ContainsKey(AEventArgs.Subject) then
   begin
-    vContainer := TSoContainer.Create;
+    vContainer := TSoOldContainer.Create;
     FContainers.Add(AEventArgs.Subject, vContainer);
     TSoObjectFriend(AEventArgs.Subject).SetContainer(vContainer);
     AEventArgs.Subject.AddDestroyHandler(OnObjectDestroy);
@@ -65,9 +65,9 @@ begin
   TSoContainerFriend(vContainer).Add(AEventArgs.BasePart);
 end;
 
-procedure TSoContainerKeeper.OnObjectDestroy(ASender: TObject);
+procedure TSoOldContainerKeeper.OnObjectDestroy(ASender: TObject);
 var
-  vCont: TSoContainer;
+  vCont: TSoOldContainer;
 begin
   vCont := FContainers[TSoObject(ASender)];
   FContainers.Remove(TSoObject(ASender));

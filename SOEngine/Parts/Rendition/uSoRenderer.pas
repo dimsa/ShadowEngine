@@ -47,7 +47,7 @@ type
 implementation
 
 uses
-  uSoContainer, System.Math, uSoProperty;
+  System.Math, uSoProperty;
 
 { TSoRenderer }
 
