@@ -150,7 +150,8 @@ contains
   uSoPosition in 'Parts\PositionAdapter\uSoPosition.pas',
   uISoPositionAdapter in 'Parts\PositionAdapter\uISoPositionAdapter.pas',
   uSoContainerAdder in 'Main\Container\uSoContainerAdder.pas',
-  uSoContainerGetter in 'Main\Container\uSoContainerGetter.pas';
+  uSoContainerGetter in 'Main\Container\uSoContainerGetter.pas',
+  uSoContainer in 'Main\Container\uSoContainer.pas';
 
 end.
 
