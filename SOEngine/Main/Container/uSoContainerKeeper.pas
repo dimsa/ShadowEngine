@@ -3,75 +3,66 @@ unit uSoContainerKeeper;
 interface
 
 uses
-  uSoTypes, uSoObject, uSoBasePart, uSoOldContainer, uSoContainerTypes;
+  uSoTypes, uSoModel, uSoObject,
+  uSoContainer;
 
 type
-  TSoContainerFriend = class(TSoOldContainer);
-
-  TSoObjectFriend = class(TSoObject);
-
-  TSoOldContainerKeeper = class
+  TSoContainerKeeper = class
+  private type
+    TSoObjectFriend = class(TSoObject);
   private
-    FContainers: TDict<TSoObject, TSoOldContainer>;
-    function GetContainer(Index: TSoObject): TSoOldContainer;
-    procedure OnObjectDestroy(ASender: TObject);
+    FModel: TSoModel;
+    FContainerByObject: TDict<TSoObject, TSoContainer>;
+    FObjectByContainer: TDict<TSoContainer, TSoObject>;
+    procedure OnContainerDestroy(ASender: TObject);
   public
-    procedure OnAdd(ASender: TObject; AEventArgs: TOnAddContainerEventArgs);
-    property Items[Index: TSoObject]: TSoOldContainer read GetContainer;
-
-    constructor Create;
+    function Add(const AObject: TSoObject): TSoContainer;
+    constructor Create(const AModel: TSoModel);
     destructor Destroy; override;
   end;
 
 implementation
 
-{ TSoOldContainerKeeper }
+{ TSoContainerKeeper }
 
-constructor TSoOldContainerKeeper.Create;
+function TSoContainerKeeper.Add(const AObject: TSoObject): TSoContainer;
+var
+  vCont: TSoContainer;
 begin
-  FContainers := TDict<TSoObject, TSoOldContainer>.Create;
+  vCont := TSoContainer.Create(AObject, FModel);
+  vCont.AddOnDestroy(OnContainerDestroy);
+  TSoObjectFriend(AObject).SetContainer(vCont);
+  FContainerByObject.Add(AObject, vCont);
+  FObjectByContainer.Add(vCont, AObject);
 end;
 
-destructor TSoOldContainerKeeper.Destroy;
-var
-  It: TSoObject;
+constructor TSoContainerKeeper.Create(const AModel: TSoModel);
 begin
-  for It in FContainers.Keys do
-    FContainers[It].Free;
+  FModel := AModel;
 
-  FContainers.Free;
+  FContainerByObject := TDict<TSoObject, TSoContainer>.Create;
+  FObjectByContainer := TDict<TSoContainer, TSoObject>.Create;
+end;
+
+destructor TSoContainerKeeper.Destroy;
+begin
+  FContainerByObject.Free;
+  FObjectByContainer.Free;
+  FModel := nil;
   inherited;
 end;
 
-function TSoOldContainerKeeper.GetContainer(Index: TSoObject): TSoOldContainer;
-begin
-  Result := FContainers[Index];
-end;
-
-
-procedure TSoOldContainerKeeper.OnAdd(ASender: TObject; AEventArgs: TOnAddContainerEventArgs);
+procedure TSoContainerKeeper.OnContainerDestroy(ASender: TObject);
 var
-  vContainer: TSoOldContainer;
+  vCont: TSoContainer;
 begin
-  if not FContainers.ContainsKey(AEventArgs.Subject) then
-  begin
-    vContainer := TSoOldContainer.Create;
-    FContainers.Add(AEventArgs.Subject, vContainer);
-    TSoObjectFriend(AEventArgs.Subject).SetContainer(vContainer);
-    AEventArgs.Subject.AddDestroyHandler(OnObjectDestroy);
-  end else
-    vContainer := FContainers[AEventArgs.Subject];
+  vCont := TSoContainer(ASender);
 
-  TSoContainerFriend(vContainer).Add(AEventArgs.BasePart);
-end;
+  if FObjectByContainer.ContainsKey(vCont) then
+    FObjectByContainer.Remove(vCont);
 
-procedure TSoOldContainerKeeper.OnObjectDestroy(ASender: TObject);
-var
-  vCont: TSoOldContainer;
-begin
-  vCont := FContainers[TSoObject(ASender)];
-  FContainers.Remove(TSoObject(ASender));
-  vCont.Free;
+  if FContainerByObject.ContainsKey(FObjectByContainer[vCont]) then
+    FContainerByObject.Remove(FObjectByContainer[vCont]);
 end;
 
 end.

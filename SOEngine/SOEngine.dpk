@@ -142,7 +142,7 @@ contains
   uSoObjectDefaultProperties in 'Main\Common\uSoObjectDefaultProperties.pas',
   uSoTypes in 'Main\Common\uSoTypes.pas',
   uSoOldContainer in 'Main\Container\uSoOldContainer.pas',
-  uSoContainerKeeper in 'Main\Container\uSoContainerKeeper.pas',
+  uSoOldContainerKeeper in 'Main\Container\uSoOldContainerKeeper.pas',
   uSoContainerTypes in 'Main\Container\uSoContainerTypes.pas',
   uSoPositionAdapter in 'Parts\PositionAdapter\uSoPositionAdapter.pas',
   uSoObject in 'SoObject\uSoObject.pas',
@@ -151,7 +151,8 @@ contains
   uISoPositionAdapter in 'Parts\PositionAdapter\uISoPositionAdapter.pas',
   uSoContainerAdder in 'Main\Container\uSoContainerAdder.pas',
   uSoContainerGetter in 'Main\Container\uSoContainerGetter.pas',
-  uSoContainer in 'Main\Container\uSoContainer.pas';
+  uSoContainer in 'Main\Container\uSoContainer.pas',
+  uSoContainerKeeper in 'Main\Container\uSoContainerKeeper.pas';
 
 end.
 

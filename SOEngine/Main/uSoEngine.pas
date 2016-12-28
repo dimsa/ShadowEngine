@@ -7,7 +7,7 @@ uses
   uSoTypes, uCommonClasses, uEasyDevice,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uSoEngineOptions,
   uEngine2DManager, uEngine2DStatus, uSoObject, uSoManager, uWorldStatus,
-  uSoObjectDefaultProperties, uSoEngineEvents;
+  uSoObjectDefaultProperties, uSoEngineEvents, uSoContainerKeeper;
 
 type
 //  TManageDelegate = function(const AContainer: TSoObject): TUnitManager;
@@ -17,6 +17,7 @@ type
     FEngineThread: TEngineThread; // Thread that paint all sprites (But there are possibility to use not one thread)  // Поток в котором происходит отрисовка
     FCritical: TCriticalSection; // The critical section for multithread operation, to protect model on changind in paint time // Критическая секция движка
     FModel: TSoModel; // All main lists are in It.
+    FContainerKeeper: TSoContainerKeeper;
     FOptions: TSoEngineOptions; // All Engine options. If you add some feature to manage engine, it shoulb be here// Настройки движка
     FStatus: TEngine2DStatus; // All Engine status you can get from herem like width-height,speed and etc.
     //FIsMouseDowned: Boolean; // True if Mouse is Downed  // Хранит состояние нажатости мыши
@@ -75,6 +76,7 @@ begin
   FEngineThread.WorkProcedure := WorkProcedure;
 
   FModel := TSoModel.Create(TAnonImage(FImage), FCritical, FOptions);
+  FContainerKeeper := TSoContainerKeeper.Create(FModel);
 
   SubscribeImageEvent;
 
@@ -85,6 +87,7 @@ end;
 
 destructor TSoEngine.Destroy;
 begin
+  FContainerKeeper.Free;
   FModel.Free;
   FEngineThread.Free;
   FCritical.Free;
