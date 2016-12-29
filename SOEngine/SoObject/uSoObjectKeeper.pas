@@ -3,7 +3,8 @@ unit uSoObjectKeeper;
 interface
 
 uses
-  uSoObject, uSoBaseOperator, System.Generics.Collections;
+  uSoObject, uSoBaseOperator,
+  uSoPositionAdapterAbsolute;
 
 type
 
@@ -21,7 +22,7 @@ implementation
 
 function TSoObjectKeeper.AddNewObject(const AName: string): TSoObject;
 begin
-  Result := TSoObject.Create;
+  Result := TSoObject.Create(TSoPositionAdapterAbsolute.Create);
   Add(Result, AName);
 end;
 

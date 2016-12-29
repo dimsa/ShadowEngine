@@ -15,13 +15,18 @@ type
     FContainerByObject: TDict<TSoObject, TSoContainer>;
     FObjectByContainer: TDict<TSoContainer, TSoObject>;
     procedure OnContainerDestroy(ASender: TObject);
-  public
     function Add(const AObject: TSoObject): TSoContainer;
+  public
+    function AddAbs: TSoContainer; // Add SoContainer with SoObject with Absolute PositionAdapter
+    function Add320: TSoContainer; // Add SoContainer with SoObject with 320x240 PositionAdapter
     constructor Create(const AModel: TSoModel);
     destructor Destroy; override;
   end;
 
 implementation
+
+uses
+  uSoPositionAdapterAbsolute;
 
 { TSoContainerKeeper }
 
@@ -34,6 +39,24 @@ begin
   TSoObjectFriend(AObject).SetContainer(vCont);
   FContainerByObject.Add(AObject, vCont);
   FObjectByContainer.Add(vCont, AObject);
+end;
+
+function TSoContainerKeeper.Add320: TSoContainer;
+begin
+  Add(
+    TSoObject.Create(
+      TSoPositionAdapterAbsolute.Create
+      )
+  );
+end;
+
+function TSoContainerKeeper.AddAbs: TSoContainer;
+begin
+  Add(
+    TSoObject.Create(
+      TSoPositionAdapterAbsolute.Create
+      )
+  );
 end;
 
 constructor TSoContainerKeeper.Create(const AModel: TSoModel);

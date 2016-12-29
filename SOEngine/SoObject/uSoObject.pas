@@ -4,7 +4,7 @@ interface
 
 uses
   uGeometryClasses, System.Types, System.Classes, uCommonClasses, uSoProperties, uSoProperty,
-  uSoObjectDefaultProperties, uSoTypes, uSoPosition, uSoPositionAdapter;
+  uSoObjectDefaultProperties, uSoTypes, uSoPosition, uISoPositionAdapter;
 
 type
   TSoObject = class
@@ -31,7 +31,7 @@ type
     procedure AddDestroyHandler(const AHandler: TNotifyEvent);
     procedure RemoveDestroyHandler(const AHandler: TNotifyEvent);
 
-    constructor Create;
+    constructor Create(const IPositionAdapter: ISoPositionAdapter);
     destructor Destroy; override;
   end;
 
@@ -49,13 +49,13 @@ begin
   Result := FProperties.Add(AName);
 end;
 
-constructor TSoObject.Create;
+constructor TSoObject.Create(const IPositionAdapter: ISoPositionAdapter);
 begin
   FOnDestroyHandlers := TNotifyEventList.Create;
   FOnChangePositionHandlers := TEventList<TPosition>.Create;
   FProperties := TSoProperties.Create;
 
-  FPosition := TSoPosition.Create(TAbsolutePositionAdapter.Create);
+  FPosition := TSoPosition.Create(IPositionAdapter);
 end;
 
 destructor TSoObject.Destroy;

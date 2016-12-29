@@ -144,7 +144,7 @@ contains
   uSoOldContainer in 'Main\Container\uSoOldContainer.pas',
   uSoOldContainerKeeper in 'Main\Container\uSoOldContainerKeeper.pas',
   uSoContainerTypes in 'Main\Container\uSoContainerTypes.pas',
-  uSoPositionAdapter in 'Parts\PositionAdapter\uSoPositionAdapter.pas',
+  uSoPositionAdapterAbsolute in 'Parts\PositionAdapter\uSoPositionAdapterAbsolute.pas',
   uSoObject in 'SoObject\uSoObject.pas',
   uSoObjectKeeper in 'SoObject\uSoObjectKeeper.pas',
   uSoPosition in 'Parts\PositionAdapter\uSoPosition.pas',
@@ -152,7 +152,8 @@ contains
   uSoContainerAdder in 'Main\Container\uSoContainerAdder.pas',
   uSoContainerGetter in 'Main\Container\uSoContainerGetter.pas',
   uSoContainer in 'Main\Container\uSoContainer.pas',
-  uSoContainerKeeper in 'Main\Container\uSoContainerKeeper.pas';
+  uSoContainerKeeper in 'Main\Container\uSoContainerKeeper.pas',
+  uSoPositionAdapter320 in 'Parts\PositionAdapter\uSoPositionAdapter320.pas';
 
 end.
 

@@ -257,7 +257,7 @@
         <DCCReference Include="Main\Container\uSoOldContainer.pas"/>
         <DCCReference Include="Main\Container\uSoOldContainerKeeper.pas"/>
         <DCCReference Include="Main\Container\uSoContainerTypes.pas"/>
-        <DCCReference Include="Parts\PositionAdapter\uSoPositionAdapter.pas"/>
+        <DCCReference Include="Parts\PositionAdapter\uSoPositionAdapterAbsolute.pas"/>
         <DCCReference Include="SoObject\uSoObject.pas"/>
         <DCCReference Include="SoObject\uSoObjectKeeper.pas"/>
         <DCCReference Include="Parts\PositionAdapter\uSoPosition.pas"/>
@@ -266,6 +266,7 @@
         <DCCReference Include="Main\Container\uSoContainerGetter.pas"/>
         <DCCReference Include="Main\Container\uSoContainer.pas"/>
         <DCCReference Include="Main\Container\uSoContainerKeeper.pas"/>
+        <DCCReference Include="Parts\PositionAdapter\uSoPositionAdapter320.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>
         <None Include="Parts\Collider\SoBox2D\Box2D\Physics2D.inc"/>

@@ -4,7 +4,7 @@ interface
 
 uses
   uGeometryClasses, uCommonClasses, uSoTypes,
-  uISoPositionAdapter, uSoPositionAdapter;
+  uISoPositionAdapter, uSoPositionAdapterAbsolute;
 
 type
   TSoPosition = class
@@ -65,7 +65,7 @@ end;
 
 constructor TSoPosition.Create;
 begin
-  Create(TAbsolutePositionAdapter.Create);
+  Create(TSoPositionAdapterAbsolute.Create);
 end;
 
 destructor TSoPosition.Destroy;

@@ -1,4 +1,4 @@
-unit uSoPositionAdapter;
+unit uSoPositionAdapterAbsolute;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   uSoTypes, uISoPositionAdapter;
 
 type
-  TAbsolutePositionAdapter = class(TInterfacedObject, ISoPositionAdapter) // Make static?
+  TSoPositionAdapterAbsolute = class(TInterfacedObject, ISoPositionAdapter) // Make static?
   public
     function AdaptScaleX(const AValue: Single): Single;
     function AdaptScaleY(const AValue: Single): Single;
@@ -23,47 +23,47 @@ implementation
 
 { TSoPositionAdapter }
 
-function TAbsolutePositionAdapter.AdaptCenter(const AValue: TPointF): TPointF;
+function TSoPositionAdapterAbsolute.AdaptCenter(const AValue: TPointF): TPointF;
 begin
   Result := AValue;
 end;
 
-function TAbsolutePositionAdapter.AdaptHeight(const AValue: Single): Single;
+function TSoPositionAdapterAbsolute.AdaptHeight(const AValue: Single): Single;
 begin
   Result := AValue;
 end;
 
-function TAbsolutePositionAdapter.AdaptRotate(const AValue: Single): Single;
+function TSoPositionAdapterAbsolute.AdaptRotate(const AValue: Single): Single;
 begin
   Result := AValue;
 end;
 
-function TAbsolutePositionAdapter.AdaptScale(const AValue: TPointF): TPointF;
+function TSoPositionAdapterAbsolute.AdaptScale(const AValue: TPointF): TPointF;
 begin
   Result := AValue;
 end;
 
-function TAbsolutePositionAdapter.AdaptScaleX(const AValue: Single): Single;
+function TSoPositionAdapterAbsolute.AdaptScaleX(const AValue: Single): Single;
 begin
   Result := AValue;
 end;
 
-function TAbsolutePositionAdapter.AdaptScaleY(const AValue: Single): Single;
+function TSoPositionAdapterAbsolute.AdaptScaleY(const AValue: Single): Single;
 begin
   Result := AValue;
 end;
 
-function TAbsolutePositionAdapter.AdaptWidth(const AValue: Single): Single;
+function TSoPositionAdapterAbsolute.AdaptWidth(const AValue: Single): Single;
 begin
   Result := AValue;
 end;
 
-function TAbsolutePositionAdapter.AdaptX(const AValue: Single): Single;
+function TSoPositionAdapterAbsolute.AdaptX(const AValue: Single): Single;
 begin
   Result := AValue;
 end;
 
-function TAbsolutePositionAdapter.AdaptY(const AValue: Single): Single;
+function TSoPositionAdapterAbsolute.AdaptY(const AValue: Single): Single;
 begin
   Result := AValue;
 end;
