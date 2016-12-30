@@ -10,8 +10,9 @@ type
   TSoContainerKeeper = class
   private type
     TSoObjectFriend = class(TSoObject);
+    TSoModelFriend = class(TSoModel);
   private
-    FModel: TSoModel;
+    FModel: TSoModelFriend;
     FContainerByObject: TDict<TSoObject, TSoContainer>;
     FObjectByContainer: TDict<TSoContainer, TSoObject>;
     procedure OnContainerDestroy(ASender: TObject);
@@ -26,7 +27,7 @@ type
 implementation
 
 uses
-  uSoPositionAdapterAbsolute;
+  uSoPositionAdapterAbsolute, uSoPositionAdapter320;
 
 { TSoContainerKeeper }
 
@@ -45,7 +46,7 @@ function TSoContainerKeeper.Add320: TSoContainer;
 begin
   Add(
     TSoObject.Create(
-      TSoPositionAdapterAbsolute.Create
+      TSoPositionAdapter320.Create(@FModel.EngineWidth, @FModel.EngineHeight)
       )
   );
 end;
@@ -61,7 +62,7 @@ end;
 
 constructor TSoContainerKeeper.Create(const AModel: TSoModel);
 begin
-  FModel := AModel;
+  FModel := TSoModelFriend(AModel);
 
   FContainerByObject := TDict<TSoObject, TSoContainer>.Create;
   FObjectByContainer := TDict<TSoContainer, TSoObject>.Create;

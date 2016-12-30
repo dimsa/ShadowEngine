@@ -29,8 +29,10 @@ type
     FMouseProcessor: TSoMouseProcessor;
     // Factories
     FColliderExtenderFactory: TSoColliderExtenderFactory;
+    FEngineHeight, FEngineWidth: Single;
     function GetEngineSize: TPointF;
     procedure InitFactories;
+    procedure OnImageResize(ASender: TObject);
   protected
     // Workers
     property Renderer: TSoRenderer read FRenderer;
@@ -44,9 +46,10 @@ type
 //    property PropertyKeeper: TSoPropertyKeeper read FPropertyKeeper;
     // Processors
     property KeyProcessor: TSoKeyProcessor read FKeyProcessor;
-    property MouseProcessor: TSoMouseProcessor read FMouseProcessor;
-    // Common
+    property MouseProcessor: TSoMouseProcessor read FMouseProcessor;    // Common
     property EngineSize: TPointF read GetEngineSize;
+    property EngineWidth: Single read FEngineWidth;
+    property EngineHeight: Single read FEngineHeight;
   public
     function ObjectByName(const AObjectName: string): TSoObject;
     procedure ExecuteOnTick;
@@ -80,6 +83,10 @@ begin
   FKeyProcessor := TSoKeyProcessor.Create(FCritical);
   FMouseProcessor := TSoMouseProcessor.Create(FCritical);
   FSoundKeeper := TSoSoundKeeper.Create(FCritical);
+
+  FImage.OnResize := OnImageResize;
+  FEngineWidth := FImage.Width;
+  FEngineHeight := FImage.Height;
 end;
 
 destructor TSoModel.Destroy;
@@ -142,6 +149,12 @@ end;
 function TSoModel.ObjectByName(const AObjectName: string): TSoObject;
 begin
   Result := FObjectKeeper.Items[AObjectName];
+end;
+
+procedure TSoModel.OnImageResize(ASender: TObject);
+begin
+  FEngineWidth := TAnonImage(ASender).Width;
+  FEngineHeight := TAnonImage(ASender).Height;
 end;
 
 end.
