@@ -3,7 +3,7 @@ unit uSoContainer;
 interface
 
 uses
-  uSoTypes, uCommonClasses,
+  uSoTypes, uCommonClasses, uSoContainerTypes,
   uSoContainerGetter, uSoContainerAdder,
   uSoModel, uSoObject;
 
@@ -15,6 +15,7 @@ type
     FOnDestroyHandlers: TNotifyEventList;
     procedure OnObjectDestroy(ASender: TObject);
     procedure RaiseOnDestroy;
+    function OnAnyAdd(AClass: TClass; ADescription: TContainerElementDescription): TObject;
   public
     property Get: TSoContainerGetter read FGetter;
     property Add: TSoContainerAdder read FAdder;
@@ -37,7 +38,8 @@ constructor TSoContainer.Create(const AObject: TSoObject; const AModel: TSoModel
 begin
   FOnDestroyHandlers := TNotifyEventList.Create;
   FGetter := TSoContainerGetter.Create(AObject, AModel);
-  FAdder := TSoContainerAdder.Create(AObject, AModel);
+  FAdder := TSoContainerAdder.Create(OnAnyAdd);//(AObject, AModel);
+
   AObject.AddDestroyHandler(OnObjectDestroy);
 end;
 
@@ -47,6 +49,11 @@ begin
   FAdder.Free;
   FOnDestroyHandlers.Free;
   inherited;
+end;
+
+function TSoContainer.OnAnyAdd(AClass: TClass; ADescription: TContainerElementDescription): TObject;
+begin
+
 end;
 
 procedure TSoContainer.OnObjectDestroy(ASender: TObject);

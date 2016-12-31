@@ -6,7 +6,8 @@ uses
   uCommonClasses, uSoTypes,
   uSoModel, uSoObject,
   uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoFormatter, uSoAnimation,
-  uSoLogic, uSoProperties, uSoProperty, uColliderDefinition, uSoSound;
+  uSoLogic, uSoProperties, uSoProperty, uColliderDefinition, uSoSound,
+  uSoContainer, uSoContainerKeeper;
 
 type
   TSoModelFriend = class(TSoModel);
@@ -15,6 +16,8 @@ type
   TUnitManager = class
   private
     FModel: TSoModelFriend;
+    FContainerKeeper: TSoContainerKeeper;
+
     FActiveContainer: TSoObject;
 
     function AddContainer(const AName: string = ''): TSoObject;
@@ -55,6 +58,9 @@ type
     function New(const AName: string = ''): TUnitManager;
     function ObjectByName(const AObjectName: string): TSoObject;
 
+    function Add320: TSoContainer; // Add SoContainer with SoObject with 320x240 PositionAdapter
+    function AddAbs: TSoContainer; // Add SoContainer with SoObject with Absolute PositionAdapter
+
     property ActiveContainer: TSoObject read FActiveContainer;
 
     constructor Create(const AModel: TSoModel);
@@ -77,6 +83,16 @@ end;
 function TUnitManager.AddAnimation(const ATemplateName: string): TSoAnimation;
 begin
   Result := FModel.Animator.AddFromTemplate(FActiveContainer, ATemplateName);
+end;
+
+function TUnitManager.Add320: TSoContainer;
+begin
+  Result := FContainerKeeper.Add320;
+end;
+
+function TUnitManager.AddAbs: TSoContainer;
+begin
+  Result := FContainerKeeper.AddAbs;
 end;
 
 function TUnitManager.AddAnimation(const AObject: TSoAnimation): TSoAnimation;
@@ -179,6 +195,7 @@ end;
 constructor TUnitManager.Create(const AModel: TSoModel);
 begin
   FModel := TSoModelFriend(AModel);
+//  FContainerKeeper := AContainerKeeper;
 end;
 
 function TUnitManager.ByObject(const AContainer: TSoObject): TUnitManager;

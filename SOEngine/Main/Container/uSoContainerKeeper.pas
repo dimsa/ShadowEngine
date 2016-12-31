@@ -46,18 +46,14 @@ function TSoContainerKeeper.Add320: TSoContainer;
 begin
   Add(
     TSoObject.Create(
-      TSoPositionAdapter320.Create(@FModel.EngineWidth, @FModel.EngineHeight)
-      )
-  );
+      TSoPositionAdapter320.Create(@FModel.EngineWidth, @FModel.EngineHeight)));
 end;
 
 function TSoContainerKeeper.AddAbs: TSoContainer;
 begin
   Add(
     TSoObject.Create(
-      TSoPositionAdapterAbsolute.Create
-      )
-  );
+      TSoPositionAdapterAbsolute.Create));
 end;
 
 constructor TSoContainerKeeper.Create(const AModel: TSoModel);
