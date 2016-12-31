@@ -4,7 +4,7 @@ interface
 
 uses
   uCommonClasses, uSoContainerTypes,
-  uSoObject, uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoSound,
+  uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoSound,
   uSoFormatter, uSoAnimation, uSoLogic, uSoProperty;
 
 type
@@ -27,6 +27,7 @@ type
     function Any<T: class>(AObject: TObject; const AName: string = ''): T;
 
     constructor Create(const AOnAnyAdd: TAddContainerElementDelegate);
+    destructor Destroy; override;
   end;
 
 implementation
@@ -59,6 +60,12 @@ end;
 constructor TSoContainerAdder.Create(const AOnAnyAdd: TAddContainerElementDelegate);
 begin
   FOnAnyAdd := AOnAnyAdd;
+end;
+
+destructor TSoContainerAdder.Destroy;
+begin
+  FOnAnyAdd := nil;
+  inherited;
 end;
 
 function TSoContainerAdder.Formatter(const ATemplateName: string; const AName: string): TSoFormatter;
