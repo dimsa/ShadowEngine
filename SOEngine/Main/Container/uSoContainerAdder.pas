@@ -11,7 +11,9 @@ type
   TSoContainerAdder = class
   private
     FOnAnyAdd: TAddContainerElementDelegate;
+    FOnElementAdd: TAddElementDelegate;
     property OnAnyAdd: TAddContainerElementDelegate read FOnAnyAdd;
+    property OnElementAdd: TAddElementDelegate read FOnElementAdd;
     function RaiseOnAdd(AClass: TClass; ADescription: TContainerElementDescription): TObject;
   public
     function Rendition(const ATemplateName: string; const AName: string = ''): TEngine2DRendition; overload;
@@ -24,9 +26,10 @@ type
     function Logic(const ATemplateName: string; const AName: string = ''): TSoLogic; overload;
     function Prop(const ATemplateName: string; const AName: string = ''): TSoProperty; overload;
 
-    function Any<T: class>(AObject: TObject; const AName: string = ''): T;
+    function Any<T: class>(const ATemplateName: string; const AName: string = ''): T; overload;
+    function Any<T: class>(const AObject: TObject; const AName: string = ''): T; overload;
 
-    constructor Create(const AOnAnyAdd: TAddContainerElementDelegate);
+    constructor Create(const AOnAnyAdd: TAddContainerElementDelegate; const AOnElementAdd: TAddElementDelegate);
     destructor Destroy; override;
   end;
 
@@ -46,9 +49,14 @@ begin
     RaiseOnAdd(TSoAnimation, TContainerElementDescription.Create(AName, ATemplateName)));
 end;
 
-function TSoContainerAdder.Any<T>(AObject: TObject; const AName: string): T;
+function TSoContainerAdder.Any<T>(const AObject: TObject; const AName: string): T;
 begin
+  Result := T(FOnElementAdd(T, TContainerElement.Create(AObject, AName)));
+end;
 
+function TSoContainerAdder.Any<T>(const ATemplateName, AName: string): T;
+begin
+  Result := T(RaiseOnAdd(T, TContainerElementDescription.Create(AName, ATemplateName)));
 end;
 
 function TSoContainerAdder.Collider(const ATemplateName: string; const AName: string): TSoColliderObj;
@@ -57,9 +65,10 @@ begin
     RaiseOnAdd(TSoColliderObj, TContainerElementDescription.Create(AName, ATemplateName)));
 end;
 
-constructor TSoContainerAdder.Create(const AOnAnyAdd: TAddContainerElementDelegate);
+constructor TSoContainerAdder.Create(const AOnAnyAdd: TAddContainerElementDelegate; const AOnElementAdd: TAddElementDelegate);
 begin
   FOnAnyAdd := AOnAnyAdd;
+  FOnElementAdd := AOnElementAdd;
 end;
 
 destructor TSoContainerAdder.Destroy;

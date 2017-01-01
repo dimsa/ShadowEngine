@@ -16,13 +16,14 @@ type
     procedure OnObjectDestroy(ASender: TObject);
     procedure RaiseOnDestroy;
     function OnAnyAdd(AClass: TClass; ADescription: TContainerElementDescription): TObject;
+    function OnElementAdd(AClass: TClass; AElement: TContainerElement): TObject;
     function OnAnyGet(AClass: TClass; AName: string): TObject;
   public
     property Get: TSoContainerGetter read FGetter;
     property Add: TSoContainerAdder read FAdder;
     procedure AddOnDestroy(const AHandler: TNotifyEvent);
     procedure RemOnDestroy(const AHandler: TNotifyEvent);
-    constructor Create(const AObject: TSoObject; const AModel: TSoModel);
+    constructor Create(const AObject: TSoObject);
     destructor Destroy; override;
   end;
 
@@ -35,11 +36,11 @@ begin
   FOnDestroyHandlers.Add(AHandler);
 end;
 
-constructor TSoContainer.Create(const AObject: TSoObject; const AModel: TSoModel);
+constructor TSoContainer.Create(const AObject: TSoObject);
 begin
   FOnDestroyHandlers := TNotifyEventList.Create;
   FGetter := TSoContainerGetter.Create(OnAnyGet);
-  FAdder := TSoContainerAdder.Create(OnAnyAdd);
+  FAdder := TSoContainerAdder.Create(OnAnyAdd, OnElementAdd);
 
   AObject.AddDestroyHandler(OnObjectDestroy);
 end;
@@ -62,6 +63,11 @@ begin
 
 end;
 
+function TSoContainer.OnElementAdd(AClass: TClass; AElement: TContainerElement): TObject;
+begin
+
+end;
+
 procedure TSoContainer.OnObjectDestroy(ASender: TObject);
 begin
   RaiseOnDestroy;
@@ -78,3 +84,4 @@ begin
 end;
 
 end.
+

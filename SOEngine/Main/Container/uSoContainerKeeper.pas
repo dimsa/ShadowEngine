@@ -35,7 +35,7 @@ function TSoContainerKeeper.Add(const AObject: TSoObject): TSoContainer;
 var
   vCont: TSoContainer;
 begin
-  vCont := TSoContainer.Create(AObject, FModel);
+  vCont := TSoContainer.Create(AObject);
   vCont.AddOnDestroy(OnContainerDestroy);
   TSoObjectFriend(AObject).SetContainer(vCont);
   FContainerByObject.Add(AObject, vCont);
