@@ -12,7 +12,7 @@ type
     TSoObjectFriend = class(TSoObject);
     TSoModelFriend = class(TSoModel);
   private
-    FModel: TSoModelFriend;
+    FEngineWidth, FEngineHeight: PInteger;
     FContainerByObject: TDict<TSoObject, TSoContainer>;
     FObjectByContainer: TDict<TSoContainer, TSoObject>;
     procedure OnContainerDestroy(ASender: TObject);
@@ -20,7 +20,7 @@ type
   public
     function AddAbs: TSoContainer; // Add SoContainer with SoObject with Absolute PositionAdapter
     function Add320: TSoContainer; // Add SoContainer with SoObject with 320x240 PositionAdapter
-    constructor Create(const AModel: TSoModel);
+    constructor Create(const AEngineWidth, AEngineHeight: PInteger);
     destructor Destroy; override;
   end;
 
@@ -36,29 +36,37 @@ var
   vCont: TSoContainer;
 begin
   vCont := TSoContainer.Create(AObject);
-  vCont.AddOnDestroy(OnContainerDestroy);
   TSoObjectFriend(AObject).SetContainer(vCont);
+  vCont.AddOnDestroy(OnContainerDestroy);
+
   FContainerByObject.Add(AObject, vCont);
   FObjectByContainer.Add(vCont, AObject);
 end;
 
 function TSoContainerKeeper.Add320: TSoContainer;
+var
+  vObj: TSoObject;
 begin
-  Add(
-    TSoObject.Create(
-      TSoPositionAdapter320.Create(@FModel.EngineWidth, @FModel.EngineHeight)));
+  vObj := TSoObject.Create(
+    TSoPositionAdapter320.Create(@FEngineWidth, @FEngineHeight));
+
+  Add(vObj);
 end;
 
 function TSoContainerKeeper.AddAbs: TSoContainer;
+var
+  vObj: TSoObject;
 begin
-  Add(
-    TSoObject.Create(
-      TSoPositionAdapterAbsolute.Create));
+  vObj := TSoObject.Create(
+    TSoPositionAdapterAbsolute.Create);
+
+  Add(vObj);
 end;
 
-constructor TSoContainerKeeper.Create(const AModel: TSoModel);
+constructor TSoContainerKeeper.Create(const AEngineWidth, AEngineHeight: PInteger);
 begin
-  FModel := TSoModelFriend(AModel);
+  FEngineWidth := AEngineWidth;
+  FEngineHeight := AEngineHeight;
 
   FContainerByObject := TDict<TSoObject, TSoContainer>.Create;
   FObjectByContainer := TDict<TSoContainer, TSoObject>.Create;
@@ -68,7 +76,6 @@ destructor TSoContainerKeeper.Destroy;
 begin
   FContainerByObject.Free;
   FObjectByContainer.Free;
-  FModel := nil;
   inherited;
 end;
 

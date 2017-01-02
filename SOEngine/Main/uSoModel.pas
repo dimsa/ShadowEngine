@@ -30,7 +30,7 @@ type
     // Factories
     FColliderExtenderFactory: TSoColliderExtenderFactory;
     FEngineHeight, FEngineWidth: Single;
-    function GetEngineSize: TPointF;
+//    function GetEngineSize: TPointF;
     procedure InitFactories;
     procedure OnImageResize(ASender: TObject);
   protected
@@ -47,10 +47,11 @@ type
     // Processors
     property KeyProcessor: TSoKeyProcessor read FKeyProcessor;
     property MouseProcessor: TSoMouseProcessor read FMouseProcessor;    // Common
-    property EngineSize: TPointF read GetEngineSize;
-    property EngineWidth: Single read FEngineWidth;
-    property EngineHeight: Single read FEngineHeight;
+//    property EngineSize: TPointF read GetEngineSize;
+//    property EngineWidth: Single read FEngineWidth;
+//    property EngineHeight: Single read FEngineHeight;
   public
+//    property Situation: TSoSituation read FSituation;
     function ObjectByName(const AObjectName: string): TSoObject;
     procedure ExecuteOnTick;
     procedure ExecuteKeyUp(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
@@ -136,10 +137,10 @@ begin
   FRenderer.Execute;
 end;
 
-function TSoModel.GetEngineSize: TPointF;
+{function TSoModel.GetEngineSize: TPointF;
 begin
   Result := TPointF.Create(FImage.Width, FImage.Height);
-end;
+end;  }
 
 procedure TSoModel.InitFactories;
 begin

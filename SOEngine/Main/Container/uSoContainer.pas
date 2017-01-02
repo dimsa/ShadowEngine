@@ -4,12 +4,13 @@ interface
 
 uses
   uSoTypes, uCommonClasses, uSoContainerTypes,
-  uSoContainerGetter, uSoContainerAdder,
-  uSoModel, uSoObject;
+  uSoContainerGetter, uSoContainerAdder, uSoObject,
+  uSoModel;
 
 type
   TSoContainer = class
   private
+    FSubject: TSoObject;
     FGetter: TSoContainerGetter;
     FAdder: TSoContainerAdder;
     FOnDestroyHandlers: TNotifyEventList;
@@ -19,11 +20,12 @@ type
     function OnElementAdd(AClass: TClass; AElement: TContainerElement): TObject;
     function OnAnyGet(AClass: TClass; AName: string): TObject;
   public
+    property Subject: TSoObject read FSubject;
     property Get: TSoContainerGetter read FGetter;
     property Add: TSoContainerAdder read FAdder;
     procedure AddOnDestroy(const AHandler: TNotifyEvent);
     procedure RemOnDestroy(const AHandler: TNotifyEvent);
-    constructor Create(const AObject: TSoObject);
+    constructor Create(const ASubject: TSoObject);
     destructor Destroy; override;
   end;
 
@@ -36,13 +38,15 @@ begin
   FOnDestroyHandlers.Add(AHandler);
 end;
 
-constructor TSoContainer.Create(const AObject: TSoObject);
+constructor TSoContainer.Create(const ASubject: TSoObject);
 begin
+  FSubject := ASubject;
   FOnDestroyHandlers := TNotifyEventList.Create;
+
+  FSubject.AddDestroyHandler(OnObjectDestroy);
+
   FGetter := TSoContainerGetter.Create(OnAnyGet);
   FAdder := TSoContainerAdder.Create(OnAnyAdd, OnElementAdd);
-
-  AObject.AddDestroyHandler(OnObjectDestroy);
 end;
 
 destructor TSoContainer.Destroy;
