@@ -29,7 +29,7 @@ type
     FMouseProcessor: TSoMouseProcessor;
     // Factories
     FColliderExtenderFactory: TSoColliderExtenderFactory;
-    FEngineHeight, FEngineWidth: Single;
+//    FEngineHeight, FEngineWidth: Single;
 //    function GetEngineSize: TPointF;
     procedure InitFactories;
     procedure OnImageResize(ASender: TObject);
@@ -86,8 +86,8 @@ begin
   FSoundKeeper := TSoSoundKeeper.Create(FCritical);
 
   FImage.OnResize := OnImageResize;
-  FEngineWidth := FImage.Width;
-  FEngineHeight := FImage.Height;
+  //FEngineWidth := FImage.Width;
+  //FEngineHeight := FImage.Height;
 end;
 
 destructor TSoModel.Destroy;
@@ -154,8 +154,8 @@ end;
 
 procedure TSoModel.OnImageResize(ASender: TObject);
 begin
-  FEngineWidth := TAnonImage(ASender).Width;
-  FEngineHeight := TAnonImage(ASender).Height;
+  //FEngineWidth := TAnonImage(ASender).Width;
+  //FEngineHeight := TAnonImage(ASender).Height;
 end;
 
 end.

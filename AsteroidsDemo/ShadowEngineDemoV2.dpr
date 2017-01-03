@@ -1,4 +1,4 @@
-program AsteroidsDemo;
+program ShadowEngineDemoV2;
 
 uses
   System.StartUpCopy,

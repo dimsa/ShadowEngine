@@ -3,7 +3,7 @@
         <ProjectGuid>{BA95F9E2-CAD1-432D-A485-CD56FAF1C92F}</ProjectGuid>
         <ProjectVersion>18.1</ProjectVersion>
         <FrameworkType>FMX</FrameworkType>
-        <MainSource>ShadowEngineDemo.dpr</MainSource>
+        <MainSource>ShadowEngineDemoV1.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -112,7 +112,7 @@
         <AUP_WRITE_CALENDAR>true</AUP_WRITE_CALENDAR>
         <AUP_CAMERA>true</AUP_CAMERA>
         <AUP_ACCESS_COARSE_LOCATION>true</AUP_ACCESS_COARSE_LOCATION>
-        <SanitizedProjectName>ShadowEngineDemo</SanitizedProjectName>
+        <SanitizedProjectName>ShadowEngineDemoV1</SanitizedProjectName>
         <AUP_WRITE_EXTERNAL_STORAGE>true</AUP_WRITE_EXTERNAL_STORAGE>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
@@ -300,7 +300,6 @@
         <DCC_UsePackage>FireDACTDataDriver;FireDACSqliteDriver;FireDACDSDriver;DBXSqliteDriver;FireDACPgDriver;fmx;IndySystem;TeeDB;tethering;vclib;DBXInterBaseDriver;DataSnapClient;DataSnapServer;DataSnapCommon;DataSnapProviderClient;DBXSybaseASEDriver;DbxCommonDriver;vclimg;dbxcds;DatasnapConnectorsFreePascal;appanalytics;vcldb;vcldsnap;fmxFireDAC;DBXDb2Driver;DBXOracleDriver;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;IndyCore;DBXMSSQLDriver;IndyIPCommon;CloudService;FmxTeeUI;FireDACIBDriver;DataSnapFireDAC;FireDACDBXDriver;soapserver;inetdbxpress;dsnapxml;FireDACInfxDriver;FireDACDb2Driver;adortl;FireDACASADriver;bindcompfmx;FireDACODBCDriver;RESTBackendComponents;emsclientfiredac;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;inetdb;Tee;DBXOdbcDriver;ibmonitor;vclFireDAC;xmlrtl;DataSnapNativeClient;ibxpress;IndyProtocols;DBXMySQLDriver;FireDACCommonDriver;bindcompdbx;soaprtl;bindengine;vclactnband;FMXTee;TeeUI;bindcompvcl;vclie;FireDACADSDriver;vcltouch;emsclient;VclSmp;FireDAC;DBXInformixDriver;FireDACMSSQLDriver;Intraweb;VCLRESTComponents;DataSnapConnectors;DataSnapServerMidas;dsnapcon;DBXFirebirdDriver;inet;fmxobj;FireDACMySQLDriver;soapmidas;vclx;DBXSybaseASADriver;FireDACOracleDriver;fmxdae;RESTComponents;FireDACMSAccDriver;dbexpress;DataSnapIndy10ServerTransport;IndyIPClient;LockBox3DR;$(DCC_UsePackage)</DCC_UsePackage>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
-        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -414,7 +413,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">ShadowEngineDemo.dpr</Source>
+                    <Source Name="MainSource">ShadowEngineDemoV1.dpr</Source>
                 </Source>
                 <VersionInfo>
                     <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
@@ -577,9 +576,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\ShadowEngineDemo.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\ShadowEngineDemoV1.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>ShadowEngineDemo.exe</RemoteName>
+                        <RemoteName>ShadowEngineDemoV1.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -651,9 +650,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="iOSSimulator\Debug\ShadowEngineDemo" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="iOSSimulator\Debug\ShadowEngineDemoV1" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="iOSSimulator">
-                        <RemoteName>ShadowEngineDemo</RemoteName>
+                        <RemoteName>ShadowEngineDemoV1</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -701,9 +700,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Release\ShadowEngineDemo.exe" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Release\ShadowEngineDemoV1.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>ShadowEngineDemo.exe</RemoteName>
+                        <RemoteName>ShadowEngineDemoV1.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -723,9 +722,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="OSX32\Debug\ShadowEngineDemo" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="OSX32\Debug\ShadowEngineDemoV1" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="OSX32">
-                        <RemoteName>ShadowEngineDemo</RemoteName>
+                        <RemoteName>ShadowEngineDemoV1</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -740,9 +739,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win64\Debug\ShadowEngineDemo.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win64\Debug\ShadowEngineDemoV1.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>ShadowEngineDemo.exe</RemoteName>
+                        <RemoteName>ShadowEngineDemoV1.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -849,9 +848,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Android\Debug\libShadowEngineDemo.so" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Android\Debug\libShadowEngineDemoV1.so" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Android">
-                        <RemoteName>libShadowEngineDemo.so</RemoteName>
+                        <RemoteName>libShadowEngineDemoV1.so</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -978,9 +977,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="iOSDevice64\Release\ShadowEngineDemo" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="iOSDevice64\Release\ShadowEngineDemoV1" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="iOSDevice64">
-                        <RemoteName>ShadowEngineDemo</RemoteName>
+                        <RemoteName>ShadowEngineDemoV1</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

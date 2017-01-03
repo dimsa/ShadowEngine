@@ -90,7 +90,6 @@ contains
   uWorldManager in 'Manager\uWorldManager.pas',
   uUnitManager in 'Manager\uUnitManager.pas',
   uTemplateManager in 'Manager\uTemplateManager.pas',
-  uWorldStatus in 'Manager\uWorldStatus.pas',
   uSoProperties in 'Parts\Properties\uSoProperties.pas',
   uSoProperty in 'Parts\Properties\uSoProperty.pas',
   uSoPropertyKeeper in 'Parts\Properties\uSoPropertyKeeper.pas',

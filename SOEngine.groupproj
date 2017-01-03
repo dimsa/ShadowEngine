@@ -3,7 +3,7 @@
         <ProjectGuid>{76C8D2B8-74BD-43C5-A796-EBD791E3F53D}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="ShadowEngineDemo.dproj">
+        <Projects Include="ShadowEngineDemoV1.dproj">
             <Dependencies>SOEngine\SOEngine.dproj</Dependencies>
         </Projects>
         <Projects Include="SpriteShapeBuilder\SpriteShapeBuilder.dproj">
@@ -12,7 +12,7 @@
         <Projects Include="SOEngine\SOEngine.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="AsteroidsDemo\AsteroidsDemo.dproj">
+        <Projects Include="AsteroidsDemo\ShadowEngineDemoV2.dproj">
             <Dependencies>SOEngine\SOEngine.dproj</Dependencies>
         </Projects>
         <Projects Include="SoEngineTests\SOEngineTests.dproj">
@@ -26,14 +26,14 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="ShadowEngineDemo" DependsOnTargets="SOEngine">
-        <MSBuild Projects="ShadowEngineDemo.dproj"/>
+    <Target Name="ShadowEngineDemoV1" DependsOnTargets="SOEngine">
+        <MSBuild Projects="ShadowEngineDemoV1.dproj"/>
     </Target>
-    <Target Name="ShadowEngineDemo:Clean" DependsOnTargets="SOEngine:Clean">
-        <MSBuild Projects="ShadowEngineDemo.dproj" Targets="Clean"/>
+    <Target Name="ShadowEngineDemoV1:Clean" DependsOnTargets="SOEngine:Clean">
+        <MSBuild Projects="ShadowEngineDemoV1.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="ShadowEngineDemo:Make" DependsOnTargets="SOEngine:Make">
-        <MSBuild Projects="ShadowEngineDemo.dproj" Targets="Make"/>
+    <Target Name="ShadowEngineDemoV1:Make" DependsOnTargets="SOEngine:Make">
+        <MSBuild Projects="ShadowEngineDemoV1.dproj" Targets="Make"/>
     </Target>
     <Target Name="SpriteShapeBuilder">
         <MSBuild Projects="SpriteShapeBuilder\SpriteShapeBuilder.dproj"/>
@@ -53,14 +53,14 @@
     <Target Name="SOEngine:Make">
         <MSBuild Projects="SOEngine\SOEngine.dproj" Targets="Make"/>
     </Target>
-    <Target Name="AsteroidsDemo" DependsOnTargets="SOEngine">
-        <MSBuild Projects="AsteroidsDemo\AsteroidsDemo.dproj"/>
+    <Target Name="ShadowEngineDemoV2" DependsOnTargets="SOEngine">
+        <MSBuild Projects="AsteroidsDemo\ShadowEngineDemoV2.dproj"/>
     </Target>
-    <Target Name="AsteroidsDemo:Clean" DependsOnTargets="SOEngine:Clean">
-        <MSBuild Projects="AsteroidsDemo\AsteroidsDemo.dproj" Targets="Clean"/>
+    <Target Name="ShadowEngineDemoV2:Clean" DependsOnTargets="SOEngine:Clean">
+        <MSBuild Projects="AsteroidsDemo\ShadowEngineDemoV2.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="AsteroidsDemo:Make" DependsOnTargets="SOEngine:Make">
-        <MSBuild Projects="AsteroidsDemo\AsteroidsDemo.dproj" Targets="Make"/>
+    <Target Name="ShadowEngineDemoV2:Make" DependsOnTargets="SOEngine:Make">
+        <MSBuild Projects="AsteroidsDemo\ShadowEngineDemoV2.dproj" Targets="Make"/>
     </Target>
     <Target Name="SOEngineTests">
         <MSBuild Projects="SoEngineTests\SOEngineTests.dproj"/>
@@ -72,13 +72,13 @@
         <MSBuild Projects="SoEngineTests\SOEngineTests.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="ShadowEngineDemo;SpriteShapeBuilder;SOEngine;AsteroidsDemo;SOEngineTests"/>
+        <CallTarget Targets="ShadowEngineDemoV1;SpriteShapeBuilder;SOEngine;ShadowEngineDemoV2;SOEngineTests"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ShadowEngineDemo:Clean;SpriteShapeBuilder:Clean;SOEngine:Clean;AsteroidsDemo:Clean;SOEngineTests:Clean"/>
+        <CallTarget Targets="ShadowEngineDemoV1:Clean;SpriteShapeBuilder:Clean;SOEngine:Clean;ShadowEngineDemoV2:Clean;SOEngineTests:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ShadowEngineDemo:Make;SpriteShapeBuilder:Make;SOEngine:Make;AsteroidsDemo:Make;SOEngineTests:Make"/>
+        <CallTarget Targets="ShadowEngineDemoV1:Make;SpriteShapeBuilder:Make;SOEngine:Make;ShadowEngineDemoV2:Make;SOEngineTests:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

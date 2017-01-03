@@ -6,7 +6,7 @@ uses
   System.SyncObjs,
   uSoTypes, uCommonClasses, uEasyDevice,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uSoEngineOptions,
-  uEngine2DManager, uEngine2DStatus, uSoObject, uSoManager, uWorldStatus,
+  uEngine2DManager, uEngine2DStatus, uSoObject, uSoManager,
   uSoObjectDefaultProperties, uSoEngineEvents, uSoContainerKeeper;
 
 type
@@ -27,7 +27,6 @@ type
     FEvents: TSoEngineEvents;
     FRect: TRectObject;
     FManager: TSoManager; // Contains all managers
-    FWorldStatus: TWorldStatus;
     FEngineObject: TSoObject; // it's object of engine
     procedure OnImageResize(ASender: TObject);
     function IsHor: Boolean;
@@ -53,7 +52,6 @@ type
     // You should use Managers to Work with Engine
     property Manager: TSoManager read FManager;
 
-    property WorldStatus: TWorldStatus read FWorldStatus;
     property Status: TEngine2DStatus read FStatus;
     property Fps: Single read GetFps;
     const
@@ -76,13 +74,13 @@ begin
   FEngineThread.WorkProcedure := WorkProcedure;
 
   FModel := TSoModel.Create(TAnonImage(FImage), FCritical, FOptions);
-  FContainerKeeper := TSoContainerKeeper.Create(FModel);
+
+//  FContainerKeeper := TSoContainerKeeper.Create();
 
   SubscribeImageEvent;
 
   FManager := TSoManager.Create(FModel, FEvents);
   InitEngineObject;
-  FWorldStatus := TWorldStatus.Create(FModel, FRect);
 end;
 
 destructor TSoEngine.Destroy;
