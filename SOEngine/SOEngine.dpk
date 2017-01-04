@@ -152,7 +152,8 @@ contains
   uSoContainerGetter in 'Main\Container\uSoContainerGetter.pas',
   uSoContainer in 'Main\Container\uSoContainer.pas',
   uSoContainerKeeper in 'Main\Container\uSoContainerKeeper.pas',
-  uSoPositionAdapter320 in 'Parts\PositionAdapter\uSoPositionAdapter320.pas';
+  uSoPositionAdapter320 in 'Parts\PositionAdapter\uSoPositionAdapter320.pas',
+  uSoLayout in 'Layouts\uSoLayout.pas';
 
 end.
 
