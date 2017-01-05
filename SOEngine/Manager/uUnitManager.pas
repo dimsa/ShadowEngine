@@ -7,7 +7,8 @@ uses
   uSoModel, uSoObject,
   uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoFormatter, uSoAnimation,
   uSoLogic, uSoProperties, uSoProperty, uColliderDefinition, uSoSound,
-  uSoContainer, uSoContainerKeeper;
+  uSoContainer, uSoContainerKeeper,
+  uSoLayout, uISoPositionAdapter, uSoLayoutFactory;
 
 type
   TSoModelFriend = class(TSoModel);
@@ -16,12 +17,18 @@ type
   TUnitManager = class
   private
     FModel: TSoModelFriend;
+    FLayouts: TDict<string, TSoLayout>;
+    FLayoutFactory: TSoLayoutFactory;
     FContainerKeeper: TSoContainerKeeper;
 
     FActiveContainer: TSoObject;
+    FLayoutAdded: TNotifyEvent;
 
     function AddContainer(const AName: string = ''): TSoObject;
     procedure Activate(const AContainer: TSoObject);
+    procedure RaiseLayoutAdded(ALayout: TSoLayout);
+  protected
+    property LayoutAdded: TNotifyEvent read FLayoutAdded write FLayoutAdded;
   public
     function AddRendition(const ATemplateName: string): TEngine2DRendition; overload;
     function AddRendition(const AObject: TEngine2DRendition): TEngine2DRendition; overload;
@@ -63,7 +70,11 @@ type
 
     property ActiveContainer: TSoObject read FActiveContainer;
 
-    constructor Create(const AModel: TSoModel);
+    function AddLayout(const AName: string; const APositionAdapter: ISoPositionAdapter): TSoLayout;
+    function GetLayout(const AName: string): TSoLayout;
+
+    constructor Create(const AModel: TSoModel; const ALayoutFactory: TSoLayoutFactory);
+    destructor Destroy; override;
   end;
 
 implementation
@@ -139,6 +150,12 @@ begin
   Result := FModel.LogicKeeper.AddFromTemplate(FActiveContainer, ATemplateName, AName);
 end;
 
+function TUnitManager.AddLayout(const AName: string; const APositionAdapter: ISoPositionAdapter): TSoLayout;
+begin
+  Result := FLayoutFactory.ProduceLayout(APositionAdapter);
+  FLayouts.Add(AName, Result);
+end;
+
 function TUnitManager.AddLogic(const AObject: TSoLogic; const AName: string): TSoLogic;
 begin
   FModel.LogicKeeper.Add(AObject, AName);
@@ -192,10 +209,30 @@ begin
   FModel.Renderer.AddFromTemplate(FActiveContainer, ATemplateName);
 end;
 
-constructor TUnitManager.Create(const AModel: TSoModel);
+constructor TUnitManager.Create(const AModel: TSoModel; const ALayoutFactory: TSoLayoutFactory);
 begin
   FModel := TSoModelFriend(AModel);
-//  FContainerKeeper := AContainerKeeper;
+
+  FLayoutFactory := ALayoutFactory;
+
+  FLayouts := TDict<string, TSoLayout>.Create;
+end;
+
+destructor TUnitManager.Destroy;
+var
+  vLayout: TSoLayout;
+begin
+  for vLayout in FLayouts.Values do
+    vLayout.Free;
+
+  FLayouts.Free;
+  FLayoutFactory := nil;
+  inherited;
+end;
+
+function TUnitManager.GetLayout(const AName: string): TSoLayout;
+begin
+  Result := FLayouts[AName];
 end;
 
 function TUnitManager.ByObject(const AContainer: TSoObject): TUnitManager;
@@ -218,6 +255,12 @@ end;
 function TUnitManager.ObjectByName(const AObjectName: string): TSoObject;
 begin
   Result := FModel.ObjectByName(AObjectName);
+end;
+
+procedure TUnitManager.RaiseLayoutAdded(ALayout: TSoLayout);
+begin
+  if Assigned(FLayoutAdded) then
+    FLayoutAdded(ALayout);
 end;
 
 function TUnitManager.AddNewLogic(const AHandler: TNotifyEvent<TSoObject>; const AName: string): TSoLogic;

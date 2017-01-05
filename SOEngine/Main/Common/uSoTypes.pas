@@ -78,7 +78,7 @@ type
     property Width: Single read GetWidth write SetWidth;
     property Height: Single read GetHeight write SetHeight;
     property Rect: TRectF read FRect write SetRect;
-    property SqrMaxRadius: single read FMaxSqrRadius;
+    property SqrMaxRadius: Single read FMaxSqrRadius;
     function IsHor: Boolean;
     constructor Create;
   end;

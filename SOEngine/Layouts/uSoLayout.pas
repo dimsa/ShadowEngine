@@ -3,21 +3,24 @@ unit uSoLayout;
 interface
 
 uses
-  uISoPositionAdapter, uSoContainer, uSoObject;
+  uSoTypes, uISoPositionAdapter, uSoContainer, uSoObject;
 
 type
-  TSoLayout = class abstract
+  TSoLayout = class
   private
-    FEngineWidth, FEngineHeight: PInteger;
+    FEngineWidth, FEngineHeight: PSingle;
     FPositionAdapter: ISoPositionAdapter;
+    FContainerAdded: TNotifyEvent;
     function GetWidth: Single;
     function GetHeight: Single;
+  protected
+    property ContainerAdded: TNotifyEvent read FContainerAdded write FContainerAdded;
   public
     property Width: Single read GetWidth;
     property Height: Single read GetHeight;
     function AddContainer: TSoContainer;
 
-    constructor Create(const APositionAdapter: ISoPositionAdapter; const AEngineWidth, AEngineHeight: PInteger);
+    constructor Create(const APositionAdapter: ISoPositionAdapter; const AEngineWidth, AEngineHeight: PSingle);
     destructor Destroy; override;
   end;
 

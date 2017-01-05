@@ -20,9 +20,7 @@ type
     FContainerKeeper: TSoContainerKeeper;
     FOptions: TSoEngineOptions; // All Engine options. If you add some feature to manage engine, it shoulb be here// Настройки движка
     FStatus: TEngine2DStatus; // All Engine status you can get from herem like width-height,speed and etc.
-    //FIsMouseDowned: Boolean; // True if Mouse is Downed  // Хранит состояние нажатости мыши
     FImage: TAnonImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка\
-    //FWidth, FHeight: Single; // Размер поля имеджа и движка
 //    FDebug: Boolean; // There are some troubles to debug multithread app, so it for it // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
     FEvents: TSoEngineEvents;
     FRect: TRectObject;
