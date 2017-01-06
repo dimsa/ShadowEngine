@@ -36,7 +36,7 @@ begin
   Result := TSoContainer.Create(vObj);
 end;
 
-constructor TSoLayout.Create(const APositionAdapter: ISoPositionAdapter; const AEngineWidth, AEngineHeight: PInteger);
+constructor TSoLayout.Create(const APositionAdapter: ISoPositionAdapter; const AEngineWidth, AEngineHeight: PSingle);
 begin
   FPositionAdapter := APositionAdapter;
   FEngineWidth := AEngineWidth;

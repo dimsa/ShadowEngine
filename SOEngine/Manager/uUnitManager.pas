@@ -17,8 +17,6 @@ type
   TUnitManager = class
   private
     FModel: TSoModelFriend;
-    FLayouts: TDict<string, TSoLayout>;
-    FLayoutFactory: TSoLayoutFactory;
     FContainerKeeper: TSoContainerKeeper;
 
     FActiveContainer: TSoObject;
@@ -69,9 +67,6 @@ type
     function AddAbs: TSoContainer; // Add SoContainer with SoObject with Absolute PositionAdapter
 
     property ActiveContainer: TSoObject read FActiveContainer;
-
-    function AddLayout(const AName: string; const APositionAdapter: ISoPositionAdapter): TSoLayout;
-    function GetLayout(const AName: string): TSoLayout;
 
     constructor Create(const AModel: TSoModel; const ALayoutFactory: TSoLayoutFactory);
     destructor Destroy; override;
@@ -150,12 +145,6 @@ begin
   Result := FModel.LogicKeeper.AddFromTemplate(FActiveContainer, ATemplateName, AName);
 end;
 
-function TUnitManager.AddLayout(const AName: string; const APositionAdapter: ISoPositionAdapter): TSoLayout;
-begin
-  Result := FLayoutFactory.ProduceLayout(APositionAdapter);
-  FLayouts.Add(AName, Result);
-end;
-
 function TUnitManager.AddLogic(const AObject: TSoLogic; const AName: string): TSoLogic;
 begin
   FModel.LogicKeeper.Add(AObject, AName);
@@ -212,21 +201,11 @@ end;
 constructor TUnitManager.Create(const AModel: TSoModel; const ALayoutFactory: TSoLayoutFactory);
 begin
   FModel := TSoModelFriend(AModel);
-
-  FLayoutFactory := ALayoutFactory;
-
-  FLayouts := TDict<string, TSoLayout>.Create;
 end;
 
 destructor TUnitManager.Destroy;
-var
-  vLayout: TSoLayout;
 begin
-  for vLayout in FLayouts.Values do
-    vLayout.Free;
 
-  FLayouts.Free;
-  FLayoutFactory := nil;
   inherited;
 end;
 

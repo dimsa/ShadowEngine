@@ -7,7 +7,8 @@ uses
   uSoTypes, uCommonClasses,
   uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper,
-  uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory, uSoSoundKeeper;
+  uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory, uSoSoundKeeper,
+  uSoContainerKeeper;
 
 type
   TSoModel = class
@@ -20,17 +21,17 @@ type
     FCollider: TSoCollider;
     FFormattor: TSoFormattor;
     FAnimator: TSoAnimator;
-    FSoundKeeper: TSoSoundKeeper;
     // Keepers
     FObjectKeeper: TSoObjectKeeper;
     FLogicKeper: TSoLogicKeeper;
+    FSoundKeeper: TSoSoundKeeper;
+    FContainerKeeper: TSoContainerKeeper;
+
     // Processors
     FKeyProcessor: TSoKeyProcessor;
     FMouseProcessor: TSoMouseProcessor;
     // Factories
     FColliderExtenderFactory: TSoColliderExtenderFactory;
-//    FEngineHeight, FEngineWidth: Single;
-//    function GetEngineSize: TPointF;
     procedure InitFactories;
     procedure OnImageResize(ASender: TObject);
   protected
@@ -43,15 +44,11 @@ type
     property ObjectKeeper: TSoObjectKeeper read FObjectKeeper;
     property SoundKeeper: TSoSoundKeeper read FSoundKeeper;
     property LogicKeeper: TSoLogicKeeper read FLogicKeper;
-//    property PropertyKeeper: TSoPropertyKeeper read FPropertyKeeper;
     // Processors
     property KeyProcessor: TSoKeyProcessor read FKeyProcessor;
-    property MouseProcessor: TSoMouseProcessor read FMouseProcessor;    // Common
-//    property EngineSize: TPointF read GetEngineSize;
-//    property EngineWidth: Single read FEngineWidth;
-//    property EngineHeight: Single read FEngineHeight;
+    property MouseProcessor: TSoMouseProcessor read FMouseProcessor;
+    property ConatinerKeeper: TSoContainerKeeper read FContainerKeeper;
   public
-//    property Situation: TSoSituation read FSituation;
     function ObjectByName(const AObjectName: string): TSoObject;
     procedure ExecuteOnTick;
     procedure ExecuteKeyUp(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
@@ -69,6 +66,8 @@ implementation
 
 constructor TSoModel.Create(const AImage: TAnonImage; const ACritical: TCriticalSection;
   const AOptions: TSoEngineOptions);
+var
+  vWidth, vHeight: PSingle;
 begin
   FCritical := ACritical;
   FImage := AImage;
@@ -84,6 +83,8 @@ begin
   FKeyProcessor := TSoKeyProcessor.Create(FCritical);
   FMouseProcessor := TSoMouseProcessor.Create(FCritical);
   FSoundKeeper := TSoSoundKeeper.Create(FCritical);
+
+  FContainerKeeper := TSoContainerKeeper.Create(@vWidth, @vHeight);
 
   FImage.OnResize := OnImageResize;
   //FEngineWidth := FImage.Width;

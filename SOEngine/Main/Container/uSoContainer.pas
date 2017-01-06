@@ -4,8 +4,7 @@ interface
 
 uses
   uSoTypes, uCommonClasses, uSoContainerTypes,
-  uSoContainerGetter, uSoContainerAdder, uSoObject,
-  uSoModel;
+  uSoContainerGetter, uSoContainerAdder, uSoObject;
 
 type
   TSoContainer = class

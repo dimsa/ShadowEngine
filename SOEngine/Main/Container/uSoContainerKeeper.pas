@@ -3,14 +3,13 @@ unit uSoContainerKeeper;
 interface
 
 uses
-  uSoTypes, uSoModel, uSoObject,
+  uSoTypes, uSoObject,
   uSoContainer;
 
 type
   TSoContainerKeeper = class
   private type
     TSoObjectFriend = class(TSoObject);
-    TSoModelFriend = class(TSoModel);
   private
     FEngineWidth, FEngineHeight: PInteger;
     FContainerByObject: TDict<TSoObject, TSoContainer>;
