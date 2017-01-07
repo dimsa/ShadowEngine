@@ -10,7 +10,6 @@ type
   TSoManager = class
   private
     FEngineWidth, FEngineHeight: Single;
-    FLayoutFactory: TSoLayoutFactory;
 
     FUnitManager: TUnitManager; // Controller for creating units form template and etc
     FTemplateManager: TTemplateManager; // Controller to Load Templates if their loaders are ready
@@ -32,16 +31,14 @@ constructor TSoManager.Create(const AModel: TSoModel; const AEvents: TSoEngineEv
 begin
   AEvents.OnResize.Add(OnResize);
 
-  FLayoutFactory := TSoLayoutFactory.Create(@FEngineWidth, @FEngineHeight);
-
-  FUnitManager := TUnitManager.Create(AModel, FLayoutFactory);
+  FUnitManager := TUnitManager.Create(AModel, nil);
   FTemplateManager := TTemplateManager.Create(AModel);
   FWorldManager := TWorldManager.Create(AModel, AEvents);
 end;
 
 destructor TSoManager.Destroy;
 begin
-  FLayoutFactory.Free;
+
   inherited;
 end;
 

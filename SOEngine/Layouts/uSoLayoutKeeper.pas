@@ -4,18 +4,18 @@ interface
 
 uses
 
-  uSoTypes, uSoLayout, uSoLayoutFActory, uISoPositionAdapter;
+  uSoTypes, uSoLayout, uSoLayoutFActory, uISoPositionAdapter, uSoEngineSize;
 
 type
   TSoLayoutKeeper = class
   private
     FLayouts: TDict<string, TSoLayout>;
     FLayoutFactory: TSoLayoutFactory;
-    AWidth, AHeight: PSingle;
+    FEngineSize: TSoEngineSize;
   public
     function Add(const AName: string; const APositionAdapter: ISoPositionAdapter): TSoLayout;
     function Get(const AName: string): TSoLayout;
-    constructor Create(const AWidth, AHeight: PSingle);
+    constructor Create(const AEngineSize: TSoEngineSize);
     destructor Destroy; override;
 
 end;
@@ -24,16 +24,16 @@ implementation
 
 { TSoLayoutKeeper }
 
-function TSoLayoutKeeper.Add(const AName: string;
-  const APositionAdapter: ISoPositionAdapter): TSoLayout;
+function TSoLayoutKeeper.Add(const AName: string; const APositionAdapter: ISoPositionAdapter): TSoLayout;
 begin
   Result := FLayoutFactory.ProduceLayout(APositionAdapter);
   FLayouts.Add(AName, Result);
 end;
 
-constructor TSoLayoutKeeper.Create(const AWidth, AHeight: PSingle);
+constructor TSoLayoutKeeper.Create(const AEngineSize: TSoEngineSize);
 begin
-  FLAyoutFactory := TSoLayoutFactory.Create(AWidth, AHeight);
+  FEngineSize := AEngineSize;
+  FlayoutFactory := TSoLayoutFactory.Create(AEngineSize);
 end;
 
 destructor TSoLayoutKeeper.Destroy;

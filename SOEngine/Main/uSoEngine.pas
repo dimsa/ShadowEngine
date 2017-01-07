@@ -72,7 +72,7 @@ begin
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
 
-  FModel := TSoModel.Create(TAnonImage(FImage), FCritical, FOptions);
+  FModel := TSoModel.Create(TAnonImage(FImage), FSize, FCritical, FOptions);
 
   SubscribeImageEvent;
 

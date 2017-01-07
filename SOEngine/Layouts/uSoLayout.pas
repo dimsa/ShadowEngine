@@ -3,12 +3,12 @@ unit uSoLayout;
 interface
 
 uses
-  uSoTypes, uISoPositionAdapter, uSoContainer, uSoObject;
+  uSoTypes, uISoPositionAdapter, uSoContainer, uSoObject, uSoEngineSize;
 
 type
   TSoLayout = class
   private
-    FEngineWidth, FEngineHeight: PSingle;
+    FEngineSize: TSoEngineSize;
     FPositionAdapter: ISoPositionAdapter;
     FContainerAdded: TNotifyEvent;
     function GetWidth: Single;
@@ -20,7 +20,7 @@ type
     property Height: Single read GetHeight;
     function AddContainer: TSoContainer;
 
-    constructor Create(const APositionAdapter: ISoPositionAdapter; const AEngineWidth, AEngineHeight: PSingle);
+    constructor Create(const APositionAdapter: ISoPositionAdapter; const AEngineSize: TSoEngineSize);
     destructor Destroy; override;
   end;
 
@@ -36,29 +36,27 @@ begin
   Result := TSoContainer.Create(vObj);
 end;
 
-constructor TSoLayout.Create(const APositionAdapter: ISoPositionAdapter; const AEngineWidth, AEngineHeight: PSingle);
+constructor TSoLayout.Create(const APositionAdapter: ISoPositionAdapter; const AEngineSize: TSoEngineSize);
 begin
   FPositionAdapter := APositionAdapter;
-  FEngineWidth := AEngineWidth;
-  FEngineHeight := AEngineHeight;
+  FEngineSize := AEngineSize;
 end;
 
 destructor TSoLayout.Destroy;
 begin
   FPositionAdapter := nil;
-  FEngineWidth := nil;
-  FEngineHeight := nil;
+  FEngineSize := nil;
   inherited;
 end;
 
 function TSoLayout.GetHeight: Single;
 begin
-  Result := FPositionAdapter.AdaptWidth(FEngineWidth^);
+  Result := FPositionAdapter.AdaptWidth(FEngineSize.Width);
 end;
 
 function TSoLayout.GetWidth: Single;
 begin
-  Result := FPositionAdapter.AdaptHeight(FEngineHeight^);
+  Result := FPositionAdapter.AdaptHeight(FEngineSize.Height);
 end;
 
 end.

@@ -3,14 +3,14 @@ unit uSoLayoutFactory;
 interface
 
 uses
-  uISoPositionAdapter, uSoLayout;
+  uISoPositionAdapter, uSoLayout, uSoEngineSize;
 
 type
   TSoLayoutFactory = class
   private
-    FEngineWidth, FEngineHeight: PSingle;
+    FEngineSize: TSoEngineSize;
   public
-    constructor Create(const AWidth, AHeight: PSingle);
+    constructor Create(const AEngineSize: TSoEngineSize);
     function ProduceLayout(const APositionAdapter: ISoPositionAdapter): TSoLayout;
   end;
 
@@ -18,16 +18,14 @@ implementation
 
 { TSoLayoutFactory }
 
-constructor TSoLayoutFactory.Create(const AWidth, AHeight: PSingle);
+constructor TSoLayoutFactory.Create(const AEngineSize: TSoEngineSize);
 begin
-  FEngineWidth := AWidth;
-  FEngineHeight := AHeight;
+  FEngineSize := AEngineSize;
 end;
-
 
 function TSoLayoutFactory.ProduceLayout(const APositionAdapter: ISoPositionAdapter): TSoLayout;
 begin
-  Result := TSoLayout.Create(APositionAdapter, FEngineWidth, FEngineHeight);
+  Result := TSoLayout.Create(APositionAdapter, FEngineSize);
 end;
 
 end.

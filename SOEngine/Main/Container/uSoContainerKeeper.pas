@@ -4,7 +4,7 @@ interface
 
 uses
   uSoTypes, uSoObject,
-  uSoContainer;
+  uSoContainer, uSoEngineSize;
 
 type
   TSoContainerKeeper = class
@@ -19,7 +19,7 @@ type
   public
     function AddAbs: TSoContainer; // Add SoContainer with SoObject with Absolute PositionAdapter
     function Add320: TSoContainer; // Add SoContainer with SoObject with 320x240 PositionAdapter
-    constructor Create(const AEngineWidth, AEngineHeight: PInteger);
+    constructor Create(const AEngineSize: TSoEngineSize);
     destructor Destroy; override;
   end;
 
@@ -62,10 +62,10 @@ begin
   Add(vObj);
 end;
 
-constructor TSoContainerKeeper.Create(const AEngineWidth, AEngineHeight: PInteger);
+constructor TSoContainerKeeper.Create(const AEngineSize: TSoEngineSize);
 begin
-  FEngineWidth := AEngineWidth;
-  FEngineHeight := AEngineHeight;
+  FEngineWidth := @AEngineSize.Width;
+  FEngineHeight := @AEngineSize.Height;
 
   FContainerByObject := TDict<TSoObject, TSoContainer>.Create;
   FObjectByContainer := TDict<TSoContainer, TSoObject>.Create;

@@ -8,7 +8,7 @@ uses
   uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper,
   uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory, uSoSoundKeeper,
-  uSoContainerKeeper;
+  uSoContainerKeeper, uSoEngineSize, uSoLayoutFactory;
 
 type
   TSoModel = class
@@ -32,8 +32,8 @@ type
     FMouseProcessor: TSoMouseProcessor;
     // Factories
     FColliderExtenderFactory: TSoColliderExtenderFactory;
-    procedure InitFactories;
-    procedure OnImageResize(ASender: TObject);
+    FLayoutFactory: TSoLayoutFactory;
+    procedure InitFactories(const ASize: TSoEngineSize);
   protected
     // Workers
     property Renderer: TSoRenderer read FRenderer;
@@ -56,7 +56,11 @@ type
     procedure ExecuteMouseDown(ASender: TObject; AEventArgs: TMouseEventArgs);
     procedure ExecuteMouseUp(ASender: TObject; AEventArgs: TMouseEventArgs);
     procedure ExecuteMouseMove(Sender: TObject; AEventArgs: TMouseMoveEventArgs);
-    constructor Create(const AImage: TAnonImage; const ACritical: TCriticalSection; const AOptions: TSoEngineOptions);
+    constructor Create(
+      const AImage: TAnonImage;
+      const AEngineSize: TSoEngineSize;
+      const ACritical: TCriticalSection;
+      const AOptions: TSoEngineOptions);
     destructor Destroy; override;
   end;
 
@@ -64,15 +68,16 @@ implementation
 
 { TSoModel }
 
-constructor TSoModel.Create(const AImage: TAnonImage; const ACritical: TCriticalSection;
+constructor TSoModel.Create(
+  const AImage: TAnonImage;
+  const AEngineSize: TSoEngineSize;
+  const ACritical: TCriticalSection;
   const AOptions: TSoEngineOptions);
-var
-  vWidth, vHeight: PSingle;
 begin
   FCritical := ACritical;
   FImage := AImage;
   FOptions := AOptions;
-  InitFactories;
+  InitFactories(AEngineSize);
 
   FObjectKeeper := TSoObjectKeeper.Create(FCritical);
   FLogicKeper := TSoLogicKeeper.Create(FCritical);
@@ -84,7 +89,7 @@ begin
   FMouseProcessor := TSoMouseProcessor.Create(FCritical);
   FSoundKeeper := TSoSoundKeeper.Create(FCritical);
 
-  FContainerKeeper := TSoContainerKeeper.Create(@vWidth, @vHeight);
+  FContainerKeeper := TSoContainerKeeper.Create(AEngineSize);
 end;
 
 destructor TSoModel.Destroy;
@@ -139,9 +144,10 @@ begin
   Result := TPointF.Create(FImage.Width, FImage.Height);
 end;  }
 
-procedure TSoModel.InitFactories;
+procedure TSoModel.InitFactories(const ASize: TSoEngineSize);
 begin
   FColliderExtenderFactory := TSoColliderExtenderFactory.Create(FOptions.ColliderOptions);
+   FLayoutFactory := TSoLayoutFactory.Create(ASize);
 end;
 
 function TSoModel.ObjectByName(const AObjectName: string): TSoObject;
@@ -149,10 +155,5 @@ begin
   Result := FObjectKeeper.Items[AObjectName];
 end;
 
-procedure TSoModel.OnImageResize(ASender: TObject);
-begin
-  //FEngineWidth := TAnonImage(ASender).Width;
-  //FEngineHeight := TAnonImage(ASender).Height;
-end;
-
 end.
+
