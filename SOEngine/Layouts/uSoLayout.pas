@@ -13,11 +13,10 @@ type
     FContainerAdded: TNotifyEvent;
     function GetWidth: Single;
     function GetHeight: Single;
-  protected
-    property ContainerAdded: TNotifyEvent read FContainerAdded write FContainerAdded;
   public
     property Width: Single read GetWidth;
     property Height: Single read GetHeight;
+    property ContainerAdded: TNotifyEvent read FContainerAdded write FContainerAdded;
     function AddContainer: TSoContainer;
 
     constructor Create(const APositionAdapter: ISoPositionAdapter; const AEngineSize: TSoEngineSize);

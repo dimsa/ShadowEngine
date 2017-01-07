@@ -12,7 +12,9 @@ type
     FLayouts: TDict<string, TSoLayout>;
     FLayoutFactory: TSoLayoutFactory;
     FEngineSize: TSoEngineSize;
+    FLayoutAdded: TNotifyEvent;
   public
+    property LayoutAdded: TNotifyEvent read FLayoutAdded write FLayoutAdded;
     function Add(const AName: string; const APositionAdapter: ISoPositionAdapter): TSoLayout;
     function Get(const AName: string): TSoLayout;
     constructor Create(const AEngineSize: TSoEngineSize);

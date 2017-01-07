@@ -63,9 +63,6 @@ type
     function New(const AName: string = ''): TUnitManager;
     function ObjectByName(const AObjectName: string): TSoObject;
 
-    function Add320: TSoContainer; // Add SoContainer with SoObject with 320x240 PositionAdapter
-    function AddAbs: TSoContainer; // Add SoContainer with SoObject with Absolute PositionAdapter
-
     property ActiveContainer: TSoObject read FActiveContainer;
 
     constructor Create(const AModel: TSoModel; const ALayoutFactory: TSoLayoutFactory);
@@ -89,16 +86,6 @@ end;
 function TUnitManager.AddAnimation(const ATemplateName: string): TSoAnimation;
 begin
   Result := FModel.Animator.AddFromTemplate(FActiveContainer, ATemplateName);
-end;
-
-function TUnitManager.Add320: TSoContainer;
-begin
-  Result := FContainerKeeper.Add320;
-end;
-
-function TUnitManager.AddAbs: TSoContainer;
-begin
-  Result := FContainerKeeper.AddAbs;
 end;
 
 function TUnitManager.AddAnimation(const AObject: TSoAnimation): TSoAnimation;

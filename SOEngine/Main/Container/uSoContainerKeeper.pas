@@ -3,8 +3,8 @@ unit uSoContainerKeeper;
 interface
 
 uses
-  uSoTypes, uSoObject,
-  uSoContainer, uSoEngineSize;
+  uSoTypes, uSoObject, uCommonClasses,
+  uSoContainer, uSoEngineSize, uISoPositionAdapter;
 
 type
   TSoContainerKeeper = class
@@ -12,13 +12,14 @@ type
     TSoObjectFriend = class(TSoObject);
   private
     FEngineWidth, FEngineHeight: PInteger;
+    FContainers: TList<TSoContainer>;
     FContainerByObject: TDict<TSoObject, TSoContainer>;
-    FObjectByContainer: TDict<TSoContainer, TSoObject>;
+    FContainerAdded: TEvent<ISoPositionAdapter>;
     procedure OnContainerDestroy(ASender: TObject);
-    function Add(const AObject: TSoObject): TSoContainer;
+    procedure OnContainerOnLayoutAdded(ASender: TObject);
+    procedure Add(const AContainer: TSoContainer);
   public
-    function AddAbs: TSoContainer; // Add SoContainer with SoObject with Absolute PositionAdapter
-    function Add320: TSoContainer; // Add SoContainer with SoObject with 320x240 PositionAdapter
+    procedure OnLayoutAdded(ASender: TObject);
     constructor Create(const AEngineSize: TSoEngineSize);
     destructor Destroy; override;
   end;
@@ -26,40 +27,20 @@ type
 implementation
 
 uses
-  uSoPositionAdapterAbsolute, uSoPositionAdapter320;
+  uSoPositionAdapterAbsolute, uSoPositionAdapter320, uSoLayout;
 
 { TSoContainerKeeper }
 
-function TSoContainerKeeper.Add(const AObject: TSoObject): TSoContainer;
+procedure TSoContainerKeeper.Add(const AContainer: TSoContainer);
 var
   vCont: TSoContainer;
 begin
-  vCont := TSoContainer.Create(AObject);
-  TSoObjectFriend(AObject).SetContainer(vCont);
+  vCont := AContainer;
+
+  TSoObjectFriend(vCont.Subject).SetContainer(vCont);
   vCont.AddOnDestroy(OnContainerDestroy);
 
-  FContainerByObject.Add(AObject, vCont);
-  FObjectByContainer.Add(vCont, AObject);
-end;
-
-function TSoContainerKeeper.Add320: TSoContainer;
-var
-  vObj: TSoObject;
-begin
-  vObj := TSoObject.Create(
-    TSoPositionAdapter320.Create(@FEngineWidth, @FEngineHeight));
-
-  Add(vObj);
-end;
-
-function TSoContainerKeeper.AddAbs: TSoContainer;
-var
-  vObj: TSoObject;
-begin
-  vObj := TSoObject.Create(
-    TSoPositionAdapterAbsolute.Create);
-
-  Add(vObj);
+  FContainerByObject.Add(vCont.Subject, vCont);
 end;
 
 constructor TSoContainerKeeper.Create(const AEngineSize: TSoEngineSize);
@@ -67,15 +48,25 @@ begin
   FEngineWidth := @AEngineSize.Width;
   FEngineHeight := @AEngineSize.Height;
 
+  FContainers := TList<TSoContainer>.Create;
   FContainerByObject := TDict<TSoObject, TSoContainer>.Create;
-  FObjectByContainer := TDict<TSoContainer, TSoObject>.Create;
 end;
 
 destructor TSoContainerKeeper.Destroy;
+var
+  i: Integer;
 begin
+  for i := 0 to FContainers.Count do
+    FContainers[i].Free;
+
+  FContainers.Free;
   FContainerByObject.Free;
-  FObjectByContainer.Free;
   inherited;
+end;
+
+procedure TSoContainerKeeper.OnContainerOnLayoutAdded(ASender: TObject);
+begin
+  Add(TSoContainer(ASender));
 end;
 
 procedure TSoContainerKeeper.OnContainerDestroy(ASender: TObject);
@@ -84,11 +75,15 @@ var
 begin
   vCont := TSoContainer(ASender);
 
-  if FObjectByContainer.ContainsKey(vCont) then
-    FObjectByContainer.Remove(vCont);
+  if FContainerByObject.ContainsKey(vCont.Subject) then
+    FContainerByObject.Remove(vCont.Subject);
 
-  if FContainerByObject.ContainsKey(FObjectByContainer[vCont]) then
-    FContainerByObject.Remove(FObjectByContainer[vCont]);
+  FContainers.Remove(vCont);
+end;
+
+procedure TSoContainerKeeper.OnLayoutAdded(ASender: TObject);
+begin
+  TSoLayout(ASender).ContainerAdded := OnContainerOnLayoutAdded;
 end;
 
 end.
