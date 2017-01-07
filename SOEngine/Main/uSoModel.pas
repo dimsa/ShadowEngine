@@ -85,15 +85,11 @@ begin
   FSoundKeeper := TSoSoundKeeper.Create(FCritical);
 
   FContainerKeeper := TSoContainerKeeper.Create(@vWidth, @vHeight);
-
-  FImage.OnResize := OnImageResize;
-  //FEngineWidth := FImage.Width;
-  //FEngineHeight := FImage.Height;
 end;
 
 destructor TSoModel.Destroy;
 begin
- // FContainerKeeper.Free;
+  FContainerKeeper.Free;
   FObjectKeeper.Free;
   FLogicKeper.Free;
   FRenderer.Free;

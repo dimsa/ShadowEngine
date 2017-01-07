@@ -209,11 +209,6 @@ begin
   inherited;
 end;
 
-function TUnitManager.GetLayout(const AName: string): TSoLayout;
-begin
-  Result := FLayouts[AName];
-end;
-
 function TUnitManager.ByObject(const AContainer: TSoObject): TUnitManager;
 begin
   FActiveContainer := AContainer;
