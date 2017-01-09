@@ -17,7 +17,7 @@ type
     property Width: Single read GetWidth;
     property Height: Single read GetHeight;
     property ContainerAdded: TNotifyEvent read FContainerAdded write FContainerAdded;
-    function AddContainer: TSoContainer;
+    function AddContainer(const AName: string = ''): TSoContainer;
 
     constructor Create(const APositionAdapter: ISoPositionAdapter; const AEngineSize: TSoEngineSize);
     destructor Destroy; override;
@@ -27,7 +27,7 @@ implementation
 
 { TSoLayout }
 
-function TSoLayout.AddContainer: TSoContainer;
+function TSoLayout.AddContainer(const AName: string = ''): TSoContainer;
 var
   vObj: TSoObject;
 begin
