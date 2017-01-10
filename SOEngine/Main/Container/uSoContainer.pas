@@ -12,10 +12,13 @@ type
     FSubject: TSoObject;
     FGetter: TSoContainerGetter;
     FAdder: TSoContainerAdder;
+    FOnGetDelegate: TContainerOnGetDelegate;
+    FOnAddDelegate: TContainerOnAddDelegate;
+    FOnAddByTemplateDelegate: TContainerOnAddByTemplateDelegate;
     FOnDestroyHandlers: TNotifyEventList;
     procedure OnObjectDestroy(ASender: TObject);
     procedure RaiseOnDestroy;
-    function OnAnyAdd(AClass: TClass; ADescription: TContainerElementDescription): TObject;
+    function OnElementAddByTemplate(AClass: TClass; ADescription: TContainerElementByTemplate): TObject;
     function OnElementAdd(AClass: TClass; AElement: TContainerElement): TObject;
     function OnAnyGet(AClass: TClass; AName: string): TObject;
   public
@@ -24,7 +27,12 @@ type
     property Add: TSoContainerAdder read FAdder;
     procedure AddOnDestroy(const AHandler: TNotifyEvent);
     procedure RemOnDestroy(const AHandler: TNotifyEvent);
-    constructor Create(const ASubject: TSoObject);
+    constructor Create(
+      const ASubject: TSoObject;
+      const AOnGetDelegate: TContainerOnGetDelegate;
+      const AOnAddDelegate: TContainerOnAddDelegate;
+      const AOnAddByTemplateDelegate: TContainerOnAddByTemplateDelegate
+    );
     destructor Destroy; override;
   end;
 
@@ -37,15 +45,23 @@ begin
   FOnDestroyHandlers.Add(AHandler);
 end;
 
-constructor TSoContainer.Create(const ASubject: TSoObject);
+constructor TSoContainer.Create(
+      const ASubject: TSoObject;
+      const AOnGetDelegate: TContainerOnGetDelegate;
+      const AOnAddDelegate: TContainerOnAddDelegate;
+      const AOnAddByTemplateDelegate: TContainerOnAddByTemplateDelegate);
 begin
   FSubject := ASubject;
   FOnDestroyHandlers := TNotifyEventList.Create;
 
+  FOnGetDelegate := AOnGetDelegate;
+  FOnAddDelegate := AOnAddDelegate;
+  FOnAddByTemplateDelegate := AOnAddByTemplateDelegate;
+
   FSubject.AddDestroyHandler(OnObjectDestroy);
 
   FGetter := TSoContainerGetter.Create(OnAnyGet);
-  FAdder := TSoContainerAdder.Create(OnAnyAdd, OnElementAdd);
+  FAdder := TSoContainerAdder.Create(OnElementAdd, OnElementAddByTemplate);
 end;
 
 destructor TSoContainer.Destroy;
@@ -56,19 +72,19 @@ begin
   inherited;
 end;
 
-function TSoContainer.OnAnyAdd(AClass: TClass; ADescription: TContainerElementDescription): TObject;
+function TSoContainer.OnElementAddByTemplate(AClass: TClass; ADescription: TContainerElementByTemplate): TObject;
 begin
-
+  Result := FOnAddByTemplateDelegate(FSubject, AClass, ADescription);
 end;
 
 function TSoContainer.OnAnyGet(AClass: TClass; AName: string): TObject;
 begin
-
+  Result := FOnGetDelegate(FSubject, AClass, AName);
 end;
 
 function TSoContainer.OnElementAdd(AClass: TClass; AElement: TContainerElement): TObject;
 begin
-
+  Result := FOnAddDelegate(FSubject, AClass, AElement);
 end;
 
 procedure TSoContainer.OnObjectDestroy(ASender: TObject);

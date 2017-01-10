@@ -10,11 +10,11 @@ uses
 type
   TSoContainerAdder = class
   private
-    FOnAnyAdd: TAddContainerElementDelegate;
-    FOnElementAdd: TAddElementDelegate;
-    property OnAnyAdd: TAddContainerElementDelegate read FOnAnyAdd;
-    property OnElementAdd: TAddElementDelegate read FOnElementAdd;
-    function RaiseOnAdd(AClass: TClass; ADescription: TContainerElementDescription): TObject;
+    FOnElementAdd: TAddContainerElementDelegate;
+    FOnElementByTemplateAdd: TAddContainerElementByTemplateDelegate;
+    property OnElementAdd: TAddContainerElementDelegate read FOnElementAdd;
+    property OnElementByTemplateAdd: TAddContainerElementByTemplateDelegate read FOnElementByTemplateAdd;
+    function RaiseOnAdd(AClass: TClass; ADescription: TContainerElementByTemplate): TObject;
   public
     function Rendition(const ATemplateName: string; const AName: string = ''): TEngine2DRendition; overload;
     function Collider(const ATemplateName: string; const AName: string = ''): TSoColliderObj; overload;
@@ -29,7 +29,9 @@ type
     function Any<T: class>(const ATemplateName: string; const AName: string = ''): T; overload;
     function Any<T: class>(const AObject: TObject; const AName: string = ''): T; overload;
 
-    constructor Create(const AOnAnyAdd: TAddContainerElementDelegate; const AOnElementAdd: TAddElementDelegate);
+    constructor Create(
+      const AOnElementAdd: TAddContainerElementDelegate;
+      const AOnElementByTemplateAdd: TAddContainerElementByTemplateDelegate);
     destructor Destroy; override;
   end;
 
@@ -40,13 +42,13 @@ implementation
 function TSoContainerAdder.Logic(const ATemplateName, AName: string): TSoLogic;
 begin
   Result := TSoLogic(
-    RaiseOnAdd(TSoLogic, TContainerElementDescription.Create(AName, ATemplateName)));
+    RaiseOnAdd(TSoLogic, TContainerElementByTemplate.Create(AName, ATemplateName)));
 end;
 
 function TSoContainerAdder.Animation(const ATemplateName: string; const AName: string): TSoAnimation;
 begin
   Result := TSoAnimation(
-    RaiseOnAdd(TSoAnimation, TContainerElementDescription.Create(AName, ATemplateName)));
+    RaiseOnAdd(TSoAnimation, TContainerElementByTemplate.Create(AName, ATemplateName)));
 end;
 
 function TSoContainerAdder.Any<T>(const AObject: TObject; const AName: string): T;
@@ -56,66 +58,69 @@ end;
 
 function TSoContainerAdder.Any<T>(const ATemplateName, AName: string): T;
 begin
-  Result := T(RaiseOnAdd(T, TContainerElementDescription.Create(AName, ATemplateName)));
+  Result := T(RaiseOnAdd(T, TContainerElementByTemplate.Create(AName, ATemplateName)));
 end;
 
 function TSoContainerAdder.Collider(const ATemplateName: string; const AName: string): TSoColliderObj;
 begin
   Result := TSoColliderObj(
-    RaiseOnAdd(TSoColliderObj, TContainerElementDescription.Create(AName, ATemplateName)));
+    RaiseOnAdd(TSoColliderObj, TContainerElementByTemplate.Create(AName, ATemplateName)));
 end;
 
-constructor TSoContainerAdder.Create(const AOnAnyAdd: TAddContainerElementDelegate; const AOnElementAdd: TAddElementDelegate);
+constructor TSoContainerAdder.Create(
+      const AOnElementAdd: TAddContainerElementDelegate;
+      const AOnElementByTemplateAdd: TAddContainerElementByTemplateDelegate);
 begin
-  FOnAnyAdd := AOnAnyAdd;
   FOnElementAdd := AOnElementAdd;
+  FOnElementByTemplateAdd := AOnElementByTemplateAdd;
 end;
 
 destructor TSoContainerAdder.Destroy;
 begin
-  FOnAnyAdd := nil;
+  FOnElementAdd := nil;
+  FOnElementByTemplateAdd := nil;
   inherited;
 end;
 
 function TSoContainerAdder.Formatter(const ATemplateName: string; const AName: string): TSoFormatter;
 begin
   Result := TSoFormatter(
-    RaiseOnAdd(TSoFormatter, TContainerElementDescription.Create(AName, ATemplateName)));
+    RaiseOnAdd(TSoFormatter, TContainerElementByTemplate.Create(AName, ATemplateName)));
 end;
 
 function TSoContainerAdder.KeyHandler(const ATemplateName: string; const AName: string): TSoKeyHandler;
 begin
   Result := TSoKeyHandler(
-    RaiseOnAdd(TSoKeyHandler, TContainerElementDescription.Create(AName, ATemplateName)));
+    RaiseOnAdd(TSoKeyHandler, TContainerElementByTemplate.Create(AName, ATemplateName)));
 end;
 
 function TSoContainerAdder.MouseHandler(const ATemplateName: string; const AName: string): TSoMouseHandler;
 begin
   Result := TSoMouseHandler(
-    RaiseOnAdd(TSoMouseHandler, TContainerElementDescription.Create(AName, ATemplateName)));
+    RaiseOnAdd(TSoMouseHandler, TContainerElementByTemplate.Create(AName, ATemplateName)));
 end;
 
 function TSoContainerAdder.Prop(const ATemplateName: string; const AName: string): TSoProperty;
 begin
   Result := TSoProperty(
-    RaiseOnAdd(TSoProperty, TContainerElementDescription.Create(AName, ATemplateName)));
+    RaiseOnAdd(TSoProperty, TContainerElementByTemplate.Create(AName, ATemplateName)));
 end;
 
-function TSoContainerAdder.RaiseOnAdd(AClass: TClass; ADescription: TContainerElementDescription): TObject;
+function TSoContainerAdder.RaiseOnAdd(AClass: TClass; ADescription: TContainerElementByTemplate): TObject;
 begin
-  Result := FOnAnyAdd(AClass, ADescription);
+  Result := FOnElementByTemplateAdd(AClass, ADescription);
 end;
 
 function TSoContainerAdder.Rendition(const ATemplateName: string; const AName: string): TEngine2DRendition;
 begin
   Result := TEngine2DRendition(
-    RaiseOnAdd(TEngine2DRendition, TContainerElementDescription.Create(AName, ATemplateName)));
+    RaiseOnAdd(TEngine2DRendition, TContainerElementByTemplate.Create(AName, ATemplateName)));
 end;
 
 function TSoContainerAdder.Sound(const ATemplateName: string; const AName: string): TSoSound;
 begin
   Result := TSoSound(
-    RaiseOnAdd(TSoSound, TContainerElementDescription.Create(AName, ATemplateName)));
+    RaiseOnAdd(TSoSound, TContainerElementByTemplate.Create(AName, ATemplateName)));
 end;
 
 end.

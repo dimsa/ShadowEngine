@@ -32,7 +32,7 @@ var
   vObj: TSoObject;
 begin
   vObj := TSoObject.Create(FPositionAdapter);
-  Result := TSoContainer.Create(vObj);
+  Result := TSoContainer.Create(vObj, nil, nil, nil);
 end;
 
 constructor TSoLayout.Create(const APositionAdapter: ISoPositionAdapter; const AEngineSize: TSoEngineSize);
