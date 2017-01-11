@@ -271,6 +271,7 @@
         <DCCReference Include="Layouts\uSoLayoutKeeper.pas"/>
         <DCCReference Include="Main\uSoEngineSize.pas"/>
         <DCCReference Include="Manager\uUnitManager.pas"/>
+        <DCCReference Include="Main\Container\uSoContainerDelegates.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>
         <None Include="Parts\Collider\SoBox2D\Box2D\Physics2D.inc"/>

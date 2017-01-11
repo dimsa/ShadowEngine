@@ -24,6 +24,7 @@ type
     procedure Execute;
     procedure Add(const AItem: TSoFormatter; const AName: string = ''); override;
     function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoFormatter; override;
+    function AddFromCode(const ASubject: TSoObject; const AFormatterCode: string; const AName: string = ''): TSoFormatter; overload;
     constructor Create(const ACritical: TCriticalSection); override;
     destructor Destroy; override;
   end;
@@ -37,6 +38,11 @@ var
   vName: string;
 begin
   {$I .\SoObject\uItemAdd.inc}
+end;
+
+function TSoFormattor.AddFromCode(const ASubject: TSoObject; const AFormatterCode, AName: string): TSoFormatter;
+begin
+
 end;
 
 function TSoFormattor.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoFormatter;
