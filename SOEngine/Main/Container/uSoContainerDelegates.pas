@@ -30,14 +30,14 @@ type
   TLogicContainerDelegateByTemplate = function(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoLogic;
 
   TPropertiesContainerDelegate = procedure(const AProperty: TSoProperties; const AName: string = '');
-  TPropertiesDelegateByTemplate = function(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoProperties;
+  TPropertiesContainerDelegateByTemplate = function(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoProperties;
 
   TRenditionContainerDelegate = procedure(const AProperty: TEngine2DRendition; const AName: string = '');
-  TRenditionDelegateByTemplate = function(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TEngine2DRendition;
+  TRenditionContainerDelegateByTemplate = function(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TEngine2DRendition;
 
   TSoundContainerDelegate = procedure(const AProperty: TSoSound; const AName: string = '');
-  TSoundDelegateByTemplate = function(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoSound;
-  TSoundDelegateByFileName = function(const ASubject: TSoObject; const AFileName: string; const AName: string = ''): TSoSound;
+  TSoundContainerDelegateByTemplate = function(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoSound;
+  TSoundContainerDelegateByFileName = function(const ASubject: TSoObject; const AFileName: string; const AName: string = ''): TSoSound;
 implementation
 
 end.

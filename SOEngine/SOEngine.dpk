@@ -158,7 +158,8 @@ contains
   uSoLayoutKeeper in 'Layouts\uSoLayoutKeeper.pas',
   uSoEngineSize in 'Main\uSoEngineSize.pas',
   uUnitManager in 'Manager\uUnitManager.pas',
-  uSoContainerDelegates in 'Main\Container\uSoContainerDelegates.pas';
+  uSoContainerDelegates in 'Main\Container\uSoContainerDelegates.pas',
+  uSoContainerDelegateCollector in 'Main\Container\uSoContainerDelegateCollector.pas';
 
 end.
 
