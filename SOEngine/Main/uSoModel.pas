@@ -83,6 +83,7 @@ begin
   FImage := AImage;
   FOptions := AOptions;
   InitFactories;
+  InitContainerDelegateCollector;
 
   FObjectKeeper := TSoObjectKeeper.Create(FCritical);
   FLogicKeper := TSoLogicKeeper.Create(FCritical);
@@ -96,7 +97,7 @@ begin
 
   FContainerKeeper := TSoContainerKeeper.Create(AEngineSize);
 
-  FLayoutKeeper := TSoLayoutKeeper.Create(AEngineSize);
+  FLayoutKeeper := TSoLayoutKeeper.Create(AEngineSize, FContainerDelegateCollector);
   FLayoutKeeper.LayoutAdded := FContainerKeeper.OnLayoutAdded;
 end;
 

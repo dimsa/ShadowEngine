@@ -4,7 +4,7 @@ interface
 
 uses
   uSoTypes, uCommonClasses, uSoContainerTypes,
-  uSoContainerGetter, uSoContainerAdder, uSoObject;
+  uSoContainerGetter, uSoContainerAdder, uSoObject, uSoContainerDelegateCollector;
 
 type
   TSoContainer = class
@@ -31,7 +31,8 @@ type
       const ASubject: TSoObject;
       const AOnGetDelegate: TContainerOnGetDelegate;
       const AOnAddDelegate: TContainerOnAddDelegate;
-      const AOnAddByTemplateDelegate: TContainerOnAddByTemplateDelegate
+      const AOnAddByTemplateDelegate: TContainerOnAddByTemplateDelegate;
+      const AContainerDelegateCollector: TSoContainerDelegateCollector
     );
     destructor Destroy; override;
   end;
@@ -49,7 +50,9 @@ constructor TSoContainer.Create(
       const ASubject: TSoObject;
       const AOnGetDelegate: TContainerOnGetDelegate;
       const AOnAddDelegate: TContainerOnAddDelegate;
-      const AOnAddByTemplateDelegate: TContainerOnAddByTemplateDelegate);
+      const AOnAddByTemplateDelegate: TContainerOnAddByTemplateDelegate;
+      const AContainerDelegateCollector: TSoContainerDelegateCollector
+      );
 begin
   FSubject := ASubject;
   FOnDestroyHandlers := TNotifyEventList.Create;
@@ -61,7 +64,7 @@ begin
   FSubject.AddDestroyHandler(OnObjectDestroy);
 
   FGetter := TSoContainerGetter.Create(OnAnyGet);
-  FAdder := TSoContainerAdder.Create(OnElementAdd, OnElementAddByTemplate);
+  FAdder := TSoContainerAdder.Create(FSubject, AContainerDelegateCollector);
 end;
 
 destructor TSoContainer.Destroy;

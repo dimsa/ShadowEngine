@@ -4,7 +4,8 @@ interface
 
 uses
 
-  uSoTypes, uSoLayout, uSoLayoutFActory, uISoPositionAdapter, uSoEngineSize;
+  uSoTypes, uSoLayout, uSoLayoutFActory, uISoPositionAdapter, uSoEngineSize,
+  uSoContainerDelegateCollector;
 
 type
   TSoLayoutKeeper = class
@@ -13,11 +14,14 @@ type
     FLayoutFactory: TSoLayoutFactory;
     FEngineSize: TSoEngineSize;
     FLayoutAdded: TNotifyEvent;
+    FContainerDelegateCollector: TSoContainerDelegateCollector;
   public
     property LayoutAdded: TNotifyEvent read FLayoutAdded write FLayoutAdded;
     function Add(const AName: string; const APositionAdapter: ISoPositionAdapter): TSoLayout;
     function Get(const AName: string): TSoLayout;
-    constructor Create(const AEngineSize: TSoEngineSize);
+    constructor Create(
+      const AEngineSize: TSoEngineSize;
+      const AContainerDelegateCollector: TSoContainerDelegateCollector);
     destructor Destroy; override;
 
 end;
@@ -32,10 +36,14 @@ begin
   FLayouts.Add(AName, Result);
 end;
 
-constructor TSoLayoutKeeper.Create(const AEngineSize: TSoEngineSize);
+constructor TSoLayoutKeeper.Create(
+      const AEngineSize: TSoEngineSize;
+      const AContainerDelegateCollector: TSoContainerDelegateCollector);
 begin
   FEngineSize := AEngineSize;
-  FlayoutFactory := TSoLayoutFactory.Create(AEngineSize);
+  FContainerDelegateCollector := AContainerDelegateCollector;
+
+  FlayoutFactory := TSoLayoutFactory.Create(AEngineSize, AContainerDelegateCollector);
 end;
 
 destructor TSoLayoutKeeper.Destroy;

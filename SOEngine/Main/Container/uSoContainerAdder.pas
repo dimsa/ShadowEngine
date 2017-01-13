@@ -5,13 +5,15 @@ interface
 uses
   uCommonClasses, uSoContainerTypes,
   uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoSound,
-  uSoFormatter, uSoAnimation, uSoLogic, uSoProperty;
+  uSoFormatter, uSoAnimation, uSoLogic, uSoProperty, uSoObject, uSoContainerDelegateCollector;
 
 type
   TSoContainerAdder = class
   private
     FOnElementAdd: TAddContainerElementDelegate;
     FOnElementByTemplateAdd: TAddContainerElementByTemplateDelegate;
+    FSubject: TSoObject;
+    FContainerDelegateCollector: TSoContainerDelegateCollector;
     property OnElementAdd: TAddContainerElementDelegate read FOnElementAdd;
     property OnElementByTemplateAdd: TAddContainerElementByTemplateDelegate read FOnElementByTemplateAdd;
     function RaiseOnAdd(AClass: TClass; ADescription: TContainerElementByTemplate): TObject;
@@ -30,8 +32,8 @@ type
     function Any<T: class>(const AObject: TObject; const AName: string = ''): T; overload;
 
     constructor Create(
-      const AOnElementAdd: TAddContainerElementDelegate;
-      const AOnElementByTemplateAdd: TAddContainerElementByTemplateDelegate);
+      const ASubject: TSoObject;
+      const AContainerDelegateCollector: TSoContainerDelegateCollector);
     destructor Destroy; override;
   end;
 
@@ -68,11 +70,11 @@ begin
 end;
 
 constructor TSoContainerAdder.Create(
-      const AOnElementAdd: TAddContainerElementDelegate;
-      const AOnElementByTemplateAdd: TAddContainerElementByTemplateDelegate);
+      const ASubject: TSoObject;
+      const AContainerDelegateCollector: TSoContainerDelegateCollector);
 begin
-  FOnElementAdd := AOnElementAdd;
-  FOnElementByTemplateAdd := AOnElementByTemplateAdd;
+  FSubject := ASubject;
+  FContainerDelegateCollector := AContainerDelegateCollector;
 end;
 
 destructor TSoContainerAdder.Destroy;
