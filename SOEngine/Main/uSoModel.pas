@@ -8,7 +8,8 @@ uses
   uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper,
   uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory, uSoSoundKeeper,
-  uSoContainerKeeper, uSoEngineSize, uSoLayoutFactory, uSoLayoutKeeper;
+  uSoContainerKeeper, uSoEngineSize, uSoLayoutFactory, uSoLayoutKeeper,
+  uSoContainerDelegateCollector;
 
 type
   TSoModel = class
@@ -32,7 +33,10 @@ type
     FMouseProcessor: TSoMouseProcessor;
     // Factories
     FColliderExtenderFactory: TSoColliderExtenderFactory;
+
+    FContainerDelegateCollector: TSoContainerDelegateCollector;
     procedure InitFactories;
+    procedure InitContainerDelegateCollector;
   protected
     // Workers
     property Renderer: TSoRenderer read FRenderer;
@@ -48,7 +52,7 @@ type
     // Processors
     property KeyProcessor: TSoKeyProcessor read FKeyProcessor;
     property MouseProcessor: TSoMouseProcessor read FMouseProcessor;
-
+    function OnPartAdded(const AObject: TSoObject; const AClass: TClass; const AName: string): TObject;
   public
     function ObjectByName(const AObjectName: string): TSoObject;
     procedure ExecuteOnTick;
@@ -109,6 +113,8 @@ begin
   FAnimator.Free;
   FKeyProcessor.Free;
   FMouseProcessor.Free;
+
+  FContainerDelegateCollector.Free;
   inherited;
 end;
 
@@ -145,6 +151,32 @@ begin
   FRenderer.Execute;
 end;
 
+procedure TSoModel.InitContainerDelegateCollector;
+begin
+  FContainerDelegateCollector.Create(
+    FAnimator.Add,
+    FAnimator.AddFromTemplate,
+    FCollider.AddFromTemplate,
+    FCollider.Add,
+    FFormattor.Add,
+    FFormattor.AddFromTemplate,
+    FFormattor.AddFromCode,
+    FMouseProcessor.Add,
+    FMouseProcessor.AddFromTemplate,
+    FKeyProcessor.Add,
+    FKeyProcessor.AddFromTemplate,
+    FLogicKeper.Add,
+    FLogicKeper.AddFromTemplate,
+    nil,
+    nil,
+    FRenderer.Add,
+    FRenderer.AddFromTemplate,
+    FSoundKeeper.Add,
+    FSoundKeeper.AddFromTemplate,
+    FSoundKeeper.AddByFileName
+  );
+end;
+
 procedure TSoModel.InitFactories;
 begin
   FColliderExtenderFactory := TSoColliderExtenderFactory.Create(FOptions.ColliderOptions);
@@ -153,6 +185,12 @@ end;
 function TSoModel.ObjectByName(const AObjectName: string): TSoObject;
 begin
   Result := FObjectKeeper.Items[AObjectName];
+end;
+
+function TSoModel.OnPartAdded(const AObject: TSoObject; const AClass: TClass;
+  const AName: string): TObject;
+begin
+
 end;
 
 end.
