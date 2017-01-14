@@ -10,10 +10,10 @@
     Exit;
   end;
 
-  if Assigned(FOnAdd) then
+{  if Assigned(FOnAdd) then
   begin
     FOnAdd(Self, TOnAddContainerEventArgs.Create(TSoBasePart(AItem).Subject, AItem) );
-  end;
+  end;  }
 
   AItem.AddDestroyHandler(OnItemDestroy);
 

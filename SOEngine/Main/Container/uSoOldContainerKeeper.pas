@@ -3,7 +3,7 @@ unit uSoOldContainerKeeper;
 interface
 
 uses
-  uSoTypes, uSoObject, uSoBasePart, uSoOldContainer, uSoContainerTypes;
+  uSoTypes, uSoObject, uSoBasePart, uSoOldContainer;//, uSoContainerTypes;
 
 type
   TSoContainerFriend = class(TSoOldContainer);
@@ -16,7 +16,7 @@ type
     function GetContainer(Index: TSoObject): TSoOldContainer;
     procedure OnObjectDestroy(ASender: TObject);
   public
-    procedure OnAdd(ASender: TObject; AEventArgs: TOnAddContainerEventArgs);
+//    procedure OnAdd(ASender: TObject; AEventArgs: TOnAddContainerEventArgs);
     property Items[Index: TSoObject]: TSoOldContainer read GetContainer;
 
     constructor Create;
@@ -49,7 +49,7 @@ begin
 end;
 
 
-procedure TSoOldContainerKeeper.OnAdd(ASender: TObject; AEventArgs: TOnAddContainerEventArgs);
+{procedure TSoOldContainerKeeper.OnAdd(ASender: TObject; AEventArgs: TOnAddContainerEventArgs);
 var
   vContainer: TSoOldContainer;
 begin
@@ -63,7 +63,7 @@ begin
     vContainer := FContainers[AEventArgs.Subject];
 
   TSoContainerFriend(vContainer).Add(AEventArgs.BasePart);
-end;
+end;  }
 
 procedure TSoOldContainerKeeper.OnObjectDestroy(ASender: TObject);
 var

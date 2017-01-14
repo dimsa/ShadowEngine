@@ -6,7 +6,7 @@ interface
 
 uses
   System.SysUtils, uSoTypes, uSoBasePart,
-  uEngine2DClasses, uSoObject, uSoContainerTypes, uCommonClasses, uSoProperty;
+  uEngine2DClasses, uSoObject, uCommonClasses, uSoProperty;
 
 type
   TSoOperator<T> = class abstract
@@ -15,16 +15,15 @@ type
     FElementBySubject: TDict<TSoObject, TList<TSoBasePart>>;
     FAddedObjects: Integer;
     FCritical: TCriticalSection;
-    FOnAdd: TEvent<TOnAddContainerEventArgs>;
     procedure OnItemDestroy(ASender: TObject); virtual;
     procedure AddAsProperty(const AItem: TSoBasePart; const AName: string);
     function PropertyName: string; virtual; abstract;
     procedure Add(const AItem: T; const AName: string = ''); virtual;
   public
-    property OnAdd: TEvent<TOnAddContainerEventArgs> read FOnAdd write FOnAdd;
     function Contains(const AName: string): Boolean; overload;
     function Contains(const AItem: T): Boolean; overload;
     function NameOf(const AItem: T): string;
+
     function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): T; virtual; abstract;
     constructor Create(const ACritical: TCriticalSection); virtual;
     destructor Destroy; override;

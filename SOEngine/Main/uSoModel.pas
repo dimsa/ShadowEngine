@@ -24,7 +24,7 @@ type
     FAnimator: TSoAnimator;
     // Keepers
     FObjectKeeper: TSoObjectKeeper;
-    FLogicKeper: TSoLogicKeeper;
+    FLogicKeeper: TSoLogicKeeper;
     FSoundKeeper: TSoSoundKeeper;
     FContainerKeeper: TSoContainerKeeper;
     FLayoutKeeper: TSoLayoutKeeper;
@@ -46,7 +46,7 @@ type
     // Keepers
     property ObjectKeeper: TSoObjectKeeper read FObjectKeeper;
     property SoundKeeper: TSoSoundKeeper read FSoundKeeper;
-    property LogicKeeper: TSoLogicKeeper read FLogicKeper;
+    property LogicKeeper: TSoLogicKeeper read FLogicKeeper;
     property ContainerKeeper: TSoContainerKeeper read FContainerKeeper;
     property LayoutKeeper: TSoLayoutKeeper read FLayoutKeeper;
     // Processors
@@ -83,10 +83,9 @@ begin
   FImage := AImage;
   FOptions := AOptions;
   InitFactories;
-  InitContainerDelegateCollector;
 
   FObjectKeeper := TSoObjectKeeper.Create(FCritical);
-  FLogicKeper := TSoLogicKeeper.Create(FCritical);
+  FLogicKeeper := TSoLogicKeeper.Create(FCritical);
   FRenderer := TSoRenderer.Create(FCritical, AImage);
   FCollider := TSoCollider.Create(FCritical, FColliderExtenderFactory.Produce, FOptions.ColliderOptions);
   FFormattor := TSoFormattor.Create(FCritical);
@@ -97,6 +96,7 @@ begin
 
   FContainerKeeper := TSoContainerKeeper.Create(AEngineSize);
 
+  InitContainerDelegateCollector;
   FLayoutKeeper := TSoLayoutKeeper.Create(AEngineSize, FContainerDelegateCollector);
   FLayoutKeeper.LayoutAdded := FContainerKeeper.OnLayoutAdded;
 end;
@@ -107,7 +107,7 @@ begin
   FContainerKeeper.Free;
 
   FObjectKeeper.Free;
-  FLogicKeper.Free;
+  FLogicKeeper.Free;
   FRenderer.Free;
   FCollider.Free;
   FFormattor.Free;
@@ -147,14 +147,14 @@ end;
 procedure TSoModel.ExecuteOnTick;
 begin
   FAnimator.Execute;
-  FLogicKeper.Execute;
+  FLogicKeeper.Execute;
   FCollider.Execute;
   FRenderer.Execute;
 end;
 
 procedure TSoModel.InitContainerDelegateCollector;
 begin
-  FContainerDelegateCollector.Create(
+  FContainerDelegateCollector := TSoContainerDelegateCollector.Create(
     FAnimator.Add,
     FAnimator.AddFromTemplate,
     FCollider.AddFromTemplate,
@@ -166,8 +166,8 @@ begin
     FMouseProcessor.AddFromTemplate,
     FKeyProcessor.Add,
     FKeyProcessor.AddFromTemplate,
-    FLogicKeper.Add,
-    FLogicKeper.AddFromTemplate,
+    FLogicKeeper.Add,
+    FLogicKeeper.AddFromTemplate,
     nil,
     nil,
     FRenderer.Add,

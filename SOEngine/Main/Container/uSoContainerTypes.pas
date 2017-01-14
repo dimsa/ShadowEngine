@@ -3,7 +3,7 @@ unit uSoContainerTypes;
 interface
 
 uses
-  uSoObject, uSoBasePart;
+  uSoObject;
 
 type
 
@@ -33,21 +33,7 @@ type
  TContainerOnAddDelegate = TTripleParameteredDelegate<TSoObject, TClass, TContainerElement>;
  TContainerOnAddByTemplateDelegate = TTripleParameteredDelegate<TSoObject, TClass, TContainerElementByTemplate>;
 
-  TOnAddContainerEventArgs = record
-    Subject: TSoObject;
-    BasePart: TSoBasePart;
-    constructor Create(const ASubject: TSoObject; ABasePart: TSoBasePart);
-  end;
-
-implementation
-
-{ TOnAddContainerEventArgs }
-
-constructor TOnAddContainerEventArgs.Create(const ASubject: TSoObject; ABasePart: TSoBasePart);
-begin
-  Subject := ASubject;
-  BasePart := ABasePart;
-end;
+ implementation
 
 { TContainerElementDescription }
 
