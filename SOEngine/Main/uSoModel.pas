@@ -34,7 +34,7 @@ type
     // Factories
     FColliderExtenderFactory: TSoColliderExtenderFactory;
 
-    FContainerDelegateCollector: TSoContainerDelegateCollector;
+    FContainerAddDelegateCollector: TSoContainerDelegateCollector;
     procedure InitFactories;
     procedure InitContainerDelegateCollector;
   protected
@@ -97,7 +97,7 @@ begin
   FContainerKeeper := TSoContainerKeeper.Create(AEngineSize);
 
   InitContainerDelegateCollector;
-  FLayoutKeeper := TSoLayoutKeeper.Create(AEngineSize, FContainerDelegateCollector);
+  FLayoutKeeper := TSoLayoutKeeper.Create(AEngineSize, FContainerAddDelegateCollector);
   FLayoutKeeper.LayoutAdded := FContainerKeeper.OnLayoutAdded;
 end;
 
@@ -115,7 +115,7 @@ begin
   FKeyProcessor.Free;
   FMouseProcessor.Free;
 
-  FContainerDelegateCollector.Free;
+  FContainerAddDelegateCollector.Free;
   inherited;
 end;
 
@@ -154,7 +154,7 @@ end;
 
 procedure TSoModel.InitContainerDelegateCollector;
 begin
-  FContainerDelegateCollector := TSoContainerDelegateCollector.Create(
+  FContainerAddDelegateCollector := TSoContainerDelegateCollector.Create(
     FAnimator.Add,
     FAnimator.AddFromTemplate,
     FCollider.AddFromTemplate,
