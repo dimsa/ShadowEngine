@@ -6,25 +6,35 @@ interface
 
 uses
   System.SysUtils, uSoTypes, uSoBasePart,
-  uEngine2DClasses, uSoObject, uCommonClasses, uSoProperty;
+  uEngine2DClasses, uSoObject, uCommonClasses, uSoProperty, uSoIOperator, uSoIDelegateCollector;
 
 type
-  TSoOperator<T> = class abstract
+  TSoOperator<T: class> = class abstract(TInterfacedObject, ISoOperator)
   protected
-    FList: TEngine2DNamedList<T>;
+    FList: TThreadUniqueList<TObject>;//OrderedDict<string, TObject>;//TEngine2DNamedList<T>;
     FElementBySubject: TDict<TSoObject, TList<TSoBasePart>>;
     FAddedObjects: Integer;
     FCritical: TCriticalSection;
     procedure OnItemDestroy(ASender: TObject); virtual;
     procedure AddAsProperty(const AItem: TSoBasePart; const AName: string);
     function PropertyName: string; virtual; abstract;
-    procedure Add(const AItem: T; const AName: string = ''); virtual;
+    procedure Add(const AItem: T); virtual;
+
+    function ContainsObj(const AItem: TObject): Boolean;
+    function NameOfObj(const AItem: TObject): string;
+
+    function GetObj(const ASubject: TSoObject): TObject; overload;
+
+    function AddObjFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TObject; virtual; abstract;
+    procedure AddObj(const AItem: TObject);//; const AName: string = '');
+
+    procedure VisitByDelegateCollector(const ADelegateCollector: IDelegateCollector);
   public
-    function Contains(const AName: string): Boolean; overload;
+    function OperatorItemClass: TClass; virtual; abstract;
     function Contains(const AItem: T): Boolean; overload;
     function NameOf(const AItem: T): string;
 
-    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): T; virtual; abstract;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): T; virtual; abstract;
     constructor Create(const ACritical: TCriticalSection); virtual;
     destructor Destroy; override;
   end;
@@ -33,16 +43,9 @@ implementation
 
 { TSoOperator<T> }
 
-procedure TSoOperator<T>.Add(const AItem: T; const AName: string);
+procedure TSoOperator<T>.Add(const AItem: T);
 begin
-  FCritical.Leave;
-  FList.Add(AName, AItem);
-  FCritical.Leave;
-end;
-
-function TSoOperator<T>.Contains(const AName: string): Boolean;
-begin
-  Result := FList.IsHere(AName);
+  AddObj(AItem);
 end;
 
 procedure TSoOperator<T>.AddAsProperty(const AItem: TSoBasePart; const AName: string);
@@ -66,15 +69,25 @@ begin
   vProp.Obj := AItem;
 end;
 
+procedure TSoOperator<T>.AddObj(const AItem: TObject);
+begin
+  FList.Add(AItem);
+end;
+
 function TSoOperator<T>.Contains(const AItem: T): Boolean;
 begin
-  Result := FList.IsHere(AItem);
+  Result := Contains(AItem); //FList.IsHere(AItem);
+end;
+
+function TSoOperator<T>.ContainsObj(const AItem: TObject): Boolean;
+begin
+  Result := FList.Contains(AItem);
 end;
 
 constructor TSoOperator<T>.Create(const ACritical: TCriticalSection);
 begin
   FCritical := ACritical;
-  FList := TEngine2DNamedList<T>.Create(ACritical);
+  FList := TThreadUniqueList<TObject>.Create;
   FElementBySubject := TDict<TSoObject, TList<TSoBasePart>>.Create;
   FAddedObjects := 0;
 end;
@@ -103,18 +116,47 @@ begin
   inherited;
 end;
 
+function TSoOperator<T>.GetObj(const ASubject: TSoObject): TObject;
+begin
+//  REsult := FList
+end;
+
 function TSoOperator<T>.NameOf(const AItem: T): string;
 begin
-  Result := FList.NameIfHere(AItem);
+  Result := NameOfObj(AItem); // FList.NameIfHere(AItem);
+end;
+
+function TSoOperator<T>.NameOfObj(const AItem: TObject): string;
+begin
+
 end;
 
 procedure TSoOperator<T>.OnItemDestroy(ASender: TObject);
 var
   vPart: TSoBasePart;
+  vItem: string;
 begin
 //  vObj := T(ASender);
   FCritical.Enter;
-  FList.Delete(T((@ASender)^));
+
+
+
+
+{  for vItem in FList.Keys do
+    if FList[vItem] = ASender then
+    begin
+      FList.Remove(vItem);
+      Break;
+    end;   }
+
+    FList.RemoveAllValues(ASender);
+
+
+
+
+  //FList.R . [ASender];
+ // FList.Remove(FElementBySubject[ASender]);
+//  FList.Delete(T((@ASender)^));
 
 
   vPart := TSoBasePart(ASender);
@@ -122,6 +164,12 @@ begin
   if FElementBySubject[vPart.Subject].Count <= 0 then
     FElementBySubject.Remove(vPart.Subject);
   FCritical.Leave;
+end;
+
+procedure TSoOperator<T>.VisitByDelegateCollector(
+  const ADelegateCollector: IDelegateCollector);
+begin
+
 end;
 
 end.

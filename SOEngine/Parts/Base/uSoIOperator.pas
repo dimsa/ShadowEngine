@@ -10,15 +10,13 @@ type
   ['{3493EB24-9718-45FB-B79C-46D91A202F46}']
     function OperatorItemClass: TClass;
 
-    function Contains(const AName: string): Boolean; overload;
-    function Contains(const AItem: TObject): Boolean; overload;
-    function NameOf(const AItem: TObject): string;
+    function ContainsObj(const AItem: TObject): Boolean; overload;
+    function NameOfObj(const AItem: TObject): string;
 
-    function Get(const ASubject: TSoObject): TObject; overload;
-    function Get(const ASubject: TSoObject; const AName: string): TObject; overload;
+    function GetObj(const ASubject: TSoObject): TObject;
 
-    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TObject;
-    procedure Add(const AItem: TObject; const AName: string = '');
+    function AddObjFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TObject;
+    procedure AddObj(const AItem: TObject);
 
     procedure VisitByDelegateCollector(const ADelegateCollector: IDelegateCollector);
   end;

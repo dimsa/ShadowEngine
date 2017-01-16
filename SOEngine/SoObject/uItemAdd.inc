@@ -4,7 +4,7 @@
   else
     vName := AName;
 
-  if FList.IsHere(AItem) then
+  if FList.ContainsKey(vName) then //.IsHere(AItem) then
   begin
     raise Exception.Create('You are trying to add ' + AItem.ClassName + ' with Name that already Exists in ' + Self.ClassName);
     Exit;

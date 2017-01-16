@@ -3,8 +3,9 @@ unit uSoAnimator;
 interface
 
 uses
-  System.SysUtils,
-  uEngine2DClasses, uNamedList, uSoAnimation, uSoBaseOperator, uSoObject, uSoContainerTypes, uSoBasePart;
+  System.SysUtils, uSoTypes,
+  uEngine2DClasses, uNamedList, uSoAnimation, uSoBaseOperator, uSoObject,
+  uSoContainerTypes, uSoBasePart;
 type
   TSoAnimationTemplate = class
 
@@ -41,9 +42,13 @@ procedure TSoAnimator.Execute;
 var
   i: Integer;
 begin
-  for i := 0 to FList.Count - 1 do
-    if FList[i].Enabled then
-      FList[i].Animate;
+  with FList.LockPointer do
+  begin
+    for i := 0 to Count - 1 do
+      if TSoAnimation(Item[i]).Enabled then
+        TSoAnimation(Item[i]).Animate;
+    FList.UnlockPointer;
+  end;
 end;
 
 procedure TSoAnimator.LoadTemplates(const AFileName: string);
@@ -53,7 +58,7 @@ end;
 
 procedure TSoAnimator.OnItemDestroy(ASender: TObject);
 begin
-  FList.Delete(TSoAnimation(ASender));
+  FList.RemoveAllValues(TSoAnimation(ASender));
 end;
 
 end.

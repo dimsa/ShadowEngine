@@ -28,7 +28,8 @@ end;
 
 function TSoObjectKeeper.GetItem(AName: string): TSoObject;
 begin
-  Result := FList[AName];
+  if not FList.TryGetValueByKey(AName, TObject(Result)) then
+    Result := nil;
 end;
 
 end.

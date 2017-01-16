@@ -159,7 +159,13 @@ contains
   uSoEngineSize in 'Main\uSoEngineSize.pas',
   uUnitManager in 'Manager\uUnitManager.pas',
   uSoContainerDelegates in 'Main\Container\uSoContainerDelegates.pas',
-  uSoContainerDelegateCollector in 'Main\Container\uSoContainerDelegateCollector.pas';
+  uSoContainerDelegateCollector in 'Main\Container\uSoContainerDelegateCollector.pas',
+  uSoIDelegateCollector in 'Parts\Base\uSoIDelegateCollector.pas',
+  uSoIOperator in 'Parts\Base\uSoIOperator.pas',
+  uOrderedDict in 'Utils\uOrderedDict.pas',
+  uThreadOrderedDict in 'Utils\uThreadOrderedDict.pas',
+  uThreadUniqueList in 'Utils\uThreadUniqueList.pas',
+  uUniqueList in 'Utils\uUniqueList.pas';
 
 end.
 

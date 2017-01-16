@@ -273,6 +273,12 @@
         <DCCReference Include="Manager\uUnitManager.pas"/>
         <DCCReference Include="Main\Container\uSoContainerDelegates.pas"/>
         <DCCReference Include="Main\Container\uSoContainerDelegateCollector.pas"/>
+        <DCCReference Include="Parts\Base\uSoIDelegateCollector.pas"/>
+        <DCCReference Include="Parts\Base\uSoIOperator.pas"/>
+        <DCCReference Include="Utils\uOrderedDict.pas"/>
+        <DCCReference Include="Utils\uThreadOrderedDict.pas"/>
+        <DCCReference Include="Utils\uThreadUniqueList.pas"/>
+        <DCCReference Include="Utils\uUniqueList.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>
         <None Include="Parts\Collider\SoBox2D\Box2D\Physics2D.inc"/>

@@ -4,7 +4,8 @@ interface
 
 uses
   FMX.Types, System.Types, System.UITypes, FMX.Graphics, System.Generics.Collections, FMX.Objects,
-  System.Classes, System.SyncObjs, System.SysUtils, System.Math;
+  System.Classes, System.SyncObjs, System.SysUtils, System.Math,
+  uThreadOrderedDict, uOrderedDict, uThreadUniqueList, uUniqueList;
 
 type
 
@@ -24,6 +25,7 @@ type
 
   TDict<TKey,TValue> = class(System.Generics.Collections.TDictionary<TKey,TValue>);
   TList<T> = class(System.Generics.Collections.TList<T>);
+  TList = System.Classes.TList;
   Int = Integer;
   Bool = Boolean;
   TBitmap = FMX.Graphics.TBitmap;
@@ -41,6 +43,11 @@ type
   TAlphaColorRec = System.UITypes.TAlphaColorRec;
   TFontStyle = System.UITypes.TFontStyle;
   Exception = System.SysUtils.Exception;
+
+  TOrderedDict<TKey, TValue> = class(uOrderedDict.TOrderedDict<TKey, TValue>);
+  TThreadOrderedDict<TKey, TValue> = class(uThreadOrderedDict.TThreadOrderedDict<TKey, TValue>);
+  TUniqueList<T> = class(uUniqueList.TUniqueList<T>);
+  TThreadUniqueList<T> = class(uThreadUniqueList.TThreadUniqueList<T>);
 
   TSizeObject = class
   private
