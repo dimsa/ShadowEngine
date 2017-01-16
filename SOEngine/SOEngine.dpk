@@ -159,7 +159,9 @@ contains
   uSoEngineSize in 'Main\uSoEngineSize.pas',
   uUnitManager in 'Manager\uUnitManager.pas',
   uSoContainerDelegates in 'Main\Container\uSoContainerDelegates.pas',
-  uSoContainerDelegateCollector in 'Main\Container\uSoContainerDelegateCollector.pas';
+  uSoContainerDelegateCollector in 'Main\Container\uSoContainerDelegateCollector.pas',
+  uSoIOperator in 'Parts\Base\uSoIOperator.pas',
+  uSoIDelegateCollector in 'Parts\Base\uSoIDelegateCollector.pas';
 
 end.
 

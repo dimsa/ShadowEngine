@@ -6,10 +6,11 @@ interface
 
 uses
   System.SysUtils, uSoTypes, uSoBasePart,
-  uEngine2DClasses, uSoObject, uCommonClasses, uSoProperty;
+  uEngine2DClasses, uSoObject, uCommonClasses, uSoProperty, uSoIOperator,
+  uSoIDelegateCollector;
 
 type
-  TSoOperator<T> = class abstract
+  TSoOperator<T: class> = class abstract(TInterfacedObject, ISoOperator)
   protected
     FList: TEngine2DNamedList<T>;
     FElementBySubject: TDict<TSoObject, TList<TSoBasePart>>;
@@ -18,13 +19,22 @@ type
     procedure OnItemDestroy(ASender: TObject); virtual;
     procedure AddAsProperty(const AItem: TSoBasePart; const AName: string);
     function PropertyName: string; virtual; abstract;
-    procedure Add(const AItem: T; const AName: string = ''); virtual;
+    procedure Add(const AItem: T; const AName: string = ''); overload; virtual;
+    function OperatorItemClass: TClass; virtual; abstract;
+    function Contains(const AItem: TObject): Boolean; overload;
+    function NameOf(const AItem: TObject): string; overload;
+    function Get(const ASubject: TSoObject): TObject; overload; virtual;
+    function Get(const ASubject: TSoObject; const AName: string): TObject; overload; virtual;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TObject; overload; virtual; abstract;
+    procedure Add(const AItem: TObject; const AName: string = ''); overload;
   public
     function Contains(const AName: string): Boolean; overload;
     function Contains(const AItem: T): Boolean; overload;
-    function NameOf(const AItem: T): string;
-
-    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): T; virtual; abstract;
+    function NameOf(const AItem: T): string; overload;
+    procedure VisitByDelegateCollector(const ADelegateCollector: IDelegateCollector); virtual;
+   // function Get(const ASubject: TSoObject): T; overload;
+    function OperatorClass: TClass;
+//    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): T; overload; virtual; abstract;
     constructor Create(const ACritical: TCriticalSection); virtual;
     destructor Destroy; override;
   end;
@@ -71,6 +81,11 @@ begin
   Result := FList.IsHere(AItem);
 end;
 
+function TSoOperator<T>.Contains(const AItem: TObject): Boolean;
+begin
+  Result := FList.IsHere(AItem);
+end;
+
 constructor TSoOperator<T>.Create(const ACritical: TCriticalSection);
 begin
   FCritical := ACritical;
@@ -103,6 +118,16 @@ begin
   inherited;
 end;
 
+function TSoOperator<T>.Get(const ASubject: TSoObject): (where T is class);
+begin
+
+end;
+
+function TSoOperator<T>.NameOf(const AItem: TObject): string;
+begin
+
+end;
+
 function TSoOperator<T>.NameOf(const AItem: T): string;
 begin
   Result := FList.NameIfHere(AItem);
@@ -122,6 +147,11 @@ begin
   if FElementBySubject[vPart.Subject].Count <= 0 then
     FElementBySubject.Remove(vPart.Subject);
   FCritical.Leave;
+end;
+
+function TSoOperator<T>.OperatorClass: TClass;
+begin
+
 end;
 
 end.
