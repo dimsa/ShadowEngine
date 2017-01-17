@@ -1,10 +1,6 @@
   Inc(FAddedObjects);
-  if AName = '' then
-    vName := 'genname'+IntToStr(FAddedObjects)
-  else
-    vName := AName;
 
-  if FList.ContainsKey(vName) then //.IsHere(AItem) then
+  if FList.Contains(AItem) then //.IsHere(AItem) then
   begin
     raise Exception.Create('You are trying to add ' + AItem.ClassName + ' with Name that already Exists in ' + Self.ClassName);
     Exit;
@@ -17,4 +13,4 @@
 
   AItem.AddDestroyHandler(OnItemDestroy);
 
-  inherited Add(AItem, AName);
+  inherited AddObj(AItem);

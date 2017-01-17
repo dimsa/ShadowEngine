@@ -136,28 +136,7 @@ var
   vPart: TSoBasePart;
   vItem: string;
 begin
-//  vObj := T(ASender);
-  FCritical.Enter;
-
-
-
-
-{  for vItem in FList.Keys do
-    if FList[vItem] = ASender then
-    begin
-      FList.Remove(vItem);
-      Break;
-    end;   }
-
-    FList.RemoveAllValues(ASender);
-
-
-
-
-  //FList.R . [ASender];
- // FList.Remove(FElementBySubject[ASender]);
-//  FList.Delete(T((@ASender)^));
-
+  FList.Remove(ASender);
 
   vPart := TSoBasePart(ASender);
   FElementBySubject[vPart.Subject].Remove(vPart);
