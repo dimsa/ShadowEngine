@@ -9,27 +9,21 @@ uses
 type
 
   TSoObjectKeeper = class(TSoOperator<TSoObject>)
-  private
-    function GetItem(AName: string): TSoObject;
   public
-    property Items[AName: string]: TSoObject read GetItem; default;
-    function AddNewObject(const AName: string = ''): TSoObject;
+    procedure Add(const AItem: TSoObject); override;
   end;
 
 implementation
 
 { TSoObjectKeeper }
 
-function TSoObjectKeeper.AddNewObject(const AName: string): TSoObject;
-begin
-  Result := TSoObject.Create(TSoPositionAdapterAbsolute.Create);
-  Add(Result, AName);
-end;
 
-function TSoObjectKeeper.GetItem(AName: string): TSoObject;
+{ TSoObjectKeeper }
+
+procedure TSoObjectKeeper.Add(const AItem: TSoObject);
 begin
-  if not FList.TryGetValueByKey(AName, TObject(Result)) then
-    Result := nil;
+  inherited;
+
 end;
 
 end.

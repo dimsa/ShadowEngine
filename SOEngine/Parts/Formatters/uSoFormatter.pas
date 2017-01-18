@@ -13,7 +13,7 @@ type
  private
     FObject: TSoObject;
     FList: TList<TFormatterDirective>;
-    FObjects: TSoObjectKeeper;
+    FWorld: TSoObject;
     FFastFields: TFastFields;
     FText: String;
     procedure SetText(const Value: String);
@@ -21,24 +21,26 @@ type
     function DefineSelf(const AText: String): String;
     function IsFunction(const AText: String): Boolean;
     function IsDotProperty(const AText: String): Boolean;
+    function GetObjectNameFromWorld: string;
+    function GetObjectFromWorldByName(const AName: string): TSoObject;
   public
     property Text: String read FText write SetText;
     property Subject: TSoObject read FObject;
     procedure Format; virtual;
-    constructor Create(AObject: TSoObject; AObjects: TSoObjectKeeper; AFastFiels: TFastFields); virtual;
+    constructor Create(AObject: TSoObject; AWorld: TSoObject; AFastFiels: TFastFields); virtual;
     destructor Destroy; override;
   end;
 
 implementation
 
 uses
-  uSoFunctionGroup, uSoParserValue, uSoConstantGroup;
+  uSoFunctionGroup, uSoParserValue, uSoConstantGroup, uSoContainer;
 
 { TSoFormatter }
 
-constructor TSoFormatter.Create(AObject: TSoObject; AObjects: TSoObjectKeeper; AFastFiels: TFastFields);
+constructor TSoFormatter.Create(AObject: TSoObject; AWorld: TSoObject; AFastFiels: TFastFields);
 begin
-  FObjects := AObjects;
+  FWorld := AWorld;
   FFastFields := AFastFiels;
   FObject := AObject;
   FList := TList<TFormatterDirective>.Create;
@@ -61,7 +63,8 @@ begin
     if not IsFunction(vMatch.Value) and (not IsDotProperty(vMatch.Value)) then
     begin
       vTmp := Copy(vRes, vMatch.Index, vMatch.Length);
-      vObjName := FObjects.NameOf(FObject);
+      // You can get name of object from World Object
+      vObjName := GetObjectNameFromWorld;
       if vObjName = '' then
         vObjName := 'shadow';
       vName := vObjName + '.' + vTmp;
@@ -70,7 +73,7 @@ begin
         Copy(vRes, 1, vMatch.Index + vOffset - 1) +
         vName +
         Copy(vRes, vMatch.Index + vOffset + Length(vTmp), Length(VRes));
-      vOffset := vOFfset + Length(FObjects.NameOf(FObject)+'.');
+      vOffset := vOffset + Length(vObjName + '.');
     end;
 
   Result := vRes;
@@ -94,6 +97,18 @@ var
 begin
   for i := 0 to FList.Count - 1 do
     FList[i].Format;
+end;
+
+function TSoFormatter.GetObjectFromWorldByName(const AName: string): TSoObject;
+begin
+  Result := nil;
+end;
+
+function TSoFormatter.GetObjectNameFromWorld: string;
+begin
+  // TODO: Get name of object from world
+  Result := '';
+  //TSoContainer(FWorld.Container) //FObjects.NameOf(FObject);
 end;
 
 function TSoFormatter.IsDotProperty(const AText: String): Boolean;
@@ -160,10 +175,10 @@ begin
           begin
             if LowerCase(vArrFast[0]) = 'self' then
             begin
-              vNewName := FObjects.NameOf(FObject);
+              vNewName := GetObjectNameFromWorld; //FObjects.NameOf(FObject);
               vName := vNewName + '.' + vName;
             end;
-            vTmpObject := FObjects[vArrFast[0]];
+            vTmpObject := GetObjectFromWorldByName(vArrFast[0]);//FObjects[vArrFast[0]];
             vFast := TypeOfFast(vArrFast[1]).Create(vTmpObject);
             FFastFields.AddIfNo(vName, vFast)
           end;
