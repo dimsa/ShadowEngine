@@ -16,7 +16,7 @@ type
     FAddedObjects: Integer;
     FCritical: TCriticalSection;
     procedure OnItemDestroy(ASender: TObject); virtual;
-    procedure AddAsProperty(const AItem: TSoBasePart; const AName: string);
+    procedure AddAsProperty(const AItem: TSoBasePart);
     function PropertyName: string; virtual; abstract;
     procedure Add(const AItem: T); virtual;
 
@@ -48,11 +48,12 @@ begin
   AddObj(AItem);
 end;
 
-procedure TSoOperator<T>.AddAsProperty(const AItem: TSoBasePart; const AName: string);
+procedure TSoOperator<T>.AddAsProperty(const AItem: TSoBasePart);
 var
   vProp: TSoProperty;
   vSubject: TSoObject;
 begin
+
   vSubject := AItem.Subject;
   if not FElementBySubject.ContainsKey(vSubject) then
     FElementBySubject.Add(vSubject, TList<TSoBasePart>.Create);

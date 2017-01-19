@@ -40,8 +40,8 @@ type
     constructor Create(const ACritical: TCriticalSection; const AImage: TAnonImage);
     destructor Destroy; override;
     procedure Execute; // Render On Tick
-    procedure Add(const AItem: TEngine2DRendition; const AName: string = ''); override;
-    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TEngine2DRendition; override;
+    procedure Add(const AItem: TEngine2DRendition); override;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TEngine2DRendition; override;
   end;
 
 implementation
@@ -51,12 +51,12 @@ uses
 
 { TSoRenderer }
 
-procedure TSoRenderer.Add(const AItem: TEngine2DRendition; const AName: string);
+procedure TSoRenderer.Add(const AItem: TEngine2DRendition);
 var
   vName: string;
 begin
 
-  AddAsProperty(AItem, AName);
+  AddAsProperty(AItem);
 
   TSoRenditionFriend(AItem).OnBringToBack := BringToBack;
   TSoRenditionFriend(AItem).OnSendToFront := SendToFront;
@@ -65,11 +65,10 @@ begin
   TSoRenditionFriend(AItem).OnRequestAllRenditions := OnAllRenditionRequest;
 end;
 
-function TSoRenderer.AddFromTemplate(const ASubject: TSoObject;
-  const ATemplateName: string; const AName: string = ''): TEngine2DRendition;
+function TSoRenderer.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TEngine2DRendition;
 begin
   Result := FTemplates[ATemplateName].Instantiate(ASubject, FImage);// TEngine2DRendition.Create(ASubject, FImage);
-  Add(Result, AName);
+  Add(Result);
 end;
 
 function TSoRenderer.CutBitmapFrom(const ABitmap: TBitmap; const ARect: TRect; AFlipX: Boolean; AFlipY: Boolean): TBitmap;
@@ -199,7 +198,8 @@ end;
 
 procedure TSoRenderer.Execute;
 var
-  IRend: TEngine2DRendition;
+  vRend: TEngine2DRendition;
+  i: Integer;
 begin
   FCritical.Enter;
     if FImage.Bitmap.Canvas.BeginScene() then
@@ -210,28 +210,30 @@ begin
         if Assigned(FOnPaintBackground) then
           FOnPaintBackground(Self, FImage);
 
-        for IRend in FList do
-          if IRend.Enabled then
-          begin
+        for i := 0 to FList.Count - 1 do
+          if FList.TryGetValue(i, TObject(vRend)) then
 
-            Bitmap.Canvas.SetMatrix(
-              tMatrix.CreateTranslation(-IRend.Subject.Position.x, -IRend.Subject.Position.Y) *
-              tMatrix.CreateScaling(IRend.Subject.Position.ScaleX, IRend.Subject.Position.ScaleY) *
-              tMatrix.CreateRotation(IRend.Subject.Position.Rotate * pi180) *
-              tMatrix.CreateTranslation(IRend.Subject.Position.X, IRend.Subject.Position.Y)
-            );
+            if vRend.Enabled then
+            begin
 
-            {$IFDEF DEBUG}
-         //   if FOptions.ToDrawFigures then
-        //      vSpr := ObjectList[FModel.ObjectOrder[i]];
-            {$ENDIF}
-            IRend.Repaint;
+              Bitmap.Canvas.SetMatrix(
+                tMatrix.CreateTranslation(-vRend.Subject.Position.x, -vRend.Subject.Position.Y) *
+                tMatrix.CreateScaling(vRend.Subject.Position.ScaleX, vRend.Subject.Position.ScaleY) *
+                tMatrix.CreateRotation(vRend.Subject.Position.Rotate * pi180) *
+                tMatrix.CreateTranslation(vRend.Subject.Position.X, vRend.Subject.Position.Y)
+              );
 
-            {$IFDEF DEBUG}
-          //  if FOptions.ToDrawFigures then
-          //    vSpr.RepaintWithShapes;
-            {$ENDIF}
-          end;
+              {$IFDEF DEBUG}
+           //   if FOptions.ToDrawFigures then
+          //      vSpr := ObjectList[FModel.ObjectOrder[i]];
+              {$ENDIF}
+              vRend.Repaint;
+
+              {$IFDEF DEBUG}
+            //  if FOptions.ToDrawFigures then
+            //    vSpr.RepaintWithShapes;
+              {$ENDIF}
+            end;
       finally
         if Assigned(FOnEndPaint) then
           FOnEndPaint(Self, FImage);
