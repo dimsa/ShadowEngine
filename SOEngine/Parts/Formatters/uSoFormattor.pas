@@ -22,9 +22,9 @@ type
   public
     procedure LoadTemplates(const AFileName: string);
     procedure Execute;
-    procedure Add(const AItem: TSoFormatter; const AName: string = ''); override;
-    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoFormatter; override;
-    function AddFromCode(const ASubject: TSoObject; const AFormatterCode: string; const AName: string = ''): TSoFormatter; overload;
+    procedure Add(const AItem: TSoFormatter); override;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TSoFormatter; override;
+    function AddFromCode(const ASubject: TSoObject; const AFormatterCode: string): TSoFormatter; overload;
     constructor Create(const ACritical: TCriticalSection); override;
     destructor Destroy; override;
   end;
@@ -33,19 +33,19 @@ implementation
 
 { TSoFormattor }
 
-procedure TSoFormattor.Add(const AItem: TSoFormatter; const AName: string);
+procedure TSoFormattor.Add(const AItem: TSoFormatter);
 var
   vName: string;
 begin
   {$I .\SoObject\uItemAdd.inc}
 end;
 
-function TSoFormattor.AddFromCode(const ASubject: TSoObject; const AFormatterCode, AName: string): TSoFormatter;
+function TSoFormattor.AddFromCode(const ASubject: TSoObject; const AFormatterCode: string): TSoFormatter;
 begin
 
 end;
 
-function TSoFormattor.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoFormatter;
+function TSoFormattor.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TSoFormatter;
 begin
 
 end;
@@ -70,10 +70,12 @@ end;
 procedure TSoFormattor.Execute;
 var
   i: Integer;
+  vItem: TSoFormatter;
 begin
   for i := 0 to FList.Count - 1 do
-    if FList[i].Enabled then
-      FList[i].Format;
+    if FList.TryGetValue(i, TObject(vItem)) then
+      if vItem.Enabled then
+        vItem.Format;
 end;
 
 procedure TSoFormattor.LoadTemplates(const AFileName: string);
@@ -107,7 +109,7 @@ end;
 
 procedure TSoFormattor.OnItemDestroy(ASender: TObject);
 begin
-  FList.Delete(TSoFormatter(ASender));
+  FList.Remove(TSoFormatter(ASender));
 end;
 
 { TSoFormatterTemplate }
