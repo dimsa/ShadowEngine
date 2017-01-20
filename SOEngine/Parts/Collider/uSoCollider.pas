@@ -17,7 +17,7 @@ type
     FOnEndContact: TEventList<TPairCollidedEventArgs>;
     FOnBeginContact: TEventList<TPairCollidedEventArgs>;
     procedure OnItemDestroy(ASender: TObject);
-    procedure Add(const AItem: TSoColliderObj; const AName: string = ''); overload; override;
+    procedure Add(const AItem: TSoColliderObj); overload; override;
     procedure OnBeginContact(ASender: TObject; AEventArgs: TPairCollidedEventArgs);
     procedure OnEndContact(ASender: TObject; AEventArgs: TPairCollidedEventArgs);
     function PropertyName: string; override;
@@ -29,8 +29,8 @@ type
 
     procedure Execute; // Test for collide on tick
     function Contains(const AX, AY: Single): TArray<TSoObject>;
-    function Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition; const AName: string = ''): TSoColliderObj; overload;
-    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoColliderObj; override;
+    function Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj; overload;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TSoColliderObj; override;
     procedure AddTemplateFromJson(const AJson: TJsonValue);
     constructor Create(const ACritical: TCriticalSection; const AExtender: TSoColliderExtender; const AOptions: TSoColliderOptions);
     destructor Destroy; override;
@@ -40,27 +40,26 @@ implementation
 
 { TSoCollider }
 
-procedure TSoCollider.Add(const AItem: TSoColliderObj; const AName: string);
+procedure TSoCollider.Add(const AItem: TSoColliderObj);
 var
   vName: string;
 begin
-  AddAsProperty(AItem, AName);
+  AddAsProperty(AItem);
   {$I .\SoObject\uItemAdd.inc}
 end;
 
-function TSoCollider.Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition; const AName: string): TSoColliderObj;
+function TSoCollider.Add(const ASubject: TSoObject; const AColliderDef: TColliderDefinition): TSoColliderObj;
 begin
   Result := FExtender.ProduceColliderObj(ASubject, AColliderDef);
-  Add(Result, AName);
+  Add(Result);
 end;
 
-function TSoCollider.AddFromTemplate(const ASubject: TSoObject;
-  const ATemplateName, AName: string): TSoColliderObj;
+function TSoCollider.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TSoColliderObj;
 var
   vColliderDef: TColliderDefinition;
 begin
   vColliderDef := FTemplates[ATemplateName].Definition;
-  Result := Add(ASubject, vColliderDef, AName);
+  Result := Add(ASubject, vColliderDef);
 end;
 
 procedure TSoCollider.AddOnBeginContactHandler(
@@ -87,15 +86,17 @@ function TSoCollider.Contains(const AX, AY: Single): TArray<TSoObject>;
 var
   i, vN: Integer;
   vRes: TArray<TSoObject>;
+  vItem: TSoColliderObj;
 begin
   SetLength(vRes, FList.Count);
   vN := 0;
   for i := 0 to FList.Count - 1 do
-    if FList[i].IsContainsPoint(AX, AY) then
-    begin
-      vRes[vN] := FList[i].Subject;
-      vN := vN + 1;
-    end;
+    if FList.TryGetValue(i, TObject(vItem)) then
+      if vItem.IsContainsPoint(AX, AY) then
+      begin
+        vRes[vN] := vItem.Subject;
+        vN := vN + 1;
+      end;
 
   SetLength(vRes, vN);
   Result := vRes;
@@ -139,13 +140,15 @@ end;
 procedure TSoCollider.Execute;
 var
   i: Integer;
+  vItem: TSoColliderObj;
 begin
   inherited;
   FExtender.ProcessStep;
 
   if FOptions.IsPositionRefreshing then
     for i := 0 to FList.Count - 1 do
-      FList[i].RefreshSubjectPosition;
+      if FList.TryGetValue(i, TObject(vItem)) then
+        vItem.RefreshSubjectPosition;
  end;
 
 procedure TSoCollider.OnBeginContact(ASender: TObject; AEventArgs: TPairCollidedEventArgs);
@@ -161,7 +164,7 @@ end;
 
 procedure TSoCollider.OnItemDestroy(ASender: TObject);
 begin
-  FList.Delete(TSoColliderObj(ASender));
+  FList.Remove(TSoColliderObj(ASender));
 end;
 
 function TSoCollider.PropertyName: string;
