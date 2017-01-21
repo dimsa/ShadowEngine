@@ -24,8 +24,8 @@ type
     procedure ExecuteMouseUp(Args: TMouseEventArgs); // Process mouse on tick
     procedure ExecuteMouseDown(Args: TMouseEventArgs); // Process mouse on tick
     procedure ExecuteMouseMove(Args: TMouseMoveEventArgs); // Process mouse position on tick
-    procedure Add(const AItem: TSoMouseHandler; const AName: string = ''); override;
-    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoMouseHandler; override;
+    procedure Add(const AItem: TSoMouseHandler); override;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TSoMouseHandler; override;
     constructor Create(const ACritical: TCriticalSection);
     destructor Destroy; override;
   end;
@@ -34,8 +34,7 @@ implementation
 
 { TSoMouseProcessor }
 
-procedure TSoMouseProcessor.Add(const AItem: TSoMouseHandler;
-  const AName: string);
+procedure TSoMouseProcessor.Add(const AItem: TSoMouseHandler);
 var
   vName: string;
 begin
@@ -43,11 +42,10 @@ begin
   FContainers.Add(AItem.Subject, AItem);
 end;
 
-function TSoMouseProcessor.AddFromTemplate(const ASubject: TSoObject;
-  const ATemplateName, AName: string): TSoMouseHandler;
+function TSoMouseProcessor.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TSoMouseHandler;
 begin
   Result := TSoMouseHandler.Create(ASubject, FTemplates[ATemplateName]);
-  Add(Result, AName);
+  Add(Result);
 end;
 
 procedure TSoMouseProcessor.AddTime(ASender: TObject);
@@ -127,18 +125,19 @@ procedure TSoMouseProcessor.ExecuteMouseMove(Args: TMouseMoveEventArgs);
 var
   i, j: Integer;
   vWas: Boolean;
-  vItem: TSoObject;
+  vItem: TSoMouseHandler;
 begin
   // Mouse moving at object
   FMouseOver.Clear;
   for i := 0 to FList.Count - 1 do
-  begin
-    if FList[i].CanExecute(Args.X {- FList[i].Subject.X} ,Args.Y{ - FList[i].Subject.Y}) then
+    if FList.TryGetValue(i, TObject(vItem)) then
     begin
-      TSoMouseHandlerFriend(FContainers[FList[i].Subject]).MouseMove(Args);
-      FMouseOver.Add(FList[i].Subject)
+      if vItem.CanExecute(Args.X {- FList[i].Subject.X} ,Args.Y{ - FList[i].Subject.Y}) then
+      begin
+        TSoMouseHandlerFriend(FContainers[vItem.Subject]).MouseMove(Args);
+        FMouseOver.Add(vItem.Subject)
+      end;
     end;
-  end;
 
   for i := 0 to FMouseOver.Count - 1 do
   begin
@@ -176,7 +175,7 @@ end;
 
 procedure TSoMouseProcessor.OnItemDestroy(ASender: TObject);
 begin
-  FList.Delete(TSoMouseHandler(ASender));
+  FList.Remove(TSoMouseHandler(ASender));
   FContainers.Remove(TSoMouseHandler(ASender).Subject);
 end;
 
