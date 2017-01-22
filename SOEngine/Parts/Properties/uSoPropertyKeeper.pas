@@ -11,8 +11,8 @@ type
   private
     procedure OnItemDestroy(ASender: TObject);
   public
-    procedure Add(const AItem: TSoProperties; const AName: string = ''); override;
-    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoProperties; override;
+    procedure Add(const AItem: TSoProperties); override;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TSoProperties; override;
     constructor Create(const ACritical: TCriticalSection); override;
   end;
 
@@ -20,14 +20,12 @@ implementation
 
 { TSoPropertyKeeper }
 
-procedure TSoPropertyKeeper.Add(const AItem: TSoProperties;
-  const AName: string);
+procedure TSoPropertyKeeper.Add(const AItem: TSoProperties);
 begin
 
 end;
 
-function TSoPropertyKeeper.AddFromTemplate(const ASubject: TSoObject;
-  const ATemplateName, AName: string): TSoProperties;
+function TSoPropertyKeeper.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TSoProperties;
 begin
 
 end;
@@ -40,7 +38,7 @@ end;
 
 procedure TSoPropertyKeeper.OnItemDestroy(ASender: TObject);
 begin
-  FList.Delete(TSoProperties(ASender));
+  FList.Remove(TSoProperties(ASender));
 end;
 
 end.

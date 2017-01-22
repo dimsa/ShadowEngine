@@ -20,10 +20,10 @@ type
     function PropertyName: string; override;
     procedure InitMediaPlayer(const AName: string);
   public
-    procedure Add(const AItem: TSoSound; const AName: string = ''); override;
+    procedure Add(const AItem: TSoSound); override;
     procedure AddTemplate(const ATemplateName, AFileName: string);
-    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoSound; override;
-    function AddByFileName(const ASubject: TSoObject; const AFileName: string; const AName: string = ''): TSoSound;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TSoSound; override;
+    function AddByFileName(const ASubject: TSoObject; const AFileName: string): TSoSound;
     constructor Create(const ACritical: TCriticalSection); override;
     destructor Destroy; override;
   end;
@@ -32,7 +32,7 @@ implementation
 
 { TSoSoundKeeper }
 
-procedure TSoSoundKeeper.Add(const AItem: TSoSound; const AName: string);
+procedure TSoSoundKeeper.Add(const AItem: TSoSound);
 var
   vName: string;
 begin
@@ -40,20 +40,19 @@ begin
     InitMediaPlayer(AItem.FileName);
   TSoSoundFriend(AItem).Load;
 
-  AddAsProperty(AItem, AName);
+  AddAsProperty(AItem);
 
   {$I .\SoObject\uItemAdd.inc}
 end;
 
-function TSoSoundKeeper.AddByFileName(const ASubject: TSoObject; const AFileName, AName: string): TSoSound;
+function TSoSoundKeeper.AddByFileName(const ASubject: TSoObject; const AFileName: string): TSoSound;
 begin
-  Add(TSoSound.Create(ASubject, AFileName), AName);
+  Add(TSoSound.Create(ASubject, AFileName));
 end;
 
-function TSoSoundKeeper.AddFromTemplate(const ASubject: TSoObject;
-  const ATemplateName, AName: string): TSoSound;
+function TSoSoundKeeper.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TSoSound;
 begin
-  Add(TSoSound.Create(ASubject, FTemplates[ATemplateName]), AName);
+  Add(TSoSound.Create(ASubject, FTemplates[ATemplateName]));
 end;
 
 procedure TSoSoundKeeper.AddTemplate(const ATemplateName, AFileName: string);

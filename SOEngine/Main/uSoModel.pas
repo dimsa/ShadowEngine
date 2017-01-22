@@ -54,7 +54,7 @@ type
     property MouseProcessor: TSoMouseProcessor read FMouseProcessor;
     function OnPartAdded(const AObject: TSoObject; const AClass: TClass; const AName: string): TObject;
   public
-    function ObjectByName(const AObjectName: string): TSoObject;
+//    function ObjectByName(const AObjectName: string): TSoObject;
     procedure ExecuteOnTick;
     procedure ExecuteKeyUp(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
     procedure ExecuteKeyDown(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
@@ -154,7 +154,7 @@ end;
 
 procedure TSoModel.InitContainerDelegateCollector;
 begin
-  FContainerAddDelegateCollector := TSoContainerDelegateCollector.Create(
+{  FContainerAddDelegateCollector := TSoContainerDelegateCollector.Create(
     FAnimator.Add,
     FAnimator.AddFromTemplate,
     FCollider.AddFromTemplate,
@@ -175,7 +175,7 @@ begin
     FSoundKeeper.Add,
     FSoundKeeper.AddFromTemplate,
     FSoundKeeper.AddByFileName
-  );
+  );  }
 end;
 
 procedure TSoModel.InitFactories;
@@ -183,10 +183,10 @@ begin
   FColliderExtenderFactory := TSoColliderExtenderFactory.Create(FOptions.ColliderOptions);
 end;
 
-function TSoModel.ObjectByName(const AObjectName: string): TSoObject;
+{function TSoModel.ObjectByName(const AObjectName: string): TSoObject;
 begin
   Result := FObjectKeeper.Items[AObjectName];
-end;
+end; }
 
 function TSoModel.OnPartAdded(const AObject: TSoObject; const AClass: TClass;
   const AName: string): TObject;

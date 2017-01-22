@@ -15,8 +15,8 @@ type
     procedure OnItemDestroy(ASender: TObject);
   public
     procedure Execute; // Do some logic on tick
-    procedure Add(const AItem: TSoLogic; const AName: string = ''); override;
-    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TSoLogic; override;
+    procedure Add(const AItem: TSoLogic); override;
+    function AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TSoLogic; override;
     constructor Create(const ACritical: TCriticalSection); override;
   end;
 
@@ -24,15 +24,14 @@ implementation
 
 { TSoLogicKeeper }
 
-procedure TSoLogicKeeper.Add(const AItem: TSoLogic; const AName: string);
+procedure TSoLogicKeeper.Add(const AItem: TSoLogic);
 var
   vName: string;
 begin
   {$I .\SoObject\uItemAdd.inc}
 end;
 
-function TSoLogicKeeper.AddFromTemplate(const ASubject: TSoObject; const ATemplateName,
-  AName: string): TSoLogic;
+function TSoLogicKeeper.AddFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TSoLogic;
 begin
 
 end;
@@ -46,16 +45,18 @@ end;
 procedure TSoLogicKeeper.Execute;
 var
   i: Integer;
+  vItem: TSoLogic;
 begin
   inherited;
   for i := 0 to FList.Count - 1 do
-    if FList[i].Enabled then
-      TSoLogicFriend(FList[i]).Execute;
+    if FList.TryGetValue(i, TObject(vItem)) then
+      if vItem.Enabled then
+        TSoLogicFriend(vItem).Execute;
 end;
 
 procedure TSoLogicKeeper.OnItemDestroy(ASender: TObject);
 begin
-  FList.Delete(TSoLogic(ASender));
+  FList.Remove(TSoLogic(ASender));
 end;
 
 end.
