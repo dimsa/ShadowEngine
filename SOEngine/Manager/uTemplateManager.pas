@@ -3,15 +3,13 @@ unit uTemplateManager;
 interface
 
 uses
-  System.JSON, System.SysUtils, System.StrUtils,
+  System.JSON, System.SysUtils, System.StrUtils, uSoIDelegateCollector,
   uSoTypes, uSoModel, uEngine2DClasses, uSoObjectDefaultProperties, uJsonUtils;
 
 type
-  TSoModelFriend = class(TSoModel);
-
   TTemplateManager = class
   private
-    FModel: TSoModelFriend;
+    FAddByTemplateCreator: IAddByTemplateCreator;
     FBasePath: string;
     procedure LoadResources(const AFileName: string; const AJson: TJSONObject);
     procedure LoadColliders(const AJson: TJSONObject);
@@ -21,16 +19,16 @@ type
   public
     procedure LoadSeJson(const AFileName: string);
     procedure LoadSeCss(const AFileName: string);
-    constructor Create(const AModel: TSoModel);
+    constructor Create(const AAddByTemplateCreator: IAddByTemplateCreator);
   end;
 
 implementation
 
 { TTemplateLoader }
 
-constructor TTemplateManager.Create(const AModel: TSoModel);
+constructor TTemplateManager.Create(const AAddByTemplateCreator: IAddByTemplateCreator);
 begin
-  FModel := TSoModelFriend(AModel);
+  FAddByTemplateCreator := AAddByTemplateCreator;
 end;
 
 procedure TTemplateManager.GetBasePath(const AFileName: string);
@@ -50,10 +48,14 @@ procedure TTemplateManager.LoadColliders(const AJson: TJSONObject);
 var
   vArr: TJSONArray;
   i: Integer;
+  vNodeName: string;
 begin
-  vArr := AJSON.GetValue('Colliders') as TJSONArray;
+  vNodeName := 'Colliders';
+  vArr := AJSON.GetValue(vNodeName) as TJSONArray;
   for i := 0 to vArr.Count - 1 do
-    FModel.Collider.AddTemplateFromJson(TJSONObject(vArr.Items[i]));
+    FAddByTemplateCreator.AddJsonTemplate(vNodeName, TJSONObject(vArr.Items[i]));
+//    .AddByTemplate();
+  //  FModel.Collider.AddTemplateFromJson(TJSONObject(vArr.Items[i]));
 end;
 
 procedure TTemplateManager.LoadRenditions(const AJson: TJSONObject);
@@ -63,12 +65,16 @@ var
   vJson, vBody: TJSONObject;
   vJsonVal: TJSONValue;
   vName: string;
+  vNodeName: string;
 begin
-  vArr := AJSON.GetValue('Templates') as TJSONArray;
+  vNodeName := 'Templates';
+  vArr := AJSON.GetValue(vNodeName) as TJSONArray;
   for i := 0 to vArr.Count - 1 do
-    FModel.Renderer.AddTemplateFromJson(TJSONObject(vArr.Items[i]));
+    FAddByTemplateCreator.AddJsonTemplate(vNodeName, TJSONObject(vArr.Items[i]));
+//    FModel.Renderer.AddTemplateFromJson(TJSONObject(vArr.Items[i]));
 
-  vArr := AJSON.GetValue('Resources') as TJSONArray;
+  vNodeName := 'Templates';
+  vArr := AJSON.GetValue(vNodeName) as TJSONArray;
   for i := 0 to vArr.Count - 1 do
     if vArr.Items[i].TryGetValue('Name', vJsonVal) then
     begin
@@ -83,7 +89,8 @@ begin
       vBody.AddPair('Resources', vBodyArr);
       vJson.AddPair('Body', vBody);
 
-      FModel.Renderer.AddTemplateFromJson(vJson);
+      FAddByTemplateCreator.AddJsonTemplate(vNodeName, vJson);
+//      FModel.Renderer.AddTemplateFromJson(vJson);
     end;
 end;
 
@@ -92,12 +99,15 @@ var
   vArr: TJSONArray;
   i: Integer;
   vImg: TAnonImage;
+  vNodeName: string;
 begin
+  vNodeName := 'Resources';
   vImg := TAnonImage.Create(nil);
 
+  // TODO: Create Json with absolute path and move its processing to AddByTemplateCreator
   vImg.Bitmap.LoadFromFile(FBasePath + '/' + AJSON.GetValue('ImageFile').Value);
 
-  vArr := AJSON.GetValue('Resources') as TJSONArray;
+  vArr := AJSON.GetValue(vNodeName) as TJSONArray;
 
   for i := 0 to vArr.Count - 1 do
     FModel.Renderer.AddResourceFromJson(vImg.Bitmap, TJSONObject(vArr.Items[i]));

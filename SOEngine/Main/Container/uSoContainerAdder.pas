@@ -15,10 +15,12 @@ type
     FOnElementByTemplateAdd: TAddContainerElementByTemplateDelegate;
     FSubject: TSoObject;
     FContainerDelegateCollector: TSoContainerDelegateCollector;
+    FElementAdded: TNotifyEvent<string>;
     property OnElementAdd: TAddContainerElementDelegate read FOnElementAdd;
     property OnElementByTemplateAdd: TAddContainerElementByTemplateDelegate read FOnElementByTemplateAdd;
     function RaiseOnAdd(AClass: TClass; ADescription: TContainerElementByTemplate): TObject;
   public
+    property ElementAdded: TNotifyEvent<string> write FElementAdded;
     function Rendition(const ATemplateName: string; const AName: string = ''): TEngine2DRendition; overload;
     function Collider(const ATemplateName: string; const AName: string = ''): TSoColliderObj; overload;
     function MouseHandler(const ATemplateName: string; const AName: string = ''): TSoMouseHandler; overload;

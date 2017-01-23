@@ -3,12 +3,15 @@ unit uSoContainerGetter;
 interface
 
 uses
-  uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoSound,
+  uSoTypes, uE2DRendition, uSoColliderObject, uSoMouseHandler, uSoKeyHandler, uSoSound,
   uSoFormatter, uSoAnimation, uSoLogic, uSoProperty, uSoContainerTypes;
 
 type
   TSoContainerGetter = class
+  private type
+    TNameDict = TDict<string, TObject>;
   private
+    FPartByName: TDict<TClass, TNameDict>;
     FOnAnyGet: TGetContainerElementDelegate;
     property OnAnyGet: TGetContainerElementDelegate read FOnAnyGet;
     function RaiseOnGet(AClass: TClass; AName: string): TObject;

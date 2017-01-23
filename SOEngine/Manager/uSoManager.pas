@@ -3,8 +3,8 @@ unit uSoManager;
 interface
 
 uses
-  uUnitManager, uWorldManager, uTemplateManager, uSoModel, uCommonClasses, uSoTypes,
-  uSoEngineEvents, uSoLayoutFactory;
+  uUnitManagerNew, uWorldManager, uTemplateManager, uCommonClasses, uSoTypes,
+  uSoEngineEvents, uSoLayoutFactory, uSoContainerKeeper, uSoLayoutKeeper;
 
 type
   TSoManager = class
@@ -19,7 +19,10 @@ type
     property UnitManager: TUnitManager read FUnitManager;
     property WorldManager: TWorldManager read FWorldManager;
     property TemplateManager: TTemplateManager read FTemplateManager;
-    constructor Create(const AModel: TSoModel; const AEvents: TSoEngineEvents);
+    constructor Create(
+      const AContainerKeeper: TSoContainerKeeper;
+      const ALayoutKeeper: TSoLayoutKeeper;
+      const AEvents: TSoEngineEvents);
     destructor Destroy; override;
   end;
 
@@ -27,18 +30,23 @@ implementation
 
 { TSoManager }
 
-constructor TSoManager.Create(const AModel: TSoModel; const AEvents: TSoEngineEvents);
+constructor TSoManager.Create(
+  const AContainerKeeper: TSoContainerKeeper;
+  const ALayoutKeeper: TSoLayoutKeeper;
+  const AEvents: TSoEngineEvents);
 begin
   AEvents.OnResize.Add(OnResize);
 
-  FUnitManager := TUnitManager.Create(AModel, nil);
+  FUnitManager := TUnitManager.Create(AContainerKeeper, ALayoutKeeper);
   FTemplateManager := TTemplateManager.Create(AModel);
   FWorldManager := TWorldManager.Create(AModel, AEvents);
 end;
 
 destructor TSoManager.Destroy;
 begin
-
+  FUnitManager.Free;
+  FTemplateManager.Free;
+  FWorldManager.Free;
   inherited;
 end;
 

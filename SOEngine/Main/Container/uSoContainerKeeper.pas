@@ -12,12 +12,14 @@ type
     TSoObjectFriend = class(TSoObject);
   private
     FEngineWidth, FEngineHeight: PInteger;
-    FContainers: TList<TSoContainer>;
+    FContainers: TUniqueList<TSoContainer>;
+    FContainerByName: TDict<string, TSoContainer>;
     FContainerByObject: TDict<TSoObject, TSoContainer>;
+
     FContainerAdded: TEvent<ISoPositionAdapter>;
     procedure OnContainerDestroy(ASender: TObject);
     procedure OnContainerOnLayoutAdded(ASender: TObject);
-    procedure Add(const AContainer: TSoContainer);
+    procedure Add(const AContainer: TSoContainer; const AName: string = '');
   public
     procedure OnLayoutAdded(ASender: TObject);
     constructor Create(const AEngineSize: TSoEngineSize);
@@ -31,7 +33,7 @@ uses
 
 { TSoContainerKeeper }
 
-procedure TSoContainerKeeper.Add(const AContainer: TSoContainer);
+procedure TSoContainerKeeper.Add(const AContainer: TSoContainer; const AName: string);
 var
   vCont: TSoContainer;
 begin
@@ -41,6 +43,7 @@ begin
   vCont.AddOnDestroy(OnContainerDestroy);
 
   FContainerByObject.Add(vCont.Subject, vCont);
+  FContainerByName.Add(AName, vCont);
 end;
 
 constructor TSoContainerKeeper.Create(const AEngineSize: TSoEngineSize);
@@ -48,7 +51,8 @@ begin
   FEngineWidth := @AEngineSize.Width;
   FEngineHeight := @AEngineSize.Height;
 
-  FContainers := TList<TSoContainer>.Create;
+  FContainers := TUniqueList<TSoContainer>.Create;
+  FContainerByName := TDict<string, TSoContainer>.Create;
   FContainerByObject := TDict<TSoObject, TSoContainer>.Create;
 end;
 
@@ -61,6 +65,7 @@ begin
 
   FContainers.Free;
   FContainerByObject.Free;
+  FContainerByName.Free;
   inherited;
 end;
 
@@ -87,3 +92,4 @@ begin
 end;
 
 end.
+

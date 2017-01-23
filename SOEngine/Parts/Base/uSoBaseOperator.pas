@@ -28,7 +28,7 @@ type
     function AddObjFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TObject; virtual; abstract;
     procedure AddObj(const AItem: TObject);//; const AName: string = '');
 
-    procedure VisitByDelegateCollector(const ADelegateCollector: IDelegateCollector);
+    procedure VisitByDelegateCollector(const ADelegateCollector: IRegisterDelegateCollector);
   public
     function OperatorItemClass: TClass; virtual; abstract;
     function Contains(const AItem: T): Boolean; overload;
@@ -146,8 +146,7 @@ begin
   FCritical.Leave;
 end;
 
-procedure TSoOperator<T>.VisitByDelegateCollector(
-  const ADelegateCollector: IDelegateCollector);
+procedure TSoOperator<T>.VisitByDelegateCollector(const ADelegateCollector: IRegisterDelegateCollector);
 begin
 
 end;

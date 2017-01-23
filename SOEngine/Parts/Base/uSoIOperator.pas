@@ -18,7 +18,7 @@ type
     function AddObjFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TObject;
     procedure AddObj(const AItem: TObject);
 
-    procedure VisitByDelegateCollector(const ADelegateCollector: IDelegateCollector);
+    procedure VisitByDelegateCollector(const ADelegateCollector: IRegisterDelegateCollector);
   end;
 
 implementation

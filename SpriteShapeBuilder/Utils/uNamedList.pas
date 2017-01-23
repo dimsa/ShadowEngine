@@ -27,6 +27,7 @@ type
     function GetItemI(Index: Integer): T;
     procedure SetItemI(Index: Integer; const Value: T);
     function GetCount: Integer;
+    function GenerateGuid(var Guid: TGUID): TGUID;
   protected
     function DoGetEnumerator: TEnumerator<T>; override;
   public
@@ -116,17 +117,8 @@ var
   vIndex: Integer;
   vName: String;
   Guid: TGUID;
-  i: Integer;
 begin
-
-  // Почему-то андройд по-другому не создает уникальный ГУИД
-  Guid := Guid.Empty;
-  Guid.D1 := Random64;
-  Guid.D2 := Random(Word.MaxValue+1);
-  Guid.D3 := Random(Word.MaxValue+1);
-
-  for i := 0 to 7 do
-    Guid.D4[i] := Random(Byte.MaxValue+1);
+  Guid := GenerateGuid;
 
   vName := Guid.ToString;
   vName := StringReplace(vName, '-', '', [rfReplaceAll]);
@@ -285,6 +277,19 @@ end;
 function TNamedList<T>.GetEnumerator: TEnumerator<T>;
 begin
   Result := FList.GetEnumerator;
+end;
+
+function TNamedList<T>.GenerateGuid: TGUID;
+var
+  i: Integer;
+begin
+  // Почему-то андройд по-другому не создает уникальный ГУИД
+  Result := TGuid.Empty;
+  Result.D1 := Random64;
+  Result.D2 := Random(Word.MaxValue + 1);
+  Result.D3 := Random(Word.MaxValue + 1);
+  for i := 0 to 7 do
+    Result.D4[i] := Random(Byte.MaxValue + 1);
 end;
 
 function TNamedList<T>.GetItemI(Index: Integer): T;
