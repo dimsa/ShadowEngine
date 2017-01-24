@@ -3,13 +3,13 @@ unit uSoModel;
 interface
 
 uses
-  System.SyncObjs, uEngine2DClasses, System.SysUtils,
+  System.SyncObjs, uEngine2DClasses, System.SysUtils, System.JSON,
   uSoTypes, uCommonClasses,
   uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper,
   uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory, uSoSoundKeeper,
   uSoContainerKeeper, uSoEngineSize, uSoLayoutFactory, uSoLayoutKeeper,
-  uSoContainerDelegateCollector;
+  uSoContainerDelegateCollector, uSoIDelegateCollector;
 
 type
   TSoModel = class
@@ -35,6 +35,7 @@ type
     FColliderExtenderFactory: TSoColliderExtenderFactory;
 
     FContainerAddDelegateCollector: TSoContainerDelegateCollector;
+
     procedure InitFactories;
     procedure InitContainerDelegateCollector;
   protected
@@ -53,6 +54,9 @@ type
     property KeyProcessor: TSoKeyProcessor read FKeyProcessor;
     property MouseProcessor: TSoMouseProcessor read FMouseProcessor;
     function OnPartAdded(const AObject: TSoObject; const AClass: TClass; const AName: string): TObject;
+
+    procedure AddJsonTemplate(const AClassName: string; AJson: TJsonObject);
+    procedure AddTemplateFromFile(const AClassName: string; AFileName: string);
   public
 //    function ObjectByName(const AObjectName: string): TSoObject;
     procedure ExecuteOnTick;
@@ -72,6 +76,16 @@ type
 implementation
 
 { TSoModel }
+
+procedure TSoModel.AddJsonTemplate(const AClassName: string; AJson: TJsonObject);
+begin
+
+end;
+
+procedure TSoModel.AddTemplateFromFile(const AClassName: string; AFileName: string);
+begin
+
+end;
 
 constructor TSoModel.Create(
   const AImage: TAnonImage;

@@ -4,7 +4,8 @@ interface
 
 uses
   uUnitManagerNew, uWorldManager, uTemplateManager, uCommonClasses, uSoTypes,
-  uSoEngineEvents, uSoLayoutFactory, uSoContainerKeeper, uSoLayoutKeeper;
+  uSoEngineEvents, uSoLayoutFactory, uSoContainerKeeper, uSoLayoutKeeper,
+  uTemplateLoader;
 
 type
   TSoManager = class
@@ -22,7 +23,8 @@ type
     constructor Create(
       const AContainerKeeper: TSoContainerKeeper;
       const ALayoutKeeper: TSoLayoutKeeper;
-      const AEvents: TSoEngineEvents);
+      const AEvents: TSoEngineEvents;
+      const ATemplateLoader: ITemplateLoader);
     destructor Destroy; override;
   end;
 
@@ -33,12 +35,13 @@ implementation
 constructor TSoManager.Create(
   const AContainerKeeper: TSoContainerKeeper;
   const ALayoutKeeper: TSoLayoutKeeper;
-  const AEvents: TSoEngineEvents);
+  const AEvents: TSoEngineEvents;
+  const ATemplateLoader: ITemplateLoader);
 begin
   AEvents.OnResize.Add(OnResize);
 
   FUnitManager := TUnitManager.Create(AContainerKeeper, ALayoutKeeper);
-  FTemplateManager := TTemplateManager.Create(AModel);
+  FTemplateManager := TTemplateManager.Create(ATemplateLoader);
   FWorldManager := TWorldManager.Create(AModel, AEvents);
 end;
 

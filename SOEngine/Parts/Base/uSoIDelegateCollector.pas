@@ -3,7 +3,7 @@ unit uSoIDelegateCollector;
 interface
 
 uses
-  uSoTypes, uSoObject, System.JSON;
+  uSoTypes, uSoObject;
 
 type
   TDelegateGet = function(const ASubject: TSoObject; const AClass: TClass): TObject;
@@ -19,12 +19,6 @@ type
     procedure RegisterDelegateAdd(const AClass: TClass; const ADelegate: TDelegateAdd);
     procedure RegisterDelegateAddByTemplate(const AClass: TClass; const ADelegate: TDelegateAddByTemplate);
     procedure RegisterDelegateAddCustom(const AClass: TClass; const ADelegate: TDelegateAddCustom);
-  end;
-
-  IAddByTemplateCreator = interface
-    procedure AddJsonTemplate(const AClassName: string; AJson: TJsonObject);
-    procedure AddTemplateFromFile(const AClassName: string; AFileName: string);
-//    procedure AddByTemplate(const AClass: TClass; const ASubject: TSoObject; const ATemplateName: string; const AName: string = '');
   end;
 
 implementation

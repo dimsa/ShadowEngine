@@ -4,12 +4,13 @@ interface
 
 uses
   System.JSON, System.SysUtils, System.StrUtils, uSoIDelegateCollector,
-  uSoTypes, uSoModel, uEngine2DClasses, uSoObjectDefaultProperties, uJsonUtils;
+  uSoTypes, uSoModel, uEngine2DClasses, uSoObjectDefaultProperties, uJsonUtils,
+  uTemplateLoader;
 
 type
   TTemplateManager = class
   private
-    FAddByTemplateCreator: IAddByTemplateCreator;
+    FAddByTemplateCreator: ITemplateLoader;
     FBasePath: string;
     procedure LoadResources(const AFileName: string; const AJson: TJSONObject);
     procedure LoadColliders(const AJson: TJSONObject);
@@ -19,14 +20,14 @@ type
   public
     procedure LoadSeJson(const AFileName: string);
     procedure LoadSeCss(const AFileName: string);
-    constructor Create(const AAddByTemplateCreator: IAddByTemplateCreator);
+    constructor Create(const AAddByTemplateCreator: ITemplateLoader);
   end;
 
 implementation
 
 { TTemplateLoader }
 
-constructor TTemplateManager.Create(const AAddByTemplateCreator: IAddByTemplateCreator);
+constructor TTemplateManager.Create(const AAddByTemplateCreator: ITemplateLoader);
 begin
   FAddByTemplateCreator := AAddByTemplateCreator;
 end;
@@ -71,7 +72,6 @@ begin
   vArr := AJSON.GetValue(vNodeName) as TJSONArray;
   for i := 0 to vArr.Count - 1 do
     FAddByTemplateCreator.AddJsonTemplate(vNodeName, TJSONObject(vArr.Items[i]));
-//    FModel.Renderer.AddTemplateFromJson(TJSONObject(vArr.Items[i]));
 
   vNodeName := 'Templates';
   vArr := AJSON.GetValue(vNodeName) as TJSONArray;
@@ -90,7 +90,6 @@ begin
       vJson.AddPair('Body', vBody);
 
       FAddByTemplateCreator.AddJsonTemplate(vNodeName, vJson);
-//      FModel.Renderer.AddTemplateFromJson(vJson);
     end;
 end;
 
@@ -98,26 +97,22 @@ procedure TTemplateManager.LoadResources(const AFileName: string; const AJson: T
 var
   vArr: TJSONArray;
   i: Integer;
-  vImg: TAnonImage;
   vNodeName: string;
+  vJson: TJSONObject;
 begin
   vNodeName := 'Resources';
-  vImg := TAnonImage.Create(nil);
-
-  // TODO: Create Json with absolute path and move its processing to AddByTemplateCreator
-  vImg.Bitmap.LoadFromFile(FBasePath + '/' + AJSON.GetValue('ImageFile').Value);
-
   vArr := AJSON.GetValue(vNodeName) as TJSONArray;
 
-  for i := 0 to vArr.Count - 1 do
-    FModel.Renderer.AddResourceFromJson(vImg.Bitmap, TJSONObject(vArr.Items[i]));
+  vJson := TJSONObject.Create;
+  vJson.AddPair('BasePath', FBasePath);
+  vJson.AddPair(vNodeName, vArr);
 
-  vImg.Free;
+  FAddByTemplateCreator.AddJsonTemplate(vNodeName, vJson);
 end;
 
 procedure TTemplateManager.LoadSeCss(const AFileName: string);
 begin
-  FModel.Formattor.LoadTemplates(AFileName);
+  FAddByTemplateCreator.AddTemplateFromFile('Formatters', AFileName);
 end;
 
 procedure TTemplateManager.LoadSeJson(const AFileName: string);
@@ -146,13 +141,17 @@ var
   vArr: TJSONArray;
   i: Integer;
   vName, vPath: TJSONValue;
+  vNodeName: string;
 begin
-  vArr := AJSON.GetValue('Sounds') as TJSONArray;
+  vNodeName := 'Sounds';
+  FAddByTemplateCreator.AddJsonTemplate(vNodeName, AJson);
+
+{  vArr := AJSON.GetValue('Sounds') as TJSONArray;
   for i := 0 to vArr.Count - 1 do
   begin
     if (vArr.Items[i].TryGetValue('Name', vName)) and (vArr.Items[i].TryGetValue('Path', vPath)) then
       FModel.SoundKeeper.AddTemplate(JsonToString(vName), FBasePath + JsonToString(vPath));
-  end;
+  end;    }
 end;
 
 end.
