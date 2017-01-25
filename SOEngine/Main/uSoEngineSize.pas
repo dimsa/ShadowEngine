@@ -6,7 +6,6 @@ uses
   uSoEngineEvents, uSoTypes;
 
 type
-
   TSoEngineSize = class
   private
     FWidth: Single;

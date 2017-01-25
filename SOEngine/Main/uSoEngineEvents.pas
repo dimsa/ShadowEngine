@@ -10,7 +10,6 @@ type
   private
     FImage: TAnonImage;
     FOnResize: TNotifyEventList;
-//    FOnMouseEnter, FOnMouseLeave: TNotifyEventList;
     FOnMouseDown, FOnMouseUp: TEventList<TMouseEventArgs>;
     FOnMouseMove: TEventList<TMouseMoveEventArgs>;
     procedure OnMouseDownHandler(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);

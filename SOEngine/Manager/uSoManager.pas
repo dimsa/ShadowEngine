@@ -5,7 +5,7 @@ interface
 uses
   uUnitManagerNew, uWorldManager, uTemplateManager, uCommonClasses, uSoTypes,
   uSoEngineEvents, uSoLayoutFactory, uSoContainerKeeper, uSoLayoutKeeper,
-  uTemplateLoader;
+  uSoTemplateLoader;
 
 type
   TSoManager = class
@@ -24,7 +24,7 @@ type
       const AContainerKeeper: TSoContainerKeeper;
       const ALayoutKeeper: TSoLayoutKeeper;
       const AEvents: TSoEngineEvents;
-      const ATemplateLoader: ITemplateLoader);
+      const ATemplateLoader: ISoTemplateLoader);
     destructor Destroy; override;
   end;
 
@@ -36,7 +36,7 @@ constructor TSoManager.Create(
   const AContainerKeeper: TSoContainerKeeper;
   const ALayoutKeeper: TSoLayoutKeeper;
   const AEvents: TSoEngineEvents;
-  const ATemplateLoader: ITemplateLoader);
+  const ATemplateLoader: ISoTemplateLoader);
 begin
   AEvents.OnResize.Add(OnResize);
 

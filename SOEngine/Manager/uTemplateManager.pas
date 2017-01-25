@@ -4,8 +4,8 @@ interface
 
 uses
   System.JSON, System.SysUtils, System.StrUtils, uSoIDelegateCollector,
-  uSoTypes, uSoModel, uEngine2DClasses, uSoObjectDefaultProperties, uJsonUtils,
-  uTemplateLoader;
+  uSoTypes, uEngine2DClasses, uSoObjectDefaultProperties, uJsonUtils,
+  uSoTemplateLoader;
 
 type
   TTemplateManager = class

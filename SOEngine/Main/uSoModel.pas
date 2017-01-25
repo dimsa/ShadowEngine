@@ -4,12 +4,13 @@ interface
 
 uses
   System.SyncObjs, uEngine2DClasses, System.SysUtils, System.JSON,
-  uSoTypes, uCommonClasses,
+  uSoTypes, uCommonClasses, uEasyDevice,
   uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper,
   uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory, uSoSoundKeeper,
   uSoContainerKeeper, uSoEngineSize, uSoLayoutFactory, uSoLayoutKeeper,
-  uSoContainerDelegateCollector, uSoIDelegateCollector;
+  uSoContainerDelegateCollector, uSoIDelegateCollector,
+  uTemplateManager, uWorldManager, uUnitManagerNew, uSoEngineEvents, uSoTemplateLoader;
 
 type
   TSoModel = class
@@ -34,10 +35,21 @@ type
     // Factories
     FColliderExtenderFactory: TSoColliderExtenderFactory;
 
+    // Managers
+    FUnitManager: TUnitManager;
+    FWorldManager: TWorldManager;
+    FTemplateManager: TTemplateManager;
+    FTemplateLoader: TSoTemplateLoader;
+
     FContainerAddDelegateCollector: TSoContainerDelegateCollector;
 
+    FEvents: TSoEngineEvents;
+    FEngineSize: TSoEngineSize;
+    procedure OnImageResize(ASender: TObject);
     procedure InitFactories;
     procedure InitContainerDelegateCollector;
+    procedure CreateManager;
+    procedure SubscribeImageEvent;
   protected
     // Workers
     property Renderer: TSoRenderer read FRenderer;
@@ -58,6 +70,9 @@ type
     procedure AddJsonTemplate(const AClassName: string; AJson: TJsonObject);
     procedure AddTemplateFromFile(const AClassName: string; AFileName: string);
   public
+    property UnitManager: TUnitManager read FUnitManager;
+    property WorldManager: TWorldManager read FWorldManager;
+    property TemplateManager: TTemplateManager read FTemplateManager;
 //    function ObjectByName(const AObjectName: string): TSoObject;
     procedure ExecuteOnTick;
     procedure ExecuteKeyUp(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
@@ -67,7 +82,6 @@ type
     procedure ExecuteMouseMove(Sender: TObject; AEventArgs: TMouseMoveEventArgs);
     constructor Create(
       const AImage: TAnonImage;
-      const AEngineSize: TSoEngineSize;
       const ACritical: TCriticalSection;
       const AOptions: TSoEngineOptions);
     destructor Destroy; override;
@@ -89,13 +103,16 @@ end;
 
 constructor TSoModel.Create(
   const AImage: TAnonImage;
-  const AEngineSize: TSoEngineSize;
   const ACritical: TCriticalSection;
   const AOptions: TSoEngineOptions);
 begin
   FCritical := ACritical;
   FImage := AImage;
   FOptions := AOptions;
+
+  FEvents := TSoEngineEvents.Create(AImage);
+  FEngineSize := TSoEngineSize.Create(FEvents, AImage.Width, AImage.Height);
+
   InitFactories;
 
   FObjectKeeper := TSoObjectKeeper.Create(FCritical);
@@ -108,11 +125,20 @@ begin
   FMouseProcessor := TSoMouseProcessor.Create(FCritical);
   FSoundKeeper := TSoSoundKeeper.Create(FCritical);
 
-  FContainerKeeper := TSoContainerKeeper.Create(AEngineSize);
+  FContainerKeeper := TSoContainerKeeper.Create(FEngineSize);
 
   InitContainerDelegateCollector;
-  FLayoutKeeper := TSoLayoutKeeper.Create(AEngineSize, FContainerAddDelegateCollector);
+  FLayoutKeeper := TSoLayoutKeeper.Create(FEngineSize, FContainerAddDelegateCollector);
   FLayoutKeeper.LayoutAdded := FContainerKeeper.OnLayoutAdded;
+end;
+
+procedure TSoModel.CreateManager;
+begin
+  FTemplateLoader := TSoTemplateLoader.Create(Self.AddTemplateFromFile, Self.AddJsonTemplate);
+
+  FUnitManager := TUnitManager.Create(FContainerKeeper, FLayoutKeeper);
+  FTemplateManager := TTemplateManager.Create(FTemplateLoader);
+  FWorldManager := TWorldManager.Create(FRenderer, FEvents);
 end;
 
 destructor TSoModel.Destroy;
@@ -202,10 +228,28 @@ begin
   Result := FObjectKeeper.Items[AObjectName];
 end; }
 
+procedure TSoModel.OnImageResize(ASender: TObject);
+begin
+  //FEngineObject[RenditionRect].RaiseOnChange;
+
+  FImage.Bitmap.Width := Round(FImage.Width * getScreenScale);
+  FImage.Bitmap.Height := Round(FImage.Height * getScreenScale);
+end;
+
 function TSoModel.OnPartAdded(const AObject: TSoObject; const AClass: TClass;
   const AName: string): TObject;
 begin
 
+end;
+
+procedure TSoModel.SubscribeImageEvent;
+begin
+  with FEvents do begin
+    OnResize.Add(OnImageResize);
+    OnMouseDown.Add(ExecuteMouseDown);
+    OnMouseUp.Add(ExecuteMouseUp);
+    OnMouseMove.Add(ExecuteMouseMove);
+  end;
 end;
 
 end.

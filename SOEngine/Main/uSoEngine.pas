@@ -6,7 +6,7 @@ uses
   System.SyncObjs,
   uSoTypes, uCommonClasses, uEasyDevice,
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uSoEngineOptions,
-  uEngine2DManager, uEngine2DStatus, uSoObject, uSoManager,
+  uEngine2DStatus, uSoObject,
   uSoObjectDefaultProperties, uSoEngineEvents,
   uSoEngineSize;
 
@@ -17,20 +17,18 @@ type
   strict private
     FEngineThread: TEngineThread; // Thread that paint all sprites (But there are possibility to use not one thread)  // Поток в котором происходит отрисовка
     FCritical: TCriticalSection; // The critical section for multithread operation, to protect model on changind in paint time // Критическая секция движка
-    FSize: TSoEngineSize;
+    //FSize: TSoEngineSize;
     FModel: TSoModel; // All main lists are in It.
     FOptions: TSoEngineOptions; // All Engine options. If you add some feature to manage engine, it shoulb be here// Настройки движка
     FStatus: TEngine2DStatus; // All Engine status you can get from herem like width-height,speed and etc.
     FImage: TAnonImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка\
 //    FDebug: Boolean; // There are some troubles to debug multithread app, so it for it // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
-    FEvents: TSoEngineEvents;
-    FManager: TSoManager; // Contains all managers
+    //FEvents: TSoEngineEvents;
+//    FManager: TSoManager; // Contains all managers
     FEngineObject: TSoObject; // it's object of engine
-    procedure OnImageResize(ASender: TObject);
     procedure SetImage(const Value: TAnonImage);
     function GetFps: Single;
     procedure InitEngineObject;
-    procedure SubscribeImageEvent;
     procedure InitDefaultOptions;
   protected
     property EngineThread: TEngineThread read FEngineThread;
@@ -47,7 +45,7 @@ type
     destructor Destroy; override;
 
     // You should use Managers to Work with Engine
-    property Manager: TSoManager read FManager;
+    //property Manager: TSoManager read FManager;
 
     property Status: TEngine2DStatus read FStatus;
     property Fps: Single read GetFps;
@@ -65,18 +63,16 @@ begin
   FImage := AImage;
   InitDefaultOptions;
 
-  FEvents:= TSoEngineEvents.Create(AImage);
-  FSize := TSoEngineSize.Create(FEvents, AImage.Width, AImage.Height);
-
   FCritical := TCriticalSection.Create;
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
 
-  FModel := TSoModel.Create(TAnonImage(FImage), FSize, FCritical, FOptions);
+  FModel := TSoModel.Create(TAnonImage(FImage), FCritical, FOptions);
 
-  SubscribeImageEvent;
+//  SubscribeImageEvent;
 
-  FManager := TSoManager.Create(FModel, FEvents);
+  //FManager := TSoManager.Create(FModel, FEvents);
+
   InitEngineObject;
 end;
 
@@ -86,9 +82,9 @@ begin
   FEngineThread.Free;
   FCritical.Free;
   FOptions.Free;
-  FEvents.Free;
+  {FEvents.Free;
   FManager.Free;
-  FSize.Free;
+  FSize.Free; }
 
   inherited;
 end;
@@ -105,19 +101,19 @@ end;
 
 procedure TSoEngine.InitEngineObject;
 begin
-  with FManager.UnitManager.New('World') do begin
+  {with FManager.UnitManager.New('World') do begin
     FEngineObject := ActiveContainer;
     FEngineObject.AddProperty(RenditionRect).Obj := FSize.Rect;
-  end;
+  end;}
 end;
 
-procedure TSoEngine.OnImageResize(ASender: TObject);
+{procedure TSoEngine.OnImageResize(ASender: TObject);
 begin
   FEngineObject[RenditionRect].RaiseOnChange;
 
   FImage.Bitmap.Width := Round(FImage.Width * getScreenScale);
   FImage.Bitmap.Height := Round(FImage.Height * getScreenScale);
-end;
+end;  }
 
 procedure TSoEngine.Resume;
 begin
@@ -127,23 +123,14 @@ end;
 procedure TSoEngine.SetImage(const Value: TAnonImage);
 begin
   FImage := Value;
-  SubscribeImageEvent;
+//  SubscribeImageEvent;
 end;
 
 procedure TSoEngine.Start;
 begin
-  OnImageResize(FImage);
+//  OnImageResize(FImage);
+  FImage.OnResize(FImage);
   FEngineThread.Start;
-end;
-
-procedure TSoEngine.SubscribeImageEvent;
-begin
-  with FEvents do begin
-    OnResize.Add(OnImageResize);
-    OnMouseDown.Add(FModel.ExecuteMouseDown);
-    OnMouseUp.Add(FModel.ExecuteMouseUp);
-    OnMouseMove.Add(FModel.ExecuteMouseMove);
-  end;
 end;
 
 procedure TSoEngine.Suspend;
