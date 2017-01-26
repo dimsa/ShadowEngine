@@ -7,8 +7,8 @@ uses
 
 type
   // Delegates for Loading from SEJSon or SeCss or etc files
-  TDelegateLoadFromJson = procedure(const AClassName: string; AJson: TJsonObject);
-  TDelegateLoadFromFile = procedure(const AClassName: string; AFileName: string);
+  TDelegateLoadFromJson = procedure(const AClassName: string; AJson: TJsonObject) of object;
+  TDelegateLoadFromFile = procedure(const AClassName: string; AFileName: string) of object;
 
   ISoTemplateLoader = interface
     procedure AddJsonTemplate(const AClassName: string; AJson: TJsonObject);

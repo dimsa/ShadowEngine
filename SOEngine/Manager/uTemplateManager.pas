@@ -10,7 +10,7 @@ uses
 type
   TTemplateManager = class
   private
-    FAddByTemplateCreator: ITemplateLoader;
+    FAddByTemplateCreator: ISoTemplateLoader;
     FBasePath: string;
     procedure LoadResources(const AFileName: string; const AJson: TJSONObject);
     procedure LoadColliders(const AJson: TJSONObject);
@@ -20,14 +20,14 @@ type
   public
     procedure LoadSeJson(const AFileName: string);
     procedure LoadSeCss(const AFileName: string);
-    constructor Create(const AAddByTemplateCreator: ITemplateLoader);
+    constructor Create(const AAddByTemplateCreator: ISoTemplateLoader);
   end;
 
 implementation
 
 { TTemplateLoader }
 
-constructor TTemplateManager.Create(const AAddByTemplateCreator: ITemplateLoader);
+constructor TTemplateManager.Create(const AAddByTemplateCreator: ISoTemplateLoader);
 begin
   FAddByTemplateCreator := AAddByTemplateCreator;
 end;

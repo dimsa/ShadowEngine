@@ -10,21 +10,17 @@ uses
 type
   TSoManager = class
   private
-    FEngineWidth, FEngineHeight: Single;
-
     FUnitManager: TUnitManager; // Controller for creating units form template and etc
     FTemplateManager: TTemplateManager; // Controller to Load Templates if their loaders are ready
     FWorldManager: TWorldManager; // Controller to create different lowlevel world render.
-    procedure OnResize(ASender: TObject);
   public
     property UnitManager: TUnitManager read FUnitManager;
     property WorldManager: TWorldManager read FWorldManager;
     property TemplateManager: TTemplateManager read FTemplateManager;
     constructor Create(
-      const AContainerKeeper: TSoContainerKeeper;
-      const ALayoutKeeper: TSoLayoutKeeper;
-      const AEvents: TSoEngineEvents;
-      const ATemplateLoader: ISoTemplateLoader);
+      const AUnitManager: TUnitManager;
+      const AWorldManager: TWorldManager;
+      const ATemplateManager: TTemplateManager);
     destructor Destroy; override;
   end;
 
@@ -33,16 +29,13 @@ implementation
 { TSoManager }
 
 constructor TSoManager.Create(
-  const AContainerKeeper: TSoContainerKeeper;
-  const ALayoutKeeper: TSoLayoutKeeper;
-  const AEvents: TSoEngineEvents;
-  const ATemplateLoader: ISoTemplateLoader);
+      const AUnitManager: TUnitManager;
+      const AWorldManager: TWorldManager;
+      const ATemplateManager: TTemplateManager);
 begin
-  AEvents.OnResize.Add(OnResize);
-
-  FUnitManager := TUnitManager.Create(AContainerKeeper, ALayoutKeeper);
-  FTemplateManager := TTemplateManager.Create(ATemplateLoader);
-  FWorldManager := TWorldManager.Create(AModel, AEvents);
+  FUnitManager := AUnitManager;
+  FWorldManager := AWorldManager;
+  FTemplateManager := ATemplateManager;
 end;
 
 destructor TSoManager.Destroy;
@@ -51,12 +44,6 @@ begin
   FTemplateManager.Free;
   FWorldManager.Free;
   inherited;
-end;
-
-procedure TSoManager.OnResize(ASender: TObject);
-begin
-  FEngineWidth := TAnonImage(ASender).Width;
-  FEngineHeight := TAnonImage(ASender).Height;
 end;
 
 end.

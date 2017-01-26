@@ -66,10 +66,10 @@ type
     property KeyProcessor: TSoKeyProcessor read FKeyProcessor;
     property MouseProcessor: TSoMouseProcessor read FMouseProcessor;
     function OnPartAdded(const AObject: TSoObject; const AClass: TClass; const AName: string): TObject;
-
+  public
     procedure AddJsonTemplate(const AClassName: string; AJson: TJsonObject);
     procedure AddTemplateFromFile(const AClassName: string; AFileName: string);
-  public
+
     property UnitManager: TUnitManager read FUnitManager;
     property WorldManager: TWorldManager read FWorldManager;
     property TemplateManager: TTemplateManager read FTemplateManager;
@@ -110,14 +110,10 @@ begin
   FImage := AImage;
   FOptions := AOptions;
 
-  FEvents := TSoEngineEvents.Create(AImage);
-  FEngineSize := TSoEngineSize.Create(FEvents, AImage.Width, AImage.Height);
-
   InitFactories;
 
   FObjectKeeper := TSoObjectKeeper.Create(FCritical);
   FLogicKeeper := TSoLogicKeeper.Create(FCritical);
-  FRenderer := TSoRenderer.Create(FCritical, AImage);
   FCollider := TSoCollider.Create(FCritical, FColliderExtenderFactory.Produce, FOptions.ColliderOptions);
   FFormattor := TSoFormattor.Create(FCritical);
   FAnimator := TSoAnimator.Create(FCritical);
@@ -125,16 +121,20 @@ begin
   FMouseProcessor := TSoMouseProcessor.Create(FCritical);
   FSoundKeeper := TSoSoundKeeper.Create(FCritical);
 
-  FContainerKeeper := TSoContainerKeeper.Create(FEngineSize);
 
-  InitContainerDelegateCollector;
+  FRenderer := TSoRenderer.Create(FCritical, AImage);
+  FEvents := TSoEngineEvents.Create(AImage);
+  FEngineSize := TSoEngineSize.Create(FEvents, AImage.Width, AImage.Height);
+  FContainerKeeper := TSoContainerKeeper.Create(FEngineSize);
   FLayoutKeeper := TSoLayoutKeeper.Create(FEngineSize, FContainerAddDelegateCollector);
   FLayoutKeeper.LayoutAdded := FContainerKeeper.OnLayoutAdded;
+
+  CreateManager;
 end;
 
 procedure TSoModel.CreateManager;
 begin
-  FTemplateLoader := TSoTemplateLoader.Create(Self.AddTemplateFromFile, Self.AddJsonTemplate);
+  FTemplateLoader := TSoTemplateLoader.Create(AddJsonTemplate, AddTemplateFromFile);
 
   FUnitManager := TUnitManager.Create(FContainerKeeper, FLayoutKeeper);
   FTemplateManager := TTemplateManager.Create(FTemplateLoader);
