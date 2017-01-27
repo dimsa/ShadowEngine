@@ -165,7 +165,8 @@ contains
   uThreadOrderedDict in 'Utils\uThreadOrderedDict.pas',
   uThreadUniqueList in 'Utils\uThreadUniqueList.pas',
   uUniqueList in 'Utils\uUniqueList.pas',
-  uSoTemplateLoader in 'Main\uSoTemplateLoader.pas';
+  uSoTemplateLoader in 'Main\uSoTemplateLoader.pas',
+  uSoCoreModelPart in 'Main\uSoCoreModelPart.pas';
 
 end.
 

@@ -8,7 +8,7 @@ uses
   uClasses, uEngine2DClasses, uEngine2DThread, uSoModel, uSoEngineOptions,
   uEngine2DStatus, uSoObject,
   uSoObjectDefaultProperties, uSoEngineEvents,
-  uSoEngineSize;
+  uSoEngineSize, uSoManager, uSoCoreModel;
 
 type
 //  TManageDelegate = function(const AContainer: TSoObject): TUnitManager;
@@ -18,13 +18,16 @@ type
     FEngineThread: TEngineThread; // Thread that paint all sprites (But there are possibility to use not one thread)  // Поток в котором происходит отрисовка
     FCritical: TCriticalSection; // The critical section for multithread operation, to protect model on changind in paint time // Критическая секция движка
     //FSize: TSoEngineSize;
+    // There are not partition classes, so there two models
+    FCoreModel: TSoCoreModelPart;
     FModel: TSoModel; // All main lists are in It.
+
     FOptions: TSoEngineOptions; // All Engine options. If you add some feature to manage engine, it shoulb be here// Настройки движка
     FStatus: TEngine2DStatus; // All Engine status you can get from herem like width-height,speed and etc.
     FImage: TAnonImage; // It's the Image the Engine Paint in. // Имедж, в котором происходит отрисовка\
 //    FDebug: Boolean; // There are some troubles to debug multithread app, so it for it // Не очень нужно, но помогает отлаживать те места, когда непонятно когда появляется ошибка
-    //FEvents: TSoEngineEvents;
-//    FManager: TSoManager; // Contains all managers
+    FEvents: TSoEngineEvents;
+    FManager: TSoManager; // Contains all managers
     FEngineObject: TSoObject; // it's object of engine
     procedure SetImage(const Value: TAnonImage);
     function GetFps: Single;
@@ -67,11 +70,12 @@ begin
   FEngineThread := tEngineThread.Create;
   FEngineThread.WorkProcedure := WorkProcedure;
 
-  FModel := TSoModel.Create(TAnonImage(FImage), FCritical, FOptions);
 
-//  SubscribeImageEvent;
+  FEvents := TSoEngineEvents.Create(AImage);
+  FCoreModel := TSoCoreModelPart.Create(FEvents, AImage, FCritical);
+  FModel := TSoModel.Create(FEvents, FCritical, FOptions);
 
-  //FManager := TSoManager.Create(FModel, FEvents);
+  FManager := TSoManager.Create(FCoreModel.UnitManager, FCoreModel.WorldManager, FCoreModel.TemplateManager);
 
   InitEngineObject;
 end;
@@ -141,6 +145,7 @@ end;
 procedure TSoEngine.WorkProcedure;
 begin
   FModel.ExecuteOnTick;
+  FCoreModel.ExecuteOnTick;
 end;
 
 end.

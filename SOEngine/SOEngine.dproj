@@ -279,6 +279,7 @@
         <DCCReference Include="Utils\uThreadUniqueList.pas"/>
         <DCCReference Include="Utils\uUniqueList.pas"/>
         <DCCReference Include="Main\uSoTemplateLoader.pas"/>
+        <DCCReference Include="Main\uSoCoreModelPart.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>
         <None Include="Parts\Collider\SoBox2D\Box2D\Physics2D.inc"/>
