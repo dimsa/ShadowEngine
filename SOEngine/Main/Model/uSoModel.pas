@@ -3,18 +3,19 @@ unit uSoModel;
 interface
 
 uses
-  System.SyncObjs, uEngine2DClasses, System.SysUtils, System.JSON,
-  uSoTypes, uCommonClasses, uEasyDevice,
-  uClasses, uSoObjectKeeper, uSoRenderer, uSoCollider, uSoFormattor, uSoObject,
+  System.SyncObjs, uEngine2DClasses, System.SysUtils,
+  uSoTypes, uCommonClasses, uSoEngineSize,
+  uClasses, uSoObjectKeeper, uSoCollider, uSoFormattor, uSoObject,
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper,
   uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory, uSoSoundKeeper,
-  uSoContainerKeeper, uSoEngineSize, uSoLayoutFactory, uSoLayoutKeeper,
-  uSoContainerDelegateCollector, uSoIDelegateCollector, uSoDelegateCollector, uSoIOperator,
-  uTemplateManager, uWorldManager, uUnitManagerNew, uSoEngineEvents, uSoTemplateLoader;
+  uSoContainerKeeper, uSoLayoutFactory, uSoLayoutKeeper,
+  uSoIDelegateCollector, uSoDelegateCollector, uSoIOperator,
+  uSoEngineEvents, uSoCoreModel, uSoRenderer;
 
 type
   TSoModel = class
   private
+    FCoreModel: TSoCoreModel;
     FCritical: TCriticalSection;
     FImage: TAnonImage;
     FOptions: TSoEngineOptions;
@@ -23,6 +24,7 @@ type
     FCollider: TSoCollider;
     FFormattor: TSoFormattor;
     FAnimator: TSoAnimator;
+    FRenderer: TSoRenderer;
     // Keepers
     FObjectKeeper: TSoObjectKeeper;
     FLogicKeeper: TSoLogicKeeper;
@@ -68,6 +70,7 @@ type
     procedure ExecuteMouseMove(Sender: TObject; AEventArgs: TMouseMoveEventArgs);
     constructor Create(
       const AEvents: TSoEngineEvents;
+      const AImage: TAnonImage;
       const ACritical: TCriticalSection;
       const AOptions: TSoEngineOptions);
     destructor Destroy; override;
@@ -79,6 +82,7 @@ implementation
 
 constructor TSoModel.Create(
   const AEvents: TSoEngineEvents;
+  const AImage: TAnonImage;
   const ACritical: TCriticalSection;
   const AOptions: TSoEngineOptions);
 begin
@@ -87,6 +91,12 @@ begin
   FOptions := AOptions;
 
   InitFactories;
+
+  FCoreModel := TSoCoreModel.Create(FEvents, AImage, ACritical);
+
+  FRenderer := FCoreModel.Renderer;
+  FLayoutKeeper := FCoreModel.LayoutKeeper;
+  FContainerKeeper := FCoreModel.ContainerKeeper;
 
   FObjectKeeper := TSoObjectKeeper.Create(FCritical);
   FLogicKeeper := TSoLogicKeeper.Create(FCritical);
@@ -106,6 +116,7 @@ begin
     Add(FKeyProcessor);
     Add(FMouseProcessor);
     Add(FSoundKeeper);
+    Add(FRenderer);
   end;
 
   InitDelegateCollector;
@@ -114,9 +125,6 @@ end;
 
 destructor TSoModel.Destroy;
 begin
-  FLayoutKeeper.Free;
-  FContainerKeeper.Free;
-
   FObjectKeeper.Free;
   FLogicKeeper.Free;
   FCollider.Free;
@@ -158,6 +166,7 @@ begin
   FAnimator.Execute;
   FLogicKeeper.Execute;
   FCollider.Execute;
+  FRenderer.Execute;
 end;
 
 procedure TSoModel.InitDelegateCollector;

@@ -77,7 +77,6 @@ contains
   uSoBasePart in 'Parts\Base\uSoBasePart.pas',
   uE2DRendition in 'Parts\Rendition\uE2DRendition.pas',
   uSoEngine in 'Main\uSoEngine.pas',
-  uSoModel in 'Main\uSoModel.pas',
   uSoRenderer in 'Parts\Rendition\uSoRenderer.pas',
   uSoBaseOperator in 'Parts\Base\uSoBaseOperator.pas',
   uSoFormattor in 'Parts\Formatters\uSoFormattor.pas',
@@ -166,7 +165,9 @@ contains
   uThreadUniqueList in 'Utils\uThreadUniqueList.pas',
   uUniqueList in 'Utils\uUniqueList.pas',
   uSoTemplateLoader in 'Main\uSoTemplateLoader.pas',
-  uSoCoreModelPart in 'Main\uSoCoreModelPart.pas';
+  uSoDelegateCollector in 'Parts\Base\uSoDelegateCollector.pas',
+  uSoCoreModel in 'Main\Model\uSoCoreModel.pas',
+  uSoModel in 'Main\Model\uSoModel.pas';
 
 end.
 

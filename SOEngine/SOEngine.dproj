@@ -190,7 +190,6 @@
         <DCCReference Include="Parts\Base\uSoBasePart.pas"/>
         <DCCReference Include="Parts\Rendition\uE2DRendition.pas"/>
         <DCCReference Include="Main\uSoEngine.pas"/>
-        <DCCReference Include="Main\uSoModel.pas"/>
         <DCCReference Include="Parts\Rendition\uSoRenderer.pas"/>
         <DCCReference Include="Parts\Base\uSoBaseOperator.pas"/>
         <DCCReference Include="Parts\Formatters\uSoFormattor.pas"/>
@@ -279,7 +278,9 @@
         <DCCReference Include="Utils\uThreadUniqueList.pas"/>
         <DCCReference Include="Utils\uUniqueList.pas"/>
         <DCCReference Include="Main\uSoTemplateLoader.pas"/>
-        <DCCReference Include="Main\uSoCoreModelPart.pas"/>
+        <DCCReference Include="Parts\Base\uSoDelegateCollector.pas"/>
+        <DCCReference Include="Main\Model\uSoCoreModel.pas"/>
+        <DCCReference Include="Main\Model\uSoModel.pas"/>
         <None Include="Utils\DelphiCompatability.inc"/>
         <None Include="Utils\SimpleIoC.inc"/>
         <None Include="Parts\Collider\SoBox2D\Box2D\Physics2D.inc"/>

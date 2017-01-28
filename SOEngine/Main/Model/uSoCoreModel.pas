@@ -10,7 +10,7 @@ uses
   uUnitManagerNew, uWorldManager, uTemplateManager, uSoContainerDelegateCollector;
 
 type
-  TSoCoreModelPart = class
+  TSoCoreModel = class
   private
     FImage: TAnonImage;
     FRenderer: TSoRenderer;
@@ -29,14 +29,17 @@ type
 
     procedure SubscribeEvents;
     procedure OnImageResize(ASender: TObject);
-  protected
-    // Workers
-    property Renderer: TSoRenderer read FRenderer;
   public
     procedure ExecuteOnTick;
 
     procedure AddJsonTemplate(const AClassName: string; AJson: TJsonObject);
     procedure AddTemplateFromFile(const AClassName: string; AFileName: string);
+
+    // Workers
+    property Renderer: TSoRenderer read FRenderer;
+    // Keepers
+    property ContainerKeeper: TSoContainerKeeper read FContainerKeeper;
+    property LayoutKeeper: TSoLayoutKeeper read FLayoutKeeper;
 
     property UnitManager: TUnitManager read FUnitManager;
     property WorldManager: TWorldManager read FWorldManager;
@@ -53,17 +56,17 @@ implementation
 
 { TSoCoreModelPart }
 
-procedure TSoCoreModelPart.AddJsonTemplate(const AClassName: string; AJson: TJsonObject);
+procedure TSoCoreModel.AddJsonTemplate(const AClassName: string; AJson: TJsonObject);
 begin
 
 end;
 
-procedure TSoCoreModelPart.AddTemplateFromFile(const AClassName: string; AFileName: string);
+procedure TSoCoreModel.AddTemplateFromFile(const AClassName: string; AFileName: string);
 begin
 
 end;
 
-constructor TSoCoreModelPart.Create(
+constructor TSoCoreModel.Create(
       const AEvents: TSoEngineEvents;
       const AImage: TAnonImage;
       const ACritical: TCriticalSection);
@@ -84,19 +87,19 @@ begin
   FWorldManager := TWorldManager.Create(FRenderer, FEvents);
 end;
 
-destructor TSoCoreModelPart.Destroy;
+destructor TSoCoreModel.Destroy;
 begin
   FRenderer.Free;
   FContainerAddDelegateCollector.Free;
   inherited;
 end;
 
-procedure TSoCoreModelPart.ExecuteOnTick;
+procedure TSoCoreModel.ExecuteOnTick;
 begin
   FRenderer.Execute;
 end;
 
-procedure TSoCoreModelPart.SubscribeEvents;
+procedure TSoCoreModel.SubscribeEvents;
 begin
   with FEvents do begin
     OnResize.Add(OnImageResize);
@@ -104,7 +107,7 @@ begin
 end;
 
 
-procedure TSoCoreModelPart.OnImageResize(ASender: TObject);
+procedure TSoCoreModel.OnImageResize(ASender: TObject);
 begin
   FImage.Bitmap.Width := Round(FImage.Width * getScreenScale);
   FImage.Bitmap.Height := Round(FImage.Height * getScreenScale);

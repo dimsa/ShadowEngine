@@ -19,7 +19,7 @@ type
     FCritical: TCriticalSection; // The critical section for multithread operation, to protect model on changind in paint time // Критическая секция движка
     //FSize: TSoEngineSize;
     // There are not partition classes, so there two models
-    FCoreModel: TSoCoreModelPart;
+   // FCoreModel: TSoCoreModelPart;
     FModel: TSoModel; // All main lists are in It.
 
     FOptions: TSoEngineOptions; // All Engine options. If you add some feature to manage engine, it shoulb be here// Настройки движка
@@ -72,10 +72,10 @@ begin
 
 
   FEvents := TSoEngineEvents.Create(AImage);
-  FCoreModel := TSoCoreModelPart.Create(FEvents, AImage, FCritical);
-  FModel := TSoModel.Create(FEvents, FCritical, FOptions);
+  //FCoreModel := TSoCoreModelPart.Create(FEvents, AImage, FCritical);
+  FModel := TSoModel.Create(FEvents, AImage, FCritical, FOptions);
 
-  FManager := TSoManager.Create(FCoreModel.UnitManager, FCoreModel.WorldManager, FCoreModel.TemplateManager);
+  //FManager := TSoManager.Create(FCoreModel.UnitManager, FCoreModel.WorldManager, FCoreModel.TemplateManager);
 
   InitEngineObject;
 end;
@@ -145,7 +145,6 @@ end;
 procedure TSoEngine.WorkProcedure;
 begin
   FModel.ExecuteOnTick;
-  FCoreModel.ExecuteOnTick;
 end;
 
 end.
