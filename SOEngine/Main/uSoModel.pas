@@ -9,7 +9,7 @@ uses
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper,
   uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory, uSoSoundKeeper,
   uSoContainerKeeper, uSoEngineSize, uSoLayoutFactory, uSoLayoutKeeper,
-  uSoContainerDelegateCollector, uSoIDelegateCollector,
+  uSoContainerDelegateCollector, uSoIDelegateCollector, uSoDelegateCollector, uSoIOperator,
   uTemplateManager, uWorldManager, uUnitManagerNew, uSoEngineEvents, uSoTemplateLoader;
 
 type
@@ -18,6 +18,7 @@ type
     FCritical: TCriticalSection;
     FImage: TAnonImage;
     FOptions: TSoEngineOptions;
+    FOperators: TList<ISoOperator>;
     // Workers
     FCollider: TSoCollider;
     FFormattor: TSoFormattor;
@@ -34,10 +35,13 @@ type
     // Factories
     FColliderExtenderFactory: TSoColliderExtenderFactory;
 
+    //
+    FRegisterDelegate: IRegisterDelegateCollector;
+
     FEvents: TSoEngineEvents;
     FEngineSize: TSoEngineSize;
     procedure InitFactories;
-    procedure InitContainerDelegateCollector;
+    procedure InitDelegateCollector;
     procedure SubscribeEvents;
   protected
     // Workers
@@ -92,6 +96,20 @@ begin
   FKeyProcessor := TSoKeyProcessor.Create(FCritical);
   FMouseProcessor := TSoMouseProcessor.Create(FCritical);
   FSoundKeeper := TSoSoundKeeper.Create(FCritical);
+
+  with FOperators do begin
+    Add(FObjectKeeper);
+    Add(FLogicKeeper);
+    Add(FCollider);
+    Add(FFormattor);
+    Add(FAnimator);
+    Add(FKeyProcessor);
+    Add(FMouseProcessor);
+    Add(FSoundKeeper);
+  end;
+
+  InitDelegateCollector;
+
 end;
 
 destructor TSoModel.Destroy;
@@ -142,30 +160,14 @@ begin
   FCollider.Execute;
 end;
 
-procedure TSoModel.InitContainerDelegateCollector;
+procedure TSoModel.InitDelegateCollector;
+var
+  vOperator: ISoOperator;
 begin
-{  FContainerAddDelegateCollector := TSoContainerDelegateCollector.Create(
-    FAnimator.Add,
-    FAnimator.AddFromTemplate,
-    FCollider.AddFromTemplate,
-    FCollider.Add,
-    FFormattor.Add,
-    FFormattor.AddFromTemplate,
-    FFormattor.AddFromCode,
-    FMouseProcessor.Add,
-    FMouseProcessor.AddFromTemplate,
-    FKeyProcessor.Add,
-    FKeyProcessor.AddFromTemplate,
-    FLogicKeeper.Add,
-    FLogicKeeper.AddFromTemplate,
-    nil,
-    nil,
-    FRenderer.Add,
-    FRenderer.AddFromTemplate,
-    FSoundKeeper.Add,
-    FSoundKeeper.AddFromTemplate,
-    FSoundKeeper.AddByFileName
-  );  }
+  FRegisterDelegate := TSoDelegateCollector.Create;
+
+  for vOperator in FOperators do
+    vOperator.VisitByDelegateCollector(FRegisterDelegate);
 end;
 
 procedure TSoModel.InitFactories;
