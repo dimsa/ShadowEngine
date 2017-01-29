@@ -73,7 +73,7 @@ constructor TSoCoreModel.Create(
 begin
   FImage := AImage;
   FEvents := AEvents;
-// It should be moved to another place. But what is this place? o_O
+
   FRenderer := TSoRenderer.Create(ACritical, AImage);
   FEngineSize := TSoEngineSize.Create(FEvents, AImage.Width, AImage.Height);
   FContainerKeeper := TSoContainerKeeper.Create(FEngineSize);
@@ -85,6 +85,8 @@ begin
   FUnitManager := TUnitManager.Create(FContainerKeeper, FLayoutKeeper);
   FTemplateManager := TTemplateManager.Create(FTemplateLoader);
   FWorldManager := TWorldManager.Create(FRenderer, FEvents);
+
+  SubscribeEvents;
 end;
 
 destructor TSoCoreModel.Destroy;

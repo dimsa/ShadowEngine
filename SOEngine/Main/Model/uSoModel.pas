@@ -3,49 +3,39 @@ unit uSoModel;
 interface
 
 uses
-  System.SyncObjs, uEngine2DClasses, System.SysUtils,
-  uSoTypes, uCommonClasses, uSoEngineSize,
+  System.SysUtils,
+  uEngine2DClasses, uSoTypes, uCommonClasses, uSoEngineSize,
   uClasses, uSoObjectKeeper, uSoCollider, uSoFormattor, uSoObject,
   uSoAnimator, uSoKeyProcessor, uSoMouseProcessor, uSoLogicKeeper,
   uSoPropertyKeeper, uSoEngineOptions, uSoColliderExtenderFactory, uSoSoundKeeper,
-  uSoContainerKeeper, uSoLayoutFactory, uSoLayoutKeeper,
-  uSoIDelegateCollector, uSoDelegateCollector, uSoIOperator,
-  uSoEngineEvents, uSoCoreModel, uSoRenderer;
+  uSoEngineEvents;
 
 type
   TSoModel = class
   private
-    FCoreModel: TSoCoreModel;
     FCritical: TCriticalSection;
     FImage: TAnonImage;
     FOptions: TSoEngineOptions;
-    FOperators: TList<ISoOperator>;
     // Workers
     FCollider: TSoCollider;
     FFormattor: TSoFormattor;
     FAnimator: TSoAnimator;
-    FRenderer: TSoRenderer;
     // Keepers
     FObjectKeeper: TSoObjectKeeper;
     FLogicKeeper: TSoLogicKeeper;
     FSoundKeeper: TSoSoundKeeper;
-    FContainerKeeper: TSoContainerKeeper;
-    FLayoutKeeper: TSoLayoutKeeper;
     // Processors
     FKeyProcessor: TSoKeyProcessor;
     FMouseProcessor: TSoMouseProcessor;
     // Factories
     FColliderExtenderFactory: TSoColliderExtenderFactory;
 
-    //
-    FRegisterDelegate: IRegisterDelegateCollector;
-
     FEvents: TSoEngineEvents;
     FEngineSize: TSoEngineSize;
     procedure InitFactories;
-    procedure InitDelegateCollector;
+
     procedure SubscribeEvents;
-  protected
+  public
     // Workers
     property Collider: TSoCollider read FCollider;
     property Formattor: TSoFormattor read FFormattor;
@@ -54,14 +44,12 @@ type
     property ObjectKeeper: TSoObjectKeeper read FObjectKeeper;
     property SoundKeeper: TSoSoundKeeper read FSoundKeeper;
     property LogicKeeper: TSoLogicKeeper read FLogicKeeper;
-    property ContainerKeeper: TSoContainerKeeper read FContainerKeeper;
-    property LayoutKeeper: TSoLayoutKeeper read FLayoutKeeper;
+//    property ContainerKeeper: TSoContainerKeeper read FContainerKeeper;
+//    property LayoutKeeper: TSoLayoutKeeper read FLayoutKeeper;
     // Processors
     property KeyProcessor: TSoKeyProcessor read FKeyProcessor;
     property MouseProcessor: TSoMouseProcessor read FMouseProcessor;
-    function OnPartAdded(const AObject: TSoObject; const AClass: TClass; const AName: string): TObject;
-  public
-//    function ObjectByName(const AObjectName: string): TSoObject;
+
     procedure ExecuteOnTick;
     procedure ExecuteKeyUp(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
     procedure ExecuteKeyDown(ASender: TObject; Key: Word; KeyChar: Char; Shift: TShiftState); // Process key on tick
@@ -92,12 +80,6 @@ begin
 
   InitFactories;
 
-  FCoreModel := TSoCoreModel.Create(FEvents, AImage, ACritical);
-
-  FRenderer := FCoreModel.Renderer;
-  FLayoutKeeper := FCoreModel.LayoutKeeper;
-  FContainerKeeper := FCoreModel.ContainerKeeper;
-
   FObjectKeeper := TSoObjectKeeper.Create(FCritical);
   FLogicKeeper := TSoLogicKeeper.Create(FCritical);
   FCollider := TSoCollider.Create(FCritical, FColliderExtenderFactory.Produce, FOptions.ColliderOptions);
@@ -107,20 +89,7 @@ begin
   FMouseProcessor := TSoMouseProcessor.Create(FCritical);
   FSoundKeeper := TSoSoundKeeper.Create(FCritical);
 
-  with FOperators do begin
-    Add(FObjectKeeper);
-    Add(FLogicKeeper);
-    Add(FCollider);
-    Add(FFormattor);
-    Add(FAnimator);
-    Add(FKeyProcessor);
-    Add(FMouseProcessor);
-    Add(FSoundKeeper);
-    Add(FRenderer);
-  end;
-
-  InitDelegateCollector;
-
+  SubscribeEvents;
 end;
 
 destructor TSoModel.Destroy;
@@ -166,28 +135,11 @@ begin
   FAnimator.Execute;
   FLogicKeeper.Execute;
   FCollider.Execute;
-  FRenderer.Execute;
-end;
-
-procedure TSoModel.InitDelegateCollector;
-var
-  vOperator: ISoOperator;
-begin
-  FRegisterDelegate := TSoDelegateCollector.Create;
-
-  for vOperator in FOperators do
-    vOperator.VisitByDelegateCollector(FRegisterDelegate);
 end;
 
 procedure TSoModel.InitFactories;
 begin
   FColliderExtenderFactory := TSoColliderExtenderFactory.Create(FOptions.ColliderOptions);
-end;
-
-function TSoModel.OnPartAdded(const AObject: TSoObject; const AClass: TClass;
-  const AName: string): TObject;
-begin
-
 end;
 
 procedure TSoModel.SubscribeEvents;
