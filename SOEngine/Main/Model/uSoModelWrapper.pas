@@ -5,7 +5,7 @@ interface
 uses
   uSoTypes,
   uSoCoreModel, uSoModel,
-  uSoIOperator, uSoIDelegateCollector, uSoDelegateCollector
+  uSoIOperator, uSoIDelegateCollector, uSoDelegateCollector,
 
   uSoEngineOptions, uSoEngineEvents;
 
@@ -42,7 +42,7 @@ constructor TSoModelWrapper.Create(
   const AOptions: TSoEngineOptions);
 begin
   FEvents := TSoEngineEvents.Create(AImage);
-  //FCoreModel := TSoCoreModelPart.Create(FEvents, AImage, FCritical);
+
   FCoreModel := TSoCoreModel.Create(FEvents, AImage, ACritical);
   FModel := TSoModel.Create(FEvents, AImage, ACritical, AOptions);
 

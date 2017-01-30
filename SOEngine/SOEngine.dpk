@@ -167,7 +167,8 @@ contains
   uSoTemplateLoader in 'Main\uSoTemplateLoader.pas',
   uSoDelegateCollector in 'Parts\Base\uSoDelegateCollector.pas',
   uSoCoreModel in 'Main\Model\uSoCoreModel.pas',
-  uSoModel in 'Main\Model\uSoModel.pas';
+  uSoModel in 'Main\Model\uSoModel.pas',
+  uSoModelWrapper in 'Main\Model\uSoModelWrapper.pas';
 
 end.
 
