@@ -23,12 +23,13 @@ type
     function ContainsObj(const AItem: TObject): Boolean;
     function NameOfObj(const AItem: TObject): string;
 
-    function GetObj(const ASubject: TSoObject): TObject; overload;
+    function GetObj(const ASubject: TSoObject): TObject; virtual;
+    function GetObjByName(const ASubject: TSoObject; const AName: string = ''): TObject; virtual;
 
-    function AddObjFromTemplate(const ASubject: TSoObject; const ATemplateName: string): TObject; virtual; abstract;
-    procedure AddObj(const AItem: TObject);//; const AName: string = '');
+    function AddObjFromTemplate(const ASubject: TSoObject; const ATemplateName: string; const AName: string = ''): TObject; virtual; abstract;
+    procedure AddObj(const AItem: TObject; const AName: string = '');
 
-    procedure VisitByDelegateCollector(const ADelegateCollector: IRegisterDelegateCollector);
+    procedure VisitByDelegateCollector(const ADelegateCollector: IRegisterDelegateCollector); virtual;
   public
     function OperatorItemClass: TClass; virtual; abstract;
     function Contains(const AItem: T): Boolean; overload;
@@ -70,7 +71,7 @@ begin
   vProp.Obj := AItem;
 end;
 
-procedure TSoOperator<T>.AddObj(const AItem: TObject);
+procedure TSoOperator<T>.AddObj(const AItem: TObject; const AName: string = '');
 begin
   FList.Add(AItem);
 end;
@@ -119,7 +120,13 @@ end;
 
 function TSoOperator<T>.GetObj(const ASubject: TSoObject): TObject;
 begin
-//  REsult := FList
+  Result := FElementBySubject[ASubject].First;
+end;
+
+function TSoOperator<T>.GetObjByName(const ASubject: TSoObject;
+  const AName: string): TObject;
+begin
+
 end;
 
 function TSoOperator<T>.NameOf(const AItem: T): string;
@@ -148,7 +155,12 @@ end;
 
 procedure TSoOperator<T>.VisitByDelegateCollector(const ADelegateCollector: IRegisterDelegateCollector);
 begin
-
+  with ADelegateCollector do begin
+    RegisterDelegateGet(Self.ClassType, GetObj);
+    RegisterDelegateGetByName(Self.ClassType, GetObjByName);
+    RegisterDelegateAdd(Self.ClassType, AddObj);
+    RegisterDelegateAddByTemplate(Self.ClassType, AddObjFromTemplate);
+  end;
 end;
 
 end.
