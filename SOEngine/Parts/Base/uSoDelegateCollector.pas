@@ -21,6 +21,12 @@ type
     procedure RegisterDelegateAddByTemplate(const AClass: TClass; const ADelegate: TDelegateAddByTemplate);
     procedure RegisterDelegateAddCustom(const AClass: TClass; const ADelegate: TDelegateAddCustom);
 
+    function GetDelegate(const AClass: TClass): TDelegateGet;
+    function GetByNameDelegate(const AClass: TClass): TDelegateGetByName;
+    function AddDelegate(const AClass: TClass): TDelegateAdd;
+    function AddByTemplateDelegate(const AClass: TClass): TDelegateAddByTemplate;
+    function AddCustomDelegate(const AClass: TClass): TList<TDelegateAddCustom>;
+
     constructor Create;
     destructor Destroy; override;
   end;
@@ -28,6 +34,31 @@ type
 implementation
 
 { TSoDelegateCollector }
+
+function TSoDelegateCollector.AddDelegate(const AClass: TClass): TDelegateAdd;
+begin
+  Result := FAddDict[AClass];
+end;
+
+function TSoDelegateCollector.AddByTemplateDelegate(const AClass: TClass): TDelegateAddByTemplate;
+begin
+  Result := FAddByTemplateDict[AClass];
+end;
+
+function TSoDelegateCollector.AddCustomDelegate(const AClass: TClass): TList<TDelegateAddCustom>;
+begin
+  Result := FAddCustomDict[AClass];
+end;
+
+function TSoDelegateCollector.GetDelegate(const AClass: TClass): TDelegateGet;
+begin
+  Result := FGetDict[AClass];
+end;
+
+function TSoDelegateCollector.GetByNameDelegate(const AClass: TClass): TDelegateGetByName;
+begin
+  Result := FGetByNameDict[AClass];
+end;
 
 constructor TSoDelegateCollector.Create;
 begin
@@ -51,27 +82,31 @@ end;
 
 procedure TSoDelegateCollector.RegisterDelegateAdd(const AClass: TClass; const ADelegate: TDelegateAdd);
 begin
-
+  FAddDict.Add(AClass, ADelegate);
 end;
 
 procedure TSoDelegateCollector.RegisterDelegateAddByTemplate(const AClass: TClass; const ADelegate: TDelegateAddByTemplate);
 begin
-
+  FAddByTemplateDict.Add(AClass, ADelegate);
 end;
 
 procedure TSoDelegateCollector.RegisterDelegateAddCustom(const AClass: TClass; const ADelegate: TDelegateAddCustom);
 begin
+  if not FAddCustomDict.ContainsKey(AClass) then
+    FAddCustomDict.Add(AClass, TList<TDelegateAddCustom>.Create);
+
+  FAddCustomDict[AClass].Add(ADelegate);
 
 end;
 
 procedure TSoDelegateCollector.RegisterDelegateGet(const AClass: TClass; const ADelegate: TDelegateGet);
 begin
-
+  FGetDict.Add(AClass, ADelegate);
 end;
 
 procedure TSoDelegateCollector.RegisterDelegateGetByName(const AClass: TClass; const ADelegate: TDelegateGetByName);
 begin
-
+  FGetByNameDict.Add(AClass, ADelegate);
 end;
 
 end.
